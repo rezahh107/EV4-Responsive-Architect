@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ev4.local/schemas/ev4-responsive-stage-anchor.schema.json",
+  "title": "EV4 Responsive Stage Anchor",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "source_stage",
+    "target_stage",
+    "project_status_version",
+    "critical_unknowns",
+    "blocking_items",
+    "gate_results",
+    "audit_flags",
+    "allowed_work",
+    "forbidden_work",
+    "stop_conditions"
+  ],
+  "properties": {
+    "schema": { "const": "ev4-responsive-stage-anchor@1.0.0" },
+    "source_stage": { "type": "string" },
+    "target_stage": { "type": "string" },
+    "project_status_version": { "type": "string" },
+    "critical_unknowns": { "type": "array", "items": { "type": "string" } },
+    "blocking_items": { "type": "array", "items": { "type": "string" } },
+    "gate_results": { "type": "object" },
+    "audit_flags": { "type": "array", "items": { "type": "string" } },
+    "allowed_work": { "type": "array", "items": { "type": "string" } },
+    "forbidden_work": { "type": "array", "items": { "type": "string" } },
+    "stop_conditions": { "type": "array", "items": { "type": "string" } }
+  }
+}
