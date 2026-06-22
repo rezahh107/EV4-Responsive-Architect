@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ev4.local/schemas/ev4-responsive-evidence-ingest.schema.json",
+  "title": "EV4 Responsive Evidence Ingest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "evidence_items", "evidence_quality_map"],
+  "properties": {
+    "schema": { "const": "ev4-responsive-evidence-ingest@1.0.0" },
+    "evidence_items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["evidence_id", "evidence_type", "viewport_label", "capture_source", "limitation"],
+        "properties": {
+          "evidence_id": { "type": "string" },
+          "evidence_type": { "enum": ["static_screenshot", "frontend_screenshot", "editor_screenshot", "frontend_video", "resize_sweep", "elementor_export_json", "dom_inspector_note", "browser_console_note", "user_observation"] },
+          "viewport_label": { "enum": ["desktop", "tablet", "mobile", "custom", "unknown"] },
+          "capture_source": { "enum": ["frontend", "elementor_editor", "export", "mixed", "unknown"] },
+          "limitation": { "type": "string" }
+        }
+      }
+    },
+    "evidence_quality_map": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["evidence_id", "quality_level", "confidence_cap"],
+        "properties": {
+          "evidence_id": { "type": "string" },
+          "quality_level": { "enum": ["L1_static_visual_only", "L2_frontend_visual_with_viewport", "L3_resize_sweep_or_video", "L4_dom_or_export_structure", "L5_live_render_plus_dom_plus_visual"] },
+          "confidence_cap": { "enum": ["low", "medium", "high"] }
+        }
+      }
+    }
+  }
+}
