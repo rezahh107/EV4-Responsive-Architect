@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ev4.local/schemas/ev4-responsive-repair-plan.schema.json",
+  "title": "EV4 Responsive Repair Plan",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "repair_steps"],
+  "properties": {
+    "schema": { "const": "ev4-responsive-repair-plan@1.0.0" },
+    "repair_steps": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["step_id", "failure_id", "target_node_id", "viewport_scope", "single_repair_intent", "elementor_control_path", "rollback_action", "validation_evidence_required"],
+        "properties": {
+          "step_id": { "type": "string" },
+          "failure_id": { "type": "string" },
+          "target_node_id": { "type": "string" },
+          "viewport_scope": { "enum": ["desktop", "tablet", "mobile", "custom"] },
+          "single_repair_intent": { "type": "string" },
+          "elementor_control_path": { "type": "object" },
+          "rollback_action": { "type": "string" },
+          "validation_evidence_required": { "type": "array", "items": { "type": "string" } }
+        }
+      }
+    }
+  }
+}
