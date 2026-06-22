@@ -1,0 +1,5 @@
+{
+  "$schema_file": "ev4-responsive-stage-anchor.schema.json",
+  "schema": "ev4-responsive-stage-anchor@1.0.0",
+  "source_stage": "/responsive-intake"
+}
