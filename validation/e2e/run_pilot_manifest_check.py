@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import json
 import sys
+import traceback
 from pathlib import Path
 from typing import Any
 
@@ -61,6 +62,8 @@ REQUIRED_STOP_CONDITIONS = {
     "missing_main_ev4_handoff",
     "selected_candidate_identity_conflict",
     "desktop_baseline_missing",
+    "breakpoint_inventory_missing_or_unusable",
+    "unknown_required_to_select_repair_unresolved",
     "architecture_mutation_veto_triggered",
     "meaningful_content_must_be_hidden_to_fit",
     "builder_reports_unexpected_desktop_regression",
@@ -176,8 +179,12 @@ def main() -> int:
     try:
         validate_schema_file_exists()
         validate_manifest(load_json(MANIFEST_PATH))
-    except Exception as exc:  # noqa: BLE001
+    except AssertionError as exc:
         print(f"Pilot manifest check failed: {exc}", file=sys.stderr)
+        return 1
+    except Exception:  # noqa: BLE001
+        print("Pilot manifest check failed with an unexpected error:", file=sys.stderr)
+        traceback.print_exc()
         return 1
     print("Pilot manifest check passed: smart-home connector pilot harness is structurally valid")
     return 0
