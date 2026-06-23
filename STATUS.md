@@ -2,7 +2,7 @@
 
 ```yaml
 project: EV4 Responsive Architect
-version: 0.2.7-real-pilot-artifact-slots
+version: 0.2.8-rolling-queue-refresh
 status: rolling_queue_controller_active
 production_ready: false
 prompt_pack_release_ready: false
@@ -41,6 +41,7 @@ Allowed now:
 - readiness conflict summary carry-forward validation
 - rolling queue automation reliability hardening
 - real pilot artifact slot templates
+- rolling queue refresh planning
 ```
 
 Forbidden now:
@@ -75,10 +76,11 @@ controller_policy:
 
 ```yaml
 next_tasks:
-  - RQ-0005 refresh rolling queue
   - RQ-0006 add bridge semantic validation runner
   - RQ-0007 add conflict-summary generated-report check
   - RQ-0008 harden rolling queue schema compatibility
+  - RQ-0009 add submitted-mode command support
+  - RQ-0010 refresh rolling queue after validation hardening set
 ```
 
 ## Completed Foundation
@@ -102,6 +104,7 @@ issue_packet_bridge: done
 readiness_conflict_summary: done
 automation_reliability_rules: done
 real_pilot_artifact_slots: done
+rolling_queue_refresh: done
 ```
 
 ## Automation Reliability State
