@@ -4,11 +4,37 @@
   "title": "EV4 Responsive Accessibility Reading Order Gate",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schema", "applies_when", "required_checks", "outcome"],
+  "$defs": {
+    "id": { "type": "string", "minLength": 1, "pattern": "^[A-Za-z0-9_.:/@-]+$" },
+    "trigger": { "enum": ["visual_order_changes", "custom_order_used", "reverse_direction_used", "meaningful_content_hidden_or_deferred", "overlay_interacts_with_meaningful_content", "duplicate_mobile_section_considered"] },
+    "checkStatus": { "enum": ["pass", "fail", "risk_recorded", "not_applicable", "unknown_needs_verification"] }
+  },
+  "required": ["schema", "gate_id", "applies_when", "checks", "outcome", "production_ready_claim_allowed"],
   "properties": {
     "schema": { "const": "ev4-responsive-accessibility-gate@1.0.0" },
-    "applies_when": { "type": "array", "items": { "type": "string" } },
-    "required_checks": { "type": "array", "items": { "type": "string" } },
-    "outcome": { "enum": ["pass", "pass_with_visible_risk", "fail_requires_repair", "fail_requires_main_pipeline_rerun"] }
-  }
+    "gate_id": { "$ref": "#/$defs/id" },
+    "applies_when": { "type": "array", "items": { "$ref": "#/$defs/trigger" }, "uniqueItems": true },
+    "checks": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["meaningful_content_visibility_preserved", "source_order_risk_recorded", "keyboard_order_risk_recorded", "screen_reader_order_risk_recorded", "tap_target_risk_recorded", "focus_order_risk_recorded"],
+      "properties": {
+        "meaningful_content_visibility_preserved": { "$ref": "#/$defs/checkStatus" },
+        "source_order_risk_recorded": { "$ref": "#/$defs/checkStatus" },
+        "keyboard_order_risk_recorded": { "$ref": "#/$defs/checkStatus" },
+        "screen_reader_order_risk_recorded": { "$ref": "#/$defs/checkStatus" },
+        "tap_target_risk_recorded": { "$ref": "#/$defs/checkStatus" },
+        "focus_order_risk_recorded": { "$ref": "#/$defs/checkStatus" }
+      }
+    },
+    "outcome": { "enum": ["pass", "pass_with_visible_risk", "fail_requires_repair", "fail_requires_main_pipeline_rerun"] },
+    "risk_notes": { "type": "array", "items": { "type": "string" } },
+    "production_ready_claim_allowed": { "type": "boolean" }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "outcome": { "enum": ["pass_with_visible_risk", "fail_requires_repair", "fail_requires_main_pipeline_rerun"] } } },
+      "then": { "properties": { "production_ready_claim_allowed": { "const": false } } }
+    }
+  ]
 }
