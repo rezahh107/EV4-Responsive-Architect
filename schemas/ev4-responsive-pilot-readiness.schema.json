@@ -1,0 +1,61 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ev4-responsive-pilot-readiness.schema.json",
+  "title": "EV4 Responsive Pilot Readiness Report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "readiness_id",
+    "source_packet_id",
+    "section_id",
+    "readiness_status",
+    "blocking_reasons",
+    "visible_flags",
+    "required_next_action",
+    "validation_boundary"
+  ],
+  "properties": {
+    "schema": {"const": "ev4-responsive-pilot-readiness@1.0.0"},
+    "readiness_id": {"type": "string", "minLength": 1},
+    "source_packet_id": {"type": "string", "minLength": 1},
+    "section_id": {"type": "string", "minLength": 1},
+    "readiness_status": {
+      "enum": [
+        "ready_for_shadow_mode_pilot",
+        "partial_ready_with_visible_flags",
+        "blocked_missing_evidence",
+        "blocked_conflicting_evidence",
+        "blocked_privacy_review_missing",
+        "blocked_schema_or_semantic_failure"
+      ]
+    },
+    "blocking_reasons": {
+      "type": "array",
+      "items": {"type": "string"}
+    },
+    "visible_flags": {
+      "type": "array",
+      "items": {"type": "string"}
+    },
+    "required_next_action": {"type": "string", "minLength": 1},
+    "validation_boundary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "live_elementor_render_validated",
+        "export_json_validated",
+        "playwright_visual_regression_validated",
+        "accessibility_pass_claimed",
+        "production_ready_claimed"
+      ],
+      "properties": {
+        "live_elementor_render_validated": {"const": false},
+        "export_json_validated": {"const": false},
+        "playwright_visual_regression_validated": {"const": false},
+        "accessibility_pass_claimed": {"const": false},
+        "production_ready_claimed": {"const": false}
+      }
+    }
+  }
+}
