@@ -3,18 +3,18 @@
 ```yaml
 project: EV4 Responsive Architect
 version: 0.1.0-final-draft
-status: e2e_001_textual_validation_in_progress
+status: smart_home_connector_pilot_pack_in_progress
 production_ready: false
 prompt_pack_release_ready: false
-current_branch: e2e-001/textual-fixture-validation
+current_branch: pilot/smart-home-connector-v0.1
 ```
 
 ## Current Phase
 
 ```yaml
 current_phase:
-  name: E2E_001_textual_fixture_contract_validation
-  goal: validate the minimum repository-backed contract chain using schema validation, valid/invalid fixtures, and CI execution
+  name: smart_home_connector_shadow_mode_pilot
+  goal: prepare the first practical vertical-slice pilot package after contract hardening, schema hardening, and E2E-001 textual validation
 ```
 
 ## Release Boundary
@@ -28,6 +28,7 @@ Allowed now:
 - validation_ready_state
 - contract_validation_only fixtures
 - E2E-001 textual fixture validation
+- shadow-mode manual pilot package
 ```
 
 Forbidden now:
@@ -46,10 +47,10 @@ Forbidden now:
 
 ```yaml
 must_do_next:
-  - merge E2E-001 textual fixture validation PR after CI/review
-  - start smart-home connector pilot case
-  - expand remaining non-core schemas
+  - review and merge smart-home connector pilot package PR
+  - run pilot when real main EV4 handoff and responsive screenshots are available
   - add E2E-002 real builder evidence plan
+  - expand remaining non-core schemas as needed by pilot results
 ```
 
 ## Completed Foundation
@@ -82,7 +83,7 @@ schema_hardening:
     - CSS selector semantic checks
 
 E2E_001:
-  status: in_progress
+  status: merged
   scope: contract_validation_only
   validates:
     - main pipeline handoff fixture
@@ -92,4 +93,9 @@ E2E_001:
     - accessibility gate fixture
     - CSS selector safety fixture
     - invalid global CSS selector fixture
+
+smart_home_connector_pilot:
+  status: in_progress
+  scope: shadow_mode_manual
+  production_ready: false
 ```

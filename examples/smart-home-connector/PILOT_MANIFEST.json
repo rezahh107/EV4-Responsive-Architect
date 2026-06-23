@@ -1,0 +1,45 @@
+{
+  "schema": "ev4-responsive-pilot-manifest@0.1.0",
+  "pilot_id": "smart-home-connector-v0.1",
+  "mode": "shadow_mode_manual",
+  "production_ready": false,
+  "required_sequence": [
+    "main-pipeline-handoff-ingest",
+    "responsive-evidence-ingest-ledger",
+    "desktop-baseline-lock",
+    "breakpoint-inventory-lock",
+    "breakpoint-observation",
+    "responsive-failure-map",
+    "failure-priority-ordering",
+    "repair-ownership-routing",
+    "repair-option-analysis",
+    "responsive-repair-selection",
+    "repair-scope-freeze",
+    "responsive-repair-plan",
+    "responsive-final-audit-lite"
+  ],
+  "pilot_files": {
+    "runbook": "examples/smart-home-connector/PILOT_CASE_V0_1.md",
+    "evidence_manifest_template": "examples/smart-home-connector/evidence/EVIDENCE_MANIFEST.template.json",
+    "failure_map_template": "examples/smart-home-connector/templates/RESPONSIVE_FAILURE_MAP.template.md",
+    "repair_option_template": "examples/smart-home-connector/templates/REPAIR_OPTION_ANALYSIS.template.md",
+    "builder_checklist_template": "examples/smart-home-connector/builder/BUILDER_REPAIR_CHECKLIST.template.md",
+    "final_audit_lite_template": "examples/smart-home-connector/audits/FINAL_AUDIT_LITE.template.md"
+  },
+  "stop_conditions": [
+    "missing_main_ev4_handoff",
+    "selected_candidate_identity_conflict",
+    "desktop_baseline_missing",
+    "architecture_mutation_veto_triggered",
+    "meaningful_content_must_be_hidden_to_fit",
+    "builder_reports_unexpected_desktop_regression"
+  ],
+  "forbidden_claims": [
+    "production_ready",
+    "live_render_validated",
+    "export_validated",
+    "pixel_perfect",
+    "accessibility_passed",
+    "Playwright_validated"
+  ]
+}

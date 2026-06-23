@@ -1,0 +1,96 @@
+{
+  "schema": "ev4-responsive-pilot-evidence-manifest@0.1.0",
+  "pilot_id": "smart-home-connector-v0.1",
+  "status": "template_waiting_for_real_evidence",
+  "production_ready": false,
+  "section_identity": {
+    "selected_candidate_id": "ARCH-FAM-C",
+    "target_section_name": "smart-home-connector",
+    "root_class_name": "TODO_PROJECT_ROOT_CLASS",
+    "main_pipeline_handoff_ref": "TODO_MAIN_EV4_HANDOFF_REF"
+  },
+  "breakpoint_inventory": {
+    "source_type": "user_declaration_or_project_settings_or_export_json",
+    "source_ref": "TODO_BREAKPOINT_SOURCE_REF",
+    "fallback_used": false,
+    "release_ready_claim_allowed": false,
+    "active_breakpoints": [
+      {
+        "label": "desktop",
+        "width_px": null,
+        "source": "TODO",
+        "confidence": "unknown"
+      },
+      {
+        "label": "tablet",
+        "width_px": null,
+        "source": "TODO",
+        "confidence": "unknown"
+      },
+      {
+        "label": "mobile",
+        "width_px": null,
+        "source": "TODO",
+        "confidence": "unknown"
+      }
+    ]
+  },
+  "evidence_items": [
+    {
+      "evidence_id": "EVD-DESKTOP-BASELINE-001",
+      "evidence_type": "frontend_screenshot",
+      "viewport_label": "desktop",
+      "viewport_width": null,
+      "viewport_height": null,
+      "capture_source": "frontend",
+      "source_ref": "TODO_DESKTOP_SCREENSHOT_PATH_OR_URL",
+      "known_limitations": [
+        "not_live_render_validated_by_system",
+        "not_export_json_validated"
+      ],
+      "content_hash_if_file": "TODO_OR_NULL"
+    },
+    {
+      "evidence_id": "EVD-TABLET-001",
+      "evidence_type": "frontend_screenshot",
+      "viewport_label": "tablet",
+      "viewport_width": null,
+      "viewport_height": null,
+      "capture_source": "frontend",
+      "source_ref": "TODO_TABLET_SCREENSHOT_PATH_OR_URL",
+      "known_limitations": [
+        "screenshot_can_show_symptom_not_cause"
+      ],
+      "content_hash_if_file": "TODO_OR_NULL"
+    },
+    {
+      "evidence_id": "EVD-MOBILE-001",
+      "evidence_type": "frontend_screenshot",
+      "viewport_label": "mobile",
+      "viewport_width": null,
+      "viewport_height": null,
+      "capture_source": "frontend",
+      "source_ref": "TODO_MOBILE_SCREENSHOT_PATH_OR_URL",
+      "known_limitations": [
+        "screenshot_can_show_symptom_not_cause"
+      ],
+      "content_hash_if_file": "TODO_OR_NULL"
+    }
+  ],
+  "evidence_quality_rules": {
+    "screenshot_only_may_support": [
+      "visible_collision",
+      "visible_clipping",
+      "visible_overflow_symptom",
+      "visible_order_symptom",
+      "viewport_specific_visual_state"
+    ],
+    "screenshot_only_must_not_support": [
+      "exact_css_cause",
+      "exact_breakpoint_value",
+      "dom_reading_order",
+      "accessibility_pass",
+      "production_ready_claim"
+    ]
+  }
+}
