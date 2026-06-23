@@ -2,19 +2,19 @@
 
 ```yaml
 project: EV4 Responsive Architect
-version: 0.2.2-rolling-queue-bootstrap
-status: rolling_queue_controller_in_pull_request
+version: 0.2.3-status-issue-sync
+status: rolling_queue_controller_active
 production_ready: false
 prompt_pack_release_ready: false
-current_branch: queue-v1
+current_branch: main
 ```
 
 ## Current Phase
 
 ```yaml
 current_phase:
-  name: rolling_queue_controller_bootstrap
-  goal: add repo-backed rolling task queue for hourly bounded progress
+  name: real_smart_home_evidence_preparation
+  goal: keep the repo synchronized for real smart-home evidence intake without starting the real pilot or weakening sample-vs-real boundaries
 ```
 
 ## Release Boundary
@@ -35,21 +35,23 @@ Allowed now:
 - sample-vs-real safety checks
 - risk-priority assessment validation
 - P0 semantic gate validation
-- rolling task queue planning
+- rolling task queue planning and bounded execution
+- Issue #8 evidence-intake synchronization
 ```
 
 Forbidden now:
 
 ```text
-- production_ready claim
-- release_ready claim
-- pixel_perfect claim
-- export_validated claim
-- live_render_validated claim
-- accessibility_passed claim
+- production-ready claim
+- release-ready claim
+- pixel-perfect claim
+- export-validated claim
+- live-render-validated claim
+- accessibility-passed claim
 - treating sample packet as real submitted evidence
 - numeric score used as readiness evidence
 - average score used to override a hard gate
+- starting the real pilot before a real submitted packet and readiness pass exist
 ```
 
 ## Rolling Queue
@@ -57,6 +59,7 @@ Forbidden now:
 ```yaml
 queue_file: planning/EV4_ROLLING_QUEUE.json
 queue_schema: ev4-responsive-rolling-queue@1.0.0
+queue_status: active
 controller_policy:
   one_task_per_run: true
   critique_same_task: true
@@ -68,7 +71,6 @@ controller_policy:
 
 ```yaml
 next_tasks:
-  - RQ-0001 sync STATUS and Issue 8
   - RQ-0002 define Issue-to-Packet bridge
   - RQ-0003 add conflict summary to readiness path
   - RQ-0004 prepare real pilot artifact slots
@@ -90,5 +92,16 @@ risk_priority_engine: done
 master_spec_sync: done
 p0_system_hardening: done
 p0_semantic_gate_hardening: done
-rolling_queue_controller: in_pull_request
+rolling_queue_controller: done
+status_issue_sync: done
+```
+
+## Real Evidence State
+
+```yaml
+issue_8: open
+evidence_intake_schema: ev4-responsive-evidence-intake-packet@1.1.0
+real_submitted_packet_present: false
+pilot_allowed_to_start: false
+reason: real smart-home evidence has not been submitted and readiness has not passed
 ```
