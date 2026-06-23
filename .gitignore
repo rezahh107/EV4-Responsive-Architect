@@ -8,6 +8,7 @@ venv/
 validation/artifacts/
 playwright-report/
 test-results/
+*.generated.json
 
 # Private / local evidence
 private-evidence/
