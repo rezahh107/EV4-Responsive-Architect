@@ -1,0 +1,40 @@
+{
+  "$schema_file": "ev4-responsive-repair-option-analysis.schema.json",
+  "schema": "ev4-responsive-repair-option-analysis@1.0.0",
+  "analysis_id": "RSP-ROA-001",
+  "failure_options": [
+    {
+      "failure_id": "RSP-F-001",
+      "options": [
+        {
+          "option_id": "RSP-OPT-001",
+          "repair_owner": "responsive_repair",
+          "repair_type": "elementor_native_control",
+          "native_control_possible": "yes",
+          "scoped_css_needed": "no",
+          "desktop_regression_risk": "low",
+          "cascade_risk": "medium",
+          "accessibility_risk": "low",
+          "evidence_support": "PARTIALLY_SUPPORTED_EVIDENCE",
+          "selection_status": "selected",
+          "rejected_reason_if_not_selected": null,
+          "verification_required": ["desktop_regression_check", "mobile_frontend_screenshot_after"]
+        },
+        {
+          "option_id": "RSP-OPT-002",
+          "repair_owner": "responsive_repair",
+          "repair_type": "scoped_css",
+          "native_control_possible": "unknown",
+          "scoped_css_needed": "yes",
+          "desktop_regression_risk": "medium",
+          "cascade_risk": "medium",
+          "accessibility_risk": "unknown",
+          "evidence_support": "INFERRED_EVIDENCE",
+          "selection_status": "rejected",
+          "rejected_reason_if_not_selected": "Native Elementor control path must be evaluated before scoped CSS fallback.",
+          "verification_required": ["css_selector_safety_check", "computed_style_or_builder_feedback"]
+        }
+      ]
+    }
+  ]
+}
