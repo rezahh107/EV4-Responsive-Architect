@@ -17,7 +17,7 @@
     "cycle_status": "active",
     "started_from_status": "p0_semantic_gates_merged_but_status_and_issue_pending_sync",
     "goal": "Prepare the repository for real smart-home evidence execution while preserving sample-vs-real and production-claim boundaries.",
-    "task_order": ["RQ-0001", "RQ-0002", "RQ-0003", "RQ-0004", "RQ-0005"]
+    "task_order": ["RQ-0001", "RQ-0002", "RQ-0003", "RQ-0004", "RQ-0005", "RQ-0006"]
   },
   "tasks": [
     {
@@ -64,7 +64,7 @@
       "task_id": "RQ-0002",
       "cycle_position": 2,
       "task_type": "evidence_bridge",
-      "status": "pending",
+      "status": "completed",
       "title": "Define Issue-to-Packet bridge",
       "objective": "Create a bounded mapper specification for converting Issue #8 evidence into EVIDENCE_INTAKE_PACKET.submitted.json without silently inventing missing evidence.",
       "allowed_work": ["Add a mapper contract or guide for issue fields to packet fields.", "Define required failure modes for missing attachments, missing hashes, privacy omissions, and sample markers.", "Add validation fixtures if a machine-readable mapping contract is introduced."],
@@ -73,7 +73,23 @@
       "expected_artifacts": ["Issue-to-packet mapping spec", "Optional mapper schema or validator"],
       "acceptance_criteria": ["Mapping has explicit blocked states for missing or conflicting evidence.", "No text-only issue field is treated as proof of a visual artifact.", "Sample-vs-real safety is preserved."],
       "critique_required": true,
-      "dependencies": ["RQ-0001"]
+      "dependencies": ["RQ-0001"],
+      "completion": {
+        "run_id": "automation-run-002",
+        "status": "completed",
+        "artifacts": [
+          "docs/15_ISSUE_TO_PACKET_BRIDGE.md",
+          "schemas/ev4-responsive-issue-to-packet-bridge.schema.json",
+          "validation/fixtures/valid/issue_to_packet_bridge.valid.json",
+          "validation/fixtures/invalid/issue_to_packet_bridge.text_as_visual_proof.invalid.json"
+        ],
+        "critique_findings": [
+          "The bridge must not make Issue #8 text equivalent to screenshot, export, DOM, CSS, accessibility, or live-render evidence.",
+          "The bridge must keep missing attachments, missing hashes, privacy omissions, conflicts, and sample markers as blocking states.",
+          "Because completing RQ-0002 leaves fewer than four pending tasks, one bounded follow-up task was added after the fifth refresh task."
+        ],
+        "boundary": "No submitted packet was generated, no real evidence was claimed, and the real pilot remains blocked."
+      }
     },
     {
       "task_id": "RQ-0003",
@@ -119,6 +135,21 @@
       "acceptance_criteria": ["Queue has at least four pending executable tasks after refresh unless blocked on evidence.", "Every fifth task remains queue_refresh.", "Completed task history and blockers are preserved."],
       "critique_required": true,
       "dependencies": ["RQ-0001", "RQ-0002", "RQ-0003", "RQ-0004"]
+    },
+    {
+      "task_id": "RQ-0006",
+      "cycle_position": 6,
+      "task_type": "validator_hardening",
+      "status": "pending",
+      "title": "Add bridge semantic validation runner",
+      "objective": "Add a dedicated E2E check for the issue-to-packet bridge so unsafe mappings fail outside generic schema validation.",
+      "allowed_work": ["Create validation/e2e/run_issue_to_packet_bridge_check.py.", "Check that blocked bridge states keep real_pilot_allowed_to_start=false.", "Check that text-only visual proof and sample markers remain rejected."],
+      "forbidden_work": ["Do not generate a submitted packet.", "Do not relax the bridge schema.", "Do not mark Issue #8 evidence as complete."],
+      "requires_real_evidence": false,
+      "expected_artifacts": ["Dedicated bridge validator", "Workflow step if safe"],
+      "acceptance_criteria": ["Dedicated validator passes for valid blocked mapping.", "Dedicated validator rejects unsafe mapping cases.", "CI includes the dedicated bridge check if workflow editing is safe."],
+      "critique_required": true,
+      "dependencies": ["RQ-0005"]
     }
   ],
   "forbidden_claims": [
