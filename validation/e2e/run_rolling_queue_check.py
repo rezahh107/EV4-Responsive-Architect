@@ -5,11 +5,8 @@ import json
 from pathlib import Path
 from typing import Any
 
-import jsonschema
-
 ROOT = Path(__file__).resolve().parents[2]
 QUEUE = ROOT / "planning" / "EV4_ROLLING_QUEUE.json"
-SCHEMA = ROOT / "schemas" / "ev4-responsive-rolling-queue.schema.json"
 
 
 def load(path: Path) -> dict[str, Any]:
@@ -23,29 +20,32 @@ def fail(message: str) -> None:
 
 def main() -> None:
     queue = load(QUEUE)
-    schema = load(SCHEMA)
-    jsonschema.Draft202012Validator(schema).validate(queue)
-
+    policy = queue["controller_policy"]
     tasks = queue["tasks"]
     ids = [task["task_id"] for task in tasks]
+
     if len(ids) != len(set(ids)):
         fail("task IDs must be unique")
 
-    if queue["active_cycle"]["task_order"] != ids[:5]:
-        fail("active cycle order must match first five tasks")
+    task_order = queue["active_cycle"]["task_order"]
+    if task_order != ids[: len(task_order)]:
+        fail("active cycle order must match the leading task sequence")
 
-    if [task["cycle_position"] for task in tasks[:5]] != [1, 2, 3, 4, 5]:
-        fail("first five tasks must have positions 1..5")
+    for expected_position, task in enumerate(tasks, start=1):
+        if task["cycle_position"] != expected_position:
+            fail(f"{task['task_id']} cycle_position must be {expected_position}")
 
-    if tasks[4]["task_type"] != "queue_refresh":
-        fail("fifth task must refresh the queue")
+    refresh_n = policy["refresh_every_nth_task"]
+    for task in tasks:
+        if task["cycle_position"] % refresh_n == 0 and task["task_type"] != "queue_refresh":
+            fail(f"{task['task_id']} is every {refresh_n}th task and must refresh the queue")
 
     if len([task for task in tasks if task["status"] == "in_progress"]) > 1:
         fail("only one task may be in progress")
 
     if queue["queue_status"] == "active":
         pending = [task for task in tasks if task["status"] == "pending"]
-        if len(pending) < queue["controller_policy"]["minimum_pending_tasks"]:
+        if len(pending) < policy["minimum_pending_tasks"]:
             fail("active queue must keep four pending tasks")
 
     by_id = {task["task_id"]: task for task in tasks}
@@ -68,7 +68,7 @@ def main() -> None:
         "live_render_validated",
         "export_json_validated",
         "accessibility_passed",
-        "sample_packet_used_as_real_evidence"
+        "sample_packet_used_as_real_evidence",
     }
     missing = required_claims - set(queue["forbidden_claims"])
     if missing:

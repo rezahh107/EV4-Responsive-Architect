@@ -6,6 +6,10 @@ on:
     branches:
       - main
 
+concurrency:
+  group: ev4-validate-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
   schema-validation:
     runs-on: ubuntu-latest
@@ -58,3 +62,6 @@ jobs:
 
       - name: Run P0 system hardening validation
         run: python validation/e2e/run_p0_system_hardening_check.py
+
+      - name: Run rolling queue validation
+        run: python validation/e2e/run_rolling_queue_check.py

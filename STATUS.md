@@ -2,7 +2,7 @@
 
 ```yaml
 project: EV4 Responsive Architect
-version: 0.2.5-readiness-conflict-summary
+version: 0.2.6-automation-reliability-hardening
 status: rolling_queue_controller_active
 production_ready: false
 prompt_pack_release_ready: false
@@ -39,6 +39,7 @@ Allowed now:
 - Issue #8 evidence-intake synchronization
 - Issue #8 to evidence packet bridge contract validation
 - readiness conflict summary carry-forward validation
+- rolling queue automation reliability hardening
 ```
 
 Forbidden now:
@@ -98,6 +99,19 @@ rolling_queue_controller: done
 status_issue_sync: done
 issue_packet_bridge: done
 readiness_conflict_summary: done
+automation_reliability_rules: pending_pr_merge
+```
+
+## Automation Reliability State
+
+```yaml
+cadence_policy: hourly_non_zero_minute_preferred
+half_hour_cadence: not_selected
+task_interpretation_gate_required: true
+external_input_boundary_required: true
+run_ledger_contract_required: true
+risk_based_merge_policy_required: true
+ci_must_include_rolling_queue_check: true
 ```
 
 ## Real Evidence State
