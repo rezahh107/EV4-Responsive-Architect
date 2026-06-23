@@ -17,7 +17,7 @@
     "cycle_status": "active",
     "started_from_status": "p0_semantic_gates_merged_but_status_and_issue_pending_sync",
     "goal": "Prepare the repository for real smart-home evidence execution while preserving sample-vs-real and production-claim boundaries.",
-    "task_order": ["RQ-0001", "RQ-0002", "RQ-0003", "RQ-0004", "RQ-0005", "RQ-0006"]
+    "task_order": ["RQ-0001", "RQ-0002", "RQ-0003", "RQ-0004", "RQ-0005", "RQ-0006", "RQ-0007"]
   },
   "tasks": [
     {
@@ -95,7 +95,7 @@
       "task_id": "RQ-0003",
       "cycle_position": 3,
       "task_type": "validator_hardening",
-      "status": "pending",
+      "status": "completed",
       "title": "Add conflict summary to readiness path",
       "objective": "Add an evidence_conflict_summary requirement to readiness or related artifacts so unresolved conflicts remain visible and blocked downstream.",
       "allowed_work": ["Extend readiness/conflict artifacts or docs with conflict summary fields.", "Add semantic checks for unresolved conflict carry-forward.", "Add negative fixtures for hidden unresolved conflicts."],
@@ -104,7 +104,25 @@
       "expected_artifacts": ["Schema or validator update", "Valid and invalid fixtures"],
       "acceptance_criteria": ["Unresolved blocking conflict cannot produce ready readiness.", "Resolved conflict records source priority and rationale.", "CI validates positive and negative paths."],
       "critique_required": true,
-      "dependencies": ["RQ-0002"]
+      "dependencies": ["RQ-0002"],
+      "completion": {
+        "run_id": "automation-run-003",
+        "status": "completed",
+        "artifacts": [
+          "schemas/ev4-responsive-pilot-readiness.schema.json",
+          "validation/e2e/run_pilot_readiness_check.py",
+          "validation/fixtures/valid/pilot_readiness.partial.valid.json",
+          "validation/fixtures/invalid/pilot_readiness.hidden_unresolved_conflict.invalid.json",
+          "docs/10_PILOT_READINESS_GATE.md",
+          "STATUS.md"
+        ],
+        "critique_findings": [
+          "The readiness path previously exposed blocking_reasons and visible_flags but had no durable conflict summary field.",
+          "A hidden unresolved conflict could be omitted from a downstream report unless unresolved conflict count was made schema-visible.",
+          "Resolved conflict records now require source priority, winning source, rationale, and downstream effect."
+        ],
+        "boundary": "No conflict was resolved without rationale, no pilot was started, and no real evidence was claimed."
+      }
     },
     {
       "task_id": "RQ-0004",
@@ -148,6 +166,21 @@
       "requires_real_evidence": false,
       "expected_artifacts": ["Dedicated bridge validator", "Workflow step if safe"],
       "acceptance_criteria": ["Dedicated validator passes for valid blocked mapping.", "Dedicated validator rejects unsafe mapping cases.", "CI includes the dedicated bridge check if workflow editing is safe."],
+      "critique_required": true,
+      "dependencies": ["RQ-0005"]
+    },
+    {
+      "task_id": "RQ-0007",
+      "cycle_position": 7,
+      "task_type": "validator_hardening",
+      "status": "pending",
+      "title": "Add conflict-summary generated-report check",
+      "objective": "Add a focused check proving a generated readiness report with intake blocker_conflicts becomes blocked_conflicting_evidence and carries conflict records forward.",
+      "allowed_work": ["Add or reuse a blocked-conflict intake fixture.", "Assert generated readiness_status=blocked_conflicting_evidence.", "Assert unresolved conflict records cannot authorize pilot start."],
+      "forbidden_work": ["Do not authorize pilot execution.", "Do not treat sample conflict fixtures as real evidence.", "Do not weaken missing-evidence or privacy blockers."],
+      "requires_real_evidence": false,
+      "expected_artifacts": ["Dedicated fixture or runner assertion"],
+      "acceptance_criteria": ["Generated readiness from a conflicting intake verdict blocks pilot start.", "Conflict summary record count matches blocker_conflicts.", "CI validates the generated negative path if workflow editing is safe."],
       "critique_required": true,
       "dependencies": ["RQ-0005"]
     }
