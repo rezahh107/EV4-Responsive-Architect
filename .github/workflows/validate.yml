@@ -46,3 +46,6 @@ jobs:
             exit 1
           fi
           echo "Sample packet correctly rejected for submitted shadow mode"
+
+      - name: Run risk priority validation
+        run: python validation/e2e/run_risk_priority_check.py
