@@ -3,18 +3,18 @@
 ```yaml
 project: EV4 Responsive Architect
 version: 0.1.0-final-draft
-status: pilot_dry_run_execution_layer
+status: pilot_dry_run_sample_real_safety_hardened
 production_ready: false
 prompt_pack_release_ready: false
-current_branch: pilot-dry-run/v0.1-execution-record
+current_branch: dryrun-hardening-v1
 ```
 
 ## Current Phase
 
 ```yaml
 current_phase:
-  name: smart_home_connector_pilot_dry_run_execution
-  goal: prove that a submitted-like intake packet can pass intake validation, produce readiness, verify pilot manifest, and persist a pilot run record without claiming live Elementor validation
+  name: smart_home_connector_dry_run_sample_real_safety
+  goal: prevent sample submitted packets from being treated as real submitted evidence and persist traceable run records without claiming live Elementor validation
 ```
 
 ## Release Boundary
@@ -33,6 +33,7 @@ Allowed now:
 - pilot readiness gate with visible flags
 - persistent pilot readiness report
 - pilot dry-run execution record
+- sample-vs-real submitted packet safety checks
 ```
 
 Forbidden now:
@@ -45,15 +46,16 @@ Forbidden now:
 - live_render_validated claim
 - accessibility_passed claim
 - Playwright visual regression claim
+- treating sample submitted packet as real submitted evidence
 ```
 
 ## Immediate Backlog
 
 ```yaml
 must_do_next:
-  - merge pilot dry-run execution PR after CI passes
   - collect real smart-home connector evidence in Issue #8
-  - run dry-run engine against real submitted evidence packet
+  - create EVIDENCE_INTAKE_PACKET.submitted.json with packet_origin=real_issue_submission
+  - run submitted-shadow-mode only after sample marker and issue reference gates pass
   - start shadow-mode pilot only when readiness is ready or partial_ready_with_visible_flags
 ```
 
@@ -62,29 +64,9 @@ must_do_next:
 ```yaml
 contract_hardening:
   merged: true
-  hardened:
-    - MAIN_PIPELINE_HANDOFF_INPUT_CONTRACT
-    - ARCHITECTURE_MUTATION_VETO
-    - RESPONSIVE_EVIDENCE_CONTRACT
-    - REPAIR_OPTION_ANALYSIS
-    - ACCESSIBILITY_READING_ORDER_GATE
-    - CSS_SELECTOR_SAFETY
 
 schema_hardening:
   merged_to_main: true
-  hardened_or_added:
-    - ev4-responsive-stage-anchor.schema.json
-    - ev4-responsive-main-input.schema.json
-    - ev4-responsive-payload-identity.schema.json
-    - ev4-responsive-evidence-ingest.schema.json
-    - ev4-responsive-repair-option-analysis.schema.json
-    - ev4-responsive-repair-plan.schema.json
-    - ev4-responsive-accessibility-gate.schema.json
-    - ev4-responsive-css-selector-safety.schema.json
-  validator:
-    - schema syntax validation
-    - fixture pass/fail validation
-    - CSS selector semantic checks
 
 E2E_001:
   status: merged
@@ -98,6 +80,9 @@ evidence_intake_validation:
     - privacy review
     - breakpoint claim scope
     - desktop must-not-regress minimums
+    - packet origin
+    - issue reference policy
+    - sample marker policy
 
 pilot_readiness_engine:
   status: merged
@@ -110,16 +95,18 @@ pilot_readiness_engine:
     - pilot start authorization scope
 
 pilot_dry_run_execution:
-  status: in_progress
+  status: hardened
   validates:
-    - sample submitted packet
+    - sample submitted packet dry-run only
+    - blocked packet negative path
+    - sample packet rejection in submitted-shadow-mode
     - readiness report generation
     - pilot manifest check
-    - pilot run record schema
-    - dry-run boundary claims
+    - traceable pilot run record schema
+    - generated output policy
 
 smart_home_connector_pilot:
-  status: dry_run_layer_in_progress
+  status: waiting_for_real_evidence
   scope: shadow_mode_manual
   production_ready: false
 ```
