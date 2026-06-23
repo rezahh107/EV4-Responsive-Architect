@@ -24,7 +24,7 @@
       "task_id": "RQ-0001",
       "cycle_position": 1,
       "task_type": "repo_sync",
-      "status": "in_progress",
+      "status": "completed",
       "title": "Sync STATUS and Issue 8",
       "objective": "Update STATUS.md and Issue #8 to reflect P0 semantic gate completion, current schema versions, and real evidence requirements.",
       "allowed_work": [
@@ -46,13 +46,19 @@
       ],
       "critique_required": true,
       "dependencies": [],
-      "run_notes": [
-        {
-          "run_id": "automation-run-001",
-          "status": "in_progress",
-          "summary": "STATUS.md synced on branch rq-0001-status-issue-sync; Issue #8 sync pending."
-        }
-      ]
+      "completion": {
+        "run_id": "automation-run-001",
+        "status": "completed",
+        "artifacts": [
+          "STATUS.md",
+          "Issue #8 comment 4780297476"
+        ],
+        "critique_findings": [
+          "Initial branch update left RQ-0001/status_issue_sync as in_progress after Issue #8 comment was posted.",
+          "Small in-scope correction applied by marking RQ-0001 and status_issue_sync completed."
+        ],
+        "boundary": "No real evidence was claimed, no real pilot was started, and Issue #8 remains open."
+      }
     },
     {
       "task_id": "RQ-0002",
