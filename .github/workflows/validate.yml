@@ -63,5 +63,8 @@ jobs:
       - name: Run P0 system hardening validation
         run: python validation/e2e/run_p0_system_hardening_check.py
 
+      - name: Run issue-to-packet bridge semantic validation
+        run: python validation/e2e/run_issue_to_packet_bridge_check.py
+
       - name: Run rolling queue validation
         run: python validation/e2e/run_rolling_queue_check.py
