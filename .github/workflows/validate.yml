@@ -35,3 +35,14 @@ jobs:
 
       - name: Run pilot dry-run validation
         run: python validation/e2e/run_pilot_dry_run_check.py
+
+      - name: Run blocked dry-run negative path
+        run: python validation/e2e/run_pilot_dry_run_check.py --packet validation/fixtures/valid/evidence_intake_packet.blocked.valid.json --expect-blocked
+
+      - name: Reject sample packet in submitted shadow mode
+        run: |
+          if python validation/e2e/run_pilot_dry_run_check.py --submitted-shadow-mode; then
+            echo "Sample packet was unexpectedly accepted for submitted shadow mode"
+            exit 1
+          fi
+          echo "Sample packet correctly rejected for submitted shadow mode"

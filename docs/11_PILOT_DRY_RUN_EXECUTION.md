@@ -37,6 +37,36 @@ examples/smart-home-connector/readiness/PILOT_READINESS_REPORT.dry-run.generated
 examples/smart-home-connector/runs/PILOT_RUN_RECORD.dry-run.generated.json
 ```
 
+Generated runtime outputs must end with `.generated.json` and must not be committed. Committed examples must use `.example.json` or fixture names.
+
+## Sample vs real packet boundary
+
+The sample packet is only allowed for dry-run contract validation.
+
+```yaml
+sample_packet_rules:
+  packet_origin: sample_contract_fixture
+  allowed_scope: sample_dry_run_only
+  real_pilot_allowed_to_start: false
+  issue_reference: null
+  submitted_shadow_mode_allowed: false
+```
+
+A real submitted packet must come from Issue #8 or an equivalent tracked issue and must carry:
+
+```yaml
+real_packet_preflight:
+  packet_origin: real_issue_submission
+  issue_reference: required
+  packet_id: must_not_contain_SAMPLE_or_sample
+  source_ref: must_not_contain_sample
+  payload_identity_hash: must_not_be_placeholder
+  evidence_file_names: must_not_contain_sample_or_.sample
+  privacy_review: fully_acknowledged
+  allowed_scope: real_shadow_mode_only
+  real_pilot_allowed_to_start: true
+```
+
 ## Real submitted packet mode
 
 Use this only after Issue #8 contains real evidence and a submitted packet:
@@ -47,6 +77,37 @@ python validation/e2e/run_pilot_dry_run_check.py \
   --readiness-out examples/smart-home-connector/readiness/PILOT_READINESS_REPORT.generated.json \
   --run-record-out examples/smart-home-connector/runs/PILOT_RUN_RECORD.generated.json \
   --submitted-shadow-mode
+```
+
+The command fails if the packet still carries sample markers, placeholder hashes, missing issue reference, or non-real packet origin.
+
+## Blocked packet negative path
+
+Use this to prove that blocked evidence does not create an authorized run record:
+
+```bash
+python validation/e2e/run_pilot_dry_run_check.py \
+  --packet validation/fixtures/valid/evidence_intake_packet.blocked.valid.json \
+  --expect-blocked
+```
+
+## Run record traceability
+
+A generated run record must carry:
+
+```yaml
+traceability_required:
+  source_packet_sha256: required
+  source_readiness_sha256: required
+  generated_at_utc: required
+  generator_command: required
+  git_ref_or_commit: required
+  manifest_check_result: required
+  generated_artifacts:
+    - readiness_report hash
+    - run_record self_hash_deferred marker
+    - pilot_manifest hash
+    - source_packet hash
 ```
 
 ## Required boundary
