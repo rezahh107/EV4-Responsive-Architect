@@ -1,0 +1,28 @@
+{
+  "$schema_file": "ev4-responsive-css-selector-safety.schema.json",
+  "schema": "ev4-responsive-css-selector-safety@1.0.0",
+  "gate_status": "pass_with_visible_risk",
+  "patch_id": "RSP-CSS-ATTR-001",
+  "repair_step_ids": ["RSP-STEP-ATTR-001"],
+  "failure_ids": ["RSP-F-ATTR-001"],
+  "target_node_id": "smart-home__card-body",
+  "project_root_class": "ev4-smart-home",
+  "target_node_class": "ev4-card-body",
+  "selector": "  .ev4-smart-home   .ev4-card-body[href=\"#details\"] [class*=\"cta\"]  ",
+  "media_query": "@media (max-width: 767px)",
+  "breakpoint_source": "user_declaration",
+  "breakpoint_source_confidence": "medium",
+  "declarations": [
+    {
+      "property": "gap",
+      "value": "var(--ev4-space-sm)",
+      "value_source": "design_system_variable"
+    }
+  ],
+  "specificity_assessment": "likely_safe",
+  "uses_important": false,
+  "important_justification": null,
+  "rollback_css": "Remove RSP-CSS-ATTR-001.",
+  "validation_required": ["mobile_frontend_screenshot_check", "desktop_baseline_recheck"],
+  "production_ready_claim_allowed": false
+}
