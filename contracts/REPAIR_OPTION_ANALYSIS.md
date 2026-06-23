@@ -12,7 +12,7 @@ repair_option_analysis:
   for_each_failure:
     failure_id:
     options:
-      - option_id
+      - option_id:
         repair_owner:
         repair_type:
         native_control_possible:
