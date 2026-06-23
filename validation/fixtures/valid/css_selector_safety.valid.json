@@ -1,0 +1,28 @@
+{
+  "$schema_file": "ev4-responsive-css-selector-safety.schema.json",
+  "schema": "ev4-responsive-css-selector-safety@1.0.0",
+  "gate_status": "pass_with_visible_risk",
+  "patch_id": "RSP-CSS-001",
+  "repair_step_ids": ["RSP-STEP-007"],
+  "failure_ids": ["RSP-F-004"],
+  "target_node_id": "smart-home__connector-layer",
+  "project_root_class": "ev4-smart-home",
+  "target_node_class": "ev4-smart-home__connector-layer",
+  "selector": ".ev4-smart-home .ev4-smart-home__connector-layer",
+  "media_query": "@media (max-width: 767px)",
+  "breakpoint_source": "user_declaration",
+  "breakpoint_source_confidence": "medium",
+  "declarations": [
+    {
+      "property": "display",
+      "value": "none",
+      "value_source": "relative_adjustment"
+    }
+  ],
+  "specificity_assessment": "likely_safe",
+  "uses_important": false,
+  "important_justification": null,
+  "rollback_css": "Remove RSP-CSS-001.",
+  "validation_required": ["mobile_frontend_screenshot_check", "desktop_baseline_recheck"],
+  "production_ready_claim_allowed": false
+}
