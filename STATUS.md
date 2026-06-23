@@ -99,7 +99,7 @@ rolling_queue_controller: done
 status_issue_sync: done
 issue_packet_bridge: done
 readiness_conflict_summary: done
-automation_reliability_rules: pending_pr_merge
+automation_reliability_rules: done
 ```
 
 ## Automation Reliability State
