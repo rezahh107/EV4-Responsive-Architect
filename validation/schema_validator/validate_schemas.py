@@ -40,6 +40,8 @@ def validate_schema_files() -> dict[str, Any]:
 
 def validate_fixture(path: Path, schemas: dict[str, Any], should_pass: bool) -> None:
     payload = load_json(path)
+    if not isinstance(payload, dict):
+        raise RuntimeError(f"Fixture {path} must be a JSON object")
     schema_file = payload.pop("$schema_file", None)
     if not schema_file:
         raise RuntimeError(f"Fixture {path} is missing $schema_file")
