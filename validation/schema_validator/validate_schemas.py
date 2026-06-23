@@ -48,7 +48,7 @@ def validate_fixture(path: Path, schemas: dict[str, Any], should_pass: bool) -> 
     if schema_file not in schemas:
         raise RuntimeError(f"Fixture {path} references missing schema {schema_file}")
     validator = Draft202012Validator(schemas[schema_file])
-    errors = sorted(validator.iter_errors(payload), key=lambda e: list(e.path))
+    errors = sorted(validator.iter_errors(payload), key=lambda e: [str(p) for p in e.path])
     if should_pass and errors:
         raise AssertionError(f"Expected {path} to pass, got: {errors[0].message}")
     if not should_pass and not errors:
