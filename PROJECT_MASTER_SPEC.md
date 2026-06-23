@@ -1,7 +1,7 @@
 # EV4 Responsive Architect — Master Project Specification
 
-Version: 0.1.0-final-draft  
-Status: repository_initialization_ready  
+Version: 0.2.0-current-system-sync  
+Status: risk_priority_engine_hardened  
 Production status: not_production_ready  
 Language: Persian reports, English technical identifiers  
 Primary owner: Reza  
@@ -13,7 +13,7 @@ Execution model: LLM-guided, audit-first, builder-in-the-loop, validation-ready,
 
 ## 0. Executive Summary
 
-`EV4 Responsive Architect` is a responsive repair, validation, and handoff system built on top of the completed `EV4 Architect` section architecture pipeline.
+`EV4 Responsive Architect` is the responsive repair, validation, and handoff system that runs after a section has already passed through the main `EV4 Architect` architecture pipeline.
 
 `EV4 Architect` answers:
 
@@ -34,22 +34,77 @@ Responsive Architect may repair responsive behavior.
 Responsive Architect may not silently re-architect the section.
 ```
 
-If a responsive failure cannot be repaired without changing the approved architecture, the system must stop and route back to the earliest owning EV4 Architect stage.
+If a responsive failure cannot be repaired without changing the approved architecture, the system must stop and route back to the owning EV4 Architect stage.
 
 ---
 
-## 1. Purpose
+## 1. Current Repository State
+
+This master specification reflects the repository state after the following merged hardening layers:
+
+```yaml
+completed_layers:
+  contract_hardening:
+    status: merged
+    purpose: harden the main handoff, mutation veto, evidence, repair option, accessibility, and CSS selector contracts
+
+  schema_hardening:
+    status: merged_to_main
+    purpose: convert core payloads into machine-checkable JSON schemas with valid and invalid fixtures
+
+  E2E_001_textual_validation:
+    status: merged
+    purpose: validate the minimum textual payload chain from intake to repair and gates
+
+  smart_home_connector_pilot_package:
+    status: merged
+    purpose: provide shadow-mode pilot runbook, manifest, templates, and starter prompt
+
+  pilot_harness_hardening:
+    status: merged
+    purpose: validate pilot manifest, conditional stages, lite gates, placeholder policy, and output templates
+
+  evidence_intake_validation:
+    status: merged
+    purpose: turn human intake into a machine-checkable evidence intake packet
+
+  pilot_readiness_engine:
+    status: merged
+    purpose: emit persistent readiness reports for submitted packets with visible flags, blocking reasons, and authorization scope
+
+  pilot_dry_run_execution_layer:
+    status: merged
+    purpose: dry-run the chain from sample submitted packet to readiness report, manifest check, and pilot run record
+
+  sample_vs_real_safety_hardening:
+    status: merged
+    purpose: prevent sample packets from being treated as real submitted evidence
+
+  risk_priority_assessment_engine:
+    status: merged
+    purpose: validate and emit categorical risk-priority assessments without numeric scoring and without allowing gate override
+```
+
+The system is now ready to receive real smart-home connector evidence, but it is not production-ready and must not claim real Elementor validation until real runtime/export evidence exists.
+
+---
+
+## 2. Purpose
 
 The purpose of `EV4 Responsive Architect` is to provide a controlled, evidence-bound responsive repair workflow for Elementor V4 sections that have already passed through EV4 Architect.
 
 The project produces:
 
 ```text
+- evidence intake packets;
+- pilot readiness reports;
 - responsive audit reports;
 - responsive failure maps;
+- risk-priority assessments;
 - repair ownership routes;
 - repair option analysis;
-- atomic builder repair plans;
+- atomic Elementor repair plans;
+- builder repair checklists;
 - partial repair handoffs;
 - controlled responsive handoffs;
 - validation-ready state snapshots.
@@ -60,6 +115,8 @@ The project must not produce:
 ```text
 - hidden architecture changes;
 - unscoped CSS patches;
+- numeric readiness scores;
+- average scores used to override hard gates;
 - production-ready claims without real evidence;
 - exact breakpoint or pixel claims without verified source;
 - meaningful content flattened into image, SVG, or hard-coded HTML.
@@ -67,94 +124,7 @@ The project must not produce:
 
 ---
 
-## 2. Core Philosophy
-
-```text
-Evidence before decision.
-Input contract before diagnosis.
-Structure before styling.
-Meaningful content before decoration.
-Normal flow before absolute positioning.
-Inheritance before reclassification.
-Observation before diagnosis.
-Repair ownership before repair action.
-Option analysis before repair selection.
-Atomic repair before bulk repair.
-Rollback before handoff.
-Frontend validation before release claim.
-Partial truth before over-claiming.
-Programmatic validation before trusting model-generated schemas.
-State as Code before conversational memory.
-```
-
-Guiding sentence:
-
-```text
-Run only as much pipeline as the risk requires,
-but never less evidence than the claim requires.
-```
-
----
-
-## 3. Relationship to EV4 Architect
-
-`EV4 Responsive Architect` is an add-on system in the EV4 ecosystem. It depends on completed EV4 Architect payloads and must respect the selected architecture unless a routed partial rerun explicitly returns to the correct EV4 stage.
-
-Required main pipeline inputs:
-
-```yaml
-required_main_pipeline_inputs:
-  - Recommendation_Payload
-  - Build_Tree_Payload
-  - Implementation_Payload
-  - Final_Audit_Payload
-  - Handoff_Payload
-  - EV4_DEBUG_TRACE
-  - selected_candidate_id
-  - selected_candidate_family
-  - structure_tree
-  - naming_map
-  - class_map
-  - overlay_decoration_map
-  - content_editability_map
-  - responsive_structure_contract
-  - asset_accessibility_map
-  - carried_unknowns
-  - audit_flags
-  - repair_routes
-```
-
-Locked facts:
-
-```yaml
-locked_main_pipeline_facts:
-  - selected_candidate_id
-  - selected_candidate_family
-  - build_tree_node_identity
-  - meaningful_content_classification
-  - decorative_content_classification
-  - overlay_decoration_map
-  - responsive_structure_contract
-  - content_editability_map
-  - carried_unknowns
-  - audit_flags
-```
-
-Forbidden main-pipeline reinterpretation:
-
-```text
-- re-score architecture candidates;
-- re-run /recommend;
-- select a different architecture;
-- reinterpret the original screenshot as new architecture evidence;
-- reclassify decorative elements as meaningful;
-- reclassify meaningful elements as decorative;
-- convert a responsive repair into hidden build-tree mutation.
-```
-
----
-
-## 4. Non-Negotiable Boundaries
+## 3. Non-Negotiable Boundaries
 
 The system must not:
 
@@ -175,12 +145,15 @@ The system must not:
 - claim live Elementor rendering unless live rendering evidence exists;
 - claim export JSON or EDIS validation unless real export evidence exists;
 - claim exact pixel matching unless measured and validated;
-- claim production readiness without release-gate evidence.
+- claim accessibility pass unless accessibility validation evidence exists;
+- claim production readiness without release-gate evidence;
+- treat sample submitted packets as real submitted evidence;
+- use numeric score, average score, or readiness score to override any hard gate.
 ```
 
 ---
 
-## 5. Source-of-Truth Hierarchy
+## 4. Source-of-Truth Hierarchy
 
 ```yaml
 platform_capability_source_priority:
@@ -192,30 +165,34 @@ platform_capability_source_priority:
   6: model_inference
 
 current_implementation_state_priority:
-  1: latest_user_explicit_statement
-  2: latest_frontend_screenshot
-  3: latest_editor_screenshot
-  4: diagnostic_output
-  5: current_state_payload
-  6: older_notes_or_screenshots
+  1: real_submitted_evidence_packet
+  2: latest_user_explicit_statement
+  3: latest_frontend_screenshot
+  4: latest_editor_screenshot
+  5: diagnostic_output
+  6: current_state_payload
+  7: older_notes_or_screenshots
 
 responsive_repair_authority:
   1: Main_EV4_Build_Tree_Payload
   2: Main_EV4_Implementation_Payload
   3: Main_EV4_Handoff_Payload
   4: Main_EV4_Final_Audit_Payload
-  5: Desktop_Baseline_Lock
-  6: Breakpoint_Inventory_Lock
-  7: Breakpoint_Observation_Evidence
-  8: Responsive_Evidence_Ledger
-  9: Builder_Feedback_Loop_Evidence
+  5: Evidence_Intake_Packet
+  6: Pilot_Readiness_Report
+  7: Desktop_Baseline_Lock
+  8: Breakpoint_Inventory_Lock
+  9: Breakpoint_Observation_Evidence
+  10: Responsive_Evidence_Ledger
+  11: Risk_Priority_Assessment
+  12: Builder_Feedback_Loop_Evidence
 ```
 
 If sources conflict, the conflict must be reported before continuing.
 
 ---
 
-## 6. Evidence Labels
+## 5. Evidence Discipline
 
 Use this closed evidence set:
 
@@ -235,26 +212,46 @@ Rules:
 ```text
 ABSENT_EVIDENCE is not contradiction.
 CONTRADICTED_EVIDENCE is not unknown.
-NON_APPLICABLE is not a good score.
+NON_APPLICABLE is not a score.
 Unknowns must survive until explicitly resolved by named evidence.
 A screenshot may prove a visible symptom; it does not prove DOM, CSS cause, Elementor setting, exact breakpoint, or accessibility pass.
 ```
 
+Evidence items must carry quality and downstream-use limits:
+
+```yaml
+evidence_item_required_shape:
+  evidence_id:
+  evidence_type:
+  capture_source:
+  viewport:
+  viewport_width:
+  quality_level:
+  confidence_cap:
+  can_support:
+  cannot_support:
+  downstream_allowed_use:
+  known_limitations:
+```
+
 ---
 
-## 7. Project Architecture
+## 6. Repository Architecture
 
-The repository is organized around five layers:
+The repository is organized around these layers:
 
 ```text
 1. Human-readable contracts
 2. Machine-readable schemas
-3. Stage protocols
-4. State and validation tooling
-5. E2E and fixture evidence
+3. Stage and pilot protocols
+4. Validation tooling
+5. Valid and invalid fixtures
+6. Pilot examples and templates
+7. GitHub issue intake layer
+8. CI workflow enforcement
 ```
 
-Recommended top-level directories:
+Top-level directories:
 
 ```text
 docs/
@@ -266,20 +263,19 @@ validation/
 examples/
 prompts/
 .github/workflows/
+.github/ISSUE_TEMPLATE/
 ```
 
 ---
 
-## 8. Execution Model
-
-The contract model keeps all stages available. The execution model may choose shorter paths based on risk.
+## 7. Execution Modes
 
 ```yaml
 execution_modes:
   full_protocol_mode:
     use_when:
       - formal audit
-      - E2E validation
+      - real evidence pilot
       - complex responsive failure
       - cascade risk is high
       - architecture mutation veto is possible
@@ -312,6 +308,19 @@ execution_modes:
       - exact node and control path
       - confirmation sentence after checkpoint
       - rollback before next step
+
+  shadow_mode_manual_pilot:
+    use_when:
+      - real evidence is available but no live Elementor automation is available
+      - the system must produce a controlled repair report without release claims
+
+  sample_submitted_packet_dry_run:
+    use_when:
+      - proving artifact chain and CI behavior before real evidence exists
+    forbidden_use:
+      - real pilot authorization
+      - production or release claims
+      - treating sample evidence as submitted project evidence
 ```
 
 Fast-path guard:
@@ -332,9 +341,9 @@ triage_fast_path_guard:
 
 ---
 
-## 9. Responsive Pipeline
+## 8. Responsive Pipeline
 
-Full stage order:
+Full protocol stage order remains:
 
 ```text
 /main-pipeline-handoff-ingest
@@ -385,684 +394,522 @@ conditional_stages:
     runs_when:
       - repair_iteration_count_greater_than_1
       - builder_feedback_introduces_new_failure
-      - repeated repair_attempts_occur
+      - repeated_repair_attempts_occur
 ```
 
 ---
 
-## 10. Key Stage Contracts
+## 9. Current Machine-Checked Chain
 
-### 10.1 `/main-pipeline-handoff-ingest`
+The current machine-checked chain is:
 
-Purpose: load, verify, normalize, and hash main EV4 handoff payloads before responsive work begins.
-
-Output:
-
-```yaml
-Main_Pipeline_Handoff_Ingest_Payload:
-  schema: ev4-responsive-main-input@1.0.0
-  selected_candidate_id:
-  selected_candidate_family:
-  payload_identity_hashes:
-  inherited_structure_tree:
-  inherited_class_map:
-  inherited_content_editability_map:
-  inherited_overlay_decoration_map:
-  inherited_responsive_structure_contract:
-  inherited_unknowns:
-  inherited_audit_flags:
-  inherited_repair_routes:
-  input_authorization_status:
+```text
+Schema Suite
+→ E2E-001 Textual Fixture Validation
+→ Pilot Manifest Check
+→ Evidence Intake Packet Validation
+→ Pilot Readiness Report Validation
+→ Pilot Dry-Run Execution Validation
+→ Risk-Priority Assessment Validation
 ```
 
-Forbidden: redesign, responsive diagnosis, new architecture evidence, payload identity changes.
+Current CI commands:
 
-### 10.2 `/responsive-evidence-ingest-ledger`
-
-Purpose: record raw input evidence before deriving observations.
-
-Evidence quality levels:
-
-```yaml
-evidence_quality_levels:
-  - L1_static_visual_only
-  - L2_frontend_visual_with_viewport
-  - L3_resize_sweep_or_video
-  - L4_dom_or_export_structure
-  - L5_live_render_plus_dom_plus_visual
+```bash
+python validation/schema_validator/validate_schemas.py
+python validation/e2e/run_e2e_001.py
+python validation/e2e/run_pilot_manifest_check.py
+python validation/e2e/run_evidence_intake_check.py
+python validation/e2e/run_pilot_readiness_check.py
+python validation/e2e/run_pilot_dry_run_check.py
+python validation/e2e/run_risk_priority_check.py
 ```
 
-A raw screenshot may support visible symptoms, not exact cause or release claims.
+Required negative paths include:
 
-### 10.3 `/breakpoint-inventory-lock`
-
-Purpose: lock actual project breakpoints before observation and repair planning.
-
-```yaml
-source_priority:
-  1: live_elementor_project_settings_or_export_json
-  2: user_declaration
-  3: existing_builder_context_or_editor_screenshot
-  4: build_tree_responsive_contract
-  5: elementor_default_fallback_with_unverified_label
+```text
+- invalid JSON schema payloads must fail;
+- invalid CSS selector safety payloads must fail;
+- sample packet in submitted-shadow-mode must fail;
+- blocked intake packet must not produce authorized run record;
+- numeric score fields must fail;
+- hard gate failure with ready verdict must fail;
+- blocker failure with ready verdict must fail;
+- unknown evidence or failure refs must fail;
+- high repair risk without mitigation must fail.
 ```
 
-Fallback may observe and produce controlled repair with visible flags, but cannot support release-ready claims.
+---
 
-### 10.4 `/responsive-failure-map`
-
-Closed failure taxonomy:
+## 10. Active Schema Inventory
 
 ```yaml
-failure_taxonomy:
-  - overflow_x
-  - overflow_y
-  - collision
-  - clipping
-  - wrapping_break
-  - unreadable_text
-  - bad_visual_order
-  - bad_dom_order_risk
-  - tap_target_risk
-  - overlay_escape
-  - connector_noise
-  - connector_collision
-  - visual_core_scale_failure
-  - asset_aspect_ratio_failure
-  - duplicate_content_risk
-  - hidden_meaningful_content
-  - spacing_collapse
-  - excessive_blank_space
-  - z_index_overlap
-  - other_requires_taxonomy_extension
+active_schemas:
+  ev4-responsive-stage-anchor:
+    purpose: stage transition authorization
+
+  ev4-responsive-main-input:
+    purpose: main EV4 handoff normalization and authorization
+
+  ev4-responsive-payload-identity:
+    purpose: payload hash and source identity tracking
+
+  ev4-responsive-evidence-ingest:
+    purpose: raw evidence ledger payloads
+
+  ev4-responsive-evidence-intake-packet:
+    purpose: submitted evidence packet for real pilot intake
+
+  ev4-responsive-pilot-manifest:
+    purpose: pilot sequence, files, conditional stages, lite gates, and stop conditions
+
+  ev4-responsive-pilot-readiness:
+    purpose: readiness verdict, visible flags, blocking reasons, validation boundary, and pilot authorization
+
+  ev4-responsive-pilot-run-record:
+    purpose: dry-run or submitted shadow-mode run record with hashes and artifact traceability
+
+  ev4-responsive-repair-option-analysis:
+    purpose: candidate repair option comparison, rejection reasons, and selection status
+
+  ev4-responsive-repair-plan:
+    purpose: atomic repair plan and rollback-safe builder steps
+
+  ev4-responsive-css-selector-safety:
+    purpose: scoped CSS selector safety and semantic selector checks
+
+  ev4-responsive-accessibility-gate:
+    purpose: accessibility reading-order and visibility gate
+
+  ev4-responsive-risk-priority-assessment:
+    purpose: categorical risk, priority, confidence, hard-gate, and mitigation assessment without numeric scoring
 ```
 
-### 10.5 `/repair-option-analysis`
-
-Purpose: analyze possible repair options before selecting a repair bundle.
-
-Required for each eligible failure:
+All object schemas should prefer:
 
 ```yaml
-repair_option_analysis:
-  for_each_failure:
-    failure_id:
-    options:
-      - option_id:
-        repair_owner:
-        repair_type:
-        native_control_possible:
-        scoped_css_needed:
-        desktop_regression_risk:
-        cascade_risk:
-        accessibility_risk:
-        evidence_support:
-        rejected_reason_if_not_selected:
-        verification_required:
+schema_hardening_defaults:
+  additionalProperties: false
+  explicit_schema_discriminator: required
+  closed_enums_for_statuses: required
+  production_claims_forbidden_without_evidence: required
+  generated_report_traceability: required_where_applicable
 ```
 
-Forbidden: selection without option ledger, CSS option before native option is evaluated.
+---
 
-### 10.6 `/responsive-repair-plan`
+## 11. Evidence Intake Contract
 
-Purpose: produce atomic, reversible builder steps for selected failures only.
+A real responsive pilot must begin with a machine-checkable evidence intake packet.
 
-Each step requires:
+Minimum required evidence:
 
 ```yaml
-repair_atomic_step:
+required_real_evidence_packet:
+  selected_candidate_id: required
+  main_ev4_handoff: required
+  desktop_baseline: required
+  tablet_evidence: required
+  mobile_evidence: required
+  breakpoint_inventory: required_or_flagged
+  privacy_review: required
+  packet_origin: real_issue_submission
+  issue_reference: required
+```
+
+Sample packet safety:
+
+```yaml
+sample_packet_rules:
+  packet_origin: sample_contract_fixture
+  allowed_scope: sample_dry_run_only
+  real_pilot_allowed_to_start: false
+  may_run_submitted_shadow_mode: false
+  sample_markers_must_block_real_mode:
+    - SAMPLE in packet_id
+    - .sample in file names
+    - sample in source refs
+    - sha256-sample-placeholder
+```
+
+Real submitted mode preflight:
+
+```yaml
+real_submitted_preflight:
+  packet_origin: real_issue_submission
+  issue_reference: required
+  packet_id_must_not_contain_sample_marker: true
+  source_refs_must_not_contain_sample_marker: true
+  payload_identity_hash_must_not_be_placeholder: true
+  evidence_file_names_must_not_contain_sample_marker: true
+  privacy_review_acknowledged: true
+  real_pilot_allowed_to_start: true
+  allowed_scope: real_shadow_mode_only
+```
+
+---
+
+## 12. Pilot Readiness Contract
+
+Pilot readiness produces one of these statuses:
+
+```text
+ready_for_shadow_mode_pilot
+partial_ready_with_visible_flags
+blocked_missing_evidence
+blocked_conflicting_evidence
+blocked_privacy_review_missing
+blocked_schema_or_semantic_failure
+```
+
+Readiness must include:
+
+```yaml
+pilot_readiness_report_required_parts:
+  readiness_status:
+  visible_flags:
+  blocking_reasons:
+  required_next_action:
+  validation_boundary:
+  pilot_start_authorization:
+```
+
+Rules:
+
+```text
+ready_for_shadow_mode_pilot cannot have blocking_reasons.
+partial_ready_with_visible_flags must have at least one visible flag and no blocking reasons.
+blocked statuses must have at least one blocking reason.
+Pilot authorization scope must be shadow_mode_only, shadow_mode_only_with_visible_flags, or not_authorized.
+Production, release, live render, export, accessibility pass, and Playwright claims remain false without real evidence.
+```
+
+---
+
+## 13. Pilot Run Record Contract
+
+A pilot run record links packet, readiness report, manifest check, and generated artifacts.
+
+Required traceability:
+
+```yaml
+pilot_run_record_traceability:
+  source_packet_sha256: required
+  source_readiness_sha256: required
+  generated_at_utc: required
+  generator_command: required
+  git_ref_or_commit: required
+  manifest_check_result: required
+  generated_artifacts:
+    - artifact_path
+    - artifact_type
+    - status
+    - artifact_sha256
+```
+
+Runtime generated files must use `.generated.json` and must not be treated as committed examples.
+
+---
+
+## 14. Risk & Priority Assessment Contract
+
+This project must not use numeric scoring. It uses categorical risk, gate, priority, and verdict logic.
+
+Forbidden:
+
+```text
+score
+numeric_score
+responsive_score
+readiness_score
+average_score
+numeric_score_claimed
+average_score_used_to_override_gate
+```
+
+Required dimensions:
+
+```yaml
+risk_priority_dimensions:
+  hard_gates:
+    status: pass | fail | not_triggered
+    blocking_if_failed: true | false
+    gate_weight: hard_blocker | soft_warning
+
+  failure_items:
+    severity: blocker | high | medium | minor | note
+    priority: P0 | P1 | P2 | P3
+    repair_urgency: immediate | next | later | monitor
+    evidence_confidence: high | medium | low
+    selected_for_repair: true | false
+    owner_route:
+
+  repair_risks:
+    risk_level: high | medium | low
+    desktop_regression_risk: high | medium | low
+    accessibility_risk: high | medium | low | not_triggered
+    architecture_mutation_risk: high | medium | low
+    mitigation_checks:
+
+  aggregate_verdict:
+    status:
+    required_next_action:
+```
+
+Semantic rules:
+
+```text
+Hard gate failure cannot produce ready verdict.
+Blocker failure cannot produce ready verdict.
+Blocker failure must be P0 and immediate.
+Blocker failure cannot route to no_action_note.
+High architecture mutation risk must route back to main EV4 pipeline.
+Low-confidence failure cannot be selected for repair and must request evidence.
+Repair risks must reference real failure IDs.
+Failure evidence refs must reference known evidence IDs.
+High repair risk requires rollback_plan_required.
+High desktop regression risk requires desktop_recheck_each_step.
+High accessibility risk requires accessibility_gate_required.
+High architecture mutation repair risk requires route_back_to_main_pipeline_required.
+Sample packet assessments cannot be marked as submitted evidence assessments.
+```
+
+---
+
+## 15. CSS Selector Safety Contract
+
+Scoped Custom CSS is allowed only when practical and controlled.
+
+CSS safety rules:
+
+```text
+Root section class required.
+Target class required.
+No unscoped global selector.
+No real ID selector unless explicitly justified.
+No universal selector unless explicitly justified.
+No broad html/body selector.
+No unjustified !important.
+No production-ready claim from CSS safety alone.
+```
+
+Selector parser must not false-positive on:
+
+```text
+- class names containing body/html;
+- attribute selectors containing # or *;
+- literal characters inside attribute values.
+```
+
+---
+
+## 16. Accessibility Reading-Order Contract
+
+Accessibility gate runs when order, visibility, or meaningful-content relationships change.
+
+Gate outputs:
+
+```yaml
+accessibility_gate_required_parts:
+  gate_status:
+  applies_because:
+  affected_items:
+  checks:
+  risk_summary:
+  required_follow_up:
+```
+
+Forbidden:
+
+```text
+accessibility_passed claim without validation evidence
+hiding meaningful content on mobile
+visual-only order changes treated as DOM reading-order pass
+```
+
+---
+
+## 17. Builder Repair Contract
+
+Builder-facing repair steps must be atomic and reversible.
+
+Required step shape:
+
+```yaml
+builder_repair_step:
   step_id:
-  failure_id:
-  selected_option_id:
-  target_node_id:
-  target_structure_label:
-  active_class_name:
-  viewport_scope:
-  single_repair_intent:
-  elementor_control_path:
-  before_state_description:
-  expected_after_state:
-  rollback_action:
-  desktop_check_required:
-  cascade_check_required:
+  target_node:
+  viewport:
+  precheck:
+    target_node_found:
+    active_class_present:
+    viewport_selected:
+    current_value_recorded:
+  action:
+    elementor_control_path:
+    value_policy:
+  postcheck:
+    expected_after_state_observed:
+    desktop_regression_check_done:
+    affected_viewport_rechecked:
+  rollback:
+    rollback_action:
+    rollback_verified:
   validation_evidence_required:
 ```
 
----
-
-## 11. Architecture Mutation Veto
-
-`Architecture Mutation Veto` is a global gate. Every stage after `/responsive-failure-map` must check it.
-
-Triggers:
-
-```yaml
-architecture_mutation_veto_triggers:
-  - selected_candidate_identity_change
-  - selected_candidate_family_change
-  - meaningful_content_must_be_hidden_to_fit
-  - decorative_element_must_become_meaningful
-  - connector_layer_requires_semantic_role_change
-  - normal_flow_content_requires_absolute_positioning_without_prior_approval
-  - tree_node_identity_change_required
-  - major_wrapper_addition_or_removal_required
-  - duplicate_mobile_section_required
-  - Build_Tree_Payload_contradiction
-  - Implementation_Payload_contradiction
-  - Handoff_Payload_contradiction
-```
-
-Action:
-
-```yaml
-architecture_mutation_veto_action:
-  - stop_current_responsive_stage
-  - emit_architecture_mutation_veto_report
-  - preserve_all_responsive_evidence
-  - route_to_earliest_owning_main_pipeline_stage
-```
-
-Forbidden:
+Rules:
 
 ```text
-No self-authorized build-tree change.
-No silent selected-candidate change.
-No hiding architecture mutation inside CSS.
-No proceeding to handoff after veto.
+One atomic action per step.
+Desktop must be checked after risky viewport changes.
+Rollback must be known before execution.
+No bulk repair without convergence gate.
+No CSS patch before CSS selector safety check.
 ```
 
 ---
 
-## 12. Forbidden Inference Rule
+## 18. Smart-Home Connector Pilot
+
+The current pilot target is the smart-home connector section.
+
+Pilot status:
+
+```yaml
+smart_home_connector_pilot:
+  package: merged
+  harness: merged
+  intake_issue: Issue #8
+  evidence_status: pending_real_evidence
+  dry_run: available
+  real_shadow_mode: blocked_until_real_submitted_packet
+```
+
+Pilot files include:
 
 ```text
-A screenshot can show a symptom.
-A screenshot alone cannot prove the technical cause.
+examples/smart-home-connector/PILOT_CASE_V0_1.md
+examples/smart-home-connector/PILOT_MANIFEST.json
+examples/smart-home-connector/evidence/EVIDENCE_MANIFEST.template.json
+examples/smart-home-connector/intake/SMART_HOME_EVIDENCE_INTAKE_CHECKLIST.md
+examples/smart-home-connector/intake/EVIDENCE_INTAKE_PACKET.sample-submitted.json
+examples/smart-home-connector/readiness/PILOT_READINESS_REPORT.template.json
+examples/smart-home-connector/runs/PILOT_RUN_RECORD.example.json
+examples/smart-home-connector/templates/
+examples/smart-home-connector/builder/
+examples/smart-home-connector/audits/
 ```
 
-Forbidden from static screenshot only:
-
-```yaml
-forbidden_from_static_screenshot_only:
-  - exact_dom_order
-  - exact_css_property
-  - exact_elementor_control
-  - exact_breakpoint_value
-  - plugin_dependency
-  - export_behavior
-  - accessibility_pass
-  - production_ready_state
-```
-
-If cause is unclear:
-
-```yaml
-required_if_cause_unclear:
-  cause_status: unknown
-  cause_candidates_allowed: true
-  repair_must_be_conditional: true
-```
-
----
-
-## 13. Elementor Control Path Format
-
-Builder instructions must use Elementor-native UI language.
-
-Required shape:
-
-```yaml
-elementor_control_path:
-  schema: ev4-elementor-control-path@1.0.0
-  target_node_id:
-  structure_label:
-  class_name:
-  editor_area:
-  control_group:
-  control_name:
-  viewport_scope:
-  value_policy:
-  value_source:
-  fallback_semantic_instruction:
-  rollback_instruction:
-```
-
-Builder instruction must include node, active class, viewport, tab/panel, control, value policy, validation check, and rollback.
-
----
-
-## 14. Context Budget and Truncation Ban
-
-Compression is allowed. Blind truncation is forbidden.
-
-Forbidden:
-
-```yaml
-context_compression_forbidden:
-  - blind_truncation
-  - drop_oldest_messages_strategy
-  - remove_stage_anchor_fields
-  - remove_unknowns_to_save_space
-  - remove_veto_triggers
-  - remove_payload_hashes
-  - remove_repair_routes
-```
-
-Must preserve exactly:
-
-```yaml
-must_preserve_exactly:
-  - selected_candidate_id
-  - payload_identity_hashes
-  - breakpoint_inventory_lock
-  - desktop_baseline_lock
-  - architecture_mutation_veto_state
-  - unknown_budget_gate_state
-  - repair_scope_freeze
-  - partial_repair_state
-```
-
----
-
-## 15. Payload Identity Hashing
-
-Every payload must have a stable identity record.
-
-```yaml
-payload_identity:
-  schema: ev4-responsive-payload-identity@1.0.0
-  payload_id:
-  schema_version:
-  source_stage:
-  content_hash:
-  created_at:
-  supersedes:
-  depends_on:
-  source_files_or_evidence_ids:
-```
-
-If an upstream payload hash changes:
-
-```yaml
-if_upstream_payload_hash_changes:
-  - mark_downstream_payloads_stale
-  - rerun_from_earliest_dependent_stage
-  - do_not_reuse_stale_handoff
-```
-
----
-
-## 16. State as Code
-
-Authoritative state should be versioned JSON in Git. SQLite may be used only as an optional index.
-
-```yaml
-state_strategy:
-  authoritative_state:
-    format: versioned_json_in_git
-    purpose:
-      - audit
-      - diff
-      - rollback
-      - CI validation
-      - convergence tracking
-
-  optional_index:
-    format: sqlite
-    purpose:
-      - fast_lookup
-      - local_querying
-      - evidence_registry_index
-    authoritative: false
-```
-
-Do not commit private production data or large binaries without artifact policy review.
-
----
-
-## 17. Programmatic Validation Strategy
-
-LLM-generated payloads must not be trusted as structurally valid solely because the LLM says they are valid.
-
-```yaml
-validation_responsibilities:
-  LLM:
-    - semantic reasoning
-    - architecture judgment
-    - evidence interpretation
-    - repair planning
-    - audit explanation
-
-  Programmatic_Validator:
-    - JSON Schema validation
-    - required field validation
-    - enum validation
-    - payload identity check
-    - schema version check
-    - anchor compatibility check
-    - duplicate ID detection
-    - forbidden field detection
-    - stale payload detection
-```
-
-Initial validator targets:
-
-```yaml
-validator_targets_v0_1:
-  - ev4-responsive-stage-anchor@1.0.0
-  - ev4-responsive-main-input@1.0.0
-  - ev4-responsive-breakpoint-inventory@1.0.0
-  - ev4-responsive-evidence-ingest@1.0.0
-  - ev4-responsive-repair-plan@1.0.0
-```
-
-Recommended tools:
+Real pilot cannot start until:
 
 ```text
-Python: jsonschema
-Node.js: ajv
-CI: GitHub Actions
+- Issue #8 contains real evidence;
+- EVIDENCE_INTAKE_PACKET.submitted.json exists;
+- packet_origin is real_issue_submission;
+- privacy review is acknowledged;
+- sample markers are absent;
+- readiness status is ready_for_shadow_mode_pilot or partial_ready_with_visible_flags;
+- pilot_start_authorization is not_authorized = false;
+- risk-priority assessment can be generated from real artifacts.
 ```
 
 ---
 
-## 18. Visual Regression Policy
+## 19. Release Boundary
 
-Visual regression is recommended for v0.1 and required for stable release claims.
-
-```yaml
-visual_regression_policy:
-  v0_1:
-    status: optional_recommended
-    use_for:
-      - manual_comparison
-      - before_after_desktop_regression_check
-      - pilot_evidence_review
-
-  v0_2:
-    status: recommended
-    use_for:
-      - E2E_002
-      - responsive_screenshot_set
-      - desktop_before_after_regression
-
-  stable_release:
-    status: required_for_release_claim
-    required_tools:
-      - Playwright_screenshot_capture
-      - baseline_screenshot_set
-      - diff_threshold_policy
-      - human_review_for_false_positives
-```
-
-Visual regression must not be the only validation source. It should be combined with breakpoint inventory, DOM/export evidence where available, builder feedback, accessibility checks, and scoped validation claims.
-
----
-
-## 19. Accessibility Reading Order Gate
-
-Runs when visual order changes, custom order is used, reverse direction is used, meaningful content visibility changes, or overlays interact with meaningful content.
-
-Required checks:
-
-```yaml
-accessibility_reading_order_gate:
-  schema: ev4-responsive-accessibility-gate@1.0.0
-  required_checks:
-    - meaningful_content_visibility_preserved
-    - source_order_risk_recorded
-    - keyboard_order_risk_recorded
-    - screen_reader_order_risk_recorded
-    - tap_target_risk_recorded
-    - focus_order_risk_recorded
-```
-
-Allowed outcomes: `pass`, `pass_with_visible_risk`, `fail_requires_repair`, `fail_requires_main_pipeline_rerun`.
-
----
-
-## 20. Severity Model
-
-Use this closed severity set:
-
-```yaml
-severity_levels:
-  blocker:
-    effect: must_stop_current_stage
-  high:
-    effect: must_halt_repair_selection_unless_explicitly_routed
-  medium:
-    effect: may_proceed_if_carried_forward_and_budget_allows
-  minor:
-    effect: may_proceed_with_visible_flag
-  note:
-    effect: informational_only
-```
-
-Do not use `major` as severity in this project. Use `high` instead.
-
----
-
-## 21. Handoff and Production Boundary
-
-Allowed handoff states:
-
-```yaml
-handoff_states:
-  clean_responsive_handoff:
-    allowed_when:
-      - final_status: pass
-      - no_medium_or_higher_flags
-      - unknowns_do_not_affect_responsive_repair
-
-  controlled_handoff_with_flags:
-    allowed_when:
-      - final_status: pass_with_minor_flags or pass_with_medium_flags
-      - flags_are_visible
-      - no_blocker_or_high_unresolved
-
-  partial_repair_handoff:
-    allowed_when:
-      - partial_repair_state_documented
-      - remaining_failures_are_explicit
-      - repair_routes_are_present
-
-  blocked_handoff:
-    required_when:
-      - blocker_exists
-      - high_unresolved_exists
-      - schema_mismatch_exists
-      - selected_candidate_identity_conflict_exists
-      - production_boundary_would_be_violated
-```
-
-The project must not claim `production_ready`, `release_ready`, `pixel_perfect`, `export_validated`, `live_render_validated`, or `accessibility_passed` unless evidence exists for the claim.
-
----
-
-## 22. Builder Interaction Policy
+Allowed now:
 
 ```text
-- Use small reversible steps.
-- Normally provide up to five small related actions per response in interactive builder mode.
-- Always identify selected element, active class, control path, viewport, and value source.
-- Do not combine unrelated structure, styling, responsive, CSS, and asset work in one step.
-- Ask for exact confirmation sentence after each checkpoint.
-- Do not proceed after unexpected desktop change.
-- Do not force full pipeline rerun for one local step failure.
-- Do not over-explain official documentation in builder-step responses unless requested.
+- controlled_builder_handoff
+- responsive_repair_plan
+- partial_repair_handoff
+- validation_ready_state
+- contract_validation_only fixtures
+- E2E-001 textual fixture validation
+- shadow-mode manual pilot package
+- machine-checkable evidence intake packet
+- pilot readiness gate with visible flags
+- persistent pilot readiness report
+- pilot dry-run execution record
+- sample-vs-real submitted packet safety checks
+- risk and priority rubric for repair planning
+- parameterized risk-priority assessment validation
+- generated risk-priority assessment report
 ```
 
-Example confirmation:
+Forbidden now:
 
 ```text
-Root and Relative Stage are created, classes applied without dots.
+- production_ready claim
+- release_ready claim
+- pixel_perfect claim
+- export_validated claim
+- live_render_validated claim
+- accessibility_passed claim
+- treating sample submitted packet as real submitted evidence
+- numeric score used as readiness evidence
+- average score used to override a hard gate
+- ready verdict while blocker failure exists
+- repair risk without required mitigation checks
 ```
 
 ---
 
-## 23. E2E and Validation Roadmap
-
-### E2E-001 — Textual Fixture Contract Validation
-
-Goal: validate prompt-pack and contract flow with controlled textual fixtures. Not sufficient for real screenshot validation, live Elementor rendering, export JSON validation, exact pixel matching, or production readiness.
-
-### E2E-002 — Real Builder Responsive Test
-
-Required evidence:
+## 20. Immediate Next Work
 
 ```yaml
-E2E_002_required_evidence:
-  - original_reference_screenshot
-  - completed_main_EV4_handoff
-  - desktop_baseline_frontend_screenshot
-  - breakpoint_inventory_lock
-  - tablet_frontend_screenshot
-  - mobile_frontend_screenshot
-  - builder_feedback_after_repair
-  - final_frontend_screenshots
-  - responsive_final_audit
+must_do_next:
+  - collect real smart-home connector evidence in Issue #8
+  - create EVIDENCE_INTAKE_PACKET.submitted.json with packet_origin=real_issue_submission
+  - run submitted-shadow-mode only after sample marker and issue reference gates pass
+  - start shadow-mode pilot only when readiness is ready or partial_ready_with_visible_flags
+  - generate risk-priority assessment only after readiness report and pilot run record exist
 ```
 
-Optional recommended evidence: Elementor export JSON, EDIS evidence, Playwright screenshot set, browser/device matrix, visual diff report.
-
-### E2E-003 — Export / Import / JSON Roundtrip
-
-Required evidence: Build_Tree_Payload, generated Elementor JSON skeleton, import test result, exported Elementor JSON after import, roundtrip comparison, live render screenshot, Playwright screenshot set.
-
----
-
-## 24. Pilot Case Plan
-
-Before building full automation, run a vertical-slice pilot.
+Optional hardening after real evidence begins:
 
 ```yaml
-pilot_case_v0_1:
-  section: smart_home_connector
-  mode: shadow_mode_manual
-
-  run_only:
-    - main-pipeline-handoff-ingest
-    - responsive-evidence-ingest-ledger
-    - desktop-baseline-lock
-    - breakpoint-inventory-lock
-    - breakpoint-observation
-    - responsive-failure-map
-    - failure-priority-ordering
-    - repair-ownership-routing
-    - repair-option-analysis
-    - responsive-repair-selection
-    - repair-scope-freeze
-    - responsive-repair-plan
-    - responsive-final-audit-lite
-
-  skip_for_pilot:
-    - full_schema_validator
-    - Playwright_automation
-    - multi_run_convergence
-    - full_handoff_export
-```
-
-Pilot success criteria:
-
-```yaml
-pilot_success_criteria:
-  - builder_can_follow_steps_without_extra_interpretation
-  - each_step_has_rollback
-  - desktop_regression_check_is_clear
-  - no_architecture_mutation_occurs
-  - unknowns_are_visible
-  - repair_option_analysis_prevents_premature_selection
+post_real_evidence_hardening:
+  - add submitted evidence fixtures derived from real Issue #8 packet with private data removed
+  - add pilot execution report template generated from real failure map
+  - add builder feedback loop fixture after first manual repair step
+  - add visual regression plan if Playwright screenshots become available
+  - add export JSON validation plan if Elementor export evidence becomes available
 ```
 
 ---
 
-## 25. Initial Milestone Checklist
+## 21. Handoff Rule
 
-```yaml
-milestone_v0_1_required:
-  docs:
-    - PROJECT_MASTER_SPEC.md
-    - STATUS.md
-    - README.md
-    - CHANGELOG.md
-    - docs/00_OVERVIEW.md
-    - docs/05_VALIDATION_ROADMAP.md
-    - docs/06_PILOT_CASE_PLAN.md
+Final responsive outputs must state their claim level.
 
-  contracts:
-    - MAIN_PIPELINE_HANDOFF_INPUT_CONTRACT
-    - ARCHITECTURE_MUTATION_VETO
-    - RESPONSIVE_EVIDENCE_CONTRACT
-    - FORBIDDEN_INFERENCE_RULE
-    - REPAIR_TRIAGE_ROUTING
-    - DESKTOP_BASELINE_LOCK
-    - BREAKPOINT_INVENTORY_LOCK
-    - CROSS_VIEWPORT_CASCADE_DEPENDENCY
-    - REPAIR_OPTION_ANALYSIS
-    - REPAIR_ATOMICITY
-    - ELEMENTOR_CONTROL_PATH_FORMAT
-    - ACCESSIBILITY_READING_ORDER_GATE
-    - CSS_SELECTOR_SAFETY
-    - PAYLOAD_IDENTITY_HASHING
-    - STATE_AS_CODE
-    - PRODUCTION_BOUNDARY
-
-  schemas:
-    - stage_anchor_schema_stub
-    - main_input_schema_stub
-    - evidence_ingest_schema_stub
-    - breakpoint_inventory_schema_stub
-    - repair_option_analysis_schema_stub
-    - repair_plan_schema_stub
-    - accessibility_gate_schema_stub
-    - handoff_schema_stub
-
-  validation:
-    - schema_validator_prototype
-    - sample_valid_payload
-    - sample_invalid_payload
-    - payload_identity_hash_check
-
-  examples:
-    - smart_home_connector_shadow_mode_example
-```
-
----
-
-## 26. Current Project Verdict
-
-```yaml
-project_status:
-  ev4_core_pipeline: mature_for_controlled_handoff
-  responsive_extension: repository_initialization_ready
-  production_ready: false
-  prompt_pack_release_ready: false
-  next_phase: repo_initialization_contract_split_schema_stubs_and_pilot_case
-```
-
-The next correct move is:
+Allowed claim levels:
 
 ```text
-Commit the master spec.
-Split contracts.
-Version schemas.
-Create validators.
-Run a pilot case.
-Then run real E2E evidence.
+contract_validated
+fixture_validated
+sample_dry_run_validated
+submitted_packet_validated
+shadow_mode_pilot_ready
+shadow_mode_pilot_completed
+builder_feedback_validated
+live_render_validated
+export_validated
+release_candidate
 ```
+
+A higher claim level may not be used unless the required evidence exists.
 
 ---
 
-## 27. Reference Baseline
-
-This specification is aligned with these external method families:
+## 22. Final Master Rule
 
 ```text
-- Elementor responsive editing and container workflow
-- WCAG 2.2 Reflow and content preservation requirements
-- CSS responsive design practices: media queries, container queries, and normal-flow behavior
-- JSON Schema / Ajv validation for machine-readable payloads
-- Playwright visual comparison for regression checks
-- Git-based State as Code for auditability and rollback
+Never let a convenient repair hide an architecture mutation.
+Never let a visual symptom become a CSS cause without evidence.
+Never let sample evidence become real submitted evidence.
+Never let a numeric score override a blocker.
+Never let a responsive fix break desktop silently.
+Never claim more than the evidence proves.
 ```
