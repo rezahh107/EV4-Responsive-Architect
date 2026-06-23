@@ -20,6 +20,21 @@
       "required_handling": "Do not infer DOM, CSS cause, or accessibility pass from visual evidence."
     }
   ],
+  "evidence_conflict_summary": {
+    "unresolved_blocking_conflict_count": 0,
+    "resolved_conflict_count": 1,
+    "conflict_records": [
+      {
+        "conflict_id": "CFR-RESOLVED-001",
+        "conflict_status": "resolved",
+        "source_refs": ["intake_verdict.resolved_conflict_fixture"],
+        "source_priority_applied": true,
+        "winning_source": "validated_packet_field",
+        "resolution_rationale": "Fixture demonstrates that resolved conflicts must keep source priority and rationale visible.",
+        "downstream_effect": "visible_flag"
+      }
+    ]
+  },
   "required_next_action": "start_shadow_mode_pilot_with_visible_flags",
   "validation_boundary": {
     "live_elementor_render_validated": {"value": false, "reason": "no_live_render_evidence"},
