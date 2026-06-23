@@ -24,7 +24,7 @@
       "task_id": "RQ-0001",
       "cycle_position": 1,
       "task_type": "repo_sync",
-      "status": "pending",
+      "status": "in_progress",
       "title": "Sync STATUS and Issue 8",
       "objective": "Update STATUS.md and Issue #8 to reflect P0 semantic gate completion, current schema versions, and real evidence requirements.",
       "allowed_work": [
@@ -45,7 +45,14 @@
         "CI passes for any repo file change."
       ],
       "critique_required": true,
-      "dependencies": []
+      "dependencies": [],
+      "run_notes": [
+        {
+          "run_id": "automation-run-001",
+          "status": "in_progress",
+          "summary": "STATUS.md synced on branch rq-0001-status-issue-sync; Issue #8 sync pending."
+        }
+      ]
     },
     {
       "task_id": "RQ-0002",
@@ -54,23 +61,11 @@
       "status": "pending",
       "title": "Define Issue-to-Packet bridge",
       "objective": "Create a bounded mapper specification for converting Issue #8 evidence into EVIDENCE_INTAKE_PACKET.submitted.json without silently inventing missing evidence.",
-      "allowed_work": [
-        "Add a mapper contract or guide for issue fields to packet fields.",
-        "Define required failure modes for missing attachments, missing hashes, privacy omissions, and sample markers.",
-        "Add validation fixtures if a machine-readable mapping contract is introduced."
-      ],
-      "forbidden_work": [
-        "Do not scrape or infer evidence that is not present.",
-        "Do not auto-generate a submitted packet from incomplete Issue text.",
-        "Do not bypass privacy review."
-      ],
+      "allowed_work": ["Add a mapper contract or guide for issue fields to packet fields.", "Define required failure modes for missing attachments, missing hashes, privacy omissions, and sample markers.", "Add validation fixtures if a machine-readable mapping contract is introduced."],
+      "forbidden_work": ["Do not scrape or infer evidence that is not present.", "Do not auto-generate a submitted packet from incomplete Issue text.", "Do not bypass privacy review."],
       "requires_real_evidence": false,
       "expected_artifacts": ["Issue-to-packet mapping spec", "Optional mapper schema or validator"],
-      "acceptance_criteria": [
-        "Mapping has explicit blocked states for missing or conflicting evidence.",
-        "No text-only issue field is treated as proof of a visual artifact.",
-        "Sample-vs-real safety is preserved."
-      ],
+      "acceptance_criteria": ["Mapping has explicit blocked states for missing or conflicting evidence.", "No text-only issue field is treated as proof of a visual artifact.", "Sample-vs-real safety is preserved."],
       "critique_required": true,
       "dependencies": ["RQ-0001"]
     },
@@ -81,23 +76,11 @@
       "status": "pending",
       "title": "Add conflict summary to readiness path",
       "objective": "Add an evidence_conflict_summary requirement to readiness or related artifacts so unresolved conflicts remain visible and blocked downstream.",
-      "allowed_work": [
-        "Extend readiness/conflict artifacts or docs with conflict summary fields.",
-        "Add semantic checks for unresolved conflict carry-forward.",
-        "Add negative fixtures for hidden unresolved conflicts."
-      ],
-      "forbidden_work": [
-        "Do not resolve conflicts by source priority without recording the decision.",
-        "Do not allow unresolved conflicts to become visible flags if they are blockers.",
-        "Do not loosen existing readiness gates."
-      ],
+      "allowed_work": ["Extend readiness/conflict artifacts or docs with conflict summary fields.", "Add semantic checks for unresolved conflict carry-forward.", "Add negative fixtures for hidden unresolved conflicts."],
+      "forbidden_work": ["Do not resolve conflicts by source priority without recording the decision.", "Do not allow unresolved conflicts to become visible flags if they are blockers.", "Do not loosen existing readiness gates."],
       "requires_real_evidence": false,
       "expected_artifacts": ["Schema or validator update", "Valid and invalid fixtures"],
-      "acceptance_criteria": [
-        "Unresolved blocking conflict cannot produce ready readiness.",
-        "Resolved conflict records source priority and rationale.",
-        "CI validates positive and negative paths."
-      ],
+      "acceptance_criteria": ["Unresolved blocking conflict cannot produce ready readiness.", "Resolved conflict records source priority and rationale.", "CI validates positive and negative paths."],
       "critique_required": true,
       "dependencies": ["RQ-0002"]
     },
@@ -108,23 +91,11 @@
       "status": "pending",
       "title": "Prepare real pilot artifact slots",
       "objective": "Create non-generated placeholder paths or templates for real submitted artifacts without pretending real evidence exists.",
-      "allowed_work": [
-        "Add templates for submitted packet, readiness report, failure map, risk assessment, repair plan, and final audit paths if missing.",
-        "Document exact commands for submitted mode.",
-        "Keep placeholders clearly marked as templates, not evidence."
-      ],
-      "forbidden_work": [
-        "Do not commit runtime .generated.json outputs.",
-        "Do not fabricate screenshots, hashes, or Elementor export data.",
-        "Do not mark pilot authorized."
-      ],
+      "allowed_work": ["Add templates for submitted packet, readiness report, failure map, risk assessment, repair plan, and final audit paths if missing.", "Document exact commands for submitted mode.", "Keep placeholders clearly marked as templates, not evidence."],
+      "forbidden_work": ["Do not commit runtime .generated.json outputs.", "Do not fabricate screenshots, hashes, or Elementor export data.", "Do not mark pilot authorized."],
       "requires_real_evidence": false,
       "expected_artifacts": ["Template files or path manifest", "Submitted-mode command documentation"],
-      "acceptance_criteria": [
-        "Templates cannot pass as real submitted evidence.",
-        "Commands distinguish sample dry-run from real submitted mode.",
-        "Generated output policy remains enforced."
-      ],
+      "acceptance_criteria": ["Templates cannot pass as real submitted evidence.", "Commands distinguish sample dry-run from real submitted mode.", "Generated output policy remains enforced."],
       "critique_required": true,
       "dependencies": ["RQ-0003"]
     },
@@ -135,23 +106,11 @@
       "status": "pending",
       "title": "Refresh rolling queue",
       "objective": "Audit the previous four tasks, update priorities, and write the next four bounded tasks plus the next queue-refresh task.",
-      "allowed_work": [
-        "Review PRs and CI results for RQ-0001 through RQ-0004.",
-        "Mark completed, blocked, skipped, or superseded tasks accurately.",
-        "Add the next four pending tasks and a fifth queue-refresh task."
-      ],
-      "forbidden_work": [
-        "Do not hide failed or partial tasks.",
-        "Do not schedule real pilot execution unless real evidence and readiness pass.",
-        "Do not remove release-boundary prohibitions."
-      ],
+      "allowed_work": ["Review PRs and CI results for RQ-0001 through RQ-0004.", "Mark completed, blocked, skipped, or superseded tasks accurately.", "Add the next four pending tasks and a fifth queue-refresh task."],
+      "forbidden_work": ["Do not hide failed or partial tasks.", "Do not schedule real pilot execution unless real evidence and readiness pass.", "Do not remove release-boundary prohibitions."],
       "requires_real_evidence": false,
       "expected_artifacts": ["Updated planning/EV4_ROLLING_QUEUE.json", "Optional STATUS backlog update"],
-      "acceptance_criteria": [
-        "Queue has at least four pending executable tasks after refresh unless blocked on evidence.",
-        "Every fifth task remains queue_refresh.",
-        "Completed task history and blockers are preserved."
-      ],
+      "acceptance_criteria": ["Queue has at least four pending executable tasks after refresh unless blocked on evidence.", "Every fifth task remains queue_refresh.", "Completed task history and blockers are preserved."],
       "critique_required": true,
       "dependencies": ["RQ-0001", "RQ-0002", "RQ-0003", "RQ-0004"]
     }
