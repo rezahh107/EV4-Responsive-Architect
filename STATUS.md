@@ -3,18 +3,18 @@
 ```yaml
 project: EV4 Responsive Architect
 version: 0.1.0-final-draft
-status: pilot_readiness_engine_hardening
+status: pilot_dry_run_execution_layer
 production_ready: false
 prompt_pack_release_ready: false
-current_branch: readiness-hardening/v0.1-engine
+current_branch: pilot-dry-run/v0.1-execution-record
 ```
 
 ## Current Phase
 
 ```yaml
 current_phase:
-  name: smart_home_connector_pilot_readiness_engine
-  goal: convert submitted evidence intake packets into persistent readiness reports with authorization scope, structured flags, and exact blocked status mapping
+  name: smart_home_connector_pilot_dry_run_execution
+  goal: prove that a submitted-like intake packet can pass intake validation, produce readiness, verify pilot manifest, and persist a pilot run record without claiming live Elementor validation
 ```
 
 ## Release Boundary
@@ -32,6 +32,7 @@ Allowed now:
 - machine-checkable evidence intake packet
 - pilot readiness gate with visible flags
 - persistent pilot readiness report
+- pilot dry-run execution record
 ```
 
 Forbidden now:
@@ -50,9 +51,9 @@ Forbidden now:
 
 ```yaml
 must_do_next:
-  - merge pilot readiness engine hardening PR after CI passes
+  - merge pilot dry-run execution PR after CI passes
   - collect real smart-home connector evidence in Issue #8
-  - run readiness gate against submitted evidence packet
+  - run dry-run engine against real submitted evidence packet
   - start shadow-mode pilot only when readiness is ready or partial_ready_with_visible_flags
 ```
 
@@ -99,7 +100,7 @@ evidence_intake_validation:
     - desktop must-not-regress minimums
 
 pilot_readiness_engine:
-  status: hardening_in_progress
+  status: merged
   validates:
     - submitted packet mode
     - persistent readiness report
@@ -108,8 +109,17 @@ pilot_readiness_engine:
     - readiness status/action consistency
     - pilot start authorization scope
 
+pilot_dry_run_execution:
+  status: in_progress
+  validates:
+    - sample submitted packet
+    - readiness report generation
+    - pilot manifest check
+    - pilot run record schema
+    - dry-run boundary claims
+
 smart_home_connector_pilot:
-  status: readiness_engine_hardening
+  status: dry_run_layer_in_progress
   scope: shadow_mode_manual
   production_ready: false
 ```
