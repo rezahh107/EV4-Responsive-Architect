@@ -1,0 +1,14 @@
+{
+  "$schema_file": "ev4-responsive-stage-anchor.schema.json",
+  "schema": "ev4-responsive-stage-anchor@1.0.0",
+  "source_stage": "/responsive-intake",
+  "target_stage": "/responsive-evidence-ingest-ledger",
+  "project_status_version": "0.1.0-final-draft",
+  "critical_unknowns": [],
+  "blocking_items": [],
+  "gate_results": {},
+  "audit_flags": [],
+  "allowed_work": ["ingest raw evidence"],
+  "forbidden_work": ["repair", "diagnosis"],
+  "stop_conditions": ["missing main EV4 handoff"]
+}

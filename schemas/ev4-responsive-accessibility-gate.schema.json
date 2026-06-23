@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ev4.local/schemas/ev4-responsive-accessibility-gate.schema.json",
+  "title": "EV4 Responsive Accessibility Reading Order Gate",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "applies_when", "required_checks", "outcome"],
+  "properties": {
+    "schema": { "const": "ev4-responsive-accessibility-gate@1.0.0" },
+    "applies_when": { "type": "array", "items": { "type": "string" } },
+    "required_checks": { "type": "array", "items": { "type": "string" } },
+    "outcome": { "enum": ["pass", "pass_with_visible_risk", "fail_requires_repair", "fail_requires_main_pipeline_rerun"] }
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ev4.local/schemas/ev4-responsive-main-input.schema.json",
+  "title": "EV4 Responsive Main Pipeline Input",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "selected_candidate_id",
+    "selected_candidate_family",
+    "payload_identity_hashes",
+    "inherited_unknowns",
+    "inherited_audit_flags",
+    "input_authorization_status"
+  ],
+  "properties": {
+    "schema": { "const": "ev4-responsive-main-input@1.0.0" },
+    "selected_candidate_id": { "type": "string", "minLength": 1 },
+    "selected_candidate_family": { "type": "string", "minLength": 1 },
+    "payload_identity_hashes": { "type": "object", "additionalProperties": { "type": "string" } },
+    "inherited_unknowns": { "type": "array", "items": { "type": "string" } },
+    "inherited_audit_flags": { "type": "array", "items": { "type": "string" } },
+    "input_authorization_status": { "enum": ["authorized", "blocked_missing_input", "blocked_schema_mismatch", "blocked_identity_conflict"] }
+  }
+}

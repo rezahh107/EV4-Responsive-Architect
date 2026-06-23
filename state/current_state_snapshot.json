@@ -1,0 +1,13 @@
+{
+  "schema": "ev4-responsive-current-state@1.0.0",
+  "project": "EV4 Responsive Architect",
+  "version": "0.1.0-final-draft",
+  "status": "repository_initialization_ready",
+  "production_ready": false,
+  "active_payloads": {},
+  "active_unknowns": [],
+  "active_audit_flags": [],
+  "notes": [
+    "Initial State as Code snapshot. Do not store private production evidence here without review."
+  ]
+}

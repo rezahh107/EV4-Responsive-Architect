@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Validation artifacts
+validation/artifacts/
+playwright-report/
+test-results/
+
+# Private / local evidence
+private-evidence/
+*.local.json
+*.secret.json
+.env
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
