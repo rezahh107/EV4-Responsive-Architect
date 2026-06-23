@@ -12,12 +12,33 @@ body:
 
         Do not claim production readiness from this intake. This intake only determines whether the pilot may start.
 
+        Preferred file naming:
+        - `main-ev4-handoff.md`
+        - `desktop-baseline-[width].png`
+        - `tablet-[width].png`
+        - `mobile-[width].png`
+        - `breakpoint-inventory.json`
+
   - type: input
     id: selected_candidate_id
     attributes:
       label: selected_candidate_id
       description: The selected EV4 architecture candidate ID from the main pipeline.
       placeholder: ARCH-FAM-C
+    validations:
+      required: true
+
+  - type: textarea
+    id: evidence_intake_packet_json
+    attributes:
+      label: Evidence Intake Packet JSON
+      description: Paste a machine-readable packet matching ev4-responsive-evidence-intake-packet@1.0.0. Required before the pilot can start.
+      placeholder: |
+        {
+          "schema": "ev4-responsive-evidence-intake-packet@1.0.0",
+          "packet_id": "SHP-INTAKE-001",
+          "packet_status": "submitted"
+        }
     validations:
       required: true
 
@@ -42,10 +63,16 @@ body:
       label: Desktop baseline evidence
       description: Attach or link desktop screenshot and describe source, viewport label/width, root class, must-not-regress items, and known acceptable issues.
       placeholder: |
+        file_name: desktop-baseline-1440.png
         source: frontend | editor
         viewport_label_or_width:
         root_class:
-        must_not_regress:
+        minimum_must_not_regress:
+          - meaningful_text_visibility
+          - feature_card_group_integrity
+          - visual_core_presence
+          - connector_layer_containment
+          - no_horizontal_overflow
         known_acceptable_desktop_issues:
     validations:
       required: true
@@ -54,10 +81,13 @@ body:
     id: tablet_evidence
     attributes:
       label: Tablet evidence
-      description: Attach or link tablet screenshot and describe source, viewport label/width, and visible symptoms.
+      description: Attach or link tablet screenshot and describe source, viewport label/width, visible symptoms, and evidence quality.
       placeholder: |
+        file_name: tablet-768.png
         source: frontend | editor
         viewport_label_or_width:
+        quality_level:
+        confidence_cap:
         visible_symptoms:
     validations:
       required: true
@@ -66,10 +96,13 @@ body:
     id: mobile_evidence
     attributes:
       label: Mobile evidence
-      description: Attach or link mobile screenshot and describe source, viewport label/width, and visible symptoms.
+      description: Attach or link mobile screenshot and describe source, viewport label/width, visible symptoms, and evidence quality.
       placeholder: |
+        file_name: mobile-390.png
         source: frontend | editor
         viewport_label_or_width:
+        quality_level:
+        confidence_cap:
         visible_symptoms:
     validations:
       required: true
@@ -89,13 +122,17 @@ body:
   - type: textarea
     id: breakpoint_details
     attributes:
-      label: Breakpoint details
-      description: Provide breakpoint values or explain why fallback is being used.
+      label: Breakpoint details and claim scope
+      description: Provide breakpoint values or explain why fallback is being used. State whether release-ready claims are forbidden.
       placeholder: |
         desktop:
         tablet:
         mobile:
         confidence:
+        may_observe:
+        may_plan_repair:
+        may_handoff_controlled:
+        may_claim_release_ready: false
     validations:
       required: true
 
@@ -113,6 +150,18 @@ body:
         visual diff:
     validations:
       required: false
+
+  - type: checkboxes
+    id: privacy_review
+    attributes:
+      label: Privacy review
+      options:
+        - label: I removed credentials, access tokens, private user data, emails, form data, and client-identifying data.
+          required: true
+        - label: I reviewed screenshots and export-like evidence for private URLs or client identifiers.
+          required: true
+        - label: I understand that screenshots/export JSON may contain private site data.
+          required: true
 
   - type: checkboxes
     id: boundary_acknowledgement
