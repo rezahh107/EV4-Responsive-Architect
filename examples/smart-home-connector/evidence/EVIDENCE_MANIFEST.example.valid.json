@@ -1,0 +1,80 @@
+{
+  "schema": "ev4-responsive-pilot-evidence-manifest@0.1.0",
+  "pilot_id": "smart-home-connector-v0.1",
+  "status": "example_valid_not_real_evidence",
+  "production_ready": false,
+  "section_identity": {
+    "selected_candidate_id": "ARCH-FAM-C",
+    "target_section_name": "smart-home-connector",
+    "root_class_name": "ev4-smart-home",
+    "main_pipeline_handoff_ref": "fixture-main-handoff-ref",
+    "main_pipeline_handoff_verified": true
+  },
+  "breakpoint_inventory": {
+    "source_type": "user_declaration",
+    "source_ref": "fixture breakpoint declaration",
+    "fallback_used": false,
+    "release_ready_claim_allowed": false,
+    "active_breakpoints": [
+      {"label": "desktop", "width_px": 1440, "source": "user_declaration", "confidence": "medium"},
+      {"label": "tablet", "width_px": 768, "source": "user_declaration", "confidence": "medium"},
+      {"label": "mobile", "width_px": 390, "source": "user_declaration", "confidence": "medium"}
+    ]
+  },
+  "evidence_items": [
+    {
+      "evidence_id": "EVD-DESKTOP-BASELINE-001",
+      "evidence_type": "frontend_screenshot",
+      "quality_level": "L2_frontend_visual_with_viewport",
+      "confidence_cap": "medium",
+      "viewport_label": "desktop",
+      "viewport_width": 1440,
+      "viewport_height": 1100,
+      "capture_source": "frontend",
+      "source_ref": "fixture-desktop-baseline",
+      "downstream_allowed_use": {"observation": true, "diagnosis": "limited", "repair_selection": "limited", "validation_claim": false},
+      "can_support": ["visible_collision", "visible_clipping", "visible_overflow_symptom", "visible_order_symptom", "viewport_specific_visual_state"],
+      "cannot_support": ["exact_css_cause", "exact_breakpoint_value", "dom_reading_order", "accessibility_pass", "production_ready_claim"],
+      "known_limitations": ["fixture_not_real_evidence", "not_live_render_validated_by_system"],
+      "content_hash_if_file": null
+    },
+    {
+      "evidence_id": "EVD-TABLET-001",
+      "evidence_type": "frontend_screenshot",
+      "quality_level": "L2_frontend_visual_with_viewport",
+      "confidence_cap": "medium",
+      "viewport_label": "tablet",
+      "viewport_width": 768,
+      "viewport_height": 1024,
+      "capture_source": "frontend",
+      "source_ref": "fixture-tablet",
+      "downstream_allowed_use": {"observation": true, "diagnosis": "limited", "repair_selection": "limited", "validation_claim": false},
+      "can_support": ["visible_collision", "visible_clipping", "visible_overflow_symptom", "visible_order_symptom", "viewport_specific_visual_state"],
+      "cannot_support": ["exact_css_cause", "exact_breakpoint_value", "dom_reading_order", "accessibility_pass", "production_ready_claim"],
+      "known_limitations": ["fixture_not_real_evidence", "screenshot_can_show_symptom_not_cause"],
+      "content_hash_if_file": null
+    },
+    {
+      "evidence_id": "EVD-MOBILE-001",
+      "evidence_type": "frontend_screenshot",
+      "quality_level": "L2_frontend_visual_with_viewport",
+      "confidence_cap": "medium",
+      "viewport_label": "mobile",
+      "viewport_width": 390,
+      "viewport_height": 844,
+      "capture_source": "frontend",
+      "source_ref": "fixture-mobile",
+      "downstream_allowed_use": {"observation": true, "diagnosis": "limited", "repair_selection": "limited", "validation_claim": false},
+      "can_support": ["visible_collision", "visible_clipping", "visible_overflow_symptom", "visible_order_symptom", "viewport_specific_visual_state"],
+      "cannot_support": ["exact_css_cause", "exact_breakpoint_value", "dom_reading_order", "accessibility_pass", "production_ready_claim"],
+      "known_limitations": ["fixture_not_real_evidence", "screenshot_can_show_symptom_not_cause"],
+      "content_hash_if_file": null
+    }
+  ],
+  "executable_readiness_gate": {
+    "template_placeholders_remaining": false,
+    "all_required_viewports_have_evidence": true,
+    "all_required_claim_sources_locked": true,
+    "pilot_execution_allowed": true
+  }
+}
