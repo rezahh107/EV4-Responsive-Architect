@@ -1,0 +1,37 @@
+{
+  "$schema_file": "ev4-responsive-repair-plan.schema.json",
+  "schema": "ev4-responsive-repair-plan@1.0.0",
+  "plan_id": "RSP-PLAN-001",
+  "repair_scope_freeze_id": "RSP-SCOPE-001",
+  "repair_steps": [
+    {
+      "step_id": "RSP-STEP-001",
+      "failure_id": "RSP-F-001",
+      "selected_option_id": "RSP-OPT-001",
+      "target_node_id": "smart-home__feature-grid",
+      "target_structure_label": "Feature Grid",
+      "active_class_name": "ev4-smart-home__feature-grid",
+      "viewport_scope": "mobile",
+      "single_repair_intent": "Stack feature cards in normal flow on mobile.",
+      "elementor_control_path": {
+        "target_node_id": "smart-home__feature-grid",
+        "structure_label": "Feature Grid",
+        "class_name": "ev4-smart-home__feature-grid",
+        "editor_area": "Layout",
+        "control_group": "Container Layout",
+        "control_name": "Direction",
+        "viewport_scope": "mobile",
+        "value_policy": "verify_current_then_apply",
+        "value_source": "builder_verification_required",
+        "fallback_semantic_instruction": "Use the mobile viewport and verify the container stacks children vertically.",
+        "rollback_instruction": "Return Direction to its previous mobile value."
+      },
+      "before_state_description": "Cards show mobile collision risk.",
+      "expected_after_state": "Cards stack vertically with no horizontal overflow.",
+      "rollback_action": "Restore previous mobile Direction value.",
+      "desktop_check_required": true,
+      "cascade_check_required": true,
+      "validation_evidence_required": ["desktop_baseline_recheck", "target_viewport_recheck", "builder_confirmation"]
+    }
+  ]
+}
