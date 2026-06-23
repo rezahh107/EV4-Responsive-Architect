@@ -2,19 +2,19 @@
 
 ```yaml
 project: EV4 Responsive Architect
-version: 0.1.0-final-draft
-status: risk_priority_engine_hardened
+version: 0.2.0-current-system-sync
+status: master_spec_synced_with_risk_priority_engine
 production_ready: false
 prompt_pack_release_ready: false
-current_branch: stage16
+current_branch: main
 ```
 
 ## Current Phase
 
 ```yaml
 current_phase:
-  name: responsive_risk_priority_assessment_engine
-  goal: validate and emit risk-priority assessments without numeric scoring and without allowing any gate override
+  name: real_evidence_collection_ready
+  goal: collect real smart-home connector evidence in Issue #8, create a real submitted evidence packet, run readiness, dry-run/shadow-mode authorization, and generate risk-priority assessment from real artifacts
 ```
 
 ## Release Boundary
@@ -37,6 +37,7 @@ Allowed now:
 - risk and priority rubric for repair planning
 - parameterized risk-priority assessment validation
 - generated risk-priority assessment report
+- synchronized master specification
 ```
 
 Forbidden now:
@@ -101,8 +102,15 @@ pilot_dry_run_execution:
     - readiness_to_run_record_chain
     - generated_runtime_output_policy
 
+sample_vs_real_safety:
+  status: merged
+  validates:
+    - submitted_shadow_mode_preflight
+    - sample_marker_rejection
+    - blocked_packet_negative_path
+
 risk_priority_engine:
-  status: hardened_on_branch
+  status: merged
   validates:
     - categorical_priority_without_numeric_score
     - hard_gate_precedence
@@ -110,4 +118,12 @@ risk_priority_engine:
     - cross_artifact_refs
     - repair_mitigation_requirements
     - sample_vs_real_assessment_boundary
+
+master_spec_sync:
+  status: in_pull_request
+  validates:
+    - master_status_matches_repo_state
+    - schema_inventory_matches_current_validation_layers
+    - pilot_mode_matches_machine_checked_harness
+    - release_boundary_matches_STATUS
 ```
