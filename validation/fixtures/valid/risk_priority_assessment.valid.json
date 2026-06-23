@@ -1,12 +1,26 @@
 {
   "$schema_file": "ev4-responsive-risk-priority-assessment.schema.json",
-  "schema": "ev4-responsive-risk-priority-assessment@1.0.0",
+  "schema": "ev4-responsive-risk-priority-assessment@1.1.0",
   "assessment_id": "RISK-SHADOW-001",
   "assessment_scope": "shadow_mode_pilot_risk_priority",
+  "assessment_metadata": {
+    "generated_at_utc": "2026-06-23T00:00:00Z",
+    "generator_command": "python validation/e2e/run_risk_priority_check.py --assessment validation/fixtures/valid/risk_priority_assessment.valid.json",
+    "git_ref_or_commit": "main"
+  },
   "evidence_basis": {
     "source_packet_ref": "examples/smart-home-connector/intake/EVIDENCE_INTAKE_PACKET.sample-submitted.json",
+    "source_packet_sha256": "sha256-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
     "readiness_report_ref": "examples/smart-home-connector/readiness/PILOT_READINESS_REPORT.example.json",
+    "readiness_report_sha256": "sha256-bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
     "pilot_run_record_ref": "examples/smart-home-connector/runs/PILOT_RUN_RECORD.example.json",
+    "pilot_run_record_sha256": "sha256-cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+    "packet_origin": "sample_contract_fixture",
+    "run_mode": "sample_submitted_packet_dry_run",
+    "issue_reference": "not_applicable_sample_dry_run",
+    "evidence_refs": [
+      "EVD-MOBILE-001"
+    ],
     "evidence_confidence_floor": "medium"
   },
   "hard_gates": [
@@ -14,7 +28,8 @@
       "gate_id": "HG-ARCH-001",
       "gate_code": "architecture_mutation_veto",
       "status": "pass",
-      "blocker": true,
+      "blocking_if_failed": true,
+      "gate_weight": "hard_blocker",
       "source_ref": "pilot_run_record.pilot_start_authorization",
       "required_resolution": "No route back required."
     },
@@ -22,7 +37,8 @@
       "gate_id": "HG-EVD-001",
       "gate_code": "missing_required_evidence",
       "status": "pass",
-      "blocker": true,
+      "blocking_if_failed": true,
+      "gate_weight": "hard_blocker",
       "source_ref": "evidence_intake_packet.evidence_complete_definition",
       "required_resolution": "Required packet items are present for dry-run scope."
     }
@@ -30,7 +46,9 @@
   "failure_items": [
     {
       "failure_id": "FAIL-MOBILE-001",
-      "evidence_refs": ["EVD-MOBILE-001"],
+      "evidence_refs": [
+        "EVD-MOBILE-001"
+      ],
       "severity": "high",
       "priority": "P1",
       "evidence_confidence": "medium",
@@ -45,10 +63,23 @@
   "repair_risks": [
     {
       "repair_id": "REPAIR-MOBILE-001",
-      "failure_refs": ["FAIL-MOBILE-001"],
+      "failure_refs": [
+        "FAIL-MOBILE-001"
+      ],
       "risk_level": "medium",
-      "risk_drivers": ["visual evidence only", "desktop regression must be checked after each action"],
-      "required_mitigation": "Run desktop check after each atomic builder step."
+      "desktop_regression_risk": "medium",
+      "accessibility_risk": "unknown",
+      "architecture_mutation_risk": "low",
+      "risk_drivers": [
+        "visual evidence only",
+        "desktop regression must be checked after each action"
+      ],
+      "required_mitigation": "Run desktop check after each atomic builder step and keep rollback ready.",
+      "mitigation_checks": [
+        "desktop_recheck_each_step",
+        "rollback_plan_required",
+        "builder_step_precheck_required"
+      ]
     }
   ],
   "aggregate_verdict": {
