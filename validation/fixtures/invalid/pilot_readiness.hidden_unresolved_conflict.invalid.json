@@ -1,0 +1,53 @@
+{
+  "$schema_file": "ev4-responsive-pilot-readiness.schema.json",
+  "schema": "ev4-responsive-pilot-readiness@1.0.0",
+  "readiness_id": "SHP-READINESS-BAD-CONFLICT-001",
+  "source_packet_id": "SHP-INTAKE-BAD-CONFLICT-001",
+  "section_id": "smart-home-connector",
+  "readiness_status": "partial_ready_with_visible_flags",
+  "blocking_reasons": [],
+  "visible_flags": [
+    {
+      "flag_code": "visual_only_evidence",
+      "severity": "medium",
+      "source_ref": "evidence_items.EVD-DESKTOP-001.quality_level",
+      "required_handling": "Carry visual limits forward."
+    }
+  ],
+  "evidence_conflict_summary": {
+    "unresolved_blocking_conflict_count": 1,
+    "resolved_conflict_count": 0,
+    "conflict_records": [
+      {
+        "conflict_id": "CFR-HIDDEN-001",
+        "conflict_status": "unresolved_blocking",
+        "source_refs": ["intake_verdict.blocker_conflicts"],
+        "source_priority_applied": false,
+        "winning_source": null,
+        "resolution_rationale": "This unresolved conflict must block readiness instead of becoming a visible flag.",
+        "downstream_effect": "blocked"
+      }
+    ]
+  },
+  "required_next_action": "start_shadow_mode_pilot_with_visible_flags",
+  "validation_boundary": {
+    "live_elementor_render_validated": {"value": false, "reason": "no_live_render_evidence"},
+    "export_json_validated": {"value": false, "reason": "no_export_json_supplied"},
+    "playwright_visual_regression_validated": {"value": false, "reason": "no_playwright_visual_regression_run"},
+    "accessibility_pass_claimed": {"value": false, "reason": "accessibility_gate_not_executed_on_real_dom"},
+    "production_ready_claimed": {"value": false, "reason": "release_gate_evidence_missing"}
+  },
+  "pilot_start_authorization": {
+    "authorized": true,
+    "authorization_scope": "shadow_mode_only_with_visible_flags",
+    "forbidden_claims": [
+      "production_ready",
+      "release_ready",
+      "live_render_validated",
+      "export_json_validated",
+      "accessibility_passed",
+      "playwright_visual_regression_validated"
+    ],
+    "required_carry_forward_flags": []
+  }
+}
