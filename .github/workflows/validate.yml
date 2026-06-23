@@ -49,3 +49,6 @@ jobs:
 
       - name: Run risk priority validation
         run: python validation/e2e/run_risk_priority_check.py
+
+      - name: Run risk priority parameterized report mode
+        run: python validation/e2e/run_risk_priority_check.py --assessment validation/fixtures/valid/risk_priority_assessment.valid.json --out /tmp/risk_priority_assessment.generated.json
