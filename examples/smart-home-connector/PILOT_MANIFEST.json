@@ -3,6 +3,7 @@
   "pilot_id": "smart-home-connector-v0.1",
   "mode": "shadow_mode_manual",
   "production_ready": false,
+  "manifest_status": "pilot_harness_required",
   "required_sequence": [
     "main-pipeline-handoff-ingest",
     "responsive-evidence-ingest-ledger",
@@ -11,6 +12,7 @@
     "breakpoint-observation",
     "responsive-failure-map",
     "failure-priority-ordering",
+    "unknown-budget-gate-lite",
     "repair-ownership-routing",
     "repair-option-analysis",
     "responsive-repair-selection",
@@ -18,18 +20,71 @@
     "responsive-repair-plan",
     "responsive-final-audit-lite"
   ],
+  "skipped_or_conditional_stages": {
+    "repair-triage": {
+      "status": "skipped_for_shadow_mode",
+      "reason": "pilot path is manually scoped to smart-home connector v0.1"
+    },
+    "responsive-observation-evidence-ledger": {
+      "status": "collapsed_into_failure_map_template_for_pilot",
+      "reason": "pilot keeps derived observation evidence in the failure map evidence references"
+    },
+    "css-selector-safety-check": {
+      "status": "conditional",
+      "runs_when": "selected_repair_uses_custom_css"
+    },
+    "accessibility-reading-order-gate": {
+      "status": "conditional",
+      "runs_when": "visual_order_changes_or_meaningful_content_visibility_changes_or_custom_order_used"
+    },
+    "builder-feedback-loop": {
+      "status": "required_if_builder_executes_steps",
+      "reason": "shadow-mode planning can stop before builder execution; real execution requires feedback"
+    },
+    "multi-run-convergence-gate": {
+      "status": "conditional",
+      "runs_when": "repair_iteration_count_greater_than_1_or_new_failure_detected"
+    },
+    "partial-repair-state": {
+      "status": "collapsed_into_final_audit_lite_for_pilot",
+      "reason": "pilot final audit-lite records full/partial/blocked state"
+    }
+  },
   "pilot_files": {
     "runbook": "examples/smart-home-connector/PILOT_CASE_V0_1.md",
     "evidence_manifest_template": "examples/smart-home-connector/evidence/EVIDENCE_MANIFEST.template.json",
+    "evidence_manifest_valid_example": "examples/smart-home-connector/evidence/EVIDENCE_MANIFEST.example.valid.json",
+    "input_authorization_record_template": "examples/smart-home-connector/templates/INPUT_AUTHORIZATION_RECORD.template.md",
+    "breakpoint_observation_notes_template": "examples/smart-home-connector/templates/BREAKPOINT_OBSERVATION_NOTES.template.md",
     "failure_map_template": "examples/smart-home-connector/templates/RESPONSIVE_FAILURE_MAP.template.md",
     "repair_option_template": "examples/smart-home-connector/templates/REPAIR_OPTION_ANALYSIS.template.md",
+    "repair_selection_record_template": "examples/smart-home-connector/templates/REPAIR_SELECTION_RECORD.template.md",
+    "remaining_unknowns_template": "examples/smart-home-connector/templates/REMAINING_UNKNOWNS.template.md",
     "builder_checklist_template": "examples/smart-home-connector/builder/BUILDER_REPAIR_CHECKLIST.template.md",
     "final_audit_lite_template": "examples/smart-home-connector/audits/FINAL_AUDIT_LITE.template.md"
   },
+  "template_placeholder_policy": {
+    "template_files_may_contain_TODO": true,
+    "executable_pilot_files_must_not_contain_TODO": true,
+    "executable_pilot_files_must_not_contain_null_for_required_claims": true
+  },
+  "required_lite_gates": [
+    "main_pipeline_input_authorization",
+    "desktop_baseline_lock",
+    "breakpoint_inventory_lock",
+    "forbidden_inference_check",
+    "unknown_gate_lite",
+    "architecture_mutation_veto_check",
+    "repair_option_analysis_before_selection",
+    "repair_scope_freeze_before_steps",
+    "final_audit_lite_verdict"
+  ],
   "stop_conditions": [
     "missing_main_ev4_handoff",
     "selected_candidate_identity_conflict",
     "desktop_baseline_missing",
+    "breakpoint_inventory_missing_or_unusable",
+    "unknown_required_to_select_repair_unresolved",
     "architecture_mutation_veto_triggered",
     "meaningful_content_must_be_hidden_to_fit",
     "builder_reports_unexpected_desktop_regression"

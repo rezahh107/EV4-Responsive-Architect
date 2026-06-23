@@ -12,11 +12,14 @@ This audit may confirm only the pilot evidence supplied in this directory. It mu
 ```yaml
 required_inputs:
   - evidence_manifest
+  - input_authorization_record
+  - breakpoint_observation_notes
   - responsive_failure_map
   - repair_option_analysis
   - repair_selection_record
   - builder_repair_checklist
-  - builder_feedback
+  - builder_feedback_if_steps_executed
+  - remaining_unknowns
 ```
 
 ## Audit Checks
@@ -26,34 +29,40 @@ architecture_preservation:
   selected_candidate_id_unchanged: TODO_pass_fail_unknown
   build_tree_node_identity_unchanged: TODO_pass_fail_unknown
   architecture_mutation_veto_triggered: TODO_yes_no
-  notes: TODO
 
 desktop_preservation:
   desktop_baseline_rechecked: TODO_pass_fail_unknown
   no_unexpected_desktop_regression: TODO_pass_fail_unknown
-  notes: TODO
 
 responsive_repair_scope:
   repair_scope_freeze_preserved: TODO_pass_fail_unknown
   no_out_of_scope_failure_added: TODO_pass_fail_unknown
-  notes: TODO
 
 accessibility:
   meaningful_content_visibility_preserved: TODO_pass_fail_unknown
   reading_order_risk_recorded: TODO_pass_fail_unknown
   tap_target_risk_recorded: TODO_pass_fail_unknown
-  notes: TODO
 
 css_safety:
   custom_css_used: TODO_yes_no
   selector_safety_checked_if_used: TODO_pass_fail_not_applicable
   rollback_defined: TODO_pass_fail_unknown
-  notes: TODO
 
 unknown_survival:
   unknowns_preserved: TODO_pass_fail_unknown
   no_unknown_converted_to_fact: TODO_pass_fail_unknown
-  notes: TODO
+```
+
+## Audit Verdict
+
+```yaml
+audit_verdict:
+  status: TODO_allowed_verdict
+  handoff_allowed: TODO_yes_no
+  blocking_reasons: []
+  remaining_flags: []
+  remaining_failures: []
+  next_route: TODO_none_or_stage_route
 ```
 
 ## Allowed Verdicts
@@ -66,6 +75,17 @@ allowed_verdicts:
   - pilot_blocked_missing_evidence
   - pilot_blocked_architecture_mutation_veto
   - pilot_failed_desktop_regression
+```
+
+## Verdict Gate
+
+```yaml
+block_handoff_when:
+  - verdict_status_is_TODO
+  - architecture_mutation_veto_triggered
+  - desktop_regression_detected
+  - required_unknowns_unresolved
+  - forbidden_release_claim_present
 ```
 
 ## Production Boundary Statement
