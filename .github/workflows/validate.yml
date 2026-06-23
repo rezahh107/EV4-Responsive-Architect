@@ -32,3 +32,6 @@ jobs:
 
       - name: Run pilot readiness validation
         run: python validation/e2e/run_pilot_readiness_check.py
+
+      - name: Run pilot dry-run validation
+        run: python validation/e2e/run_pilot_dry_run_check.py
