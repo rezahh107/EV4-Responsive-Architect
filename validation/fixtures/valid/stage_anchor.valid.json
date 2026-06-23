@@ -3,12 +3,26 @@
   "schema": "ev4-responsive-stage-anchor@1.0.0",
   "source_stage": "/responsive-intake",
   "target_stage": "/responsive-evidence-ingest-ledger",
+  "target_stage_hardening_status": "hardened_v0_1",
   "project_status_version": "0.1.0-final-draft",
+  "payload_schema_in": ["ev4-responsive-main-input@1.0.0"],
+  "payload_schema_out": ["ev4-responsive-evidence-ingest@1.0.0"],
   "critical_unknowns": [],
+  "confidence_delta": "unchanged",
   "blocking_items": [],
-  "gate_results": {},
+  "gate_results": {
+    "main_pipeline_input_contract": "pass",
+    "architecture_mutation_veto": "not_applicable"
+  },
   "audit_flags": [],
+  "required_user_confirmations": [],
+  "partial_rerun_state": {
+    "status": "none",
+    "reusable_payloads": [],
+    "invalidated_payloads": []
+  },
   "allowed_work": ["ingest raw evidence"],
   "forbidden_work": ["repair", "diagnosis"],
-  "stop_conditions": ["missing main EV4 handoff"]
+  "stop_conditions": ["missing main EV4 handoff"],
+  "debug_trace_required": true
 }

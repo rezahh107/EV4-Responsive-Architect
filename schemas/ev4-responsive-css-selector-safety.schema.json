@@ -1,0 +1,61 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ev4.local/schemas/ev4-responsive-css-selector-safety.schema.json",
+  "title": "EV4 Responsive CSS Selector Safety",
+  "type": "object",
+  "additionalProperties": false,
+  "$defs": {
+    "id": { "type": "string", "minLength": 1 },
+    "stringArray": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+    "confidence": { "enum": ["low", "medium", "high"] },
+    "gateStatus": { "enum": ["not_applicable", "pass", "pass_with_visible_risk", "fail_requires_selector_repair", "fail_requires_native_control_retry", "fail_requires_architecture_route", "blocked_missing_inputs"] },
+    "breakpointSource": { "enum": ["breakpoint_inventory_lock", "elementor_export_json", "user_declaration", "assumed_default_with_unverified_label", "not_applicable"] },
+    "specificity": { "enum": ["likely_safe", "may_be_too_weak", "may_be_too_strong", "unknown"] },
+    "valueSource": { "enum": ["design_system_variable", "builder_verified_value", "relative_adjustment", "evidence_based_value", "provisional_flagged_value"] }
+  },
+  "required": ["schema", "gate_status", "patch_id", "repair_step_ids", "failure_ids", "target_node_id", "project_root_class", "target_node_class", "selector", "media_query", "breakpoint_source", "breakpoint_source_confidence", "declarations", "specificity_assessment", "uses_important", "important_justification", "rollback_css", "validation_required", "production_ready_claim_allowed"],
+  "properties": {
+    "schema": { "const": "ev4-responsive-css-selector-safety@1.0.0" },
+    "gate_status": { "$ref": "#/$defs/gateStatus" },
+    "patch_id": { "$ref": "#/$defs/id" },
+    "repair_step_ids": { "$ref": "#/$defs/stringArray" },
+    "failure_ids": { "$ref": "#/$defs/stringArray" },
+    "target_node_id": { "$ref": "#/$defs/id" },
+    "project_root_class": { "type": "string", "minLength": 1 },
+    "target_node_class": { "type": "string", "minLength": 1 },
+    "selector": { "type": "string", "minLength": 1 },
+    "media_query": { "type": ["string", "null"] },
+    "breakpoint_source": { "$ref": "#/$defs/breakpointSource" },
+    "breakpoint_source_confidence": { "$ref": "#/$defs/confidence" },
+    "declarations": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["property", "value", "value_source"],
+        "properties": {
+          "property": { "type": "string", "minLength": 1 },
+          "value": { "type": "string", "minLength": 1 },
+          "value_source": { "$ref": "#/$defs/valueSource" }
+        }
+      }
+    },
+    "specificity_assessment": { "$ref": "#/$defs/specificity" },
+    "uses_important": { "type": "boolean" },
+    "important_justification": { "type": ["string", "null"] },
+    "rollback_css": { "type": "string", "minLength": 1 },
+    "validation_required": { "$ref": "#/$defs/stringArray" },
+    "production_ready_claim_allowed": { "type": "boolean" }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "uses_important": { "const": true } } },
+      "then": { "properties": { "important_justification": { "type": "string", "minLength": 1 } } }
+    },
+    {
+      "if": { "properties": { "breakpoint_source": { "enum": ["user_declaration", "assumed_default_with_unverified_label"] } } },
+      "then": { "properties": { "production_ready_claim_allowed": { "const": false } } }
+    }
+  ]
+}

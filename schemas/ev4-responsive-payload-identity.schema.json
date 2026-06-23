@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ev4.local/schemas/ev4-responsive-payload-identity.schema.json",
+  "title": "EV4 Responsive Payload Identity",
+  "type": "object",
+  "additionalProperties": false,
+  "$defs": {
+    "id": { "type": "string", "minLength": 1, "pattern": "^[A-Za-z0-9_.:/@-]+$" },
+    "schemaVersion": { "type": "string", "pattern": "^ev4-[A-Za-z0-9_.-]+@\\d+\\.\\d+\\.\\d+$" },
+    "contentHash": { "type": "string", "pattern": "^sha256:[a-fA-F0-9]{64}$" }
+  },
+  "required": ["schema", "payload_id", "schema_version", "source_stage", "content_hash", "created_at", "depends_on"],
+  "properties": {
+    "schema": { "const": "ev4-responsive-payload-identity@1.0.0" },
+    "payload_id": { "$ref": "#/$defs/id" },
+    "schema_version": { "$ref": "#/$defs/schemaVersion" },
+    "source_stage": { "type": "string", "minLength": 1 },
+    "content_hash": { "$ref": "#/$defs/contentHash" },
+    "created_at": { "type": "string" },
+    "supersedes": { "type": ["string", "null"] },
+    "depends_on": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["payload_id", "content_hash"],
+        "properties": {
+          "payload_id": { "$ref": "#/$defs/id" },
+          "content_hash": { "$ref": "#/$defs/contentHash" }
+        }
+      },
+      "uniqueItems": true
+    },
+    "source_files_or_evidence_ids": { "type": "array", "items": { "type": "string" }, "uniqueItems": true }
+  }
+}
