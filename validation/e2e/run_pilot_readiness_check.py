@@ -21,6 +21,7 @@ sys.path.insert(0, str(ROOT))
 from validation.e2e.run_evidence_intake_check import validate_packet  # noqa: E402
 
 DEFAULT_PACKET = ROOT / "validation" / "fixtures" / "valid" / "evidence_intake_packet.valid.json"
+DEFAULT_BLOCKED_PACKET = ROOT / "validation" / "fixtures" / "valid" / "evidence_intake_packet.blocked.valid.json"
 READINESS_SCHEMA = ROOT / "schemas" / "ev4-responsive-pilot-readiness.schema.json"
 DEFAULT_OUT = ROOT / "examples" / "smart-home-connector" / "readiness" / "PILOT_READINESS_REPORT.generated.json"
 
@@ -249,19 +250,56 @@ def validate_readiness_schema(report: dict[str, Any]) -> None:
     jsonschema.Draft202012Validator(schema).validate(report)
 
 
+def run_readiness_for_packet(
+    packet_path: Path,
+    *,
+    out_path: Path | None,
+    allow_blocked: bool,
+    run_full_schema_validator: bool,
+) -> dict[str, Any]:
+    packet = validate_packet(packet_path, run_full_schema_validator=run_full_schema_validator)
+    report = build_readiness(packet)
+    validate_readiness_schema(report)
+    if out_path is not None:
+        write_json(out_path, report)
+    if report["readiness_status"].startswith("blocked") and not allow_blocked:
+        raise AssertionError(f"pilot readiness blocked: {report['blocking_reasons']}")
+    return report
+
+
+def run_default_self_test() -> None:
+    positive = run_readiness_for_packet(
+        DEFAULT_PACKET,
+        out_path=None,
+        allow_blocked=False,
+        run_full_schema_validator=True,
+    )
+    if positive["readiness_status"].startswith("blocked"):
+        raise AssertionError("default positive readiness fixture must not block")
+
+    negative = run_readiness_for_packet(
+        DEFAULT_BLOCKED_PACKET,
+        out_path=None,
+        allow_blocked=True,
+        run_full_schema_validator=False,
+    )
+    if negative["readiness_status"] != "blocked_missing_evidence":
+        raise AssertionError("blocked fixture must map to blocked_missing_evidence")
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Build and validate an EV4 responsive pilot readiness report.")
     parser.add_argument(
         "--packet",
         type=Path,
-        default=DEFAULT_PACKET,
-        help="Evidence intake packet JSON. Defaults to the valid fixture.",
+        default=None,
+        help="Evidence intake packet JSON. If omitted, the built-in positive and negative self-test fixtures run.",
     )
     parser.add_argument(
         "--out",
         type=Path,
         default=None,
-        help="Optional output path for the generated readiness report.",
+        help="Optional output path for the generated readiness report. Requires --packet.",
     )
     parser.add_argument(
         "--allow-blocked",
@@ -279,15 +317,21 @@ def parse_args() -> argparse.Namespace:
 def main() -> int:
     args = parse_args()
     try:
+        if args.packet is None:
+            if args.out is not None:
+                raise AssertionError("--out requires --packet")
+            run_default_self_test()
+            print("Pilot readiness self-test passed: positive and negative paths validated")
+            return 0
+
         packet_path = args.packet if args.packet.is_absolute() else ROOT / args.packet
         out_path = args.out if args.out is None or args.out.is_absolute() else ROOT / args.out
-        packet = validate_packet(packet_path, run_full_schema_validator=not args.skip_schema_suite)
-        report = build_readiness(packet)
-        validate_readiness_schema(report)
-        if out_path is not None:
-            write_json(out_path, report)
-        if report["readiness_status"].startswith("blocked") and not args.allow_blocked:
-            raise AssertionError(f"pilot readiness blocked: {report['blocking_reasons']}")
+        report = run_readiness_for_packet(
+            packet_path,
+            out_path=out_path,
+            allow_blocked=args.allow_blocked,
+            run_full_schema_validator=not args.skip_schema_suite,
+        )
     except AssertionError as exc:
         print(f"Pilot readiness check failed: {exc}", file=sys.stderr)
         return 1
