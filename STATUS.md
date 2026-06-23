@@ -2,19 +2,19 @@
 
 ```yaml
 project: EV4 Responsive Architect
-version: 0.2.0-current-system-sync
-status: master_spec_synced_with_risk_priority_engine
+version: 0.2.1-p0-system-hardening
+status: p0_system_hardening_in_pull_request
 production_ready: false
 prompt_pack_release_ready: false
-current_branch: main
+current_branch: p0-system-hardening
 ```
 
 ## Current Phase
 
 ```yaml
 current_phase:
-  name: real_evidence_collection_ready
-  goal: collect real smart-home connector evidence in Issue #8, create a real submitted evidence packet, run readiness, dry-run/shadow-mode authorization, and generate risk-priority assessment from real artifacts
+  name: p0_system_hardening
+  goal: close evidence capability enums, conflict resolution, failure map, final audit, handoff ingest failure policy, and fast-path eligibility before real evidence execution
 ```
 
 ## Release Boundary
@@ -38,6 +38,7 @@ Allowed now:
 - parameterized risk-priority assessment validation
 - generated risk-priority assessment report
 - synchronized master specification
+- P0 system hardening validation
 ```
 
 Forbidden now:
@@ -54,17 +55,18 @@ Forbidden now:
 - average score used to override a hard gate
 - ready verdict while blocker failure exists
 - repair risk without required mitigation checks
+- screenshot evidence claiming CSS cause, DOM structure, computed style, accessibility pass, or production readiness
 ```
 
 ## Immediate Backlog
 
 ```yaml
-must_do_next:
+must_do_next_after_p0_merge:
   - collect real smart-home connector evidence in Issue #8
   - create EVIDENCE_INTAKE_PACKET.submitted.json with packet_origin=real_issue_submission
   - run submitted-shadow-mode only after sample marker and issue reference gates pass
   - start shadow-mode pilot only when readiness is ready or partial_ready_with_visible_flags
-  - generate risk-priority assessment only after readiness report and pilot run record exist
+  - generate failure map, final audit, and risk-priority assessment from real artifacts
 ```
 
 ## Completed Foundation
@@ -85,6 +87,7 @@ evidence_intake_validation:
   validates:
     - intake_packet_schema
     - per_item_evidence_quality
+    - closed_evidence_capability_enums
     - privacy_review
     - breakpoint_claim_scope
 
@@ -120,10 +123,20 @@ risk_priority_engine:
     - sample_vs_real_assessment_boundary
 
 master_spec_sync:
-  status: in_pull_request
+  status: merged
   validates:
     - master_status_matches_repo_state
     - schema_inventory_matches_current_validation_layers
     - pilot_mode_matches_machine_checked_harness
     - release_boundary_matches_STATUS
+
+p0_system_hardening:
+  status: in_pull_request
+  validates:
+    - evidence_capability_closed_enums
+    - conflict_resolution_blocking_behavior
+    - responsive_failure_map_unknown_gate
+    - responsive_final_audit_handoff_gate
+    - handoff_ingest_failure_policy
+    - fast_path_eligibility_checklist
 ```

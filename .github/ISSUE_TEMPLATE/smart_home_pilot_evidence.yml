@@ -32,13 +32,32 @@ body:
     id: evidence_intake_packet_json
     attributes:
       label: Evidence Intake Packet JSON
-      description: Paste a machine-readable packet matching ev4-responsive-evidence-intake-packet@1.0.0. Required before the pilot can start.
+      description: Paste a machine-readable packet matching ev4-responsive-evidence-intake-packet@1.1.0. Required before the pilot can start.
       placeholder: |
         {
-          "schema": "ev4-responsive-evidence-intake-packet@1.0.0",
+          "schema": "ev4-responsive-evidence-intake-packet@1.1.0",
           "packet_id": "SHP-INTAKE-001",
-          "packet_status": "submitted"
+          "packet_status": "submitted",
+          "packet_origin": "real_issue_submission"
         }
+    validations:
+      required: true
+
+  - type: textarea
+    id: evidence_capability_claims
+    attributes:
+      label: Evidence capability claims
+      description: State closed-enum can_support/cannot_support values for every evidence item. Screenshots must not claim CSS cause, DOM order, computed CSS, accessibility pass, or production readiness.
+      placeholder: |
+        desktop:
+          can_support:
+            - visible_viewport_state
+            - visible_collision
+          cannot_support:
+            - exact_css_cause
+            - dom_reading_order
+            - accessibility_pass
+            - production_ready_claim
     validations:
       required: true
 
@@ -81,13 +100,15 @@ body:
     id: tablet_evidence
     attributes:
       label: Tablet evidence
-      description: Attach or link tablet screenshot and describe source, viewport label/width, visible symptoms, and evidence quality.
+      description: Attach or link tablet screenshot and describe source, viewport label/width, visible symptoms, evidence quality, and closed capability claims.
       placeholder: |
         file_name: tablet-768.png
         source: frontend | editor
         viewport_label_or_width:
         quality_level:
         confidence_cap:
+        can_support:
+        cannot_support:
         visible_symptoms:
     validations:
       required: true
@@ -96,13 +117,15 @@ body:
     id: mobile_evidence
     attributes:
       label: Mobile evidence
-      description: Attach or link mobile screenshot and describe source, viewport label/width, visible symptoms, and evidence quality.
+      description: Attach or link mobile screenshot and describe source, viewport label/width, visible symptoms, evidence quality, and closed capability claims.
       placeholder: |
         file_name: mobile-390.png
         source: frontend | editor
         viewport_label_or_width:
         quality_level:
         confidence_cap:
+        can_support:
+        cannot_support:
         visible_symptoms:
     validations:
       required: true
