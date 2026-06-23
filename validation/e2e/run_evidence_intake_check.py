@@ -8,6 +8,7 @@ content, Playwright visual regression, accessibility pass, or production readine
 
 from __future__ import annotations
 
+import argparse
 import json
 import subprocess
 import sys
@@ -17,7 +18,7 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parents[2]
 VALIDATOR = ROOT / "validation" / "schema_validator" / "validate_schemas.py"
-VALID_PACKET = ROOT / "validation" / "fixtures" / "valid" / "evidence_intake_packet.valid.json"
+DEFAULT_PACKET = ROOT / "validation" / "fixtures" / "valid" / "evidence_intake_packet.valid.json"
 
 MINIMUM_DESKTOP_MUST_NOT_REGRESS = {
     "meaningful_text_visibility",
@@ -120,15 +121,39 @@ def validate_completion_and_verdict(packet: dict[str, Any]) -> None:
         raise AssertionError("allowed intake verdict must not carry blocker_conflicts")
 
 
-def main() -> int:
-    try:
+def validate_packet(packet_path: Path, *, run_full_schema_validator: bool = True) -> dict[str, Any]:
+    if run_full_schema_validator:
         run_schema_validator()
-        packet = load_json(VALID_PACKET)
-        validate_desktop_baseline(packet)
-        validate_evidence_items(packet)
-        validate_breakpoint_policy(packet)
-        validate_privacy_review(packet)
-        validate_completion_and_verdict(packet)
+    packet = load_json(packet_path)
+    validate_desktop_baseline(packet)
+    validate_evidence_items(packet)
+    validate_breakpoint_policy(packet)
+    validate_privacy_review(packet)
+    validate_completion_and_verdict(packet)
+    return packet
+
+
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description="Validate an EV4 responsive evidence intake packet.")
+    parser.add_argument(
+        "--packet",
+        type=Path,
+        default=DEFAULT_PACKET,
+        help="Path to the evidence intake packet JSON. Defaults to the valid fixture.",
+    )
+    parser.add_argument(
+        "--skip-schema-suite",
+        action="store_true",
+        help="Skip the full schema/fixture suite and validate only the submitted packet semantics.",
+    )
+    return parser.parse_args()
+
+
+def main() -> int:
+    args = parse_args()
+    try:
+        packet_path = args.packet if args.packet.is_absolute() else ROOT / args.packet
+        validate_packet(packet_path, run_full_schema_validator=not args.skip_schema_suite)
     except AssertionError as exc:
         print(f"Evidence intake check failed: {exc}", file=sys.stderr)
         return 1
