@@ -145,89 +145,30 @@ def build_readiness(packet: dict[str, Any]) -> dict[str, Any]:
     conflict_summary = build_conflict_summary(verdict.get("blocker_conflicts", []))
     if verdict.get("status") != "allowed" or verdict.get("pilot_allowed_to_start") is not True:
         if verdict.get("missing_required_items"):
-            blocking.append(
-                blocking_reason(
-                    "missing_required_evidence",
-                    "intake_verdict.missing_required_items",
-                    "Provide all missing intake packet evidence before starting pilot.",
-                )
-            )
+            blocking.append(blocking_reason("missing_required_evidence", "intake_verdict.missing_required_items", "Provide all missing intake packet evidence before starting pilot."))
         if verdict.get("blocker_conflicts"):
-            blocking.append(
-                blocking_reason(
-                    "selected_candidate_conflict",
-                    "intake_verdict.blocker_conflicts",
-                    "Resolve blocker conflicts or route back to the owning EV4 stage.",
-                )
-            )
+            blocking.append(blocking_reason("selected_candidate_conflict", "intake_verdict.blocker_conflicts", "Resolve blocker conflicts or route back to the owning EV4 stage."))
         if not verdict.get("missing_required_items") and not verdict.get("blocker_conflicts"):
-            blocking.append(
-                blocking_reason(
-                    "intake_verdict_does_not_allow_pilot_start",
-                    "intake_verdict",
-                    "Repair the intake verdict so pilot_allowed_to_start is true only when evidence is complete.",
-                )
-            )
+            blocking.append(blocking_reason("intake_verdict_does_not_allow_pilot_start", "intake_verdict", "Repair the intake verdict so pilot_allowed_to_start is true only when evidence is complete."))
 
     bp_source = packet["breakpoint_inventory"]["source"]
     if bp_source in {"user_declaration", "fallback_default_with_unverified_label"}:
-        flags.append(
-            visible_flag(
-                "breakpoint_source_not_export_verified",
-                "medium",
-                "breakpoint_inventory.source",
-                "Carry this flag into the pilot report and forbid release-ready claims.",
-            )
-        )
+        flags.append(visible_flag("breakpoint_source_not_export_verified", "medium", "breakpoint_inventory.source", "Carry this flag into the pilot report and forbid release-ready claims."))
 
     if packet["breakpoint_inventory"]["claim_scope"].get("may_claim_release_ready") is not False:
-        blocking.append(
-            blocking_reason(
-                "breakpoint_claim_scope_allows_release_ready",
-                "breakpoint_inventory.claim_scope.may_claim_release_ready",
-                "Set may_claim_release_ready=false unless project settings/export and release evidence exist.",
-            )
-        )
+        blocking.append(blocking_reason("breakpoint_claim_scope_allows_release_ready", "breakpoint_inventory.claim_scope.may_claim_release_ready", "Set may_claim_release_ready=false unless project settings/export and release evidence exist."))
 
     for item in packet["evidence_items"]:
         if item["downstream_allowed_use"].get("validation_claim") != "no":
-            blocking.append(
-                blocking_reason(
-                    "evidence_allows_validation_claim",
-                    f"evidence_items.{item['evidence_id']}.downstream_allowed_use.validation_claim",
-                    "Visual or limited evidence must not authorize validation claims.",
-                )
-            )
+            blocking.append(blocking_reason("evidence_allows_validation_claim", f"evidence_items.{item['evidence_id']}.downstream_allowed_use.validation_claim", "Visual or limited evidence must not authorize validation claims."))
         if item["quality_level"] in {"L1_static_visual_only", "L2_frontend_visual_with_viewport"}:
-            flags.append(
-                visible_flag(
-                    "visual_only_evidence",
-                    "medium",
-                    f"evidence_items.{item['evidence_id']}.quality_level",
-                    "Carry this flag into observation/failure mapping; do not infer DOM, CSS cause, or accessibility pass.",
-                )
-            )
+            flags.append(visible_flag("visual_only_evidence", "medium", f"evidence_items.{item['evidence_id']}.quality_level", "Carry this flag into observation/failure mapping; do not infer DOM, CSS cause, or accessibility pass."))
 
     flags.extend(
         [
-            visible_flag(
-                "no_live_render_evidence",
-                "note",
-                "validation_boundary.live_elementor_render_validated",
-                "Do not claim live Elementor rendering validation.",
-            ),
-            visible_flag(
-                "no_export_json_evidence",
-                "note",
-                "validation_boundary.export_json_validated",
-                "Do not claim export JSON validation.",
-            ),
-            visible_flag(
-                "accessibility_not_validated",
-                "note",
-                "validation_boundary.accessibility_pass_claimed",
-                "Do not claim accessibility pass; run accessibility gate on real DOM if needed.",
-            ),
+            visible_flag("no_live_render_evidence", "note", "validation_boundary.live_elementor_render_validated", "Do not claim live Elementor rendering validation."),
+            visible_flag("no_export_json_evidence", "note", "validation_boundary.export_json_validated", "Do not claim export JSON validation."),
+            visible_flag("accessibility_not_validated", "note", "validation_boundary.accessibility_pass_claimed", "Do not claim accessibility pass; run accessibility gate on real DOM if needed."),
         ]
     )
 
@@ -288,8 +229,9 @@ def run_readiness_for_packet(
     out_path: Path | None,
     allow_blocked: bool,
     run_full_schema_validator: bool,
+    submitted_mode: bool = False,
 ) -> dict[str, Any]:
-    packet = validate_packet(packet_path, run_full_schema_validator=run_full_schema_validator)
+    packet = validate_packet(packet_path, run_full_schema_validator=run_full_schema_validator, submitted_mode=submitted_mode)
     report = build_readiness(packet)
     validate_readiness_schema(report)
     if out_path is not None:
@@ -369,6 +311,11 @@ def parse_args() -> argparse.Namespace:
         action="store_true",
         help="Skip full fixture suite when validating a submitted packet.",
     )
+    parser.add_argument(
+        "--submitted-mode",
+        action="store_true",
+        help="Require --packet to reference a real submitted evidence packet and reject sample, fixture, template, and placeholder evidence.",
+    )
     return parser.parse_args()
 
 
@@ -378,6 +325,8 @@ def main() -> int:
         if args.packet is None:
             if args.out is not None:
                 raise AssertionError("--out requires --packet")
+            if args.submitted_mode:
+                raise AssertionError("--submitted-mode requires an explicit --packet path")
             run_default_self_test()
             print("Pilot readiness self-test passed: positive, missing-evidence, and conflict paths validated")
             return 0
@@ -389,6 +338,7 @@ def main() -> int:
             out_path=out_path,
             allow_blocked=args.allow_blocked,
             run_full_schema_validator=not args.skip_schema_suite,
+            submitted_mode=args.submitted_mode,
         )
     except AssertionError as exc:
         print(f"Pilot readiness check failed: {exc}", file=sys.stderr)

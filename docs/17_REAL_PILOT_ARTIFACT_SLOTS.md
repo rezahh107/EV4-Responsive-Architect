@@ -70,14 +70,21 @@ Submitted shadow mode must reject sample packets:
 python validation/e2e/run_pilot_dry_run_check.py --submitted-shadow-mode
 ```
 
-Real submitted execution may only be attempted after Issue #8 provides a real packet and readiness passes. The expected command shape is:
+Real submitted validation may only be attempted after Issue #8 provides a real packet. Use `--submitted-mode` so validators reject sample fixtures, templates, placeholder paths, and non-`real_issue_submission` packets:
 
 ```bash
-python validation/e2e/run_evidence_intake_check.py --packet artifacts/real-pilot/submitted/EVIDENCE_INTAKE_PACKET.submitted.json
-python validation/e2e/run_pilot_readiness_check.py --packet artifacts/real-pilot/submitted/EVIDENCE_INTAKE_PACKET.submitted.json --out artifacts/real-pilot/readiness/PILOT_READINESS_REPORT.submitted.json
+python validation/e2e/run_evidence_intake_check.py --packet artifacts/real-pilot/submitted/EVIDENCE_INTAKE_PACKET.submitted.json --submitted-mode
+python validation/e2e/run_pilot_readiness_check.py --packet artifacts/real-pilot/submitted/EVIDENCE_INTAKE_PACKET.submitted.json --submitted-mode --out artifacts/real-pilot/readiness/PILOT_READINESS_REPORT.submitted.json
 ```
 
-If the runner does not yet support those exact arguments, that is a blocker to be fixed before real submitted execution. Do not emulate submitted mode with sample fixtures.
+For local debugging of one submitted packet, `--skip-schema-suite` may be added to skip the full fixture suite, but it does not weaken submitted-mode sample rejection:
+
+```bash
+python validation/e2e/run_evidence_intake_check.py --packet artifacts/real-pilot/submitted/EVIDENCE_INTAKE_PACKET.submitted.json --submitted-mode --skip-schema-suite
+python validation/e2e/run_pilot_readiness_check.py --packet artifacts/real-pilot/submitted/EVIDENCE_INTAKE_PACKET.submitted.json --submitted-mode --skip-schema-suite --out /tmp/PILOT_READINESS_REPORT.submitted.json
+```
+
+Do not emulate submitted mode with sample fixtures.
 
 ## Reviewer checklist
 
@@ -88,6 +95,7 @@ Before treating any real-pilot artifact as evidence, verify:
 - artifact_status is not template_only
 - is_real_evidence is true
 - sample markers are absent
+- packet_origin is real_issue_submission
 - screenshots/hashes/export references point to real submitted artifacts
 - privacy review is complete
 - pilot_authorized remains false until readiness explicitly passes
