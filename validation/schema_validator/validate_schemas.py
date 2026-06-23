@@ -30,11 +30,7 @@ ROOT = Path(__file__).resolve().parents[2]
 SCHEMAS_DIR = ROOT / "schemas"
 FIXTURES_DIR = ROOT / "validation" / "fixtures"
 
-FORBIDDEN_CSS_SELECTOR_TOKENS = (
-    "html",
-    "body",
-    "*",
-    "#",
+FORBIDDEN_ELEMENTOR_CLASSES = (
     ".elementor-widget-container",
     ".elementor-section",
     ".elementor-container",
@@ -66,6 +62,23 @@ def validate_schema_files() -> dict[str, Any]:
     return schemas
 
 
+def normalize_selector(selector: str) -> str:
+    """Normalize selector whitespace without changing selector semantics."""
+
+    return re.sub(r"\s+", " ", selector.strip())
+
+
+def strip_attribute_selectors(selector: str) -> str:
+    """Remove attribute selectors before token checks.
+
+    Attribute values may legally contain characters such as # or *:
+    [href="#section"], [class*="card"]. Those must not be interpreted as
+    ID selectors or universal selectors by the coarse semantic safety gate.
+    """
+
+    return re.sub(r"\[[^\]]*\]", "", selector)
+
+
 def semantic_validate_css_selector(payload: dict[str, Any]) -> None:
     if payload.get("schema") != "ev4-responsive-css-selector-safety@1.0.0":
         return
@@ -74,15 +87,25 @@ def semantic_validate_css_selector(payload: dict[str, Any]) -> None:
     root_class = payload.get("project_root_class", "")
     target_class = payload.get("target_node_class", "")
 
-    if not selector.startswith(f".{root_class} .{target_class}"):
+    normalized = normalize_selector(selector)
+    required_prefix = f".{root_class} .{target_class}"
+    if not normalized.startswith(required_prefix):
         raise SemanticValidationError(
             "CSS selector must start with .<project_root_class> .<target_node_class>"
         )
 
-    normalized = re.sub(r"\s+", " ", selector.strip())
-    for token in FORBIDDEN_CSS_SELECTOR_TOKENS:
-        if token in normalized:
-            raise SemanticValidationError(f"CSS selector uses forbidden token: {token}")
+    no_attributes = strip_attribute_selectors(normalized)
+
+    if re.search(r"(?<![\w.-])(html|body)(?![\w-])", no_attributes):
+        raise SemanticValidationError("CSS selector uses forbidden tag selector: html or body")
+    if "*" in no_attributes:
+        raise SemanticValidationError("CSS selector uses forbidden universal selector: *")
+    if "#" in no_attributes:
+        raise SemanticValidationError("CSS selector uses forbidden ID selector: #")
+
+    for class_token in FORBIDDEN_ELEMENTOR_CLASSES:
+        if class_token in no_attributes:
+            raise SemanticValidationError(f"CSS selector uses forbidden Elementor class: {class_token}")
 
     if payload.get("uses_important") and not payload.get("important_justification"):
         raise SemanticValidationError("!important requires important_justification")
