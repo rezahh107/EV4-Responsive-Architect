@@ -29,3 +29,6 @@ jobs:
 
       - name: Run evidence intake validation
         run: python validation/e2e/run_evidence_intake_check.py
+
+      - name: Run pilot readiness validation
+        run: python validation/e2e/run_pilot_readiness_check.py
