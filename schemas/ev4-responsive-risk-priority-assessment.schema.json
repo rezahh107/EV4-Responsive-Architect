@@ -8,6 +8,7 @@
     "schema",
     "assessment_id",
     "assessment_scope",
+    "assessment_metadata",
     "evidence_basis",
     "hard_gates",
     "failure_items",
@@ -18,7 +19,7 @@
   ],
   "properties": {
     "schema": {
-      "const": "ev4-responsive-risk-priority-assessment@1.0.0"
+      "const": "ev4-responsive-risk-priority-assessment@1.1.0"
     },
     "assessment_id": {
       "type": "string",
@@ -32,37 +33,125 @@
         "builder_repair_batch_risk_priority"
       ]
     },
+    "assessment_metadata": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "generated_at_utc",
+        "generator_command",
+        "git_ref_or_commit"
+      ],
+      "properties": {
+        "generated_at_utc": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "generator_command": {
+          "type": "string",
+          "minLength": 1
+        },
+        "git_ref_or_commit": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
     "evidence_basis": {
       "type": "object",
       "additionalProperties": false,
       "required": [
         "source_packet_ref",
+        "source_packet_sha256",
         "readiness_report_ref",
+        "readiness_report_sha256",
         "pilot_run_record_ref",
+        "pilot_run_record_sha256",
+        "packet_origin",
+        "run_mode",
+        "issue_reference",
+        "evidence_refs",
         "evidence_confidence_floor"
       ],
       "properties": {
-        "source_packet_ref": { "type": "string", "minLength": 1 },
-        "readiness_report_ref": { "type": "string", "minLength": 1 },
-        "pilot_run_record_ref": { "type": "string", "minLength": 1 },
+        "source_packet_ref": {
+          "type": "string",
+          "minLength": 1
+        },
+        "source_packet_sha256": {
+          "type": "string",
+          "pattern": "^sha256-[a-f0-9]{64}$"
+        },
+        "readiness_report_ref": {
+          "type": "string",
+          "minLength": 1
+        },
+        "readiness_report_sha256": {
+          "type": "string",
+          "pattern": "^sha256-[a-f0-9]{64}$"
+        },
+        "pilot_run_record_ref": {
+          "type": "string",
+          "minLength": 1
+        },
+        "pilot_run_record_sha256": {
+          "type": "string",
+          "pattern": "^sha256-[a-f0-9]{64}$"
+        },
+        "packet_origin": {
+          "type": "string",
+          "enum": [
+            "sample_contract_fixture",
+            "real_issue_submission"
+          ]
+        },
+        "run_mode": {
+          "type": "string",
+          "enum": [
+            "sample_submitted_packet_dry_run",
+            "submitted_packet_shadow_mode"
+          ]
+        },
+        "issue_reference": {
+          "type": "string",
+          "minLength": 1
+        },
+        "evidence_refs": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
         "evidence_confidence_floor": {
           "type": "string",
-          "enum": ["high", "medium", "low"]
+          "enum": [
+            "high",
+            "medium",
+            "low"
+          ]
         }
       }
     },
     "hard_gates": {
       "type": "array",
       "minItems": 1,
-      "items": { "$ref": "#/$defs/hard_gate" }
+      "items": {
+        "$ref": "#/$defs/hard_gate"
+      }
     },
     "failure_items": {
       "type": "array",
-      "items": { "$ref": "#/$defs/failure_item" }
+      "items": {
+        "$ref": "#/$defs/failure_item"
+      }
     },
     "repair_risks": {
       "type": "array",
-      "items": { "$ref": "#/$defs/repair_risk" }
+      "items": {
+        "$ref": "#/$defs/repair_risk"
+      }
     },
     "aggregate_verdict": {
       "type": "object",
@@ -96,58 +185,118 @@
         },
         "blocking_gate_refs": {
           "type": "array",
-          "items": { "type": "string", "minLength": 1 }
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
         },
         "carry_forward_flags": {
           "type": "array",
-          "items": { "$ref": "#/$defs/visible_flag" }
+          "items": {
+            "$ref": "#/$defs/visible_flag"
+          }
         }
       },
       "allOf": [
         {
-          "if": { "properties": { "status": { "const": "ready_for_repair_planning" } } },
+          "if": {
+            "properties": {
+              "status": {
+                "const": "ready_for_repair_planning"
+              }
+            }
+          },
           "then": {
             "properties": {
-              "required_next_action": { "const": "plan_repair_batch" },
-              "blocking_gate_refs": { "maxItems": 0 },
-              "carry_forward_flags": { "maxItems": 0 }
+              "required_next_action": {
+                "const": "plan_repair_batch"
+              },
+              "blocking_gate_refs": {
+                "maxItems": 0
+              },
+              "carry_forward_flags": {
+                "maxItems": 0
+              }
             }
           }
         },
         {
-          "if": { "properties": { "status": { "const": "ready_with_visible_flags" } } },
+          "if": {
+            "properties": {
+              "status": {
+                "const": "ready_with_visible_flags"
+              }
+            }
+          },
           "then": {
             "properties": {
-              "required_next_action": { "const": "plan_repair_batch_with_visible_flags" },
-              "blocking_gate_refs": { "maxItems": 0 },
-              "carry_forward_flags": { "minItems": 1 }
+              "required_next_action": {
+                "const": "plan_repair_batch_with_visible_flags"
+              },
+              "blocking_gate_refs": {
+                "maxItems": 0
+              },
+              "carry_forward_flags": {
+                "minItems": 1
+              }
             }
           }
         },
         {
-          "if": { "properties": { "status": { "const": "blocked_by_hard_gate" } } },
+          "if": {
+            "properties": {
+              "status": {
+                "const": "blocked_by_hard_gate"
+              }
+            }
+          },
           "then": {
             "properties": {
-              "required_next_action": { "const": "resolve_hard_gate_failure" },
-              "blocking_gate_refs": { "minItems": 1 }
+              "required_next_action": {
+                "const": "resolve_hard_gate_failure"
+              },
+              "blocking_gate_refs": {
+                "minItems": 1
+              }
             }
           }
         },
         {
-          "if": { "properties": { "status": { "const": "blocked_by_insufficient_evidence" } } },
+          "if": {
+            "properties": {
+              "status": {
+                "const": "blocked_by_insufficient_evidence"
+              }
+            }
+          },
           "then": {
             "properties": {
-              "required_next_action": { "const": "request_missing_evidence" },
-              "blocking_gate_refs": { "minItems": 1 }
+              "required_next_action": {
+                "const": "request_missing_evidence"
+              },
+              "blocking_gate_refs": {
+                "minItems": 1
+              }
             }
           }
         },
         {
-          "if": { "properties": { "status": { "const": "route_back_to_main_pipeline" } } },
+          "if": {
+            "properties": {
+              "status": {
+                "const": "route_back_to_main_pipeline"
+              }
+            }
+          },
           "then": {
             "properties": {
-              "required_next_action": { "const": "route_back_to_main_pipeline" },
-              "blocking_gate_refs": { "minItems": 1 }
+              "required_next_action": {
+                "const": "route_back_to_main_pipeline"
+              },
+              "blocking_gate_refs": {
+                "minItems": 1
+              }
             }
           }
         }
@@ -166,27 +315,103 @@
         "accessibility_passed_claimed"
       ],
       "properties": {
-        "numeric_score_claimed": { "const": false },
-        "average_score_used_to_override_gate": { "const": false },
-        "production_ready_claimed": { "const": false },
-        "release_ready_claimed": { "const": false },
-        "live_render_validated_claimed": { "const": false },
-        "export_json_validated_claimed": { "const": false },
-        "accessibility_passed_claimed": { "const": false }
+        "numeric_score_claimed": {
+          "const": false
+        },
+        "average_score_used_to_override_gate": {
+          "const": false
+        },
+        "production_ready_claimed": {
+          "const": false
+        },
+        "release_ready_claimed": {
+          "const": false
+        },
+        "live_render_validated_claimed": {
+          "const": false
+        },
+        "export_json_validated_claimed": {
+          "const": false
+        },
+        "accessibility_passed_claimed": {
+          "const": false
+        }
       }
     },
     "audit_notes": {
       "type": "array",
-      "items": { "type": "string", "minLength": 1 }
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
     }
   },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "evidence_basis": {
+            "properties": {
+              "packet_origin": {
+                "const": "sample_contract_fixture"
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "assessment_scope": {
+            "not": {
+              "const": "submitted_evidence_risk_priority"
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "evidence_basis": {
+            "properties": {
+              "run_mode": {
+                "const": "submitted_packet_shadow_mode"
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "evidence_basis": {
+            "properties": {
+              "packet_origin": {
+                "const": "real_issue_submission"
+              }
+            }
+          }
+        }
+      }
+    }
+  ],
   "$defs": {
     "hard_gate": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["gate_id", "gate_code", "status", "blocker", "source_ref", "required_resolution"],
+      "required": [
+        "gate_id",
+        "gate_code",
+        "status",
+        "blocking_if_failed",
+        "gate_weight",
+        "source_ref",
+        "required_resolution"
+      ],
       "properties": {
-        "gate_id": { "type": "string", "minLength": 1 },
+        "gate_id": {
+          "type": "string",
+          "minLength": 1
+        },
         "gate_code": {
           "type": "string",
           "enum": [
@@ -200,10 +425,32 @@
             "unresolved_unknown_required_for_repair_selection"
           ]
         },
-        "status": { "type": "string", "enum": ["pass", "fail", "not_triggered"] },
-        "blocker": { "type": "boolean" },
-        "source_ref": { "type": "string", "minLength": 1 },
-        "required_resolution": { "type": "string", "minLength": 1 }
+        "status": {
+          "type": "string",
+          "enum": [
+            "pass",
+            "fail",
+            "not_triggered"
+          ]
+        },
+        "blocking_if_failed": {
+          "type": "boolean"
+        },
+        "gate_weight": {
+          "type": "string",
+          "enum": [
+            "hard_blocker",
+            "soft_warning"
+          ]
+        },
+        "source_ref": {
+          "type": "string",
+          "minLength": 1
+        },
+        "required_resolution": {
+          "type": "string",
+          "minLength": 1
+        }
       }
     },
     "failure_item": {
@@ -223,40 +470,224 @@
         "selected_for_repair"
       ],
       "properties": {
-        "failure_id": { "type": "string", "minLength": 1 },
-        "evidence_refs": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } },
-        "severity": { "type": "string", "enum": ["blocker", "high", "medium", "minor", "note"] },
-        "priority": { "type": "string", "enum": ["P0", "P1", "P2", "P3", "note"] },
-        "evidence_confidence": { "type": "string", "enum": ["high", "medium", "low"] },
-        "repair_urgency": { "type": "string", "enum": ["immediate", "next", "later", "monitor"] },
-        "desktop_regression_risk": { "type": "string", "enum": ["high", "medium", "low", "not_applicable"] },
-        "accessibility_risk": { "type": "string", "enum": ["high", "medium", "low", "not_triggered", "unknown"] },
-        "architecture_mutation_risk": { "type": "string", "enum": ["high", "medium", "low", "none"] },
-        "owner_route": { "type": "string", "enum": ["responsive_repair", "main_pipeline_reroute", "evidence_request", "no_action_note"] },
-        "selected_for_repair": { "type": "boolean" }
+        "failure_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "evidence_refs": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "severity": {
+          "type": "string",
+          "enum": [
+            "blocker",
+            "high",
+            "medium",
+            "minor",
+            "note"
+          ]
+        },
+        "priority": {
+          "type": "string",
+          "enum": [
+            "P0",
+            "P1",
+            "P2",
+            "P3",
+            "note"
+          ]
+        },
+        "evidence_confidence": {
+          "type": "string",
+          "enum": [
+            "high",
+            "medium",
+            "low"
+          ]
+        },
+        "repair_urgency": {
+          "type": "string",
+          "enum": [
+            "immediate",
+            "next",
+            "later",
+            "monitor"
+          ]
+        },
+        "desktop_regression_risk": {
+          "type": "string",
+          "enum": [
+            "high",
+            "medium",
+            "low",
+            "not_applicable"
+          ]
+        },
+        "accessibility_risk": {
+          "type": "string",
+          "enum": [
+            "high",
+            "medium",
+            "low",
+            "not_triggered",
+            "unknown"
+          ]
+        },
+        "architecture_mutation_risk": {
+          "type": "string",
+          "enum": [
+            "high",
+            "medium",
+            "low",
+            "none"
+          ]
+        },
+        "owner_route": {
+          "type": "string",
+          "enum": [
+            "responsive_repair",
+            "main_pipeline_reroute",
+            "evidence_request",
+            "no_action_note"
+          ]
+        },
+        "selected_for_repair": {
+          "type": "boolean"
+        }
       }
     },
     "repair_risk": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["repair_id", "failure_refs", "risk_level", "risk_drivers", "required_mitigation"],
+      "required": [
+        "repair_id",
+        "failure_refs",
+        "risk_level",
+        "desktop_regression_risk",
+        "accessibility_risk",
+        "architecture_mutation_risk",
+        "risk_drivers",
+        "required_mitigation",
+        "mitigation_checks"
+      ],
       "properties": {
-        "repair_id": { "type": "string", "minLength": 1 },
-        "failure_refs": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } },
-        "risk_level": { "type": "string", "enum": ["high", "medium", "low"] },
-        "risk_drivers": { "type": "array", "items": { "type": "string", "minLength": 1 } },
-        "required_mitigation": { "type": "string", "minLength": 1 }
+        "repair_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "failure_refs": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "risk_level": {
+          "type": "string",
+          "enum": [
+            "high",
+            "medium",
+            "low"
+          ]
+        },
+        "desktop_regression_risk": {
+          "type": "string",
+          "enum": [
+            "high",
+            "medium",
+            "low",
+            "not_applicable"
+          ]
+        },
+        "accessibility_risk": {
+          "type": "string",
+          "enum": [
+            "high",
+            "medium",
+            "low",
+            "not_triggered",
+            "unknown"
+          ]
+        },
+        "architecture_mutation_risk": {
+          "type": "string",
+          "enum": [
+            "high",
+            "medium",
+            "low",
+            "none"
+          ]
+        },
+        "risk_drivers": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required_mitigation": {
+          "type": "string",
+          "minLength": 10
+        },
+        "mitigation_checks": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "enum": [
+              "desktop_recheck_each_step",
+              "accessibility_gate_required",
+              "css_selector_safety_check",
+              "rollback_plan_required",
+              "route_back_to_main_pipeline_required",
+              "request_more_evidence_before_selection",
+              "builder_step_precheck_required"
+            ]
+          },
+          "uniqueItems": true
+        }
       }
     },
     "visible_flag": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["flag_code", "severity", "source_ref", "required_handling"],
+      "required": [
+        "flag_code",
+        "severity",
+        "source_ref",
+        "required_handling"
+      ],
       "properties": {
-        "flag_code": { "type": "string", "minLength": 1 },
-        "severity": { "type": "string", "enum": ["high", "medium", "low", "note"] },
-        "source_ref": { "type": "string", "minLength": 1 },
-        "required_handling": { "type": "string", "minLength": 1 }
+        "flag_code": {
+          "type": "string",
+          "minLength": 1
+        },
+        "severity": {
+          "type": "string",
+          "enum": [
+            "high",
+            "medium",
+            "low",
+            "note"
+          ]
+        },
+        "source_ref": {
+          "type": "string",
+          "minLength": 1
+        },
+        "required_handling": {
+          "type": "string",
+          "minLength": 1
+        }
       }
     }
   }

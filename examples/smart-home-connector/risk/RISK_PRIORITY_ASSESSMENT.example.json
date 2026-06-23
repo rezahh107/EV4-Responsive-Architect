@@ -1,5 +1,4 @@
 {
-  "$schema_file": "ev4-responsive-risk-priority-assessment.schema.json",
   "schema": "ev4-responsive-risk-priority-assessment@1.1.0",
   "assessment_id": "RISK-SHADOW-001",
   "assessment_scope": "shadow_mode_pilot_risk_priority",
