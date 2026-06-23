@@ -1,0 +1,72 @@
+{
+  "$schema_file": "ev4-responsive-pilot-run-record.schema.json",
+  "schema": "ev4-responsive-pilot-run-record@1.0.0",
+  "run_id": "SHP-SAMPLE-SUBMITTED-001-DRY-RUN",
+  "run_mode": "sample_submitted_packet_dry_run",
+  "section_id": "smart-home-connector",
+  "source_packet_id": "SHP-SAMPLE-SUBMITTED-001",
+  "source_readiness_id": "SHP-SAMPLE-SUBMITTED-001-READINESS",
+  "readiness_status": "partial_ready_with_visible_flags",
+  "authorization_scope": "shadow_mode_only_with_visible_flags",
+  "dry_run_only": true,
+  "stage_sequence_verified": {
+    "pilot_manifest_checked": true,
+    "required_sequence_complete": true,
+    "execution_templates_present": true
+  },
+  "generated_artifacts": [
+    {
+      "artifact_path": "examples/smart-home-connector/readiness/PILOT_READINESS_REPORT.dry-run.generated.json",
+      "artifact_type": "readiness_report",
+      "status": "generated"
+    },
+    {
+      "artifact_path": "examples/smart-home-connector/runs/PILOT_RUN_RECORD.dry-run.generated.json",
+      "artifact_type": "run_record",
+      "status": "generated"
+    },
+    {
+      "artifact_path": "examples/smart-home-connector/PILOT_MANIFEST.json",
+      "artifact_type": "template_reference",
+      "status": "referenced"
+    }
+  ],
+  "carry_forward_flags": [
+    {
+      "flag_code": "breakpoint_source_not_export_verified",
+      "severity": "medium",
+      "source_ref": "breakpoint_inventory.source",
+      "required_handling": "Carry this flag into the pilot report and forbid release-ready claims."
+    },
+    {
+      "flag_code": "visual_only_evidence",
+      "severity": "medium",
+      "source_ref": "evidence_items.EVD-DESKTOP-SAMPLE-001.quality_level",
+      "required_handling": "Carry this flag into observation/failure mapping; do not infer DOM, CSS cause, or accessibility pass."
+    }
+  ],
+  "blocked_actions": [
+    "do_not_claim_production_ready",
+    "do_not_claim_live_render_validated",
+    "do_not_claim_export_json_validated",
+    "do_not_claim_accessibility_passed",
+    "do_not_claim_playwright_visual_regression_validated",
+    "do_not_replace_real_evidence_with_sample_packet"
+  ],
+  "forbidden_claims": [
+    "production_ready",
+    "release_ready",
+    "live_render_validated",
+    "export_json_validated",
+    "accessibility_passed",
+    "playwright_visual_regression_validated"
+  ],
+  "validation_boundary": {
+    "live_elementor_render_validated": {"value": false, "reason": "no_live_render_evidence"},
+    "export_json_validated": {"value": false, "reason": "no_export_json_supplied"},
+    "playwright_visual_regression_validated": {"value": false, "reason": "no_playwright_visual_regression_run"},
+    "accessibility_pass_claimed": {"value": false, "reason": "accessibility_gate_not_executed_on_real_dom"},
+    "production_ready_claimed": {"value": false, "reason": "release_gate_evidence_missing"}
+  },
+  "next_allowed_action": "collect_real_evidence"
+}
