@@ -16,6 +16,10 @@ DEFAULT_PACKET = ROOT / "validation" / "fixtures" / "valid" / "evidence_intake_p
 MINIMUM_DESKTOP_MUST_NOT_REGRESS = {"meaningful_text_visibility", "feature_card_group_integrity", "visual_core_presence", "connector_layer_containment", "no_horizontal_overflow"}
 REQUIRED_VIEWPORT_EVIDENCE = {"desktop", "tablet", "mobile"}
 SAMPLE_MARKERS = ("SAMPLE", "sample", ".sample", "placeholder")
+SCREENSHOT_CAPABILITIES = {"visible_viewport_state", "visible_collision", "visible_overflow_symptom", "visible_clipping", "visible_spacing_issue", "visible_alignment_issue", "visible_order_symptom", "visible_content_visibility_state", "visible_connector_position_symptom"}
+VISUAL_ONLY_TYPES = {"frontend_screenshot", "editor_screenshot"}
+VISUAL_MUST_NOT_SUPPORT = {"computed_css_value", "dom_structure_observation", "exported_widget_structure", "exported_control_value", "declared_breakpoint_value"}
+VISUAL_REQUIRED_CANNOT_SUPPORT = {"exact_css_cause", "dom_reading_order", "accessibility_pass", "production_ready_claim"}
 
 
 def load_json(path: Path) -> dict[str, Any]:
@@ -95,6 +99,21 @@ def validate_desktop_baseline(packet: dict[str, Any]) -> None:
         raise AssertionError(f"desktop must_not_regress missing required items: {sorted(missing)}")
 
 
+def validate_evidence_capabilities(item: dict[str, Any]) -> None:
+    evidence_type = item.get("evidence_type")
+    can_support = set(item.get("can_support", []))
+    cannot_support = set(item.get("cannot_support", []))
+    if evidence_type in VISUAL_ONLY_TYPES:
+        illegal = sorted(can_support & VISUAL_MUST_NOT_SUPPORT)
+        if illegal:
+            raise AssertionError(f"{item['evidence_id']} visual evidence claims unsupported capabilities: {illegal}")
+        if not can_support <= SCREENSHOT_CAPABILITIES:
+            raise AssertionError(f"{item['evidence_id']} visual evidence can_support must use screenshot capability enum")
+        missing = sorted(VISUAL_REQUIRED_CANNOT_SUPPORT - cannot_support)
+        if missing:
+            raise AssertionError(f"{item['evidence_id']} visual evidence missing cannot_support limits: {missing}")
+
+
 def validate_evidence_items(packet: dict[str, Any]) -> None:
     items = packet["evidence_items"]
     missing_viewports = REQUIRED_VIEWPORT_EVIDENCE - {item.get("viewport") for item in items}
@@ -104,6 +123,7 @@ def validate_evidence_items(packet: dict[str, Any]) -> None:
     if len(ids) != len(set(ids)):
         raise AssertionError("evidence_ids must be unique")
     for item in items:
+        validate_evidence_capabilities(item)
         if item.get("quality_level") in {"L1_static_visual_only", "L2_frontend_visual_with_viewport"} and item.get("downstream_allowed_use", {}).get("validation_claim") != "no":
             raise AssertionError(f"{item['evidence_id']} visual-only evidence must not allow validation claims")
         if not item.get("known_limitations"):
