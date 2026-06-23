@@ -1,0 +1,80 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ev4-responsive-pilot-manifest.schema.json",
+  "title": "EV4 Responsive Pilot Manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "pilot_id",
+    "mode",
+    "production_ready",
+    "manifest_status",
+    "required_sequence",
+    "skipped_or_conditional_stages",
+    "pilot_files",
+    "template_placeholder_policy",
+    "required_lite_gates",
+    "stop_conditions",
+    "forbidden_claims"
+  ],
+  "properties": {
+    "schema": {"const": "ev4-responsive-pilot-manifest@0.1.0"},
+    "pilot_id": {"type": "string", "minLength": 1},
+    "mode": {"enum": ["shadow_mode_manual"]},
+    "production_ready": {"const": false},
+    "manifest_status": {"enum": ["pilot_harness_required", "pilot_harness_ready", "pilot_executed"]},
+    "required_sequence": {
+      "type": "array",
+      "minItems": 10,
+      "items": {"type": "string", "minLength": 1},
+      "uniqueItems": true
+    },
+    "skipped_or_conditional_stages": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["status"],
+        "properties": {
+          "status": {"enum": ["skipped_for_shadow_mode", "collapsed_into_failure_map_template_for_pilot", "collapsed_into_final_audit_lite_for_pilot", "conditional", "required_if_builder_executes_steps"]},
+          "reason": {"type": "string"},
+          "runs_when": {"type": "string"}
+        }
+      }
+    },
+    "pilot_files": {
+      "type": "object",
+      "minProperties": 8,
+      "additionalProperties": {"type": "string", "minLength": 1}
+    },
+    "template_placeholder_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["template_files_may_contain_TODO", "executable_pilot_files_must_not_contain_TODO", "executable_pilot_files_must_not_contain_null_for_required_claims"],
+      "properties": {
+        "template_files_may_contain_TODO": {"type": "boolean"},
+        "executable_pilot_files_must_not_contain_TODO": {"type": "boolean"},
+        "executable_pilot_files_must_not_contain_null_for_required_claims": {"type": "boolean"}
+      }
+    },
+    "required_lite_gates": {
+      "type": "array",
+      "minItems": 5,
+      "items": {"type": "string", "minLength": 1},
+      "uniqueItems": true
+    },
+    "stop_conditions": {
+      "type": "array",
+      "minItems": 5,
+      "items": {"type": "string", "minLength": 1},
+      "uniqueItems": true
+    },
+    "forbidden_claims": {
+      "type": "array",
+      "minItems": 5,
+      "items": {"type": "string", "minLength": 1},
+      "uniqueItems": true
+    }
+  }
+}
