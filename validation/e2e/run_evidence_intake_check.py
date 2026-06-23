@@ -61,6 +61,16 @@ def sample_indicators(packet: dict[str, Any], packet_path: Path | None = None) -
     return indicators
 
 
+def validate_submitted_mode(packet: dict[str, Any], packet_path: Path) -> None:
+    if packet_path == DEFAULT_PACKET:
+        raise AssertionError("submitted mode requires an explicit non-default --packet path")
+    if packet.get("packet_origin") != "real_issue_submission":
+        raise AssertionError("submitted mode only accepts packet_origin=real_issue_submission")
+    indicators = sample_indicators(packet, packet_path)
+    if indicators:
+        raise AssertionError(f"submitted mode rejects sample or placeholder markers: {indicators}")
+
+
 def validate_packet_origin(packet: dict[str, Any], packet_path: Path) -> None:
     origin = packet["packet_origin"]
     issue_reference = packet["issue_reference"]
@@ -161,10 +171,12 @@ def validate_completion_and_verdict(packet: dict[str, Any]) -> None:
         raise AssertionError("real_shadow_mode_only must set real_pilot_allowed_to_start=true")
 
 
-def validate_packet(packet_path: Path, *, run_full_schema_validator: bool = True) -> dict[str, Any]:
+def validate_packet(packet_path: Path, *, run_full_schema_validator: bool = True, submitted_mode: bool = False) -> dict[str, Any]:
     if run_full_schema_validator:
         run_schema_validator()
     packet = load_json(packet_path)
+    if submitted_mode:
+        validate_submitted_mode(packet, packet_path)
     validate_packet_origin(packet, packet_path)
     validate_desktop_baseline(packet)
     validate_evidence_items(packet)
@@ -178,6 +190,7 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Validate an EV4 responsive evidence intake packet.")
     parser.add_argument("--packet", type=Path, default=DEFAULT_PACKET, help="Path to the evidence intake packet JSON. Defaults to the valid fixture.")
     parser.add_argument("--skip-schema-suite", action="store_true", help="Skip the full schema/fixture suite and validate only the submitted packet semantics.")
+    parser.add_argument("--submitted-mode", action="store_true", help="Require an explicit real_issue_submission packet and reject sample, fixture, template, and placeholder evidence.")
     return parser.parse_args()
 
 
@@ -185,7 +198,7 @@ def main() -> int:
     args = parse_args()
     try:
         packet_path = args.packet if args.packet.is_absolute() else ROOT / args.packet
-        validate_packet(packet_path, run_full_schema_validator=not args.skip_schema_suite)
+        validate_packet(packet_path, run_full_schema_validator=not args.skip_schema_suite, submitted_mode=args.submitted_mode)
     except AssertionError as exc:
         print(f"Evidence intake check failed: {exc}", file=sys.stderr)
         return 1
