@@ -22,6 +22,7 @@ from validation.e2e.run_evidence_intake_check import validate_packet  # noqa: E4
 
 DEFAULT_PACKET = ROOT / "validation" / "fixtures" / "valid" / "evidence_intake_packet.valid.json"
 DEFAULT_BLOCKED_PACKET = ROOT / "validation" / "fixtures" / "valid" / "evidence_intake_packet.blocked.valid.json"
+DEFAULT_CONFLICT_PACKET = ROOT / "validation" / "fixtures" / "valid" / "evidence_intake_packet.conflict.valid.json"
 READINESS_SCHEMA = ROOT / "schemas" / "ev4-responsive-pilot-readiness.schema.json"
 DEFAULT_OUT = ROOT / "examples" / "smart-home-connector" / "readiness" / "PILOT_READINESS_REPORT.generated.json"
 
@@ -298,6 +299,22 @@ def run_readiness_for_packet(
     return report
 
 
+def assert_conflict_report_blocks_pilot(report: dict[str, Any]) -> None:
+    if report["readiness_status"] != "blocked_conflicting_evidence":
+        raise AssertionError("conflict fixture must map to blocked_conflicting_evidence")
+    summary = report["evidence_conflict_summary"]
+    if summary["unresolved_blocking_conflict_count"] != 1:
+        raise AssertionError("conflict fixture must carry exactly one unresolved blocking conflict")
+    if len(summary["conflict_records"]) != summary["unresolved_blocking_conflict_count"]:
+        raise AssertionError("conflict record count must match unresolved conflict count")
+    record = summary["conflict_records"][0]
+    if record["conflict_status"] != "unresolved_blocking" or record["downstream_effect"] != "blocked":
+        raise AssertionError("unresolved conflict record must remain blocking downstream")
+    authorization = report["pilot_start_authorization"]
+    if authorization["authorized"] is not False or authorization["authorization_scope"] != "not_authorized":
+        raise AssertionError("unresolved conflict must not authorize pilot start")
+
+
 def run_default_self_test() -> None:
     positive = run_readiness_for_packet(
         DEFAULT_PACKET,
@@ -318,6 +335,14 @@ def run_default_self_test() -> None:
         raise AssertionError("blocked fixture must map to blocked_missing_evidence")
     if negative["evidence_conflict_summary"]["unresolved_blocking_conflict_count"] != 0:
         raise AssertionError("missing-evidence fixture must not invent conflict records")
+
+    conflict = run_readiness_for_packet(
+        DEFAULT_CONFLICT_PACKET,
+        out_path=None,
+        allow_blocked=True,
+        run_full_schema_validator=False,
+    )
+    assert_conflict_report_blocks_pilot(conflict)
 
 
 def parse_args() -> argparse.Namespace:
@@ -354,7 +379,7 @@ def main() -> int:
             if args.out is not None:
                 raise AssertionError("--out requires --packet")
             run_default_self_test()
-            print("Pilot readiness self-test passed: positive and negative paths validated")
+            print("Pilot readiness self-test passed: positive, missing-evidence, and conflict paths validated")
             return 0
 
         packet_path = args.packet if args.packet.is_absolute() else ROOT / args.packet

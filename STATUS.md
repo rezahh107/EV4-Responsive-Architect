@@ -2,7 +2,7 @@
 
 ```yaml
 project: EV4 Responsive Architect
-version: 0.2.9-bridge-semantic-validator
+version: 0.2.10-conflict-readiness-check
 status: rolling_queue_controller_active
 production_ready: false
 prompt_pack_release_ready: false
@@ -43,6 +43,7 @@ Allowed now:
 - real pilot artifact slot templates
 - rolling queue refresh planning
 - Issue #8 to packet bridge semantic validation
+- generated readiness conflict-report validation
 ```
 
 Forbidden now:
@@ -77,10 +78,10 @@ controller_policy:
 
 ```yaml
 next_tasks:
-  - RQ-0007 add conflict-summary generated-report check
   - RQ-0008 harden rolling queue schema compatibility
   - RQ-0009 add submitted-mode command support
   - RQ-0010 refresh rolling queue after validation hardening set
+  - RQ-0011 add readiness generated-output policy check
 ```
 
 ## Completed Foundation
@@ -106,6 +107,7 @@ automation_reliability_rules: done
 real_pilot_artifact_slots: done
 rolling_queue_refresh: done
 issue_packet_bridge_semantic_validator: done
+generated_conflict_report_check: done
 ```
 
 ## Automation Reliability State
