@@ -37,8 +37,24 @@ jobs:
       - name: Run evidence intake validation
         run: python validation/e2e/run_evidence_intake_check.py
 
+      - name: Reject sample packet in evidence submitted mode
+        run: |
+          if python validation/e2e/run_evidence_intake_check.py --packet validation/fixtures/valid/evidence_intake_packet.valid.json --submitted-mode --skip-schema-suite; then
+            echo "Sample packet was unexpectedly accepted by evidence submitted mode"
+            exit 1
+          fi
+          echo "Sample packet correctly rejected by evidence submitted mode"
+
       - name: Run pilot readiness validation
         run: python validation/e2e/run_pilot_readiness_check.py
+
+      - name: Reject sample packet in readiness submitted mode
+        run: |
+          if python validation/e2e/run_pilot_readiness_check.py --packet validation/fixtures/valid/evidence_intake_packet.valid.json --submitted-mode --skip-schema-suite; then
+            echo "Sample packet was unexpectedly accepted by readiness submitted mode"
+            exit 1
+          fi
+          echo "Sample packet correctly rejected by readiness submitted mode"
 
       - name: Run pilot dry-run validation
         run: python validation/e2e/run_pilot_dry_run_check.py
