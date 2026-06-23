@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "ev4-responsive-pilot-readiness.schema.json",
+  "$id": "https://ev4-responsive.local/schemas/ev4-responsive-pilot-readiness.schema.json",
   "title": "EV4 Responsive Pilot Readiness Report",
   "type": "object",
   "additionalProperties": false,
@@ -13,7 +13,8 @@
     "blocking_reasons",
     "visible_flags",
     "required_next_action",
-    "validation_boundary"
+    "validation_boundary",
+    "pilot_start_authorization"
   ],
   "properties": {
     "schema": {"const": "ev4-responsive-pilot-readiness@1.0.0"},
@@ -32,13 +33,22 @@
     },
     "blocking_reasons": {
       "type": "array",
-      "items": {"type": "string"}
+      "items": {"$ref": "#/$defs/blocking_reason"}
     },
     "visible_flags": {
       "type": "array",
-      "items": {"type": "string"}
+      "items": {"$ref": "#/$defs/visible_flag"}
     },
-    "required_next_action": {"type": "string", "minLength": 1},
+    "required_next_action": {
+      "enum": [
+        "start_shadow_mode_pilot",
+        "start_shadow_mode_pilot_with_visible_flags",
+        "request_missing_evidence",
+        "resolve_conflicting_evidence",
+        "complete_privacy_review",
+        "repair_schema_or_semantic_packet"
+      ]
+    },
     "validation_boundary": {
       "type": "object",
       "additionalProperties": false,
@@ -50,11 +60,174 @@
         "production_ready_claimed"
       ],
       "properties": {
-        "live_elementor_render_validated": {"const": false},
-        "export_json_validated": {"const": false},
-        "playwright_visual_regression_validated": {"const": false},
-        "accessibility_pass_claimed": {"const": false},
-        "production_ready_claimed": {"const": false}
+        "live_elementor_render_validated": {"$ref": "#/$defs/false_claim_boundary"},
+        "export_json_validated": {"$ref": "#/$defs/false_claim_boundary"},
+        "playwright_visual_regression_validated": {"$ref": "#/$defs/false_claim_boundary"},
+        "accessibility_pass_claimed": {"$ref": "#/$defs/false_claim_boundary"},
+        "production_ready_claimed": {"$ref": "#/$defs/false_claim_boundary"}
+      }
+    },
+    "pilot_start_authorization": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "authorized",
+        "authorization_scope",
+        "forbidden_claims",
+        "required_carry_forward_flags"
+      ],
+      "properties": {
+        "authorized": {"type": "boolean"},
+        "authorization_scope": {
+          "enum": [
+            "shadow_mode_only",
+            "shadow_mode_only_with_visible_flags",
+            "not_authorized"
+          ]
+        },
+        "forbidden_claims": {
+          "type": "array",
+          "minItems": 5,
+          "items": {
+            "enum": [
+              "production_ready",
+              "release_ready",
+              "live_render_validated",
+              "export_json_validated",
+              "accessibility_passed",
+              "playwright_visual_regression_validated"
+            ]
+          }
+        },
+        "required_carry_forward_flags": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/visible_flag"}
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"readiness_status": {"const": "ready_for_shadow_mode_pilot"}}},
+      "then": {
+        "properties": {
+          "blocking_reasons": {"maxItems": 0},
+          "visible_flags": {"maxItems": 0},
+          "required_next_action": {"const": "start_shadow_mode_pilot"},
+          "pilot_start_authorization": {
+            "properties": {
+              "authorized": {"const": true},
+              "authorization_scope": {"const": "shadow_mode_only"},
+              "required_carry_forward_flags": {"maxItems": 0}
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {"properties": {"readiness_status": {"const": "partial_ready_with_visible_flags"}}},
+      "then": {
+        "properties": {
+          "blocking_reasons": {"maxItems": 0},
+          "visible_flags": {"minItems": 1},
+          "required_next_action": {"const": "start_shadow_mode_pilot_with_visible_flags"},
+          "pilot_start_authorization": {
+            "properties": {
+              "authorized": {"const": true},
+              "authorization_scope": {"const": "shadow_mode_only_with_visible_flags"},
+              "required_carry_forward_flags": {"minItems": 1}
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {"properties": {"readiness_status": {"pattern": "^blocked_"}}},
+      "then": {
+        "properties": {
+          "blocking_reasons": {"minItems": 1},
+          "pilot_start_authorization": {
+            "properties": {
+              "authorized": {"const": false},
+              "authorization_scope": {"const": "not_authorized"}
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {"properties": {"readiness_status": {"const": "blocked_missing_evidence"}}},
+      "then": {"properties": {"required_next_action": {"const": "request_missing_evidence"}}}
+    },
+    {
+      "if": {"properties": {"readiness_status": {"const": "blocked_conflicting_evidence"}}},
+      "then": {"properties": {"required_next_action": {"const": "resolve_conflicting_evidence"}}}
+    },
+    {
+      "if": {"properties": {"readiness_status": {"const": "blocked_privacy_review_missing"}}},
+      "then": {"properties": {"required_next_action": {"const": "complete_privacy_review"}}}
+    },
+    {
+      "if": {"properties": {"readiness_status": {"const": "blocked_schema_or_semantic_failure"}}},
+      "then": {"properties": {"required_next_action": {"const": "repair_schema_or_semantic_packet"}}}
+    }
+  ],
+  "$defs": {
+    "blocking_reason": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["reason_code", "severity", "source_ref", "required_resolution"],
+      "properties": {
+        "reason_code": {
+          "enum": [
+            "missing_required_evidence",
+            "privacy_review_incomplete",
+            "selected_candidate_conflict",
+            "schema_or_semantic_failure",
+            "intake_verdict_does_not_allow_pilot_start",
+            "breakpoint_claim_scope_allows_release_ready",
+            "evidence_allows_validation_claim"
+          ]
+        },
+        "severity": {"enum": ["blocker", "high"]},
+        "source_ref": {"type": "string", "minLength": 1},
+        "required_resolution": {"type": "string", "minLength": 1}
+      }
+    },
+    "visible_flag": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["flag_code", "severity", "source_ref", "required_handling"],
+      "properties": {
+        "flag_code": {
+          "enum": [
+            "breakpoint_source_not_export_verified",
+            "visual_only_evidence",
+            "no_live_render_evidence",
+            "no_export_json_evidence",
+            "accessibility_not_validated"
+          ]
+        },
+        "severity": {"enum": ["medium", "minor", "note"]},
+        "source_ref": {"type": "string", "minLength": 1},
+        "required_handling": {"type": "string", "minLength": 1}
+      }
+    },
+    "false_claim_boundary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["value", "reason"],
+      "properties": {
+        "value": {"const": false},
+        "reason": {
+          "enum": [
+            "no_live_render_evidence",
+            "no_export_json_supplied",
+            "no_playwright_visual_regression_run",
+            "accessibility_gate_not_executed_on_real_dom",
+            "release_gate_evidence_missing"
+          ]
+        }
       }
     }
   }
