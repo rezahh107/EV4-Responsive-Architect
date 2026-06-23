@@ -93,7 +93,7 @@ master_spec_sync: done
 p0_system_hardening: done
 p0_semantic_gate_hardening: done
 rolling_queue_controller: done
-status_issue_sync: in_progress
+status_issue_sync: done
 ```
 
 ## Real Evidence State
