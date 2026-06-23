@@ -4,22 +4,72 @@
   "title": "EV4 Responsive Main Pipeline Input",
   "type": "object",
   "additionalProperties": false,
+  "$defs": {
+    "id": { "type": "string", "minLength": 1, "pattern": "^[A-Za-z0-9_.:/@-]+$" },
+    "nonEmptyString": { "type": "string", "minLength": 1 },
+    "stringArray": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+    "contentHash": { "type": "string", "pattern": "^sha256:[a-fA-F0-9]{64}$" }
+  },
   "required": [
     "schema",
+    "input_payload_id",
     "selected_candidate_id",
     "selected_candidate_family",
     "payload_identity_hashes",
+    "required_main_pipeline_inputs",
+    "inherited_structure_tree_status",
+    "inherited_class_map_status",
+    "inherited_content_editability_map_status",
+    "inherited_overlay_decoration_map_status",
+    "inherited_responsive_structure_contract_status",
     "inherited_unknowns",
     "inherited_audit_flags",
-    "input_authorization_status"
+    "input_authorization_status",
+    "blocked_reason",
+    "repair_routes"
   ],
   "properties": {
     "schema": { "const": "ev4-responsive-main-input@1.0.0" },
-    "selected_candidate_id": { "type": "string", "minLength": 1 },
-    "selected_candidate_family": { "type": "string", "minLength": 1 },
-    "payload_identity_hashes": { "type": "object", "additionalProperties": { "type": "string" } },
-    "inherited_unknowns": { "type": "array", "items": { "type": "string" } },
-    "inherited_audit_flags": { "type": "array", "items": { "type": "string" } },
-    "input_authorization_status": { "enum": ["authorized", "blocked_missing_input", "blocked_schema_mismatch", "blocked_identity_conflict"] }
-  }
+    "input_payload_id": { "$ref": "#/$defs/id" },
+    "selected_candidate_id": { "$ref": "#/$defs/nonEmptyString" },
+    "selected_candidate_family": { "$ref": "#/$defs/nonEmptyString" },
+    "payload_identity_hashes": {
+      "type": "object",
+      "additionalProperties": { "$ref": "#/$defs/contentHash" },
+      "required": ["Build_Tree_Payload", "Implementation_Payload", "Handoff_Payload"]
+    },
+    "required_main_pipeline_inputs": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["Recommendation_Payload", "Build_Tree_Payload", "Implementation_Payload", "Final_Audit_Payload", "Handoff_Payload", "EV4_DEBUG_TRACE"],
+      "properties": {
+        "Recommendation_Payload": { "enum": ["present", "missing", "stale", "schema_mismatch", "identity_conflict"] },
+        "Build_Tree_Payload": { "enum": ["present", "missing", "stale", "schema_mismatch", "identity_conflict"] },
+        "Implementation_Payload": { "enum": ["present", "missing", "stale", "schema_mismatch", "identity_conflict"] },
+        "Final_Audit_Payload": { "enum": ["present", "missing", "stale", "schema_mismatch", "identity_conflict"] },
+        "Handoff_Payload": { "enum": ["present", "missing", "stale", "schema_mismatch", "identity_conflict"] },
+        "EV4_DEBUG_TRACE": { "enum": ["present", "missing", "stale", "schema_mismatch", "identity_conflict"] }
+      }
+    },
+    "inherited_structure_tree_status": { "enum": ["present", "partial", "missing"] },
+    "inherited_class_map_status": { "enum": ["present", "partial", "missing"] },
+    "inherited_content_editability_map_status": { "enum": ["present", "partial", "missing"] },
+    "inherited_overlay_decoration_map_status": { "enum": ["present", "partial", "missing"] },
+    "inherited_responsive_structure_contract_status": { "enum": ["present", "partial", "missing"] },
+    "inherited_unknowns": { "$ref": "#/$defs/stringArray" },
+    "inherited_audit_flags": { "$ref": "#/$defs/stringArray" },
+    "input_authorization_status": { "enum": ["authorized", "blocked_missing_input", "blocked_schema_mismatch", "blocked_identity_conflict", "blocked_stale_payload"] },
+    "blocked_reason": { "type": ["string", "null"] },
+    "repair_routes": { "$ref": "#/$defs/stringArray" }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "input_authorization_status": { "const": "authorized" } } },
+      "then": { "properties": { "blocked_reason": { "type": "null" } } }
+    },
+    {
+      "if": { "not": { "properties": { "input_authorization_status": { "const": "authorized" } } } },
+      "then": { "properties": { "blocked_reason": { "type": "string", "minLength": 1 } } }
+    }
+  ]
 }
