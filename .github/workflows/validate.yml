@@ -26,3 +26,6 @@ jobs:
 
       - name: Run E2E-001 textual fixture validation
         run: python validation/e2e/run_e2e_001.py
+
+      - name: Run evidence intake validation
+        run: python validation/e2e/run_evidence_intake_check.py
