@@ -4,33 +4,66 @@
   "title": "EV4 Responsive Evidence Ingest",
   "type": "object",
   "additionalProperties": false,
+  "$defs": {
+    "id": { "type": "string", "minLength": 1, "pattern": "^[A-Za-z0-9_.:/@-]+$" },
+    "nonEmptyString": { "type": "string", "minLength": 1 },
+    "stringArray": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+    "viewport": { "enum": ["desktop", "tablet", "mobile", "custom", "unknown"] },
+    "confidence": { "enum": ["low", "medium", "high"] },
+    "evidenceLabel": { "enum": ["SUPPORTED_EVIDENCE", "PARTIALLY_SUPPORTED_EVIDENCE", "INFERRED_EVIDENCE", "ABSENT_EVIDENCE", "CONTRADICTED_EVIDENCE", "UNRESOLVED_CONFLICT", "NON_APPLICABLE"] },
+    "evidenceType": { "enum": ["static_screenshot", "frontend_screenshot", "editor_screenshot", "frontend_video", "resize_sweep", "elementor_export_json", "dom_inspector_note", "browser_console_note", "user_observation"] },
+    "captureSource": { "enum": ["frontend", "elementor_editor", "export", "mixed", "unknown"] },
+    "qualityLevel": { "enum": ["L1_static_visual_only", "L2_frontend_visual_with_viewport", "L3_resize_sweep_or_video", "L4_dom_or_export_structure", "L5_live_render_plus_dom_plus_visual"] }
+  },
   "required": ["schema", "evidence_items", "evidence_quality_map"],
   "properties": {
     "schema": { "const": "ev4-responsive-evidence-ingest@1.0.0" },
     "evidence_items": {
       "type": "array",
+      "minItems": 1,
       "items": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["evidence_id", "evidence_type", "viewport_label", "capture_source", "limitation"],
+        "required": ["evidence_id", "evidence_type", "viewport_label", "capture_source", "source_ref", "limitation", "evidence_label"],
         "properties": {
-          "evidence_id": { "type": "string" },
-          "evidence_type": { "enum": ["static_screenshot", "frontend_screenshot", "editor_screenshot", "frontend_video", "resize_sweep", "elementor_export_json", "dom_inspector_note", "browser_console_note", "user_observation"] },
-          "viewport_label": { "enum": ["desktop", "tablet", "mobile", "custom", "unknown"] },
-          "capture_source": { "enum": ["frontend", "elementor_editor", "export", "mixed", "unknown"] },
-          "limitation": { "type": "string" }
+          "evidence_id": { "$ref": "#/$defs/id" },
+          "evidence_type": { "$ref": "#/$defs/evidenceType" },
+          "viewport_label": { "$ref": "#/$defs/viewport" },
+          "viewport_width": { "type": ["integer", "null"], "minimum": 1 },
+          "viewport_height": { "type": ["integer", "null"], "minimum": 1 },
+          "capture_source": { "$ref": "#/$defs/captureSource" },
+          "source_ref": { "$ref": "#/$defs/nonEmptyString" },
+          "supplied_by": { "enum": ["user", "builder", "validator", "automated_capture", "unknown"] },
+          "limitation": { "$ref": "#/$defs/nonEmptyString" },
+          "content_hash_if_file": { "type": ["string", "null"], "pattern": "^(sha256:[a-fA-F0-9]{64})?$" },
+          "evidence_label": { "$ref": "#/$defs/evidenceLabel" }
         }
       }
     },
     "evidence_quality_map": {
       "type": "array",
+      "minItems": 1,
       "items": {
         "type": "object",
-        "required": ["evidence_id", "quality_level", "confidence_cap"],
+        "additionalProperties": false,
+        "required": ["evidence_id", "quality_level", "can_support", "cannot_support", "confidence_cap", "downstream_allowed_use"],
         "properties": {
-          "evidence_id": { "type": "string" },
-          "quality_level": { "enum": ["L1_static_visual_only", "L2_frontend_visual_with_viewport", "L3_resize_sweep_or_video", "L4_dom_or_export_structure", "L5_live_render_plus_dom_plus_visual"] },
-          "confidence_cap": { "enum": ["low", "medium", "high"] }
+          "evidence_id": { "$ref": "#/$defs/id" },
+          "quality_level": { "$ref": "#/$defs/qualityLevel" },
+          "can_support": { "$ref": "#/$defs/stringArray" },
+          "cannot_support": { "$ref": "#/$defs/stringArray" },
+          "confidence_cap": { "$ref": "#/$defs/confidence" },
+          "downstream_allowed_use": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["observation", "diagnosis", "repair_selection", "validation_claim"],
+            "properties": {
+              "observation": { "enum": ["yes", "no"] },
+              "diagnosis": { "enum": ["yes", "no", "limited"] },
+              "repair_selection": { "enum": ["yes", "no", "limited"] },
+              "validation_claim": { "enum": ["yes", "no", "limited"] }
+            }
+          }
         }
       }
     }
