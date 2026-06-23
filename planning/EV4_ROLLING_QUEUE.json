@@ -1,0 +1,169 @@
+{
+  "schema": "ev4-responsive-rolling-queue@1.0.0",
+  "queue_id": "EV4RQ-0001-SMART-HOME",
+  "project": "EV4 Responsive Architect",
+  "queue_status": "active",
+  "controller_policy": {
+    "one_task_per_run": true,
+    "critique_same_task": true,
+    "small_in_scope_fixes_allowed": true,
+    "ci_required_for_repo_changes": true,
+    "minimum_pending_tasks": 4,
+    "refresh_every_nth_task": 5,
+    "real_pilot_requires_submitted_packet_and_readiness_pass": true
+  },
+  "active_cycle": {
+    "cycle_id": "CYCLE-001",
+    "cycle_status": "active",
+    "started_from_status": "p0_semantic_gates_merged_but_status_and_issue_pending_sync",
+    "goal": "Prepare the repository for real smart-home evidence execution while preserving sample-vs-real and production-claim boundaries.",
+    "task_order": ["RQ-0001", "RQ-0002", "RQ-0003", "RQ-0004", "RQ-0005"]
+  },
+  "tasks": [
+    {
+      "task_id": "RQ-0001",
+      "cycle_position": 1,
+      "task_type": "repo_sync",
+      "status": "pending",
+      "title": "Sync STATUS and Issue 8",
+      "objective": "Update STATUS.md and Issue #8 to reflect P0 semantic gate completion, current schema versions, and real evidence requirements.",
+      "allowed_work": [
+        "Update STATUS.md current phase and completed foundation.",
+        "Update Issue #8 body or add a structured comment with current packet schema, evidence requirements, and validation commands.",
+        "Preserve all release-boundary prohibitions."
+      ],
+      "forbidden_work": [
+        "Do not claim real evidence has been submitted.",
+        "Do not start the real pilot.",
+        "Do not mark Issue #8 complete."
+      ],
+      "requires_real_evidence": false,
+      "expected_artifacts": ["STATUS.md", "Issue #8 update or comment"],
+      "acceptance_criteria": [
+        "STATUS reflects main branch and P0 semantic gates as merged.",
+        "Issue #8 references the current evidence intake schema and sample-vs-real rules.",
+        "CI passes for any repo file change."
+      ],
+      "critique_required": true,
+      "dependencies": []
+    },
+    {
+      "task_id": "RQ-0002",
+      "cycle_position": 2,
+      "task_type": "evidence_bridge",
+      "status": "pending",
+      "title": "Define Issue-to-Packet bridge",
+      "objective": "Create a bounded mapper specification for converting Issue #8 evidence into EVIDENCE_INTAKE_PACKET.submitted.json without silently inventing missing evidence.",
+      "allowed_work": [
+        "Add a mapper contract or guide for issue fields to packet fields.",
+        "Define required failure modes for missing attachments, missing hashes, privacy omissions, and sample markers.",
+        "Add validation fixtures if a machine-readable mapping contract is introduced."
+      ],
+      "forbidden_work": [
+        "Do not scrape or infer evidence that is not present.",
+        "Do not auto-generate a submitted packet from incomplete Issue text.",
+        "Do not bypass privacy review."
+      ],
+      "requires_real_evidence": false,
+      "expected_artifacts": ["Issue-to-packet mapping spec", "Optional mapper schema or validator"],
+      "acceptance_criteria": [
+        "Mapping has explicit blocked states for missing or conflicting evidence.",
+        "No text-only issue field is treated as proof of a visual artifact.",
+        "Sample-vs-real safety is preserved."
+      ],
+      "critique_required": true,
+      "dependencies": ["RQ-0001"]
+    },
+    {
+      "task_id": "RQ-0003",
+      "cycle_position": 3,
+      "task_type": "validator_hardening",
+      "status": "pending",
+      "title": "Add conflict summary to readiness path",
+      "objective": "Add an evidence_conflict_summary requirement to readiness or related artifacts so unresolved conflicts remain visible and blocked downstream.",
+      "allowed_work": [
+        "Extend readiness/conflict artifacts or docs with conflict summary fields.",
+        "Add semantic checks for unresolved conflict carry-forward.",
+        "Add negative fixtures for hidden unresolved conflicts."
+      ],
+      "forbidden_work": [
+        "Do not resolve conflicts by source priority without recording the decision.",
+        "Do not allow unresolved conflicts to become visible flags if they are blockers.",
+        "Do not loosen existing readiness gates."
+      ],
+      "requires_real_evidence": false,
+      "expected_artifacts": ["Schema or validator update", "Valid and invalid fixtures"],
+      "acceptance_criteria": [
+        "Unresolved blocking conflict cannot produce ready readiness.",
+        "Resolved conflict records source priority and rationale.",
+        "CI validates positive and negative paths."
+      ],
+      "critique_required": true,
+      "dependencies": ["RQ-0002"]
+    },
+    {
+      "task_id": "RQ-0004",
+      "cycle_position": 4,
+      "task_type": "pilot_preparation",
+      "status": "pending",
+      "title": "Prepare real pilot artifact slots",
+      "objective": "Create non-generated placeholder paths or templates for real submitted artifacts without pretending real evidence exists.",
+      "allowed_work": [
+        "Add templates for submitted packet, readiness report, failure map, risk assessment, repair plan, and final audit paths if missing.",
+        "Document exact commands for submitted mode.",
+        "Keep placeholders clearly marked as templates, not evidence."
+      ],
+      "forbidden_work": [
+        "Do not commit runtime .generated.json outputs.",
+        "Do not fabricate screenshots, hashes, or Elementor export data.",
+        "Do not mark pilot authorized."
+      ],
+      "requires_real_evidence": false,
+      "expected_artifacts": ["Template files or path manifest", "Submitted-mode command documentation"],
+      "acceptance_criteria": [
+        "Templates cannot pass as real submitted evidence.",
+        "Commands distinguish sample dry-run from real submitted mode.",
+        "Generated output policy remains enforced."
+      ],
+      "critique_required": true,
+      "dependencies": ["RQ-0003"]
+    },
+    {
+      "task_id": "RQ-0005",
+      "cycle_position": 5,
+      "task_type": "queue_refresh",
+      "status": "pending",
+      "title": "Refresh rolling queue",
+      "objective": "Audit the previous four tasks, update priorities, and write the next four bounded tasks plus the next queue-refresh task.",
+      "allowed_work": [
+        "Review PRs and CI results for RQ-0001 through RQ-0004.",
+        "Mark completed, blocked, skipped, or superseded tasks accurately.",
+        "Add the next four pending tasks and a fifth queue-refresh task."
+      ],
+      "forbidden_work": [
+        "Do not hide failed or partial tasks.",
+        "Do not schedule real pilot execution unless real evidence and readiness pass.",
+        "Do not remove release-boundary prohibitions."
+      ],
+      "requires_real_evidence": false,
+      "expected_artifacts": ["Updated planning/EV4_ROLLING_QUEUE.json", "Optional STATUS backlog update"],
+      "acceptance_criteria": [
+        "Queue has at least four pending executable tasks after refresh unless blocked on evidence.",
+        "Every fifth task remains queue_refresh.",
+        "Completed task history and blockers are preserved."
+      ],
+      "critique_required": true,
+      "dependencies": ["RQ-0001", "RQ-0002", "RQ-0003", "RQ-0004"]
+    }
+  ],
+  "forbidden_claims": [
+    "production_ready",
+    "release_ready",
+    "pixel_perfect",
+    "live_render_validated",
+    "export_json_validated",
+    "accessibility_passed",
+    "sample_packet_used_as_real_evidence",
+    "numeric_score_overrides_gate"
+  ]
+}
