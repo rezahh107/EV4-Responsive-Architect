@@ -3,18 +3,18 @@
 ```yaml
 project: EV4 Responsive Architect
 version: 0.1.0-final-draft
-status: pilot_dry_run_sample_real_safety_hardened
+status: risk_priority_rubric_added
 production_ready: false
 prompt_pack_release_ready: false
-current_branch: dryrun-hardening-v1
+current_branch: risk-priority-rubric-v1
 ```
 
 ## Current Phase
 
 ```yaml
 current_phase:
-  name: smart_home_connector_dry_run_sample_real_safety
-  goal: prevent sample submitted packets from being treated as real submitted evidence and persist traceable run records without claiming live Elementor validation
+  name: responsive_risk_priority_rubric
+  goal: rank repair risk and execution priority without numeric scoring and without allowing any gate override
 ```
 
 ## Release Boundary
@@ -34,6 +34,7 @@ Allowed now:
 - persistent pilot readiness report
 - pilot dry-run execution record
 - sample-vs-real submitted packet safety checks
+- risk and priority rubric for repair planning
 ```
 
 Forbidden now:
@@ -45,8 +46,9 @@ Forbidden now:
 - export_validated claim
 - live_render_validated claim
 - accessibility_passed claim
-- Playwright visual regression claim
 - treating sample submitted packet as real submitted evidence
+- numeric score used as readiness evidence
+- average score used to override a hard gate
 ```
 
 ## Immediate Backlog
@@ -57,6 +59,7 @@ must_do_next:
   - create EVIDENCE_INTAKE_PACKET.submitted.json with packet_origin=real_issue_submission
   - run submitted-shadow-mode only after sample marker and issue reference gates pass
   - start shadow-mode pilot only when readiness is ready or partial_ready_with_visible_flags
+  - apply risk priority assessment only after readiness report exists
 ```
 
 ## Completed Foundation
@@ -104,6 +107,16 @@ pilot_dry_run_execution:
     - pilot manifest check
     - traceable pilot run record schema
     - generated output policy
+
+risk_priority_rubric:
+  status: added
+  validates:
+    - no numeric score fields
+    - no score override claims
+    - hard gate failure cannot produce ready verdict
+    - blocker failures must be P0 immediate
+    - high architecture mutation risk routes back to main pipeline
+    - low-confidence failures cannot be selected for repair
 
 smart_home_connector_pilot:
   status: waiting_for_real_evidence
