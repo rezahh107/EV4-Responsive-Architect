@@ -1,0 +1,66 @@
+{
+  "$schema_file": "ev4-responsive-evidence-ingest.schema.json",
+  "schema": "ev4-responsive-evidence-ingest@1.0.0",
+  "evidence_items": [
+    {
+      "evidence_id": "EV-DSK-001",
+      "evidence_type": "frontend_screenshot",
+      "viewport_label": "desktop",
+      "viewport_width_px": 1440,
+      "viewport_height_px": 900,
+      "capture_source": "frontend",
+      "source_ref": "examples/smart-home-connector/screenshots/desktop-before.png",
+      "supplied_by": "user",
+      "timestamp_or_capture_order": "capture-001",
+      "file_hash_if_available": null,
+      "known_limitations": ["screenshot proves visible state only; it does not prove DOM order or exact CSS cause"],
+      "privacy_review_required": false,
+      "evidence_label": "SUPPORTED_EVIDENCE"
+    },
+    {
+      "evidence_id": "EV-MOB-001",
+      "evidence_type": "frontend_screenshot",
+      "viewport_label": "mobile",
+      "viewport_width_px": 390,
+      "viewport_height_px": 844,
+      "capture_source": "frontend",
+      "source_ref": "examples/smart-home-connector/screenshots/mobile-before.png",
+      "supplied_by": "user",
+      "timestamp_or_capture_order": "capture-002",
+      "file_hash_if_available": null,
+      "known_limitations": ["screenshot supports visible mobile symptom only; cause_status must remain unknown unless corroborated"],
+      "privacy_review_required": false,
+      "evidence_label": "PARTIALLY_SUPPORTED_EVIDENCE"
+    }
+  ],
+  "evidence_quality_map": [
+    {
+      "evidence_id": "EV-DSK-001",
+      "quality_level": "L2_frontend_visual_with_viewport",
+      "can_support": ["viewport_specific_visual_state", "visible_overflow_symptom"],
+      "cannot_support": ["exact_css_cause", "dom_reading_order", "production_ready_claim"],
+      "confidence_cap": "medium",
+      "downstream_allowed_use": {
+        "observation": "yes",
+        "diagnosis": "limited",
+        "repair_selection": "limited",
+        "validation_claim": "limited"
+      },
+      "notes": ["Desktop state is a visual baseline, not live render validation."]
+    },
+    {
+      "evidence_id": "EV-MOB-001",
+      "quality_level": "L2_frontend_visual_with_viewport",
+      "can_support": ["viewport_specific_visual_state", "visible_collision"],
+      "cannot_support": ["exact_css_cause", "exact_elementor_control", "accessibility_pass"],
+      "confidence_cap": "medium",
+      "downstream_allowed_use": {
+        "observation": "yes",
+        "diagnosis": "limited",
+        "repair_selection": "limited",
+        "validation_claim": "limited"
+      },
+      "notes": ["Mobile screenshot can create a failure candidate but cannot select repair alone."]
+    }
+  ]
+}
