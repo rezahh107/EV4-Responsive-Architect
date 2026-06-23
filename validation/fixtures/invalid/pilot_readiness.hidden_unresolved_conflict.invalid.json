@@ -1,37 +1,31 @@
 {
   "$schema_file": "ev4-responsive-pilot-readiness.schema.json",
   "schema": "ev4-responsive-pilot-readiness@1.0.0",
-  "readiness_id": "SHP-INTAKE-001-READINESS",
-  "source_packet_id": "SHP-INTAKE-001",
+  "readiness_id": "SHP-READINESS-BAD-CONFLICT-001",
+  "source_packet_id": "SHP-INTAKE-BAD-CONFLICT-001",
   "section_id": "smart-home-connector",
   "readiness_status": "partial_ready_with_visible_flags",
   "blocking_reasons": [],
   "visible_flags": [
     {
-      "flag_code": "breakpoint_source_not_export_verified",
-      "severity": "medium",
-      "source_ref": "breakpoint_inventory.source",
-      "required_handling": "Carry this flag into the pilot report and forbid release-ready claims."
-    },
-    {
       "flag_code": "visual_only_evidence",
       "severity": "medium",
       "source_ref": "evidence_items.EVD-DESKTOP-001.quality_level",
-      "required_handling": "Do not infer DOM, CSS cause, or accessibility pass from visual evidence."
+      "required_handling": "Carry visual limits forward."
     }
   ],
   "evidence_conflict_summary": {
-    "unresolved_blocking_conflict_count": 0,
-    "resolved_conflict_count": 1,
+    "unresolved_blocking_conflict_count": 1,
+    "resolved_conflict_count": 0,
     "conflict_records": [
       {
-        "conflict_id": "CFR-RESOLVED-001",
-        "conflict_status": "resolved",
-        "source_refs": ["intake_verdict.resolved_conflict_fixture"],
-        "source_priority_applied": true,
-        "winning_source": "validated_packet_field",
-        "resolution_rationale": "Fixture demonstrates that resolved conflicts must keep source priority and rationale visible.",
-        "downstream_effect": "visible_flag"
+        "conflict_id": "CFR-HIDDEN-001",
+        "conflict_status": "unresolved_blocking",
+        "source_refs": ["intake_verdict.blocker_conflicts"],
+        "source_priority_applied": false,
+        "winning_source": null,
+        "resolution_rationale": "This unresolved conflict must block readiness instead of becoming a visible flag.",
+        "downstream_effect": "blocked"
       }
     ]
   },
@@ -54,13 +48,6 @@
       "accessibility_passed",
       "playwright_visual_regression_validated"
     ],
-    "required_carry_forward_flags": [
-      {
-        "flag_code": "breakpoint_source_not_export_verified",
-        "severity": "medium",
-        "source_ref": "breakpoint_inventory.source",
-        "required_handling": "Carry this flag into the pilot report and forbid release-ready claims."
-      }
-    ]
+    "required_carry_forward_flags": []
   }
 }
