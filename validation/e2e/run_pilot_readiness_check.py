@@ -36,8 +36,8 @@ FORBIDDEN_CLAIMS = [
 
 STATUS_PRIORITY = [
     "blocked_privacy_review_missing",
-    "blocked_missing_evidence",
     "blocked_conflicting_evidence",
+    "blocked_missing_evidence",
     "blocked_schema_or_semantic_failure",
 ]
 
@@ -88,6 +88,35 @@ def visible_flag(flag_code: str, severity: str, source_ref: str, required_handli
     }
 
 
+def conflict_record(index: int, conflict: Any) -> dict[str, Any]:
+    if isinstance(conflict, dict):
+        conflict_id = str(conflict.get("conflict_id") or conflict.get("id") or f"intake-conflict-{index + 1}")
+        source_refs = conflict.get("source_refs") or conflict.get("sources") or ["intake_verdict.blocker_conflicts"]
+    else:
+        conflict_id = f"intake-conflict-{index + 1}"
+        source_refs = ["intake_verdict.blocker_conflicts"]
+    if not isinstance(source_refs, list) or not source_refs:
+        source_refs = ["intake_verdict.blocker_conflicts"]
+    return {
+        "conflict_id": conflict_id,
+        "conflict_status": "unresolved_blocking",
+        "source_refs": [str(item) for item in source_refs],
+        "source_priority_applied": False,
+        "winning_source": None,
+        "resolution_rationale": "Unresolved blocker conflict carried from evidence intake verdict.",
+        "downstream_effect": "blocked",
+    }
+
+
+def build_conflict_summary(blocker_conflicts: list[Any]) -> dict[str, Any]:
+    records = [conflict_record(index, conflict) for index, conflict in enumerate(blocker_conflicts)]
+    return {
+        "unresolved_blocking_conflict_count": len(records),
+        "resolved_conflict_count": 0,
+        "conflict_records": records,
+    }
+
+
 def choose_blocked_status(reasons: list[dict[str, Any]]) -> str:
     mapped = {REASON_STATUS_MAP.get(reason["reason_code"], "blocked_schema_or_semantic_failure") for reason in reasons}
     for status in STATUS_PRIORITY:
@@ -112,6 +141,7 @@ def build_readiness(packet: dict[str, Any]) -> dict[str, Any]:
     flags: list[dict[str, Any]] = []
 
     verdict = packet["intake_verdict"]
+    conflict_summary = build_conflict_summary(verdict.get("blocker_conflicts", []))
     if verdict.get("status") != "allowed" or verdict.get("pilot_allowed_to_start") is not True:
         if verdict.get("missing_required_items"):
             blocking.append(
@@ -224,6 +254,7 @@ def build_readiness(packet: dict[str, Any]) -> dict[str, Any]:
         "readiness_status": status,
         "blocking_reasons": blocking,
         "visible_flags": [] if status == "ready_for_shadow_mode_pilot" else flags,
+        "evidence_conflict_summary": conflict_summary,
         "required_next_action": next_action_for_status(status),
         "validation_boundary": {
             "live_elementor_render_validated": boundary(False, "no_live_render_evidence"),
@@ -285,6 +316,8 @@ def run_default_self_test() -> None:
     )
     if negative["readiness_status"] != "blocked_missing_evidence":
         raise AssertionError("blocked fixture must map to blocked_missing_evidence")
+    if negative["evidence_conflict_summary"]["unresolved_blocking_conflict_count"] != 0:
+        raise AssertionError("missing-evidence fixture must not invent conflict records")
 
 
 def parse_args() -> argparse.Namespace:
