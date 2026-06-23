@@ -4,22 +4,99 @@
   "title": "EV4 Responsive Main Pipeline Input",
   "type": "object",
   "additionalProperties": false,
+  "$defs": {
+    "id": { "type": "string", "minLength": 1, "pattern": "^[A-Za-z0-9_.:/@-]+$" },
+    "nonEmptyString": { "type": "string", "minLength": 1 },
+    "stringArray": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+    "contentHash": { "type": "string", "pattern": "^sha256:[a-fA-F0-9]{64}$" },
+    "payloadStatus": { "enum": ["present", "missing", "stale", "schema_mismatch", "identity_conflict"] },
+    "refOrNull": { "type": ["string", "null"] }
+  },
   "required": [
     "schema",
+    "input_payload_id",
     "selected_candidate_id",
     "selected_candidate_family",
     "payload_identity_hashes",
+    "required_main_pipeline_inputs",
+    "inherited_baseline",
     "inherited_unknowns",
     "inherited_audit_flags",
-    "input_authorization_status"
+    "inherited_repair_routes",
+    "validation_claims_imported",
+    "input_authorization_status",
+    "responsive_pipeline_allowed_to_start",
+    "stop_reason_if_blocked"
   ],
   "properties": {
     "schema": { "const": "ev4-responsive-main-input@1.0.0" },
-    "selected_candidate_id": { "type": "string", "minLength": 1 },
-    "selected_candidate_family": { "type": "string", "minLength": 1 },
-    "payload_identity_hashes": { "type": "object", "additionalProperties": { "type": "string" } },
-    "inherited_unknowns": { "type": "array", "items": { "type": "string" } },
-    "inherited_audit_flags": { "type": "array", "items": { "type": "string" } },
-    "input_authorization_status": { "enum": ["authorized", "blocked_missing_input", "blocked_schema_mismatch", "blocked_identity_conflict"] }
-  }
+    "input_payload_id": { "$ref": "#/$defs/id" },
+    "selected_candidate_id": { "$ref": "#/$defs/nonEmptyString" },
+    "selected_candidate_family": { "$ref": "#/$defs/nonEmptyString" },
+    "payload_identity_hashes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["Recommendation_Payload", "Build_Tree_Payload", "Implementation_Payload", "Final_Audit_Payload", "Handoff_Payload"],
+      "properties": {
+        "Recommendation_Payload": { "$ref": "#/$defs/contentHash" },
+        "Build_Tree_Payload": { "$ref": "#/$defs/contentHash" },
+        "Implementation_Payload": { "$ref": "#/$defs/contentHash" },
+        "Final_Audit_Payload": { "$ref": "#/$defs/contentHash" },
+        "Handoff_Payload": { "$ref": "#/$defs/contentHash" }
+      }
+    },
+    "required_main_pipeline_inputs": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["Recommendation_Payload", "Build_Tree_Payload", "Implementation_Payload", "Final_Audit_Payload", "Handoff_Payload", "EV4_DEBUG_TRACE"],
+      "properties": {
+        "Recommendation_Payload": { "$ref": "#/$defs/payloadStatus" },
+        "Build_Tree_Payload": { "$ref": "#/$defs/payloadStatus" },
+        "Implementation_Payload": { "$ref": "#/$defs/payloadStatus" },
+        "Final_Audit_Payload": { "$ref": "#/$defs/payloadStatus" },
+        "Handoff_Payload": { "$ref": "#/$defs/payloadStatus" },
+        "EV4_DEBUG_TRACE": { "$ref": "#/$defs/payloadStatus" }
+      }
+    },
+    "inherited_baseline": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["structure_tree_ref", "node_id_map_ref", "class_map_ref", "content_editability_map_ref", "overlay_decoration_map_ref", "responsive_structure_contract_ref"],
+      "properties": {
+        "structure_tree_ref": { "$ref": "#/$defs/refOrNull" },
+        "node_id_map_ref": { "$ref": "#/$defs/refOrNull" },
+        "class_map_ref": { "$ref": "#/$defs/refOrNull" },
+        "content_editability_map_ref": { "$ref": "#/$defs/refOrNull" },
+        "overlay_decoration_map_ref": { "$ref": "#/$defs/refOrNull" },
+        "responsive_structure_contract_ref": { "$ref": "#/$defs/refOrNull" }
+      }
+    },
+    "inherited_unknowns": { "$ref": "#/$defs/stringArray" },
+    "inherited_audit_flags": { "$ref": "#/$defs/stringArray" },
+    "inherited_repair_routes": { "$ref": "#/$defs/stringArray" },
+    "validation_claims_imported": { "$ref": "#/$defs/stringArray" },
+    "input_authorization_status": { "enum": ["authorized", "blocked_missing_payload", "blocked_schema_mismatch", "blocked_identity_conflict", "blocked_stale_payload", "routed_to_main_pipeline"] },
+    "responsive_pipeline_allowed_to_start": { "type": "boolean" },
+    "stop_reason_if_blocked": { "type": ["string", "null"] }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "input_authorization_status": { "const": "authorized" } } },
+      "then": {
+        "properties": {
+          "responsive_pipeline_allowed_to_start": { "const": true },
+          "stop_reason_if_blocked": { "type": "null" }
+        }
+      }
+    },
+    {
+      "if": { "not": { "properties": { "input_authorization_status": { "const": "authorized" } } } },
+      "then": {
+        "properties": {
+          "responsive_pipeline_allowed_to_start": { "const": false },
+          "stop_reason_if_blocked": { "type": "string", "minLength": 1 }
+        }
+      }
+    }
+  ]
 }

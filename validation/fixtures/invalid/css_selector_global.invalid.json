@@ -1,0 +1,28 @@
+{
+  "$schema_file": "ev4-responsive-css-selector-safety.schema.json",
+  "schema": "ev4-responsive-css-selector-safety@1.0.0",
+  "gate_status": "pass",
+  "patch_id": "RSP-CSS-BAD-001",
+  "repair_step_ids": ["RSP-STEP-999"],
+  "failure_ids": ["RSP-F-999"],
+  "target_node_id": "bad-node",
+  "project_root_class": "ev4-smart-home",
+  "target_node_class": "ev4-smart-home__card",
+  "selector": "body .elementor-widget-container",
+  "media_query": "@media (max-width: 767px)",
+  "breakpoint_source": "breakpoint_inventory_lock",
+  "breakpoint_source_confidence": "high",
+  "declarations": [
+    {
+      "property": "display",
+      "value": "none",
+      "value_source": "relative_adjustment"
+    }
+  ],
+  "specificity_assessment": "may_be_too_strong",
+  "uses_important": false,
+  "important_justification": null,
+  "rollback_css": "Remove the bad selector.",
+  "validation_required": ["desktop_baseline_recheck"],
+  "production_ready_claim_allowed": false
+}

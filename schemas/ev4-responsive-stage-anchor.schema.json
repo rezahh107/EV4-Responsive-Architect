@@ -4,30 +4,58 @@
   "title": "EV4 Responsive Stage Anchor",
   "type": "object",
   "additionalProperties": false,
+  "$defs": {
+    "nonEmptyString": { "type": "string", "minLength": 1 },
+    "stringArray": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+    "schemaVersion": { "type": "string", "pattern": "^ev4-[A-Za-z0-9_.-]+@\\d+\\.\\d+\\.\\d+$" }
+  },
   "required": [
     "schema",
     "source_stage",
     "target_stage",
+    "target_stage_hardening_status",
     "project_status_version",
+    "payload_schema_in",
+    "payload_schema_out",
     "critical_unknowns",
+    "confidence_delta",
     "blocking_items",
     "gate_results",
     "audit_flags",
+    "required_user_confirmations",
+    "partial_rerun_state",
     "allowed_work",
     "forbidden_work",
-    "stop_conditions"
+    "stop_conditions",
+    "debug_trace_required"
   ],
   "properties": {
     "schema": { "const": "ev4-responsive-stage-anchor@1.0.0" },
-    "source_stage": { "type": "string" },
-    "target_stage": { "type": "string" },
-    "project_status_version": { "type": "string" },
-    "critical_unknowns": { "type": "array", "items": { "type": "string" } },
-    "blocking_items": { "type": "array", "items": { "type": "string" } },
-    "gate_results": { "type": "object" },
-    "audit_flags": { "type": "array", "items": { "type": "string" } },
-    "allowed_work": { "type": "array", "items": { "type": "string" } },
-    "forbidden_work": { "type": "array", "items": { "type": "string" } },
-    "stop_conditions": { "type": "array", "items": { "type": "string" } }
+    "source_stage": { "$ref": "#/$defs/nonEmptyString" },
+    "target_stage": { "$ref": "#/$defs/nonEmptyString" },
+    "target_stage_hardening_status": { "enum": ["draft", "stub", "hardening_candidate", "hardened_v0_1", "blocked"] },
+    "project_status_version": { "$ref": "#/$defs/nonEmptyString" },
+    "payload_schema_in": { "type": "array", "items": { "$ref": "#/$defs/schemaVersion" }, "uniqueItems": true },
+    "payload_schema_out": { "type": "array", "items": { "$ref": "#/$defs/schemaVersion" }, "uniqueItems": true },
+    "critical_unknowns": { "$ref": "#/$defs/stringArray" },
+    "confidence_delta": { "enum": ["increased", "decreased", "unchanged", "not_assessed"] },
+    "blocking_items": { "$ref": "#/$defs/stringArray" },
+    "gate_results": { "type": "object", "additionalProperties": { "enum": ["pass", "fail", "not_applicable", "blocked", "warning"] } },
+    "audit_flags": { "$ref": "#/$defs/stringArray" },
+    "required_user_confirmations": { "$ref": "#/$defs/stringArray" },
+    "partial_rerun_state": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "reusable_payloads", "invalidated_payloads"],
+      "properties": {
+        "status": { "enum": ["none", "active", "required", "blocked"] },
+        "reusable_payloads": { "$ref": "#/$defs/stringArray" },
+        "invalidated_payloads": { "$ref": "#/$defs/stringArray" }
+      }
+    },
+    "allowed_work": { "$ref": "#/$defs/stringArray" },
+    "forbidden_work": { "$ref": "#/$defs/stringArray" },
+    "stop_conditions": { "$ref": "#/$defs/stringArray" },
+    "debug_trace_required": { "type": "boolean" }
   }
 }

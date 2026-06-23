@@ -4,24 +4,79 @@
   "title": "EV4 Responsive Repair Plan",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schema", "repair_steps"],
+  "$defs": {
+    "id": { "type": "string", "minLength": 1, "pattern": "^[A-Za-z0-9_.:/@-]+$" },
+    "nonEmptyString": { "type": "string", "minLength": 1 },
+    "viewport": { "enum": ["desktop", "tablet", "mobile", "custom", "unknown"] },
+    "validationType": { "enum": ["desktop_baseline_recheck", "target_viewport_recheck", "cascade_recheck", "frontend_screenshot", "editor_screenshot", "builder_confirmation", "computed_style_check", "accessibility_gate_check"] },
+    "elementorControlPath": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["target_node_id", "structure_label", "class_name", "editor_area", "control_group", "control_name", "viewport_scope", "value_policy", "value_source", "fallback_semantic_instruction", "rollback_instruction"],
+      "properties": {
+        "target_node_id": { "$ref": "#/$defs/id" },
+        "structure_label": { "$ref": "#/$defs/nonEmptyString" },
+        "class_name": { "type": "string", "pattern": "^[A-Za-z][A-Za-z0-9_-]*(?:\\s+[A-Za-z][A-Za-z0-9_-]*)*$" },
+        "editor_area": { "enum": ["Content", "Layout", "Style", "Advanced", "MotionEffects", "CustomCSS", "Unknown"] },
+        "control_group": { "$ref": "#/$defs/nonEmptyString" },
+        "control_name": { "$ref": "#/$defs/nonEmptyString" },
+        "viewport_scope": { "$ref": "#/$defs/viewport" },
+        "value_policy": { "enum": ["exact_value_from_evidence", "relative_adjustment", "builder_select_best_fit", "verify_current_then_apply", "unknown_do_not_apply"] },
+        "value_source": { "enum": ["breakpoint_inventory_lock", "design_system_variable", "user_declaration", "frontend_evidence", "builder_verification_required"] },
+        "fallback_semantic_instruction": { "$ref": "#/$defs/nonEmptyString" },
+        "rollback_instruction": { "$ref": "#/$defs/nonEmptyString" }
+      }
+    }
+  },
+  "required": ["schema", "plan_id", "repair_scope_freeze_id", "repair_steps"],
   "properties": {
     "schema": { "const": "ev4-responsive-repair-plan@1.0.0" },
+    "plan_id": { "$ref": "#/$defs/id" },
+    "repair_scope_freeze_id": { "$ref": "#/$defs/id" },
     "repair_steps": {
       "type": "array",
+      "minItems": 1,
       "items": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["step_id", "failure_id", "target_node_id", "viewport_scope", "single_repair_intent", "elementor_control_path", "rollback_action", "validation_evidence_required"],
+        "required": [
+          "step_id",
+          "failure_id",
+          "selected_option_id",
+          "target_node_id",
+          "target_structure_label",
+          "active_class_name",
+          "viewport_scope",
+          "single_repair_intent",
+          "elementor_control_path",
+          "before_state_description",
+          "expected_after_state",
+          "rollback_action",
+          "desktop_check_required",
+          "cascade_check_required",
+          "validation_evidence_required"
+        ],
         "properties": {
-          "step_id": { "type": "string" },
-          "failure_id": { "type": "string" },
-          "target_node_id": { "type": "string" },
-          "viewport_scope": { "enum": ["desktop", "tablet", "mobile", "custom"] },
-          "single_repair_intent": { "type": "string" },
-          "elementor_control_path": { "type": "object" },
-          "rollback_action": { "type": "string" },
-          "validation_evidence_required": { "type": "array", "items": { "type": "string" } }
+          "step_id": { "$ref": "#/$defs/id" },
+          "failure_id": { "$ref": "#/$defs/id" },
+          "selected_option_id": { "$ref": "#/$defs/id" },
+          "target_node_id": { "$ref": "#/$defs/id" },
+          "target_structure_label": { "$ref": "#/$defs/nonEmptyString" },
+          "active_class_name": { "type": "string", "pattern": "^[A-Za-z][A-Za-z0-9_-]*(?:\\s+[A-Za-z][A-Za-z0-9_-]*)*$" },
+          "viewport_scope": { "$ref": "#/$defs/viewport" },
+          "single_repair_intent": { "$ref": "#/$defs/nonEmptyString" },
+          "elementor_control_path": { "$ref": "#/$defs/elementorControlPath" },
+          "before_state_description": { "$ref": "#/$defs/nonEmptyString" },
+          "expected_after_state": { "$ref": "#/$defs/nonEmptyString" },
+          "rollback_action": { "$ref": "#/$defs/nonEmptyString" },
+          "desktop_check_required": { "type": "boolean" },
+          "cascade_check_required": { "type": "boolean" },
+          "validation_evidence_required": {
+            "type": "array",
+            "minItems": 1,
+            "items": { "$ref": "#/$defs/validationType" },
+            "uniqueItems": true
+          }
         }
       }
     }
