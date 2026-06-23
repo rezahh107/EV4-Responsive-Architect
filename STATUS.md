@@ -3,18 +3,18 @@
 ```yaml
 project: EV4 Responsive Architect
 version: 0.1.0-final-draft
-status: smart_home_connector_pilot_pack_in_progress
+status: pilot_readiness_gate_in_progress
 production_ready: false
 prompt_pack_release_ready: false
-current_branch: pilot/smart-home-connector-v0.1
+current_branch: pilot-readiness/v0.1-gate
 ```
 
 ## Current Phase
 
 ```yaml
 current_phase:
-  name: smart_home_connector_shadow_mode_pilot
-  goal: prepare the first practical vertical-slice pilot package after contract hardening, schema hardening, and E2E-001 textual validation
+  name: smart_home_connector_pilot_readiness_gate
+  goal: convert validated evidence intake packets into a machine-checkable pilot start or block decision
 ```
 
 ## Release Boundary
@@ -29,6 +29,8 @@ Allowed now:
 - contract_validation_only fixtures
 - E2E-001 textual fixture validation
 - shadow-mode manual pilot package
+- machine-checkable evidence intake packet
+- pilot readiness gate with visible flags
 ```
 
 Forbidden now:
@@ -47,10 +49,10 @@ Forbidden now:
 
 ```yaml
 must_do_next:
-  - review and merge smart-home connector pilot package PR
-  - run pilot when real main EV4 handoff and responsive screenshots are available
-  - add E2E-002 real builder evidence plan
-  - expand remaining non-core schemas as needed by pilot results
+  - merge pilot readiness gate PR after CI passes
+  - collect real smart-home connector evidence in Issue #8
+  - run readiness gate against submitted evidence packet
+  - start shadow-mode pilot only when readiness is ready or partial_ready_with_visible_flags
 ```
 
 ## Completed Foundation
@@ -85,17 +87,18 @@ schema_hardening:
 E2E_001:
   status: merged
   scope: contract_validation_only
+
+evidence_intake_validation:
+  status: merged
   validates:
-    - main pipeline handoff fixture
-    - evidence ingest fixture
-    - repair option analysis fixture
-    - repair plan fixture
-    - accessibility gate fixture
-    - CSS selector safety fixture
-    - invalid global CSS selector fixture
+    - evidence intake packet schema
+    - per-item evidence quality
+    - privacy review
+    - breakpoint claim scope
+    - desktop must-not-regress minimums
 
 smart_home_connector_pilot:
-  status: in_progress
+  status: readiness_gate_in_progress
   scope: shadow_mode_manual
   production_ready: false
 ```
