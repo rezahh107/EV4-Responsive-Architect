@@ -1,0 +1,127 @@
+name: Smart-home connector pilot evidence
+description: Submit required evidence for the EV4 Responsive Architect smart-home connector pilot.
+title: "Pilot Evidence: Smart-home connector"
+labels:
+  - pilot
+  - evidence-intake
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this issue to collect the evidence packet required before the responsive pilot starts.
+
+        Do not claim production readiness from this intake. This intake only determines whether the pilot may start.
+
+  - type: input
+    id: selected_candidate_id
+    attributes:
+      label: selected_candidate_id
+      description: The selected EV4 architecture candidate ID from the main pipeline.
+      placeholder: ARCH-FAM-C
+    validations:
+      required: true
+
+  - type: textarea
+    id: main_ev4_handoff
+    attributes:
+      label: Main EV4 handoff payloads
+      description: Paste or link the Build_Tree_Payload, Implementation_Payload, Final_Audit_Payload, Handoff_Payload, carried unknowns, and audit flags.
+      placeholder: |
+        Build_Tree_Payload:
+        Implementation_Payload:
+        Final_Audit_Payload:
+        Handoff_Payload:
+        carried_unknowns:
+        audit_flags:
+    validations:
+      required: true
+
+  - type: textarea
+    id: desktop_baseline
+    attributes:
+      label: Desktop baseline evidence
+      description: Attach or link desktop screenshot and describe source, viewport label/width, root class, must-not-regress items, and known acceptable issues.
+      placeholder: |
+        source: frontend | editor
+        viewport_label_or_width:
+        root_class:
+        must_not_regress:
+        known_acceptable_desktop_issues:
+    validations:
+      required: true
+
+  - type: textarea
+    id: tablet_evidence
+    attributes:
+      label: Tablet evidence
+      description: Attach or link tablet screenshot and describe source, viewport label/width, and visible symptoms.
+      placeholder: |
+        source: frontend | editor
+        viewport_label_or_width:
+        visible_symptoms:
+    validations:
+      required: true
+
+  - type: textarea
+    id: mobile_evidence
+    attributes:
+      label: Mobile evidence
+      description: Attach or link mobile screenshot and describe source, viewport label/width, and visible symptoms.
+      placeholder: |
+        source: frontend | editor
+        viewport_label_or_width:
+        visible_symptoms:
+    validations:
+      required: true
+
+  - type: dropdown
+    id: breakpoint_source
+    attributes:
+      label: Breakpoint source
+      description: Select the strongest breakpoint evidence available.
+      options:
+        - Elementor project settings or export JSON
+        - User declaration
+        - Elementor default fallback with unverified label
+    validations:
+      required: true
+
+  - type: textarea
+    id: breakpoint_details
+    attributes:
+      label: Breakpoint details
+      description: Provide breakpoint values or explain why fallback is being used.
+      placeholder: |
+        desktop:
+        tablet:
+        mobile:
+        confidence:
+    validations:
+      required: true
+
+  - type: textarea
+    id: optional_evidence
+    attributes:
+      label: Optional evidence
+      description: Export JSON, resize video, DevTools notes, computed styles, Playwright screenshots, or visual diff.
+      placeholder: |
+        Elementor export JSON:
+        resize sweep video:
+        DevTools notes:
+        computed style notes:
+        Playwright screenshots:
+        visual diff:
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: boundary_acknowledgement
+    attributes:
+      label: Boundary acknowledgement
+      options:
+        - label: I understand this evidence intake does not prove live Elementor rendering validation.
+          required: true
+        - label: I understand this evidence intake does not prove export JSON validation unless export evidence is supplied.
+          required: true
+        - label: I understand this evidence intake does not prove accessibility pass or production readiness.
+          required: true
