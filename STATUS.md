@@ -2,7 +2,7 @@
 
 ```yaml
 project: EV4 Responsive Architect
-version: 0.2.4-issue-packet-bridge
+version: 0.2.5-readiness-conflict-summary
 status: rolling_queue_controller_active
 production_ready: false
 prompt_pack_release_ready: false
@@ -38,6 +38,7 @@ Allowed now:
 - rolling task queue planning and bounded execution
 - Issue #8 evidence-intake synchronization
 - Issue #8 to evidence packet bridge contract validation
+- readiness conflict summary carry-forward validation
 ```
 
 Forbidden now:
@@ -72,10 +73,10 @@ controller_policy:
 
 ```yaml
 next_tasks:
-  - RQ-0003 add conflict summary to readiness path
   - RQ-0004 prepare real pilot artifact slots
   - RQ-0005 refresh rolling queue
   - RQ-0006 add bridge semantic validation runner
+  - RQ-0007 add conflict-summary generated-report check
 ```
 
 ## Completed Foundation
@@ -96,6 +97,7 @@ p0_semantic_gate_hardening: done
 rolling_queue_controller: done
 status_issue_sync: done
 issue_packet_bridge: done
+readiness_conflict_summary: done
 ```
 
 ## Real Evidence State
@@ -104,6 +106,7 @@ issue_packet_bridge: done
 issue_8: open
 evidence_intake_schema: ev4-responsive-evidence-intake-packet@1.1.0
 issue_to_packet_bridge_schema: ev4-responsive-issue-to-packet-bridge@1.0.0
+readiness_schema: ev4-responsive-pilot-readiness@1.0.0
 real_submitted_packet_present: false
 pilot_allowed_to_start: false
 reason: real smart-home evidence has not been submitted and readiness has not passed
