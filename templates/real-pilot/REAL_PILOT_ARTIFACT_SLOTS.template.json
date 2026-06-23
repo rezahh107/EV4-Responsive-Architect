@@ -1,0 +1,39 @@
+{
+  "schema": "ev4-responsive-real-pilot-artifact-slots@1.0.0",
+  "artifact_status": "template_only",
+  "task_id": "RQ-0004",
+  "is_real_evidence": false,
+  "pilot_authorized": false,
+  "sample_markers_required": true,
+  "reserved_paths": {
+    "submitted_packet": "artifacts/real-pilot/submitted/EVIDENCE_INTAKE_PACKET.submitted.json",
+    "readiness_report": "artifacts/real-pilot/readiness/PILOT_READINESS_REPORT.submitted.json",
+    "failure_map": "artifacts/real-pilot/failure-map/RESPONSIVE_FAILURE_MAP.submitted.json",
+    "risk_assessment": "artifacts/real-pilot/risk/RISK_PRIORITY_ASSESSMENT.submitted.json",
+    "repair_plan": "artifacts/real-pilot/repair/RESPONSIVE_REPAIR_PLAN.submitted.md",
+    "final_audit": "artifacts/real-pilot/final-audit/RESPONSIVE_FINAL_AUDIT.submitted.json"
+  },
+  "submitted_mode_commands": {
+    "evidence_intake": "python validation/e2e/run_evidence_intake_check.py --packet artifacts/real-pilot/submitted/EVIDENCE_INTAKE_PACKET.submitted.json",
+    "readiness": "python validation/e2e/run_pilot_readiness_check.py --packet artifacts/real-pilot/submitted/EVIDENCE_INTAKE_PACKET.submitted.json --out artifacts/real-pilot/readiness/PILOT_READINESS_REPORT.submitted.json"
+  },
+  "must_reject_as_evidence": [
+    "artifact_status=template_only",
+    "is_real_evidence=false",
+    "pilot_authorized=false",
+    "any path under templates/",
+    "any placeholder screenshot, hash, or export reference"
+  ],
+  "forbidden_claims": [
+    "production_ready",
+    "release_ready",
+    "live_render_validated",
+    "export_json_validated",
+    "accessibility_passed"
+  ],
+  "notes": [
+    "This manifest reserves artifact slots only.",
+    "Do not create populated submitted artifacts until real Issue #8 evidence exists and readiness passes.",
+    "If submitted-mode command flags are not implemented yet, that is a blocker rather than permission to use sample fixtures."
+  ]
+}
