@@ -1,0 +1,76 @@
+{
+  "schema": "ev4-responsive-e2e-001@1.0.0",
+  "e2e_id": "E2E-001",
+  "name": "Textual fixture contract validation",
+  "status": "contract_validation_only",
+  "validation_boundary": {
+    "allowed_claims": [
+      "schema_validation",
+      "fixture_validation",
+      "contract_chain_presence",
+      "semantic_validator_gate_smoke_test"
+    ],
+    "forbidden_claims": [
+      "live_elementor_validation",
+      "export_json_validation",
+      "playwright_visual_regression",
+      "production_ready",
+      "accessibility_passed"
+    ]
+  },
+  "required_sequence": [
+    {
+      "sequence_index": 1,
+      "stage": "/main-pipeline-handoff-ingest",
+      "payload_kind": "main_input",
+      "fixture_path": "validation/fixtures/valid/main_input.valid.json",
+      "expected_outcome": "valid"
+    },
+    {
+      "sequence_index": 2,
+      "stage": "/responsive-evidence-ingest-ledger",
+      "payload_kind": "evidence_ingest",
+      "fixture_path": "validation/fixtures/valid/evidence_ingest.valid.json",
+      "expected_outcome": "valid"
+    },
+    {
+      "sequence_index": 3,
+      "stage": "/repair-option-analysis",
+      "payload_kind": "repair_option_analysis",
+      "fixture_path": "validation/fixtures/valid/repair_option_analysis.valid.json",
+      "expected_outcome": "valid"
+    },
+    {
+      "sequence_index": 4,
+      "stage": "/responsive-repair-plan",
+      "payload_kind": "repair_plan",
+      "fixture_path": "validation/fixtures/valid/repair_plan.valid.json",
+      "expected_outcome": "valid"
+    },
+    {
+      "sequence_index": 5,
+      "stage": "/accessibility-reading-order-gate",
+      "payload_kind": "accessibility_gate",
+      "fixture_path": "validation/fixtures/valid/accessibility_gate.valid.json",
+      "expected_outcome": "valid"
+    },
+    {
+      "sequence_index": 6,
+      "stage": "/css-selector-safety-check",
+      "payload_kind": "css_selector_safety",
+      "fixture_path": "validation/fixtures/valid/css_selector_safety.valid.json",
+      "expected_outcome": "valid"
+    },
+    {
+      "sequence_index": 7,
+      "stage": "/css-selector-safety-check",
+      "payload_kind": "css_selector_safety_negative_gate",
+      "fixture_path": "validation/fixtures/invalid/css_selector_global.invalid.json",
+      "expected_outcome": "invalid"
+    }
+  ],
+  "required_validator_commands": [
+    "python validation/schema_validator/validate_schemas.py",
+    "python validation/e2e/run_e2e_001.py"
+  ]
+}
