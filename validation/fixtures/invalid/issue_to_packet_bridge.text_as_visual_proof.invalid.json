@@ -1,0 +1,55 @@
+{
+  "$schema_file": "ev4-responsive-issue-to-packet-bridge.schema.json",
+  "schema": "ev4-responsive-issue-to-packet-bridge@1.0.0",
+  "bridge_id": "ISSUE8_TO_PACKET_INVALID_TEXT_PROOF",
+  "source_issue": {
+    "issue_number": 8,
+    "issue_url_or_ref": "#8",
+    "issue_status": "open",
+    "allowed_source_material": ["issue_body"]
+  },
+  "target_packet": {
+    "packet_schema": "ev4-responsive-evidence-intake-packet@1.1.0",
+    "target_path": "EVIDENCE_INTAKE_PACKET.submitted.json",
+    "packet_origin": "real_issue_submission",
+    "submission_status": "blocked"
+  },
+  "mapping_policy": {
+    "may_create_packet": true,
+    "may_infer_missing_evidence": false,
+    "may_treat_text_as_visual_proof": true,
+    "requires_payload_identity_hash": true,
+    "requires_privacy_acknowledgement": true,
+    "sample_markers_allowed": false
+  },
+  "field_mappings": [
+    {
+      "packet_field": "desktop_baseline.evidence_id",
+      "source_requirement": "Free-text issue description claims the desktop looked fine.",
+      "evidence_kind": "structured_text",
+      "missing_state": "visible_warning",
+      "conflict_state": "visible_warning"
+    }
+  ],
+  "blocked_states": [
+    {
+      "state_id": "MISSING_ATTACHMENT",
+      "trigger": "Required screenshot is absent.",
+      "required_action": "request_missing_evidence",
+      "pilot_allowed_to_start": false
+    }
+  ],
+  "privacy_policy": {
+    "credentials_removed_required": true,
+    "private_urls_review_required": true,
+    "client_identifiers_review_required": true,
+    "omission_policy": "block_if_not_acknowledged"
+  },
+  "bridge_verdict": {
+    "status": "ready_to_create_submitted_packet",
+    "packet_creation_allowed": true,
+    "real_pilot_allowed_to_start": false,
+    "next_action": "create_submitted_packet_for_validation",
+    "blocking_reasons": []
+  }
+}

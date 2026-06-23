@@ -1,0 +1,121 @@
+{
+  "$schema_file": "ev4-responsive-issue-to-packet-bridge.schema.json",
+  "schema": "ev4-responsive-issue-to-packet-bridge@1.0.0",
+  "bridge_id": "ISSUE8_TO_PACKET_V1",
+  "source_issue": {
+    "issue_number": 8,
+    "issue_url_or_ref": "#8",
+    "issue_status": "open",
+    "allowed_source_material": [
+      "issue_body",
+      "issue_comments",
+      "issue_attachments",
+      "linked_repository_files"
+    ]
+  },
+  "target_packet": {
+    "packet_schema": "ev4-responsive-evidence-intake-packet@1.1.0",
+    "target_path": "EVIDENCE_INTAKE_PACKET.submitted.json",
+    "packet_origin": "real_issue_submission",
+    "submission_status": "blocked"
+  },
+  "mapping_policy": {
+    "may_create_packet": false,
+    "may_infer_missing_evidence": false,
+    "may_treat_text_as_visual_proof": false,
+    "requires_payload_identity_hash": true,
+    "requires_privacy_acknowledgement": true,
+    "sample_markers_allowed": false
+  },
+  "field_mappings": [
+    {
+      "packet_field": "section_id",
+      "source_requirement": "Explicit section identity in Issue #8 body, comment, or linked repository file.",
+      "evidence_kind": "structured_text",
+      "missing_state": "block_packet_creation",
+      "conflict_state": "require_human_review"
+    },
+    {
+      "packet_field": "selected_candidate_id",
+      "source_requirement": "Explicit Main EV4 selected candidate identifier.",
+      "evidence_kind": "structured_text",
+      "missing_state": "block_packet_creation",
+      "conflict_state": "block_downstream"
+    },
+    {
+      "packet_field": "main_ev4_handoff.payload_identity_hash",
+      "source_requirement": "Stable hash for the submitted Main EV4 handoff payload bundle.",
+      "evidence_kind": "hash",
+      "missing_state": "block_packet_creation",
+      "conflict_state": "block_downstream"
+    },
+    {
+      "packet_field": "desktop_baseline.evidence_id",
+      "source_requirement": "Desktop screenshot or linked evidence artifact with viewport/root identity.",
+      "evidence_kind": "attachment",
+      "missing_state": "block_packet_creation",
+      "conflict_state": "block_downstream"
+    },
+    {
+      "packet_field": "evidence_items[]",
+      "source_requirement": "At least desktop, tablet, and mobile evidence items with quality and limitations.",
+      "evidence_kind": "mixed",
+      "missing_state": "block_validation",
+      "conflict_state": "block_downstream"
+    },
+    {
+      "packet_field": "privacy_review",
+      "source_requirement": "Checklist acknowledgement that credentials, private data, private URLs, and client identifiers were reviewed.",
+      "evidence_kind": "checklist_acknowledgement",
+      "missing_state": "block_packet_creation",
+      "conflict_state": "block_downstream"
+    }
+  ],
+  "blocked_states": [
+    {
+      "state_id": "MISSING_ATTACHMENT",
+      "trigger": "Required screenshot, export, or linked artifact is absent or only described in text.",
+      "required_action": "request_missing_evidence",
+      "pilot_allowed_to_start": false
+    },
+    {
+      "state_id": "MISSING_HASH",
+      "trigger": "Payload identity hash is absent for Main EV4 handoff payloads.",
+      "required_action": "request_hashes",
+      "pilot_allowed_to_start": false
+    },
+    {
+      "state_id": "PRIVACY_NOT_ACKED",
+      "trigger": "Privacy review acknowledgement is missing or incomplete.",
+      "required_action": "request_privacy_review",
+      "pilot_allowed_to_start": false
+    },
+    {
+      "state_id": "CONFLICTING_SOURCE",
+      "trigger": "Issue text, attachment metadata, or linked files disagree on identity, viewport, or packet field value.",
+      "required_action": "resolve_conflict",
+      "pilot_allowed_to_start": false
+    },
+    {
+      "state_id": "SAMPLE_MARKER_PRESENT",
+      "trigger": "Packet id, evidence id, file name, source ref, or payload hash contains sample or placeholder markers.",
+      "required_action": "reject_sample_marker",
+      "pilot_allowed_to_start": false
+    }
+  ],
+  "privacy_policy": {
+    "credentials_removed_required": true,
+    "private_urls_review_required": true,
+    "client_identifiers_review_required": true,
+    "omission_policy": "block_if_not_acknowledged"
+  },
+  "bridge_verdict": {
+    "status": "blocked_missing_evidence",
+    "packet_creation_allowed": false,
+    "real_pilot_allowed_to_start": false,
+    "next_action": "request_missing_evidence",
+    "blocking_reasons": [
+      "Issue #8 is an intake checklist and does not yet contain the real submitted evidence packet or required artifact hashes."
+    ]
+  }
+}
