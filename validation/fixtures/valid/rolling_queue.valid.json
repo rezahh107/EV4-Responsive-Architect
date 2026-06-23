@@ -1,0 +1,110 @@
+{
+  "$schema_file": "ev4-responsive-rolling-queue.schema.json",
+  "schema": "ev4-responsive-rolling-queue@1.0.0",
+  "queue_id": "EV4RQ-0001-SMART-HOME",
+  "project": "EV4 Responsive Architect",
+  "queue_status": "active",
+  "controller_policy": {
+    "one_task_per_run": true,
+    "critique_same_task": true,
+    "small_in_scope_fixes_allowed": true,
+    "ci_required_for_repo_changes": true,
+    "minimum_pending_tasks": 4,
+    "refresh_every_nth_task": 5,
+    "real_pilot_requires_submitted_packet_and_readiness_pass": true
+  },
+  "active_cycle": {
+    "cycle_id": "CYCLE-001",
+    "cycle_status": "active",
+    "started_from_status": "p0_semantic_gates_merged",
+    "goal": "Keep a rolling bounded task queue.",
+    "task_order": ["RQ-0001", "RQ-0002", "RQ-0003", "RQ-0004", "RQ-0005"]
+  },
+  "tasks": [
+    {
+      "task_id": "RQ-0001",
+      "cycle_position": 1,
+      "task_type": "repo_sync",
+      "status": "pending",
+      "title": "Sync status",
+      "objective": "Sync project status files.",
+      "allowed_work": ["Update status references"],
+      "forbidden_work": ["No readiness claim"],
+      "requires_real_evidence": false,
+      "expected_artifacts": ["STATUS.md"],
+      "acceptance_criteria": ["Status matches repo state"],
+      "critique_required": true,
+      "dependencies": []
+    },
+    {
+      "task_id": "RQ-0002",
+      "cycle_position": 2,
+      "task_type": "evidence_bridge",
+      "status": "pending",
+      "title": "Define bridge",
+      "objective": "Define issue to packet mapping.",
+      "allowed_work": ["Write mapping rules"],
+      "forbidden_work": ["No inferred evidence"],
+      "requires_real_evidence": false,
+      "expected_artifacts": ["Mapping spec"],
+      "acceptance_criteria": ["Missing evidence blocks mapping"],
+      "critique_required": true,
+      "dependencies": ["RQ-0001"]
+    },
+    {
+      "task_id": "RQ-0003",
+      "cycle_position": 3,
+      "task_type": "validator_hardening",
+      "status": "pending",
+      "title": "Conflict summary",
+      "objective": "Carry conflict summary forward.",
+      "allowed_work": ["Add validation rules"],
+      "forbidden_work": ["No hidden conflict"],
+      "requires_real_evidence": false,
+      "expected_artifacts": ["Validator update"],
+      "acceptance_criteria": ["Blocking conflicts remain blocked"],
+      "critique_required": true,
+      "dependencies": ["RQ-0002"]
+    },
+    {
+      "task_id": "RQ-0004",
+      "cycle_position": 4,
+      "task_type": "pilot_preparation",
+      "status": "pending",
+      "title": "Pilot slots",
+      "objective": "Prepare artifact slots.",
+      "allowed_work": ["Add templates"],
+      "forbidden_work": ["No generated outputs"],
+      "requires_real_evidence": false,
+      "expected_artifacts": ["Templates"],
+      "acceptance_criteria": ["Templates stay non-evidence"],
+      "critique_required": true,
+      "dependencies": ["RQ-0003"]
+    },
+    {
+      "task_id": "RQ-0005",
+      "cycle_position": 5,
+      "task_type": "queue_refresh",
+      "status": "pending",
+      "title": "Refresh queue",
+      "objective": "Plan the next cycle.",
+      "allowed_work": ["Update queue"],
+      "forbidden_work": ["No hidden blockers"],
+      "requires_real_evidence": false,
+      "expected_artifacts": ["Updated queue"],
+      "acceptance_criteria": ["Four pending tasks remain"],
+      "critique_required": true,
+      "dependencies": ["RQ-0001", "RQ-0002", "RQ-0003", "RQ-0004"]
+    }
+  ],
+  "forbidden_claims": [
+    "production_ready",
+    "release_ready",
+    "pixel_perfect",
+    "live_render_validated",
+    "export_json_validated",
+    "accessibility_passed",
+    "sample_packet_used_as_real_evidence",
+    "numeric_score_overrides_gate"
+  ]
+}
