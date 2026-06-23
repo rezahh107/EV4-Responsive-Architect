@@ -1,0 +1,39 @@
+{
+  "schema": "ev4-responsive-risk-priority-assessment@1.0.0",
+  "assessment_id": "RISK-BAD-GATE-001",
+  "assessment_scope": "shadow_mode_pilot_risk_priority",
+  "evidence_basis": {
+    "source_packet_ref": "sample",
+    "readiness_report_ref": "sample",
+    "pilot_run_record_ref": "sample",
+    "evidence_confidence_floor": "medium"
+  },
+  "hard_gates": [
+    {
+      "gate_id": "HG-MISSING-001",
+      "gate_code": "missing_required_evidence",
+      "status": "fail",
+      "blocker": true,
+      "source_ref": "evidence_intake_packet",
+      "required_resolution": "Request missing evidence."
+    }
+  ],
+  "failure_items": [],
+  "repair_risks": [],
+  "aggregate_verdict": {
+    "status": "ready_for_repair_planning",
+    "required_next_action": "plan_repair_batch",
+    "blocking_gate_refs": [],
+    "carry_forward_flags": []
+  },
+  "forbidden_claims": {
+    "numeric_score_claimed": false,
+    "average_score_used_to_override_gate": false,
+    "production_ready_claimed": false,
+    "release_ready_claimed": false,
+    "live_render_validated_claimed": false,
+    "export_json_validated_claimed": false,
+    "accessibility_passed_claimed": false
+  },
+  "audit_notes": ["This semantic fixture must fail because a blocker gate cannot coexist with ready verdict."]
+}

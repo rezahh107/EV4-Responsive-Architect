@@ -1,0 +1,80 @@
+{
+  "$schema_file": "ev4-responsive-risk-priority-assessment.schema.json",
+  "schema": "ev4-responsive-risk-priority-assessment@1.0.0",
+  "assessment_id": "RISK-SHADOW-001",
+  "assessment_scope": "shadow_mode_pilot_risk_priority",
+  "evidence_basis": {
+    "source_packet_ref": "examples/smart-home-connector/intake/EVIDENCE_INTAKE_PACKET.sample-submitted.json",
+    "readiness_report_ref": "examples/smart-home-connector/readiness/PILOT_READINESS_REPORT.example.json",
+    "pilot_run_record_ref": "examples/smart-home-connector/runs/PILOT_RUN_RECORD.example.json",
+    "evidence_confidence_floor": "medium"
+  },
+  "hard_gates": [
+    {
+      "gate_id": "HG-ARCH-001",
+      "gate_code": "architecture_mutation_veto",
+      "status": "pass",
+      "blocker": true,
+      "source_ref": "pilot_run_record.pilot_start_authorization",
+      "required_resolution": "No route back required."
+    },
+    {
+      "gate_id": "HG-EVD-001",
+      "gate_code": "missing_required_evidence",
+      "status": "pass",
+      "blocker": true,
+      "source_ref": "evidence_intake_packet.evidence_complete_definition",
+      "required_resolution": "Required packet items are present for dry-run scope."
+    }
+  ],
+  "failure_items": [
+    {
+      "failure_id": "FAIL-MOBILE-001",
+      "evidence_refs": ["EVD-MOBILE-001"],
+      "severity": "high",
+      "priority": "P1",
+      "evidence_confidence": "medium",
+      "repair_urgency": "next",
+      "desktop_regression_risk": "medium",
+      "accessibility_risk": "unknown",
+      "architecture_mutation_risk": "low",
+      "owner_route": "responsive_repair",
+      "selected_for_repair": true
+    }
+  ],
+  "repair_risks": [
+    {
+      "repair_id": "REPAIR-MOBILE-001",
+      "failure_refs": ["FAIL-MOBILE-001"],
+      "risk_level": "medium",
+      "risk_drivers": ["visual evidence only", "desktop regression must be checked after each action"],
+      "required_mitigation": "Run desktop check after each atomic builder step."
+    }
+  ],
+  "aggregate_verdict": {
+    "status": "ready_with_visible_flags",
+    "required_next_action": "plan_repair_batch_with_visible_flags",
+    "blocking_gate_refs": [],
+    "carry_forward_flags": [
+      {
+        "flag_code": "visual_only_evidence",
+        "severity": "medium",
+        "source_ref": "evidence_items.EVD-MOBILE-001.quality_level",
+        "required_handling": "Do not infer DOM order, CSS cause, or accessibility pass from visual evidence."
+      }
+    ]
+  },
+  "forbidden_claims": {
+    "numeric_score_claimed": false,
+    "average_score_used_to_override_gate": false,
+    "production_ready_claimed": false,
+    "release_ready_claimed": false,
+    "live_render_validated_claimed": false,
+    "export_json_validated_claimed": false,
+    "accessibility_passed_claimed": false
+  },
+  "audit_notes": [
+    "This assessment ranks risk and priority only.",
+    "It does not produce a numeric score or readiness claim."
+  ]
+}

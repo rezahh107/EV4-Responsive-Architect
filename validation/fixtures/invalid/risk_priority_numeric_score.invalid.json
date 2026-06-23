@@ -1,0 +1,41 @@
+{
+  "$schema_file": "ev4-responsive-risk-priority-assessment.schema.json",
+  "schema": "ev4-responsive-risk-priority-assessment@1.0.0",
+  "assessment_id": "RISK-BAD-SCORE-001",
+  "assessment_scope": "shadow_mode_pilot_risk_priority",
+  "responsive_score": 87,
+  "evidence_basis": {
+    "source_packet_ref": "sample",
+    "readiness_report_ref": "sample",
+    "pilot_run_record_ref": "sample",
+    "evidence_confidence_floor": "medium"
+  },
+  "hard_gates": [
+    {
+      "gate_id": "HG-001",
+      "gate_code": "missing_required_evidence",
+      "status": "pass",
+      "blocker": true,
+      "source_ref": "sample",
+      "required_resolution": "sample"
+    }
+  ],
+  "failure_items": [],
+  "repair_risks": [],
+  "aggregate_verdict": {
+    "status": "ready_for_repair_planning",
+    "required_next_action": "plan_repair_batch",
+    "blocking_gate_refs": [],
+    "carry_forward_flags": []
+  },
+  "forbidden_claims": {
+    "numeric_score_claimed": true,
+    "average_score_used_to_override_gate": false,
+    "production_ready_claimed": false,
+    "release_ready_claimed": false,
+    "live_render_validated_claimed": false,
+    "export_json_validated_claimed": false,
+    "accessibility_passed_claimed": false
+  },
+  "audit_notes": ["This invalid fixture attempts to use a numeric score."]
+}

@@ -1,0 +1,263 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ev4.local/schemas/ev4-responsive-risk-priority-assessment.schema.json",
+  "title": "EV4 Responsive Risk Priority Assessment",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "assessment_id",
+    "assessment_scope",
+    "evidence_basis",
+    "hard_gates",
+    "failure_items",
+    "repair_risks",
+    "aggregate_verdict",
+    "forbidden_claims",
+    "audit_notes"
+  ],
+  "properties": {
+    "schema": {
+      "const": "ev4-responsive-risk-priority-assessment@1.0.0"
+    },
+    "assessment_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "assessment_scope": {
+      "type": "string",
+      "enum": [
+        "shadow_mode_pilot_risk_priority",
+        "submitted_evidence_risk_priority",
+        "builder_repair_batch_risk_priority"
+      ]
+    },
+    "evidence_basis": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source_packet_ref",
+        "readiness_report_ref",
+        "pilot_run_record_ref",
+        "evidence_confidence_floor"
+      ],
+      "properties": {
+        "source_packet_ref": { "type": "string", "minLength": 1 },
+        "readiness_report_ref": { "type": "string", "minLength": 1 },
+        "pilot_run_record_ref": { "type": "string", "minLength": 1 },
+        "evidence_confidence_floor": {
+          "type": "string",
+          "enum": ["high", "medium", "low"]
+        }
+      }
+    },
+    "hard_gates": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/hard_gate" }
+    },
+    "failure_items": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/failure_item" }
+    },
+    "repair_risks": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/repair_risk" }
+    },
+    "aggregate_verdict": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "required_next_action",
+        "blocking_gate_refs",
+        "carry_forward_flags"
+      ],
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": [
+            "ready_for_repair_planning",
+            "ready_with_visible_flags",
+            "blocked_by_hard_gate",
+            "blocked_by_insufficient_evidence",
+            "route_back_to_main_pipeline"
+          ]
+        },
+        "required_next_action": {
+          "type": "string",
+          "enum": [
+            "plan_repair_batch",
+            "plan_repair_batch_with_visible_flags",
+            "request_missing_evidence",
+            "resolve_hard_gate_failure",
+            "route_back_to_main_pipeline"
+          ]
+        },
+        "blocking_gate_refs": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "carry_forward_flags": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/visible_flag" }
+        }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "status": { "const": "ready_for_repair_planning" } } },
+          "then": {
+            "properties": {
+              "required_next_action": { "const": "plan_repair_batch" },
+              "blocking_gate_refs": { "maxItems": 0 },
+              "carry_forward_flags": { "maxItems": 0 }
+            }
+          }
+        },
+        {
+          "if": { "properties": { "status": { "const": "ready_with_visible_flags" } } },
+          "then": {
+            "properties": {
+              "required_next_action": { "const": "plan_repair_batch_with_visible_flags" },
+              "blocking_gate_refs": { "maxItems": 0 },
+              "carry_forward_flags": { "minItems": 1 }
+            }
+          }
+        },
+        {
+          "if": { "properties": { "status": { "const": "blocked_by_hard_gate" } } },
+          "then": {
+            "properties": {
+              "required_next_action": { "const": "resolve_hard_gate_failure" },
+              "blocking_gate_refs": { "minItems": 1 }
+            }
+          }
+        },
+        {
+          "if": { "properties": { "status": { "const": "blocked_by_insufficient_evidence" } } },
+          "then": {
+            "properties": {
+              "required_next_action": { "const": "request_missing_evidence" },
+              "blocking_gate_refs": { "minItems": 1 }
+            }
+          }
+        },
+        {
+          "if": { "properties": { "status": { "const": "route_back_to_main_pipeline" } } },
+          "then": {
+            "properties": {
+              "required_next_action": { "const": "route_back_to_main_pipeline" },
+              "blocking_gate_refs": { "minItems": 1 }
+            }
+          }
+        }
+      ]
+    },
+    "forbidden_claims": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "numeric_score_claimed",
+        "average_score_used_to_override_gate",
+        "production_ready_claimed",
+        "release_ready_claimed",
+        "live_render_validated_claimed",
+        "export_json_validated_claimed",
+        "accessibility_passed_claimed"
+      ],
+      "properties": {
+        "numeric_score_claimed": { "const": false },
+        "average_score_used_to_override_gate": { "const": false },
+        "production_ready_claimed": { "const": false },
+        "release_ready_claimed": { "const": false },
+        "live_render_validated_claimed": { "const": false },
+        "export_json_validated_claimed": { "const": false },
+        "accessibility_passed_claimed": { "const": false }
+      }
+    },
+    "audit_notes": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 }
+    }
+  },
+  "$defs": {
+    "hard_gate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["gate_id", "gate_code", "status", "blocker", "source_ref", "required_resolution"],
+      "properties": {
+        "gate_id": { "type": "string", "minLength": 1 },
+        "gate_code": {
+          "type": "string",
+          "enum": [
+            "architecture_mutation_veto",
+            "missing_required_evidence",
+            "privacy_review_missing",
+            "desktop_baseline_missing",
+            "blocked_readiness_status",
+            "sample_packet_used_as_real",
+            "selected_candidate_conflict",
+            "unresolved_unknown_required_for_repair_selection"
+          ]
+        },
+        "status": { "type": "string", "enum": ["pass", "fail", "not_triggered"] },
+        "blocker": { "type": "boolean" },
+        "source_ref": { "type": "string", "minLength": 1 },
+        "required_resolution": { "type": "string", "minLength": 1 }
+      }
+    },
+    "failure_item": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "failure_id",
+        "evidence_refs",
+        "severity",
+        "priority",
+        "evidence_confidence",
+        "repair_urgency",
+        "desktop_regression_risk",
+        "accessibility_risk",
+        "architecture_mutation_risk",
+        "owner_route",
+        "selected_for_repair"
+      ],
+      "properties": {
+        "failure_id": { "type": "string", "minLength": 1 },
+        "evidence_refs": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } },
+        "severity": { "type": "string", "enum": ["blocker", "high", "medium", "minor", "note"] },
+        "priority": { "type": "string", "enum": ["P0", "P1", "P2", "P3", "note"] },
+        "evidence_confidence": { "type": "string", "enum": ["high", "medium", "low"] },
+        "repair_urgency": { "type": "string", "enum": ["immediate", "next", "later", "monitor"] },
+        "desktop_regression_risk": { "type": "string", "enum": ["high", "medium", "low", "not_applicable"] },
+        "accessibility_risk": { "type": "string", "enum": ["high", "medium", "low", "not_triggered", "unknown"] },
+        "architecture_mutation_risk": { "type": "string", "enum": ["high", "medium", "low", "none"] },
+        "owner_route": { "type": "string", "enum": ["responsive_repair", "main_pipeline_reroute", "evidence_request", "no_action_note"] },
+        "selected_for_repair": { "type": "boolean" }
+      }
+    },
+    "repair_risk": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["repair_id", "failure_refs", "risk_level", "risk_drivers", "required_mitigation"],
+      "properties": {
+        "repair_id": { "type": "string", "minLength": 1 },
+        "failure_refs": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } },
+        "risk_level": { "type": "string", "enum": ["high", "medium", "low"] },
+        "risk_drivers": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+        "required_mitigation": { "type": "string", "minLength": 1 }
+      }
+    },
+    "visible_flag": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["flag_code", "severity", "source_ref", "required_handling"],
+      "properties": {
+        "flag_code": { "type": "string", "minLength": 1 },
+        "severity": { "type": "string", "enum": ["high", "medium", "low", "note"] },
+        "source_ref": { "type": "string", "minLength": 1 },
+        "required_handling": { "type": "string", "minLength": 1 }
+      }
+    }
+  }
+}
