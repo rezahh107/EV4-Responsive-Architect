@@ -1,0 +1,51 @@
+{
+  "$schema_file": "ev4-responsive-pilot-readiness.schema.json",
+  "schema": "ev4-responsive-pilot-readiness@1.0.0",
+  "readiness_id": "SHP-INTAKE-001-READINESS",
+  "source_packet_id": "SHP-INTAKE-001",
+  "section_id": "smart-home-connector",
+  "readiness_status": "partial_ready_with_visible_flags",
+  "blocking_reasons": [],
+  "visible_flags": [
+    {
+      "flag_code": "breakpoint_source_not_export_verified",
+      "severity": "medium",
+      "source_ref": "breakpoint_inventory.source",
+      "required_handling": "Carry this flag into the pilot report and forbid release-ready claims."
+    },
+    {
+      "flag_code": "visual_only_evidence",
+      "severity": "medium",
+      "source_ref": "evidence_items.EVD-DESKTOP-001.quality_level",
+      "required_handling": "Do not infer DOM, CSS cause, or accessibility pass from visual evidence."
+    }
+  ],
+  "required_next_action": "start_shadow_mode_pilot_with_visible_flags",
+  "validation_boundary": {
+    "live_elementor_render_validated": {"value": false, "reason": "no_live_render_evidence"},
+    "export_json_validated": {"value": false, "reason": "no_export_json_supplied"},
+    "playwright_visual_regression_validated": {"value": false, "reason": "no_playwright_visual_regression_run"},
+    "accessibility_pass_claimed": {"value": false, "reason": "accessibility_gate_not_executed_on_real_dom"},
+    "production_ready_claimed": {"value": false, "reason": "release_gate_evidence_missing"}
+  },
+  "pilot_start_authorization": {
+    "authorized": true,
+    "authorization_scope": "shadow_mode_only_with_visible_flags",
+    "forbidden_claims": [
+      "production_ready",
+      "release_ready",
+      "live_render_validated",
+      "export_json_validated",
+      "accessibility_passed",
+      "playwright_visual_regression_validated"
+    ],
+    "required_carry_forward_flags": [
+      {
+        "flag_code": "breakpoint_source_not_export_verified",
+        "severity": "medium",
+        "source_ref": "breakpoint_inventory.source",
+        "required_handling": "Carry this flag into the pilot report and forbid release-ready claims."
+      }
+    ]
+  }
+}
