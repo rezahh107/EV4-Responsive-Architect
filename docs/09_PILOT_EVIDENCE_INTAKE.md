@@ -1,14 +1,8 @@
 # Pilot Evidence Intake Guide
 
-Version: 0.1.1
-Status: machine_checkable_intake_ready
+Version: 0.1.2  
+Status: machine_checkable_intake_ready_with_closed_capabilities  
 Scope: smart-home connector pilot evidence collection
-
-## Purpose
-
-This guide defines the evidence required before running the smart-home connector responsive pilot.
-
-The pilot must not start from memory, screenshots alone, or an unselected architecture candidate.
 
 ## Intake Rule
 
@@ -19,12 +13,12 @@ No responsive pilot execution without a machine-checkable evidence intake packet
 The packet schema is:
 
 ```text
-ev4-responsive-evidence-intake-packet@1.0.0
+ev4-responsive-evidence-intake-packet@1.1.0
 ```
 
 Validator:
 
-```text
+```bash
 python validation/e2e/run_evidence_intake_check.py
 ```
 
@@ -32,110 +26,51 @@ python validation/e2e/run_evidence_intake_check.py
 
 ```yaml
 required_evidence_packet:
-  main_ev4_handoff:
-    required: true
-    must_include:
-      - selected_candidate_id
-      - Build_Tree_Payload_or_equivalent
-      - Implementation_Payload_or_builder_notes
-      - Final_Audit_Payload_or_final_audit_status
-      - Handoff_Payload_or_equivalent
-      - overlay_decoration_map
-      - content_editability_map
-      - responsive_structure_contract
-      - carried_unknowns
-      - audit_flags
-
-  desktop_baseline:
-    required: true
-    must_include:
-      - evidence_id
-      - desktop_screenshot_or_declared_equivalent
-      - viewport_label_or_width
-      - root_section_identity_or_root_class
-      - known_acceptable_desktop_issues
-      - minimum_must_not_regress_items
-
-  tablet_evidence:
-    required: true
-    must_include:
-      - evidence_id
-      - screenshot_or_declared_equivalent
-      - viewport_label_or_width
-      - visible_section_state
-      - per_item_evidence_quality
-
-  mobile_evidence:
-    required: true
-    must_include:
-      - evidence_id
-      - screenshot_or_declared_equivalent
-      - viewport_label_or_width
-      - visible_section_state
-      - per_item_evidence_quality
-
-  breakpoint_inventory:
-    required: true
-    must_include:
-      - source
-      - confidence
-      - claim_scope
-      - breakpoint_records
+  main_ev4_handoff: required
+  desktop_baseline: required
+  tablet_evidence: required
+  mobile_evidence: required
+  breakpoint_inventory: required
+  privacy_review: required
+  packet_origin: real_issue_submission
+  issue_reference: required
 ```
 
-## Evidence File Naming Convention
+## Closed Evidence Capability Enums
 
-Use predictable names so the pilot can cite evidence without ambiguity:
+`can_support` and `cannot_support` must use closed capability values. Free text is not allowed.
+
+Visual screenshot evidence may support:
 
 ```text
-main-ev4-handoff.md
-desktop-baseline-[width].png
-tablet-[width].png
-mobile-[width].png
-breakpoint-inventory.json
+visible_viewport_state
+visible_collision
+visible_overflow_symptom
+visible_clipping
+visible_spacing_issue
+visible_alignment_issue
+visible_order_symptom
+visible_content_visibility_state
+visible_connector_position_symptom
 ```
 
-## Per-Item Evidence Quality
+Visual screenshot evidence must not claim support for:
 
-Every evidence item must carry quality metadata:
-
-```yaml
-evidence_quality:
-  quality_level:
-    - L1_static_visual_only
-    - L2_frontend_visual_with_viewport
-    - L3_resize_sweep_or_video
-    - L4_dom_or_export_structure
-    - L5_live_render_plus_dom_plus_visual
-  confidence_cap:
-    - low
-    - medium
-    - high
-    - high_for_structure_medium_for_visual
-  downstream_allowed_use:
-    observation: true
-    diagnosis: no | limited | yes
-    repair_selection: no | limited | yes
-    validation_claim: no | limited | yes
+```text
+computed_css_value
+dom_structure_observation
+exported_widget_structure
+exported_control_value
+declared_breakpoint_value
 ```
 
-## Screenshot Evidence Rule
+Visual screenshot evidence must explicitly include these limitations in `cannot_support`:
 
-```yaml
-screenshot_can_support:
-  - visible_collision
-  - visible_clipping
-  - visible_overflow_symptom
-  - visible_order_symptom
-  - viewport_specific_visual_state
-
-screenshot_cannot_support:
-  - exact_DOM_order
-  - exact_CSS_cause
-  - exact_Elementor_control
-  - exact_breakpoint_value
-  - accessibility_pass
-  - production_ready_claim
+```text
+exact_css_cause
+dom_reading_order
+accessibility_pass
+production_ready_claim
 ```
 
 ## Minimum Desktop Must-Not-Regress Items
@@ -192,74 +127,11 @@ evidence_complete_definition:
   complete_when:
     - intake_packet_validates_against_schema
     - all_required_evidence_ids_are_present
-    - each_required_evidence_item_has_source_viewport_quality_and_limitations
+    - each_required_evidence_item_has_source_viewport_quality_limitations_and_closed_capabilities
     - desktop_baseline_has_minimum_must_not_regress_list
     - breakpoint_inventory_has_confidence_and_claim_scope
     - privacy_review_acknowledged
     - no_blocker_conflicts_exist
-```
-
-## Optional Evidence
-
-```yaml
-optional_evidence:
-  - Elementor_export_json
-  - resize_sweep_video
-  - browser_devtools_dom_notes
-  - computed_style_notes
-  - Playwright_screenshot_set
-  - before_after_visual_diff
-  - builder_feedback_after_repair
-```
-
-## Forbidden Intake Sources
-
-```text
-- unselected architecture candidate
-- memory of prior chat without current payload
-- raw screenshot as architecture authority
-- undocumented user preference as validation evidence
-- case memory as current evidence
-```
-
-## Intake Output
-
-The intake process must produce:
-
-```yaml
-intake_output:
-  - input_authorization_record
-  - evidence_intake_packet
-  - evidence_manifest
-  - breakpoint_inventory_record
-  - desktop_baseline_record
-  - unresolved_unknowns_before_pilot
-  - pilot_start_decision
-```
-
-## Pilot Start Decision
-
-```yaml
-pilot_start_decision:
-  allowed:
-    condition:
-      - selected_candidate_id_present
-      - main_handoff_minimum_fields_present
-      - desktop_baseline_present
-      - tablet_and_mobile_evidence_present
-      - breakpoint_inventory_present_or_flagged
-      - privacy_review_acknowledged
-      - no_blocker_input_conflict
-
-  blocked:
-    condition:
-      - evidence_intake_packet_missing_or_invalid
-      - missing_main_ev4_handoff
-      - missing_desktop_baseline
-      - missing_tablet_or_mobile_evidence
-      - selected_candidate_identity_conflict
-      - privacy_review_incomplete
-      - architecture_mutation_required_before_pilot
 ```
 
 ## Production Boundary
