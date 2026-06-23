@@ -3,18 +3,18 @@
 ```yaml
 project: EV4 Responsive Architect
 version: 0.1.0-final-draft
-status: schema_hardening_in_progress
+status: e2e_001_textual_validation_in_progress
 production_ready: false
 prompt_pack_release_ready: false
-current_branch: schema-hardening/v0.1-core
+current_branch: e2e-001/textual-fixture-validation
 ```
 
 ## Current Phase
 
 ```yaml
 current_phase:
-  name: schema_hardening_after_core_contracts
-  goal: convert critical schema stubs into enforceable JSON Schemas and semantic validator checks
+  name: E2E_001_textual_fixture_contract_validation
+  goal: validate the minimum repository-backed contract chain using schema validation, valid/invalid fixtures, and CI execution
 ```
 
 ## Release Boundary
@@ -27,6 +27,7 @@ Allowed now:
 - partial_repair_handoff
 - validation_ready_state
 - contract_validation_only fixtures
+- E2E-001 textual fixture validation
 ```
 
 Forbidden now:
@@ -38,23 +39,34 @@ Forbidden now:
 - export_validated claim
 - live_render_validated claim
 - accessibility_passed claim
+- Playwright visual regression claim
 ```
 
 ## Immediate Backlog
 
 ```yaml
 must_do_next:
-  - merge core contract hardening PR
-  - merge schema hardening PR after CI/review
+  - merge E2E-001 textual fixture validation PR after CI/review
+  - start smart-home connector pilot case
   - expand remaining non-core schemas
-  - run smart-home connector pilot case
-  - run E2E-001 textual fixture contract validation
+  - add E2E-002 real builder evidence plan
 ```
 
-## Completed in Current Step
+## Completed Foundation
 
 ```yaml
+contract_hardening:
+  merged: true
+  hardened:
+    - MAIN_PIPELINE_HANDOFF_INPUT_CONTRACT
+    - ARCHITECTURE_MUTATION_VETO
+    - RESPONSIVE_EVIDENCE_CONTRACT
+    - REPAIR_OPTION_ANALYSIS
+    - ACCESSIBILITY_READING_ORDER_GATE
+    - CSS_SELECTOR_SAFETY
+
 schema_hardening:
+  merged_to_main: true
   hardened_or_added:
     - ev4-responsive-stage-anchor.schema.json
     - ev4-responsive-main-input.schema.json
@@ -68,4 +80,16 @@ schema_hardening:
     - schema syntax validation
     - fixture pass/fail validation
     - CSS selector semantic checks
+
+E2E_001:
+  status: in_progress
+  scope: contract_validation_only
+  validates:
+    - main pipeline handoff fixture
+    - evidence ingest fixture
+    - repair option analysis fixture
+    - repair plan fixture
+    - accessibility gate fixture
+    - CSS selector safety fixture
+    - invalid global CSS selector fixture
 ```
