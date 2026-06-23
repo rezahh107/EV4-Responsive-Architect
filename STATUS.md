@@ -2,7 +2,7 @@
 
 ```yaml
 project: EV4 Responsive Architect
-version: 0.2.11-rolling-queue-schema-compatibility
+version: 0.2.12-submitted-mode-command-support
 status: rolling_queue_controller_active
 production_ready: false
 prompt_pack_release_ready: false
@@ -45,6 +45,7 @@ Allowed now:
 - Issue #8 to packet bridge semantic validation
 - generated readiness conflict-report validation
 - rolling queue schema compatibility validation
+- submitted-mode packet path validation
 ```
 
 Forbidden now:
@@ -79,10 +80,10 @@ controller_policy:
 
 ```yaml
 next_tasks:
-  - RQ-0009 add submitted-mode command support
   - RQ-0010 refresh rolling queue after validation hardening set
   - RQ-0011 add readiness generated-output policy check
   - RQ-0012 add readiness provenance policy check
+  - RQ-0013 add submitted readiness status contract check
 ```
 
 ## Completed Foundation
@@ -110,6 +111,7 @@ rolling_queue_refresh: done
 issue_packet_bridge_semantic_validator: done
 generated_conflict_report_check: done
 rolling_queue_schema_compatibility: done
+submitted_mode_command_support: done
 ```
 
 ## Automation Reliability State
