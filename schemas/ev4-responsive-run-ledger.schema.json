@@ -1,0 +1,71 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ev4-responsive-run-ledger@1.0.0",
+  "title": "EV4 Responsive Run Ledger",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "ledger_id", "project", "ledger_status", "source_queue", "record_policy", "imported_history", "ledger_records"],
+  "properties": {
+    "schema": { "const": "ev4-responsive-run-ledger@1.0.0" },
+    "ledger_id": { "type": "string", "pattern": "^EV4LEDGER-[0-9]{4}-[A-Z0-9-]+$" },
+    "project": { "const": "EV4 Responsive Architect" },
+    "ledger_status": { "type": "string", "enum": ["active", "paused", "complete"] },
+    "source_queue": { "const": "planning/EV4_ROLLING_QUEUE.json" },
+    "record_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["one_record_per_completed_controller_run", "pr_required_for_repo_changes", "ci_result_required_for_repo_changes", "boundary_assertions_required", "critique_summary_required"],
+      "properties": {
+        "one_record_per_completed_controller_run": { "const": true },
+        "pr_required_for_repo_changes": { "const": true },
+        "ci_result_required_for_repo_changes": { "const": true },
+        "boundary_assertions_required": { "const": true },
+        "critique_summary_required": { "const": true }
+      }
+    },
+    "imported_history": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "cutoff_task", "cutoff_pr", "note"],
+      "properties": {
+        "status": { "enum": ["initialized_from_existing_queue_history", "fully_recorded"] },
+        "cutoff_task": { "type": "string", "pattern": "^RQ-[0-9]{4}$" },
+        "cutoff_pr": { "type": "integer", "minimum": 1 },
+        "note": { "type": "string", "minLength": 1 }
+      }
+    },
+    "ledger_records": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/record" } }
+  },
+  "$defs": {
+    "artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "artifact_type", "status"],
+      "properties": {
+        "path": { "type": "string", "minLength": 1 },
+        "artifact_type": { "enum": ["schema", "validator", "workflow", "status", "queue", "doc", "issue", "fixture", "report", "other"] },
+        "status": { "enum": ["created", "updated", "validated", "referenced"] }
+      }
+    },
+    "record": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["record_id", "run_id", "task_ref", "run_type", "status", "pr_number", "merge_sha", "ci_conclusion", "created_at_utc", "artifacts", "critique_summary", "boundary_assertions", "next_queue_effect"],
+      "properties": {
+        "record_id": { "type": "string", "pattern": "^LEDGER-[0-9]{4}$" },
+        "run_id": { "type": "string", "minLength": 1 },
+        "task_ref": { "type": ["string", "null"], "pattern": "^RQ-[0-9]{4}$" },
+        "run_type": { "enum": ["automation_task", "manual_controller_hardening", "queue_refresh", "status_sync"] },
+        "status": { "enum": ["merged", "completed_no_repo_change", "blocked", "skipped"] },
+        "pr_number": { "type": ["integer", "null"], "minimum": 1 },
+        "merge_sha": { "type": ["string", "null"], "minLength": 7 },
+        "ci_conclusion": { "enum": ["success", "failure", "pending", "not_applicable"] },
+        "created_at_utc": { "type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$" },
+        "artifacts": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/artifact" } },
+        "critique_summary": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } },
+        "boundary_assertions": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } },
+        "next_queue_effect": { "type": "string", "minLength": 1 }
+      }
+    }
+  }
+}
