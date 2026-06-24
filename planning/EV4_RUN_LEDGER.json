@@ -235,7 +235,8 @@
         {"path": "planning/EV4_ISSUE8_STATE.snapshot.json", "artifact_type": "snapshot", "status": "created"},
         {"path": "validation/e2e/run_issue8_label_state_check.py", "artifact_type": "validator", "status": "created"},
         {"path": ".github/workflows/validate.yml", "artifact_type": "workflow", "status": "updated"},
-        {"path": "STATUS.md", "artifact_type": "status", "status": "updated"}
+        {"path": "STATUS.md", "artifact_type": "status", "status": "updated"},
+        {"path": "planning/EV4_ROLLING_QUEUE.json", "artifact_type": "queue", "status": "updated"}
       ],
       "critique_summary": [
         "Issue #8 labels must remain state metadata only and must not be treated as machine-checkable submitted evidence.",
@@ -250,6 +251,7 @@
         "no_live_render_claim",
         "no_export_validation_claim",
         "no_accessibility_pass_claim",
+        "sample_not_used_as_real",
         "issue_labels_are_metadata_not_evidence",
         "queue_completion_not_evidence_validation",
         "ci_success_not_responsive_validation",
