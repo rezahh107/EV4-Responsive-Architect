@@ -56,6 +56,9 @@ jobs:
           fi
           echo "Sample packet correctly rejected by readiness submitted mode"
 
+      - name: Run readiness provenance policy validation
+        run: python validation/e2e/run_readiness_provenance_policy_check.py
+
       - name: Run pilot dry-run validation
         run: python validation/e2e/run_pilot_dry_run_check.py
 

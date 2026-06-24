@@ -2,7 +2,7 @@
 
 ```yaml
 project: EV4 Responsive Architect
-version: 0.2.14-readiness-generated-output-policy
+version: 0.2.15-readiness-provenance-policy
 status: rolling_queue_controller_active
 production_ready: false
 prompt_pack_release_ready: false
@@ -48,6 +48,7 @@ Allowed now:
 - submitted-mode packet path validation
 - post-validation-hardening queue refresh
 - readiness generated-output policy check
+- readiness provenance policy check
 ```
 
 Forbidden now:
@@ -83,7 +84,6 @@ controller_policy:
 
 ```yaml
 next_tasks:
-  - RQ-0012 add readiness provenance policy check
   - RQ-0013 add submitted readiness status contract check
   - RQ-0014 add Issue #8 submitted-packet absence check
   - RQ-0015 refresh rolling queue after submitted-readiness safety set
@@ -117,6 +117,7 @@ rolling_queue_schema_compatibility: done
 submitted_mode_command_support: done
 post_validation_hardening_queue_refresh: done
 readiness_generated_output_policy_check: done
+readiness_provenance_policy_check: done
 ```
 
 ## Automation Reliability State
