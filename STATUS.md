@@ -2,7 +2,7 @@
 
 ```yaml
 project: EV4 Responsive Architect
-version: 0.2.27-core-artifact-backlog
+version: 0.2.28-core-external-evidence-adapter-backlog
 status: rolling_queue_controller_active
 production_ready: false
 prompt_pack_release_ready: false
@@ -63,6 +63,7 @@ Allowed now:
 - cross-review generation task queued
 - Issue #8 label-state consistency validation
 - core responsive artifact backlog planning
+- external EDIS/EDAS evidence adapter backlog planning
 ```
 
 Forbidden now:
@@ -87,6 +88,9 @@ Forbidden now:
 - treating CI success or merged PR as authoritative responsive evidence
 - closing sensitive automation tasks with self-critique only
 - merging sensitive automation-control PRs before the delayed-review window and comment check
+- translating EDAS design-system violations directly into EV4 responsive failure types
+- treating EDAS-v4 V4 Atomic export support as authoritative before real Atomic fixture validation
+- using legacy EDAS scores to override EV4 failure evidence or hard gates
 ```
 
 ## Rolling Queue
@@ -126,6 +130,7 @@ core_backlog_queue_feed:
     - CORE-003 add categorical risk decision table
     - CORE-004 add Repair Option decision table
     - CORE-005 add Final Audit Summary schema and template
+    - CORE-006 add External Evidence Adapter Contract for EDIS/EDAS outputs
 ```
 
 ## Completed Foundation
@@ -186,6 +191,7 @@ risk_based_merge_policy_required: true
 ci_must_include_rolling_queue_check: true
 actual_cross_review_generation_path: queued_as_RQ_0022
 core_artifact_backlog_file: planning/EV4_CORE_PROJECT_BACKLOG.json
+external_evidence_adapter_contract: queued_as_CORE_006
 ```
 
 ## Real Evidence State
