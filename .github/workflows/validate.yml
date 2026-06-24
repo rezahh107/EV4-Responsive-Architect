@@ -65,6 +65,9 @@ jobs:
       - name: Run submitted privacy review guard validation
         run: python validation/e2e/run_submitted_privacy_review_guard_check.py
 
+      - name: Run submitted evidence completeness contract validation
+        run: python validation/e2e/run_submitted_evidence_completeness_contract_check.py
+
       - name: Run pilot dry-run validation
         run: python validation/e2e/run_pilot_dry_run_check.py
 
