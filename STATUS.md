@@ -2,7 +2,7 @@
 
 ```yaml
 project: EV4 Responsive Architect
-version: 0.2.19-submitted-privacy-review-guard
+version: 0.2.20-submitted-evidence-completeness-contract
 status: rolling_queue_controller_active
 production_ready: false
 prompt_pack_release_ready: false
@@ -53,6 +53,7 @@ Allowed now:
 - Issue #8 submitted-packet absence check
 - submitted-readiness safety queue refresh
 - submitted privacy-review guard validation
+- submitted evidence-completeness contract validation
 ```
 
 Forbidden now:
@@ -72,6 +73,7 @@ Forbidden now:
 - committing runtime .generated.json readiness/report outputs as evidence
 - treating submitted readiness authorization as production, release, export, live-render, or accessibility validation
 - treating privacy-review acknowledgement as live-render, export, accessibility, production, or release evidence
+- treating evidence completeness flags as live-render, export, accessibility, production, or release evidence
 ```
 
 ## Rolling Queue
@@ -91,9 +93,9 @@ controller_policy:
 
 ```yaml
 next_tasks:
-  - RQ-0017 add submitted packet evidence-completeness contract check
   - RQ-0018 add Issue #8 label-state consistency check
   - RQ-0019 add submitted packet source-kind lock check
+  - RQ-0021 add submitted packet artifact-path allowlist check
 next_refresh:
   - RQ-0020 refresh rolling queue after submitted-packet guard set
 ```
@@ -131,6 +133,7 @@ submitted_readiness_status_contract_check: done
 issue8_submitted_packet_absence_check: done
 submitted_readiness_safety_queue_refresh: done
 submitted_privacy_review_guard_check: done
+submitted_evidence_completeness_contract_check: done
 ```
 
 ## Automation Reliability State
