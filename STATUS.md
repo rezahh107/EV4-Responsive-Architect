@@ -2,7 +2,7 @@
 
 ```yaml
 project: EV4 Responsive Architect
-version: 0.2.17-issue8-submitted-packet-absence-check
+version: 0.2.18-submitted-readiness-queue-refresh
 status: rolling_queue_controller_active
 production_ready: false
 prompt_pack_release_ready: false
@@ -51,6 +51,7 @@ Allowed now:
 - readiness provenance policy check
 - submitted readiness status contract check
 - Issue #8 submitted-packet absence check
+- submitted-readiness safety queue refresh
 ```
 
 Forbidden now:
@@ -88,10 +89,12 @@ controller_policy:
 
 ```yaml
 next_tasks:
-  - RQ-0015 refresh rolling queue after submitted-readiness safety set
   - RQ-0016 add privacy-review submitted packet guard
   - RQ-0017 add submitted packet evidence-completeness contract check
   - RQ-0018 add Issue #8 label-state consistency check
+  - RQ-0019 add submitted packet source-kind lock check
+next_refresh:
+  - RQ-0020 refresh rolling queue after submitted-packet guard set
 ```
 
 ## Completed Foundation
@@ -125,6 +128,7 @@ readiness_generated_output_policy_check: done
 readiness_provenance_policy_check: done
 submitted_readiness_status_contract_check: done
 issue8_submitted_packet_absence_check: done
+submitted_readiness_safety_queue_refresh: done
 ```
 
 ## Automation Reliability State
