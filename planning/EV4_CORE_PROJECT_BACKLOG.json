@@ -1,0 +1,140 @@
+{
+  "schema": "ev4-responsive-core-project-backlog@1.0.0",
+  "backlog_id": "EV4CORE-0001-ARTIFACT-FIRST",
+  "project": "EV4 Responsive Architect",
+  "status": "active_queue_feed",
+  "source": {
+    "kind": "external_llm_core_project_review",
+    "reviewed_by_ev4_architect": true,
+    "raw_feedback_adjusted": true,
+    "adjustments": [
+      "EvidencePacket.schema already exists; replace raw schema request with a human intake form and sufficiency table.",
+      "Avoid numeric RiskMatrix scoring; use categorical decision rules because numeric averages must not override hard gates.",
+      "Treat ConnectorLine behavior as a later repair-option/overlay-containment subtask, not an immediate P0/P1 core artifact."
+    ]
+  },
+  "queue_integration_policy": {
+    "active_queue_file": "planning/EV4_ROLLING_QUEUE.json",
+    "integration_mode": "queue_refresh_intake",
+    "next_refresh_task": "RQ-0020",
+    "do_not_overwrite_active_queue_state": true,
+    "reason": "The rolling queue has active automation-controlled state; core backlog candidates must be integrated during a queue refresh instead of overwriting concurrent queue progress."
+  },
+  "tasks": [
+    {
+      "core_task_id": "CORE-001",
+      "recommended_queue_title": "Add Evidence Intake human form and sufficiency table",
+      "priority": "P0",
+      "suggested_task_type": "evidence_bridge",
+      "objective": "Create a submitter-facing intake form and evidence sufficiency decision table that complement the existing evidence packet schema without redefining it.",
+      "why_it_matters": "The machine schema exists, but humans still need an exact form and sufficiency table to know what evidence is acceptable before pilot readiness.",
+      "expected_artifacts": [
+        "Evidence intake human form/template",
+        "Evidence sufficiency decision table",
+        "Docs update explaining sufficient/partial/blocked evidence states"
+      ],
+      "forbidden_work": [
+        "Do not replace the existing EvidencePacket schema.",
+        "Do not treat prose, examples, or samples as real submitted evidence.",
+        "Do not run the real pilot."
+      ],
+      "acceptance_criteria": [
+        "Submitters can see exactly what evidence is required before pilot readiness.",
+        "Sufficiency states preserve unknowns and block sample/prose-only evidence.",
+        "CI passes without creating real submitted evidence."
+      ]
+    },
+    {
+      "core_task_id": "CORE-002",
+      "recommended_queue_title": "Add Responsive Failure Map schema and template",
+      "priority": "P0",
+      "suggested_task_type": "schema_hardening",
+      "objective": "Create a machine-checkable failure map artifact for breakpoint failures, evidence references, affected elements, likely causes, uncertainty, and ownership hints.",
+      "why_it_matters": "Downstream pilot outputs depend on structured failures; prose-only failure mapping is hard to compare or audit.",
+      "expected_artifacts": [
+        "RESPONSIVE_FAILURE_MAP schema",
+        "Failure map template or fixture",
+        "Validation/docs update"
+      ],
+      "forbidden_work": [
+        "Do not infer tablet/mobile behavior without evidence.",
+        "Do not claim repaired state from failure mapping.",
+        "Do not run the real pilot."
+      ],
+      "acceptance_criteria": [
+        "Failure map outputs become comparable across runs.",
+        "Unknowns and evidence confidence remain explicit.",
+        "CI passes without real evidence execution."
+      ]
+    },
+    {
+      "core_task_id": "CORE-003",
+      "recommended_queue_title": "Add categorical risk decision table",
+      "priority": "P1",
+      "suggested_task_type": "validator_hardening",
+      "objective": "Define auditable non-numeric decision rules for risk priority derivation while preserving hard-gate behavior and avoiding average-score overrides.",
+      "why_it_matters": "Risk schema exists, but priority derivation should be repeatable and explainable without numeric averaging.",
+      "expected_artifacts": [
+        "Categorical risk decision table",
+        "Risk priority examples or fixtures",
+        "Docs/validator update if needed"
+      ],
+      "forbidden_work": [
+        "Do not add average-score priority overrides.",
+        "Do not downgrade hard gates using totals or weights.",
+        "Do not run the real pilot."
+      ],
+      "acceptance_criteria": [
+        "Priority derivation is explainable without numeric averaging.",
+        "Hard gates remain stronger than heuristic priority.",
+        "CI passes without real evidence execution."
+      ]
+    },
+    {
+      "core_task_id": "CORE-004",
+      "recommended_queue_title": "Add Repair Option decision table",
+      "priority": "P1",
+      "suggested_task_type": "validator_hardening",
+      "objective": "Define precedence rules for choosing among repair options based on normal-flow safety, editability, responsiveness, accessibility, performance, and regression risk.",
+      "why_it_matters": "Repair option analysis needs explicit selection rules so it does not collapse into subjective preference.",
+      "expected_artifacts": [
+        "Repair option decision table",
+        "Overlay/normal-flow decision examples",
+        "Docs/validator update if needed"
+      ],
+      "forbidden_work": [
+        "Do not privilege visual match over normal-flow safety without an explicit exception.",
+        "Do not flatten meaningful content into static images.",
+        "Do not run the real pilot."
+      ],
+      "acceptance_criteria": [
+        "Repair option selection becomes auditable and repeatable.",
+        "Decision rules preserve Elementor-native and normal-flow priorities.",
+        "CI passes without real evidence execution."
+      ]
+    },
+    {
+      "core_task_id": "CORE-005",
+      "recommended_queue_title": "Add Final Audit Summary schema and template",
+      "priority": "P1",
+      "suggested_task_type": "schema_hardening",
+      "objective": "Create a stable final audit artifact for repaired items, unresolved items, missing evidence, forbidden claims, and next evidence required after builder execution.",
+      "why_it_matters": "Final audit should be archiveable and comparable instead of prose-only, while preserving forbidden-claim boundaries.",
+      "expected_artifacts": [
+        "Final audit summary schema/template",
+        "Forbidden-claims section",
+        "Evidence-after-execution requirements"
+      ],
+      "forbidden_work": [
+        "Do not claim production-ready, release-ready, live-render, export, or accessibility validation without evidence.",
+        "Do not treat builder checklist completion as final validation.",
+        "Do not run the real pilot."
+      ],
+      "acceptance_criteria": [
+        "Final handoff output becomes archiveable and comparable.",
+        "Forbidden claims remain explicit in final audit.",
+        "CI passes without real evidence execution."
+      ]
+    }
+  ]
+}
