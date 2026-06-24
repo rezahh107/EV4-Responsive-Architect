@@ -125,12 +125,12 @@ core_backlog_queue_feed:
   integration_mode: queue_refresh_intake
   next_refresh_task: RQ-0020
   candidates:
-    - CORE-001 add Evidence Intake human form and sufficiency table
-    - CORE-002 add Responsive Failure Map schema and template
-    - CORE-003 add categorical risk decision table
-    - CORE-004 add Repair Option decision table
-    - CORE-005 add Final Audit Summary schema and template
-    - CORE-006 add External Evidence Adapter Contract for EDIS/EDAS outputs
+    - CORE-001 Add Evidence Intake human form and sufficiency table
+    - CORE-002 Add Responsive Failure Map schema and template
+    - CORE-003 Add categorical risk decision table
+    - CORE-004 Add Repair Option decision table
+    - CORE-005 Add Final Audit Summary schema and template
+    - CORE-006 Add External Evidence Adapter Contract for EDIS/EDAS outputs
 ```
 
 ## Completed Foundation
@@ -190,7 +190,7 @@ pending_ledger_intent_reconciliation_documented: true
 risk_based_merge_policy_required: true
 ci_must_include_rolling_queue_check: true
 actual_cross_review_generation_path: queued_as_RQ_0022
-core_artifact_backlog_file: planning/EV4_CORE_PROJECT_BACKLOG.json
+core_project_backlog_file: planning/EV4_CORE_PROJECT_BACKLOG.json
 external_evidence_adapter_contract: queued_as_CORE_006
 ```
 
