@@ -10,6 +10,7 @@
     "quality_principles",
     "deterministic_review_policy",
     "cross_critique_policy",
+    "delayed_review_policy",
     "completion_policy",
     "sensitive_task_types",
     "forbidden_quality_shortcuts"
@@ -42,7 +43,7 @@
       "properties": {
         "required_checks": {
           "type": "array",
-          "minItems": 8,
+          "minItems": 9,
           "items": {
             "enum": [
               "acceptance_criteria_checked",
@@ -53,6 +54,7 @@
               "queue_state_checked",
               "ledger_state_checked",
               "stale_reference_search_done",
+              "delayed_bot_review_window_checked",
               "boundary_assertions_checked"
             ]
           },
@@ -72,6 +74,29 @@
         "sensitive_task_effect": {"const": "completion_blocked_until_cross_critique_recorded"}
       }
     },
+    "delayed_review_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "enabled",
+        "minimum_wait_minutes_before_merge",
+        "review_sources_to_check",
+        "block_merge_on_unresolved_high_priority_review",
+        "allowed_outcome_if_feedback_arrives_after_merge"
+      ],
+      "properties": {
+        "enabled": {"const": true},
+        "minimum_wait_minutes_before_merge": {"type": "integer", "minimum": 10},
+        "review_sources_to_check": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"enum": ["github_review_threads", "gemini-code-assist[bot]", "human_reviewer"]},
+          "uniqueItems": true
+        },
+        "block_merge_on_unresolved_high_priority_review": {"const": true},
+        "allowed_outcome_if_feedback_arrives_after_merge": {"const": "create_follow_up_task_and_record_in_ledger"}
+      }
+    },
     "completion_policy": {
       "type": "object",
       "additionalProperties": false,
@@ -79,12 +104,13 @@
       "properties": {
         "completion_allowed_requires": {
           "type": "array",
-          "minItems": 5,
+          "minItems": 6,
           "items": {
             "enum": [
               "deterministic_checks_pass",
               "self_critique_recorded",
               "cross_critique_completed_when_required",
+              "delayed_reviewer_window_checked",
               "unfixed_p0_or_p1_findings_absent",
               "follow_up_tasks_created_when_needed",
               "boundary_assertions_present"
@@ -94,13 +120,14 @@
         },
         "blocked_if": {
           "type": "array",
-          "minItems": 4,
+          "minItems": 5,
           "items": {
             "enum": [
               "self_critique_only_for_sensitive_task",
               "deterministic_check_failed_without_follow_up",
               "ci_required_but_missing",
               "cross_critique_required_but_missing",
+              "delayed_reviewer_feedback_unchecked",
               "unfixed_p0_or_p1_finding_without_follow_up"
             ]
           },
@@ -110,7 +137,7 @@
     },
     "sensitive_task_types": {
       "type": "array",
-      "minItems": 4,
+      "minItems": 8,
       "items": {
         "enum": [
           "schema_hardening",
