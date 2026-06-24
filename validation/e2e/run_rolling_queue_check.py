@@ -10,7 +10,9 @@ from jsonschema import Draft202012Validator
 
 ROOT = Path(__file__).resolve().parents[2]
 QUEUE = ROOT / "planning" / "EV4_ROLLING_QUEUE.json"
-SCHEMA = ROOT / "schemas" / "ev4-responsive-rolling-queue.schema.json"
+QUEUE_SCHEMA = ROOT / "schemas" / "ev4-responsive-rolling-queue.schema.json"
+CONTROL = ROOT / "planning" / "EV4_QUEUE_CONTROL_PLANE.json"
+CONTROL_SCHEMA = ROOT / "schemas" / "ev4-responsive-queue-control-plane.schema.json"
 TERMINAL_STATUSES = {"completed", "merged", "skipped", "superseded", "cancelled"}
 NON_TERMINAL_STATUSES = {"pending", "in_progress", "blocked", "stale_in_progress"}
 
@@ -29,15 +31,15 @@ def schema_errors(payload: dict[str, Any], schema: dict[str, Any]) -> list[str]:
     return [error.message for error in sorted(validator.iter_errors(payload), key=lambda e: [str(p) for p in e.path])]
 
 
-def assert_schema_valid(payload: dict[str, Any], schema: dict[str, Any]) -> None:
+def assert_schema_valid(payload: dict[str, Any], schema: dict[str, Any], label: str) -> None:
     errors = schema_errors(payload, schema)
     if errors:
-        fail(f"queue must validate against rolling queue schema: {errors[0]}")
+        fail(f"{label} must validate against schema: {errors[0]}")
 
 
 def assert_schema_invalid(payload: dict[str, Any], schema: dict[str, Any], label: str) -> None:
     if not schema_errors(payload, schema):
-        fail(f"malformed queue unexpectedly passed schema validation: {label}")
+        fail(f"malformed payload unexpectedly passed schema validation: {label}")
 
 
 def assert_schema_negative_paths(queue: dict[str, Any], schema: dict[str, Any]) -> None:
@@ -67,11 +69,65 @@ def expected_task_id(position: int) -> str:
     return f"RQ-{position:04d}"
 
 
+def assert_control_plane(control: dict[str, Any], control_schema: dict[str, Any]) -> None:
+    assert_schema_valid(control, control_schema, "queue control plane")
+
+    truth = control["truth_boundary"]
+    if not all(truth.values()):
+        fail("queue truth boundary values must all remain true")
+
+    runtime = control["runtime_state_policy"]
+    if runtime["queue_file"] != "planning/EV4_ROLLING_QUEUE.json":
+        fail("control plane queue_file must reference the active queue")
+    if runtime["ledger_file"] != "planning/EV4_RUN_LEDGER.json":
+        fail("control plane ledger_file must reference the active run ledger")
+
+    lease = control["lease_policy"]
+    if lease["max_active_leases"] != 1:
+        fail("lease policy must allow only one active lease")
+    if not lease["optimistic_locking_required"]:
+        fail("lease policy must require optimistic locking")
+
+    transitions = control["transition_policy"]
+    allowed = {(item["from"], item["to"]) for item in transitions["allowed_transitions"]}
+    forbidden = {(item["from"], item["to"]) for item in transitions["forbidden_transitions"]}
+    required_forbidden = {
+        ("pending", "completed"),
+        ("awaiting_external", "completed"),
+        ("blocked", "completed"),
+    }
+    missing_forbidden = required_forbidden - forbidden
+    if missing_forbidden:
+        fail("control plane missing required forbidden transitions")
+    if allowed & forbidden:
+        fail("a transition cannot be both allowed and forbidden")
+
+    codes = {item["code"] for item in control["diagnostic_registry"]}
+    required_codes = {
+        "RQ_SCHEMA_INVALID",
+        "RQ_ILLEGAL_TRANSITION",
+        "RQ_LEASE_CONFLICT",
+        "RQ_PR_STATE_DRIFT",
+        "RQ_CI_ACTION_REQUIRED",
+        "RQ_EVIDENCE_STATE_MISMATCH",
+    }
+    if required_codes - codes:
+        fail("control plane missing required diagnostics")
+
+    boundary = control["implementation_boundary"]
+    if not all(boundary.values()):
+        fail("implementation boundary values must remain true")
+
+
 def main() -> None:
     queue = load(QUEUE)
-    schema = load(SCHEMA)
-    assert_schema_valid(queue, schema)
-    assert_schema_negative_paths(queue, schema)
+    queue_schema = load(QUEUE_SCHEMA)
+    control = load(CONTROL)
+    control_schema = load(CONTROL_SCHEMA)
+
+    assert_schema_valid(queue, queue_schema, "rolling queue")
+    assert_schema_negative_paths(queue, queue_schema)
+    assert_control_plane(control, control_schema)
 
     policy = queue["controller_policy"]
     tasks = queue["tasks"]

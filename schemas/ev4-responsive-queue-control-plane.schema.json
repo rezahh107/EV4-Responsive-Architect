@@ -1,0 +1,91 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ev4-responsive-queue-control-plane@1.0.0",
+  "title": "EV4 Responsive Queue Control Plane",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "project", "status", "truth_boundary", "runtime_state_policy", "lease_policy", "transition_policy", "diagnostic_registry", "implementation_boundary"],
+  "properties": {
+    "schema": {"const": "ev4-responsive-queue-control-plane@1.0.0"},
+    "project": {"const": "EV4 Responsive Architect"},
+    "status": {"enum": ["active", "proposed", "deprecated"]},
+    "truth_boundary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["queue_task_completion_is_not_evidence_validation", "ci_success_is_not_responsive_validation", "merged_pr_is_not_authoritative_evidence", "queue_may_not_upgrade_evidence_truth", "real_pilot_requires_submitted_packet_and_readiness"],
+      "properties": {
+        "queue_task_completion_is_not_evidence_validation": {"const": true},
+        "ci_success_is_not_responsive_validation": {"const": true},
+        "merged_pr_is_not_authoritative_evidence": {"const": true},
+        "queue_may_not_upgrade_evidence_truth": {"const": true},
+        "real_pilot_requires_submitted_packet_and_readiness": {"const": true}
+      }
+    },
+    "runtime_state_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["current_location", "future_runtime_branch_candidate", "migration_required_before_branch_split", "queue_file", "ledger_file"],
+      "properties": {
+        "current_location": {"const": "main"},
+        "future_runtime_branch_candidate": {"const": "control/rolling-queue"},
+        "migration_required_before_branch_split": {"const": true},
+        "queue_file": {"const": "planning/EV4_ROLLING_QUEUE.json"},
+        "ledger_file": {"const": "planning/EV4_RUN_LEDGER.json"}
+      }
+    },
+    "lease_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["enabled", "max_active_leases", "lease_duration_minutes", "stale_lease_action", "optimistic_locking_required"],
+      "properties": {
+        "enabled": {"const": true},
+        "max_active_leases": {"const": 1},
+        "lease_duration_minutes": {"type": "integer", "minimum": 30, "maximum": 120},
+        "stale_lease_action": {"enum": ["block_and_require_reconcile", "release_with_event_record"]},
+        "optimistic_locking_required": {"const": true}
+      }
+    },
+    "transition_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["allowed_transitions", "forbidden_transitions"],
+      "properties": {
+        "allowed_transitions": {"type": "array", "minItems": 5, "items": {"$ref": "#/$defs/transition"}},
+        "forbidden_transitions": {"type": "array", "minItems": 3, "items": {"$ref": "#/$defs/transition"}}
+      }
+    },
+    "diagnostic_registry": {"type": "array", "minItems": 8, "uniqueItems": true, "items": {"$ref": "#/$defs/diagnostic"}},
+    "implementation_boundary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["does_not_move_queue_to_control_branch_yet", "does_not_start_real_pilot", "does_not_mark_evidence_authoritative", "does_not_change_issue_8_evidence_state"],
+      "properties": {
+        "does_not_move_queue_to_control_branch_yet": {"const": true},
+        "does_not_start_real_pilot": {"const": true},
+        "does_not_mark_evidence_authoritative": {"const": true},
+        "does_not_change_issue_8_evidence_state": {"const": true}
+      }
+    }
+  },
+  "$defs": {
+    "transition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["from", "to"],
+      "properties": {
+        "from": {"enum": ["pending", "leased", "executing", "awaiting_external", "needs_review", "blocked", "completed", "superseded", "cancelled"]},
+        "to": {"enum": ["pending", "leased", "executing", "awaiting_external", "needs_review", "blocked", "completed", "superseded", "cancelled"]}
+      }
+    },
+    "diagnostic": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["code", "severity", "required_action"],
+      "properties": {
+        "code": {"type": "string", "pattern": "^RQ_[A-Z0-9_]+$"},
+        "severity": {"enum": ["P0", "P1", "P2", "P3"]},
+        "required_action": {"type": "string", "minLength": 1}
+      }
+    }
+  }
+}

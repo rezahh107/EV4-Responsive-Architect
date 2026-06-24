@@ -1,16 +1,33 @@
 # EV4 Rolling Queue Controller
 
-Version: 1.1.0
-Status: active_with_run_ledger
+Version: 1.2.0
+Status: active_with_control_plane_and_run_ledger
 
 ## Purpose
 
 The rolling queue keeps the EV4 Responsive Architect project moving without losing state between hourly automation runs.
 
+The queue is an execution-control tool. It is not an evidence authority.
+
+```text
+Queue task completion != evidence validation
+CI success != responsive validation
+Merged PR != authoritative evidence
+Run ledger record != production readiness
+```
+
+## Live Files
+
 The active queue is stored in:
 
 ```text
 planning/EV4_ROLLING_QUEUE.json
+```
+
+The queue control-plane policy is stored in:
+
+```text
+planning/EV4_QUEUE_CONTROL_PLANE.json
 ```
 
 The run ledger is stored in:
@@ -19,7 +36,7 @@ The run ledger is stored in:
 planning/EV4_RUN_LEDGER.json
 ```
 
-The queue is validated by:
+The queue and control plane are validated by:
 
 ```bash
 python validation/e2e/run_rolling_queue_check.py
@@ -39,6 +56,20 @@ After the task is complete, the same run must critique that task. Small fixes ar
 
 The fifth task in each active cycle is always a queue-refresh task. It audits the previous four tasks and writes the next four bounded tasks plus the next refresh task.
 
+## Control-Plane Boundary
+
+The queue control plane records rules that the automation must obey before executing a task:
+
+```text
+- the queue cannot create or upgrade evidence truth
+- the queue cannot mark anything production-ready
+- real pilot execution requires a validated real submitted packet and readiness pass
+- current runtime state remains on main for now
+- control/rolling-queue is a future migration candidate, not current runtime truth
+```
+
+This step intentionally does not move runtime queue state to a dedicated branch. A branch split requires a later migration task with lease recovery and optimistic locking tested.
+
 ## Queue Rules
 
 ```text
@@ -49,6 +80,41 @@ The fifth task in each active cycle is always a queue-refresh task. It audits th
 - CI is required for repo changes
 - real pilot execution is blocked until real submitted evidence and readiness gates pass
 ```
+
+## Lease and Transition Policy
+
+The control plane defines the intended lease and transition model:
+
+```text
+pending -> leased -> executing
+executing -> awaiting_external | needs_review | blocked | completed
+blocked -> pending | superseded | cancelled
+```
+
+Forbidden transitions include:
+
+```text
+pending -> completed
+awaiting_external -> completed
+blocked -> completed
+```
+
+The current implementation validates this policy as contract. Full write-mode leasing is a later hardening task.
+
+## Diagnostics
+
+The control plane defines diagnostics such as:
+
+```text
+RQ_SCHEMA_INVALID
+RQ_ILLEGAL_TRANSITION
+RQ_LEASE_CONFLICT
+RQ_PR_STATE_DRIFT
+RQ_CI_ACTION_REQUIRED
+RQ_EVIDENCE_STATE_MISMATCH
+```
+
+A diagnostic must block or route work rather than silently repairing drift.
 
 ## Run Ledger Rules
 
