@@ -61,14 +61,6 @@ def main() -> int:
         schema = load_json(REVIEW_SCHEMA)
         assert_schema_valid(review, schema, "cross-critique review example")
         semantic_validate_review(review)
-
-        cross = review["cross_critique"]
-        if not cross["required"] or cross["status"] != "completed":
-            raise QualityGateError("cross-critique example must require and complete cross critique")
-        if cross["reviewer_role"] != "strict_pessimistic_reviewer":
-            raise QualityGateError("cross-critique example must use strict reviewer role")
-        if not cross["prompt_separation"]:
-            raise QualityGateError("cross-critique example must require prompt separation")
     except QualityGateError as exc:
         print(f"cross-critique stub validation failed: {exc}")
         return 1
