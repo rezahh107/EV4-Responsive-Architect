@@ -2,7 +2,7 @@
 
 ```yaml
 project: EV4 Responsive Architect
-version: 0.2.16-submitted-readiness-status-contract
+version: 0.2.17-issue8-submitted-packet-absence-check
 status: rolling_queue_controller_active
 production_ready: false
 prompt_pack_release_ready: false
@@ -50,6 +50,7 @@ Allowed now:
 - readiness generated-output policy check
 - readiness provenance policy check
 - submitted readiness status contract check
+- Issue #8 submitted-packet absence check
 ```
 
 Forbidden now:
@@ -62,6 +63,7 @@ Forbidden now:
 - live-render-validated claim
 - accessibility-passed claim
 - treating sample packet as real submitted evidence
+- treating Issue #8 prose/checklist as a real submitted packet
 - numeric score used as readiness evidence
 - average score used to override a hard gate
 - starting the real pilot before a real submitted packet and readiness pass exist
@@ -86,10 +88,10 @@ controller_policy:
 
 ```yaml
 next_tasks:
-  - RQ-0014 add Issue #8 submitted-packet absence check
   - RQ-0015 refresh rolling queue after submitted-readiness safety set
   - RQ-0016 add privacy-review submitted packet guard
   - RQ-0017 add submitted packet evidence-completeness contract check
+  - RQ-0018 add Issue #8 label-state consistency check
 ```
 
 ## Completed Foundation
@@ -122,6 +124,7 @@ post_validation_hardening_queue_refresh: done
 readiness_generated_output_policy_check: done
 readiness_provenance_policy_check: done
 submitted_readiness_status_contract_check: done
+issue8_submitted_packet_absence_check: done
 ```
 
 ## Automation Reliability State
@@ -145,5 +148,5 @@ issue_to_packet_bridge_schema: ev4-responsive-issue-to-packet-bridge@1.0.0
 readiness_schema: ev4-responsive-pilot-readiness@1.0.0
 real_submitted_packet_present: false
 pilot_allowed_to_start: false
-reason: real smart-home evidence has not been submitted and readiness has not passed
+reason: Issue #8 remains evidence-pending; issue prose/checklist is not a machine-checkable real_issue_submission packet
 ```

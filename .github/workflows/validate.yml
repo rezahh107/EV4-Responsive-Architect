@@ -88,5 +88,8 @@ jobs:
       - name: Run issue-to-packet bridge semantic validation
         run: python validation/e2e/run_issue_to_packet_bridge_check.py
 
+      - name: Run Issue #8 submitted-packet absence validation
+        run: python validation/e2e/run_issue8_submitted_packet_absence_check.py
+
       - name: Run rolling queue validation
         run: python validation/e2e/run_rolling_queue_check.py
