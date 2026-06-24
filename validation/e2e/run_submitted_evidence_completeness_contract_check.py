@@ -36,11 +36,12 @@ def real_issue_packet_from_fixture() -> dict[str, Any]:
     """
     packet = copy.deepcopy(load_json(BASE_FIXTURE))
     packet["packet_id"] = "SHP-INTAKE-REAL-ISSUE-COMPLETENESS-CONTRACT-001"
+    packet["packet_status"] = "submitted"
     packet["packet_origin"] = "real_issue_submission"
     packet["issue_reference"] = {
-        "repository": "rezahh107/EV4-Responsive-Architect",
         "issue_number": 8,
-        "source_scope": "contract_self_test_only",
+        "issue_url_or_ref": "#8",
+        "evidence_submission_status": "submitted",
     }
     packet["main_ev4_handoff"]["payload_identity_hash"] = "sha256-contract-real-issue-completeness-guard"
     packet["intake_verdict"]["sample_dry_run_allowed"] = False
