@@ -26,6 +26,36 @@ REQUIRED_SENSITIVE_TYPES = {
     "ci_workflow",
 }
 
+EXPECTED_PR_RECONCILIATION_ORDER = [
+    "inspect_open_automation_prs",
+    "check_ci_status",
+    "check_mergeability_and_head_sha",
+    "read_pr_comments_and_review_comments",
+    "evaluate_gemini_or_reviewer_feedback",
+    "fix_small_in_scope_feedback_on_same_pr",
+    "rerun_ci_after_fixes",
+    "merge_when_green_mergeable_and_no_unresolved_feedback",
+    "stop_after_merge_unless_next_task_is_trivial_and_no_state_drift",
+]
+
+REQUIRED_FORBIDDEN_DURING_OPEN_PR = {
+    "start_new_queue_task",
+    "create_parallel_automation_pr",
+    "overwrite_queue_from_stale_snapshot",
+    "merge_without_comment_check",
+    "treat_review_comment_as_domain_evidence",
+}
+
+REQUIRED_FORBIDDEN_QUALITY_SHORTCUTS = {
+    "self_critique_only_completion",
+    "green_ci_as_quality_proof",
+    "merged_pr_as_evidence_truth",
+    "unstructured_reviewer_opinion_as_gate",
+    "silent_follow_up_omission",
+    "parallel_automation_prs_without_reconciliation",
+    "gemini_review_as_independent_queue_task",
+}
+
 
 class QualityGateError(AssertionError):
     pass
@@ -55,8 +85,8 @@ def assert_policy(policy: dict[str, Any], schema: dict[str, Any]) -> None:
         raise QualityGateError("self critique must remain insufficient by policy")
     if not principles["cross_critique_required_for_sensitive_tasks"]:
         raise QualityGateError("sensitive tasks must require cross critique")
-    if "self_critique_only_completion" not in policy["forbidden_quality_shortcuts"]:
-        raise QualityGateError("policy must forbid self-critique-only completion")
+    if not REQUIRED_FORBIDDEN_QUALITY_SHORTCUTS.issubset(set(policy["forbidden_quality_shortcuts"])):
+        raise QualityGateError("policy is missing required forbidden quality shortcuts")
     if not REQUIRED_SENSITIVE_TYPES.issubset(set(policy["sensitive_task_types"])):
         raise QualityGateError("policy is missing required sensitive task types")
 
@@ -67,6 +97,24 @@ def assert_policy(policy: dict[str, Any], schema: dict[str, Any]) -> None:
         raise QualityGateError("delayed reviewer window must be at least 10 minutes")
     if not delayed["block_merge_on_unresolved_high_priority_review"]:
         raise QualityGateError("high-priority external review feedback must block merge until resolved")
+
+    reconciliation = policy["pr_reconciliation_policy"]
+    if reconciliation["enabled"] is not True:
+        raise QualityGateError("PR reconciliation preflight must remain enabled")
+    if reconciliation["runs_before_new_task_selection"] is not True:
+        raise QualityGateError("PR reconciliation must run before selecting a new queue task")
+    if reconciliation["single_active_automation_pr"] is not True:
+        raise QualityGateError("policy must enforce a single active automation PR")
+    if reconciliation["review_handling_counts_as_queue_task"] is not False:
+        raise QualityGateError("review handling must remain a PR lifecycle step, not a queue task")
+    if reconciliation["open_automation_pr_effect"] != "block_new_queue_task_until_reconciled":
+        raise QualityGateError("an open automation PR must block new queue task execution")
+    if reconciliation["previous_pr_resolution_order"] != EXPECTED_PR_RECONCILIATION_ORDER:
+        raise QualityGateError("PR reconciliation resolution order is invalid or missing steps")
+    if not REQUIRED_FORBIDDEN_DURING_OPEN_PR.issubset(set(reconciliation["forbidden_during_open_pr"])):
+        raise QualityGateError("policy is missing required forbidden actions during open PR")
+    if "open_automation_pr_unreconciled" not in policy["completion_policy"]["blocked_if"]:
+        raise QualityGateError("completion policy must block unresolved open automation PRs")
 
 
 def semantic_validate_review(review: dict[str, Any]) -> None:
