@@ -17,7 +17,11 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 
-from validation.e2e.run_evidence_intake_check import load_json, validate_packet_origin  # noqa: E402
+from validation.e2e.run_evidence_intake_check import (  # noqa: E402
+    load_json,
+    validate_packet_origin,
+    validate_submitted_packet_source_kind_lock,
+)
 from validation.e2e.run_pilot_readiness_check import build_readiness, validate_readiness_schema  # noqa: E402
 
 BASE_FIXTURE = ROOT / "validation" / "fixtures" / "valid" / "evidence_intake_packet.valid.json"
@@ -41,6 +45,7 @@ REQUIRED_FORBIDDEN_CLAIMS = {
 VALID_NON_REAL_REJECTION_FRAGMENTS = (
     "contract fixtures must not allow real pilot start",
     "only real_issue_submission may set real_pilot_allowed_to_start=true",
+    "real shadow-mode eligibility requires packet_origin=real_issue_submission",
 )
 
 
@@ -53,11 +58,12 @@ def real_issue_packet_from_fixture() -> dict[str, Any]:
     """
     packet = copy.deepcopy(load_json(BASE_FIXTURE))
     packet["packet_id"] = "SHP-INTAKE-REAL-ISSUE-CONTRACT-001"
+    packet["packet_status"] = "submitted"
     packet["packet_origin"] = "real_issue_submission"
     packet["issue_reference"] = {
-        "repository": "rezahh107/EV4-Responsive-Architect",
         "issue_number": 8,
-        "source_scope": "contract_self_test_only",
+        "issue_url_or_ref": "#8",
+        "evidence_submission_status": "submitted",
     }
     packet["main_ev4_handoff"]["payload_identity_hash"] = "sha256-contract-real-issue-handoff"
     packet["intake_verdict"]["sample_dry_run_allowed"] = False
@@ -69,6 +75,7 @@ def real_issue_packet_from_fixture() -> dict[str, Any]:
 def assert_authorized_real_issue_remains_shadow_mode_only() -> None:
     packet = real_issue_packet_from_fixture()
     validate_packet_origin(packet, BASE_FIXTURE)
+    validate_submitted_packet_source_kind_lock(packet)
     report = build_readiness(packet)
     validate_readiness_schema(report)
 
@@ -109,6 +116,7 @@ def assert_non_real_origin_cannot_self_authorize() -> None:
 
     try:
         validate_packet_origin(packet, BASE_FIXTURE)
+        validate_submitted_packet_source_kind_lock(packet)
     except AssertionError as exc:
         message = str(exc)
         if not any(fragment in message for fragment in VALID_NON_REAL_REJECTION_FRAGMENTS):
