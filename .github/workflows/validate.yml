@@ -59,6 +59,9 @@ jobs:
       - name: Run readiness provenance policy validation
         run: python validation/e2e/run_readiness_provenance_policy_check.py
 
+      - name: Run submitted readiness status contract validation
+        run: python validation/e2e/run_submitted_readiness_status_contract_check.py
+
       - name: Run pilot dry-run validation
         run: python validation/e2e/run_pilot_dry_run_check.py
 
