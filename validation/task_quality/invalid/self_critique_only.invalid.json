@@ -14,6 +14,7 @@
     "queue_state_checked": true,
     "ledger_state_checked": true,
     "stale_reference_search_done": true,
+    "delayed_bot_review_window_checked": true,
     "boundary_assertions_checked": true
   },
   "self_critique": {
@@ -30,6 +31,7 @@
   "findings": [],
   "boundary_assertions": [
     "deterministic_checks_passed",
+    "bot_review_window_checked",
     "no_production_claim",
     "no_unrelated_task"
   ],
