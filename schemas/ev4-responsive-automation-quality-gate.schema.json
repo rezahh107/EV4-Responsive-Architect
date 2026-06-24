@@ -1,0 +1,143 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ev4-responsive-automation-quality-gate.schema.json",
+  "title": "EV4 Responsive Automation Quality Gate Policy",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "status",
+    "quality_principles",
+    "deterministic_review_policy",
+    "cross_critique_policy",
+    "completion_policy",
+    "sensitive_task_types",
+    "forbidden_quality_shortcuts"
+  ],
+  "properties": {
+    "schema": {"const": "ev4-responsive-automation-quality-gate@1.0.0"},
+    "status": {"enum": ["active", "draft"]},
+    "quality_principles": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "self_critique_is_insufficient",
+        "deterministic_checks_required",
+        "cross_critique_required_for_sensitive_tasks",
+        "ci_or_explicit_no_ci_reason_required",
+        "quality_record_required_for_completion"
+      ],
+      "properties": {
+        "self_critique_is_insufficient": {"const": true},
+        "deterministic_checks_required": {"const": true},
+        "cross_critique_required_for_sensitive_tasks": {"const": true},
+        "ci_or_explicit_no_ci_reason_required": {"const": true},
+        "quality_record_required_for_completion": {"const": true}
+      }
+    },
+    "deterministic_review_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["required_checks", "failed_required_check_effect"],
+      "properties": {
+        "required_checks": {
+          "type": "array",
+          "minItems": 8,
+          "items": {
+            "enum": [
+              "acceptance_criteria_checked",
+              "scope_respected",
+              "forbidden_work_absent",
+              "ci_checked_or_no_ci_reason_recorded",
+              "artifacts_listed",
+              "queue_state_checked",
+              "ledger_state_checked",
+              "stale_reference_search_done",
+              "boundary_assertions_checked"
+            ]
+          },
+          "uniqueItems": true
+        },
+        "failed_required_check_effect": {"const": "block_completion_or_create_follow_up"}
+      }
+    },
+    "cross_critique_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["reviewer_role", "prompt_separation_required", "low_temperature_policy", "sensitive_task_effect"],
+      "properties": {
+        "reviewer_role": {"const": "strict_pessimistic_reviewer"},
+        "prompt_separation_required": {"const": true},
+        "low_temperature_policy": {"enum": ["temperature_0_1_recommended", "deterministic_external_step_required"]},
+        "sensitive_task_effect": {"const": "completion_blocked_until_cross_critique_recorded"}
+      }
+    },
+    "completion_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["completion_allowed_requires", "blocked_if"],
+      "properties": {
+        "completion_allowed_requires": {
+          "type": "array",
+          "minItems": 5,
+          "items": {
+            "enum": [
+              "deterministic_checks_pass",
+              "self_critique_recorded",
+              "cross_critique_completed_when_required",
+              "unfixed_p0_or_p1_findings_absent",
+              "follow_up_tasks_created_when_needed",
+              "boundary_assertions_present"
+            ]
+          },
+          "uniqueItems": true
+        },
+        "blocked_if": {
+          "type": "array",
+          "minItems": 4,
+          "items": {
+            "enum": [
+              "self_critique_only_for_sensitive_task",
+              "deterministic_check_failed_without_follow_up",
+              "ci_required_but_missing",
+              "cross_critique_required_but_missing",
+              "unfixed_p0_or_p1_finding_without_follow_up"
+            ]
+          },
+          "uniqueItems": true
+        }
+      }
+    },
+    "sensitive_task_types": {
+      "type": "array",
+      "minItems": 4,
+      "items": {
+        "enum": [
+          "schema_hardening",
+          "automation_control",
+          "readiness_gate",
+          "sample_vs_real_safety",
+          "risk_priority_engine",
+          "evidence_boundary",
+          "production_boundary",
+          "ci_workflow"
+        ]
+      },
+      "uniqueItems": true
+    },
+    "forbidden_quality_shortcuts": {
+      "type": "array",
+      "minItems": 4,
+      "items": {
+        "enum": [
+          "self_critique_only_completion",
+          "green_ci_as_quality_proof",
+          "merged_pr_as_evidence_truth",
+          "unstructured_reviewer_opinion_as_gate",
+          "silent_follow_up_omission"
+        ]
+      },
+      "uniqueItems": true
+    }
+  }
+}
