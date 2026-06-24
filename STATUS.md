@@ -2,7 +2,7 @@
 
 ```yaml
 project: EV4 Responsive Architect
-version: 0.2.20-submitted-evidence-completeness-contract
+version: 0.2.24-automation-quality-and-cross-critique-sync
 status: rolling_queue_controller_active
 production_ready: false
 prompt_pack_release_ready: false
@@ -54,6 +54,12 @@ Allowed now:
 - submitted-readiness safety queue refresh
 - submitted privacy-review guard validation
 - submitted evidence-completeness contract validation
+- queue control-plane contract validation
+- reusable rolling queue automation playbook
+- automation task-quality gate validation
+- delayed reviewer policy documentation
+- cross-critique execution stub validation
+- pending ledger intent reconciliation documentation
 ```
 
 Forbidden now:
@@ -74,6 +80,10 @@ Forbidden now:
 - treating submitted readiness authorization as production, release, export, live-render, or accessibility validation
 - treating privacy-review acknowledgement as live-render, export, accessibility, production, or release evidence
 - treating evidence completeness flags as live-render, export, accessibility, production, or release evidence
+- treating queue task completion as evidence validation
+- treating CI success or merged PR as authoritative responsive evidence
+- closing sensitive automation tasks with self-critique only
+- merging sensitive automation-control PRs before the delayed-review window and comment check
 ```
 
 ## Rolling Queue
@@ -82,6 +92,9 @@ Forbidden now:
 queue_file: planning/EV4_ROLLING_QUEUE.json
 queue_schema: ev4-responsive-rolling-queue@1.0.0
 queue_status: active
+control_plane_file: planning/EV4_QUEUE_CONTROL_PLANE.json
+run_ledger_file: planning/EV4_RUN_LEDGER.json
+automation_quality_gate_file: planning/EV4_AUTOMATION_QUALITY_GATE.json
 controller_policy:
   one_task_per_run: true
   critique_same_task: true
@@ -134,6 +147,10 @@ issue8_submitted_packet_absence_check: done
 submitted_readiness_safety_queue_refresh: done
 submitted_privacy_review_guard_check: done
 submitted_evidence_completeness_contract_check: done
+queue_control_plane_contract: done
+reusable_rolling_queue_playbook: done
+automation_quality_gate: done
+cross_critique_execution_stub: done
 ```
 
 ## Automation Reliability State
@@ -144,6 +161,11 @@ half_hour_cadence: not_selected
 task_interpretation_gate_required: true
 external_input_boundary_required: true
 run_ledger_contract_required: true
+queue_control_plane_required: true
+task_quality_gate_required: true
+cross_critique_required_for_sensitive_tasks: true
+delayed_reviewer_window_required_for_sensitive_prs: true
+pending_ledger_intent_reconciliation_documented: true
 risk_based_merge_policy_required: true
 ci_must_include_rolling_queue_check: true
 ```
