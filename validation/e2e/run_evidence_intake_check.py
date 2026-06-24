@@ -78,12 +78,14 @@ def validate_submitted_packet_source_kind_lock(packet: dict[str, Any]) -> None:
     origin = packet.get("packet_origin")
     packet_status = packet.get("packet_status")
     issue_reference = packet.get("issue_reference")
-    verdict = packet.get("intake_verdict", {})
+    verdict = packet.get("intake_verdict")
+    if not isinstance(verdict, dict):
+        verdict = {}
 
     real_eligible_requested = (
         verdict.get("allowed_scope") == REAL_SHADOW_SCOPE
         or verdict.get("real_pilot_allowed_to_start") is True
-        or verdict.get("pilot_allowed_to_start") is True and verdict.get("sample_dry_run_allowed") is not True
+        or (verdict.get("pilot_allowed_to_start") is True and verdict.get("sample_dry_run_allowed") is not True)
     )
     if not real_eligible_requested:
         return
