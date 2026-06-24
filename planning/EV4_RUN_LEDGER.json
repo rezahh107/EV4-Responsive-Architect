@@ -15,7 +15,7 @@
     "status": "initialized_from_existing_queue_history",
     "cutoff_task": "RQ-0016",
     "cutoff_pr": 40,
-    "note": "Earlier queue history remains in planning/EV4_ROLLING_QUEUE.json. This ledger starts as an audit companion from RQ-0016 forward. PRs 43-46 are recorded as manual_controller_hardening because they improved the queue/control/quality system outside the numbered rolling queue task sequence."
+    "note": "Earlier queue history remains in planning/EV4_ROLLING_QUEUE.json. This ledger starts as an audit companion from RQ-0016 forward. PRs 43-48 are recorded as manual_controller_hardening because they improved the queue/control/quality system outside the numbered rolling queue task execution sequence."
   },
   "ledger_records": [
     {
@@ -187,6 +187,39 @@
         "merged_pr_not_authoritative_evidence"
       ],
       "next_queue_effect": "A future task may implement real cross-review record generation; current queue tasks RQ-0018 through RQ-0021 remain pending."
+    },
+    {
+      "record_id": "LEDGER-0006",
+      "run_id": "manual-control-hardening-pr-48",
+      "task_ref": null,
+      "run_type": "manual_controller_hardening",
+      "status": "merged",
+      "pr_number": 48,
+      "merge_sha": "4732503eeccf93cd5ea400a1ba9adf04b1458b45",
+      "ci_conclusion": "success",
+      "created_at_utc": "2026-06-24T13:51:38Z",
+      "artifacts": [
+        {"path": "planning/EV4_ROLLING_QUEUE.json", "artifact_type": "queue", "status": "updated"}
+      ],
+      "critique_summary": [
+        "RQ-0022 was added to the rolling queue as a pending future task for actual cross-review record generation.",
+        "Gemini feedback caught minified queue formatting before merge; the queue file was restored to readable 2-space formatting and CI was rerun successfully.",
+        "Adding RQ-0022 did not execute cross-review generation and did not alter real evidence or pilot state."
+      ],
+      "boundary_assertions": [
+        "no_real_evidence_created",
+        "no_real_pilot_run",
+        "no_production_claim",
+        "no_release_claim",
+        "no_live_render_claim",
+        "no_export_validation_claim",
+        "no_accessibility_pass_claim",
+        "sample_not_used_as_real",
+        "queue_completion_not_evidence_validation",
+        "ci_success_not_responsive_validation",
+        "merged_pr_not_authoritative_evidence"
+      ],
+      "next_queue_effect": "RQ-0022 is queued after RQ-0021; real pilot remains blocked until real submitted evidence and readiness pass exist."
     }
   ]
 }
