@@ -2,7 +2,7 @@
 
 ```yaml
 project: EV4 Responsive Architect
-version: 0.2.28-core-external-evidence-adapter-backlog
+version: 0.2.29-pr-reconciliation-preflight-policy
 status: rolling_queue_controller_active
 production_ready: false
 prompt_pack_release_ready: false
@@ -64,6 +64,7 @@ Allowed now:
 - Issue #8 label-state consistency validation
 - core responsive artifact backlog planning
 - external EDIS/EDAS evidence adapter backlog planning
+- PR reconciliation preflight policy validation
 ```
 
 Forbidden now:
@@ -88,6 +89,9 @@ Forbidden now:
 - treating CI success or merged PR as authoritative responsive evidence
 - closing sensitive automation tasks with self-critique only
 - merging sensitive automation-control PRs before the delayed-review window and comment check
+- starting a new queue task while a previous automation PR remains open or unreconciled
+- treating Gemini/reviewer review handling as an independent queue task
+- creating parallel automation PRs before PR reconciliation
 - translating EDAS design-system violations directly into EV4 responsive failure types
 - treating EDAS-v4 V4 Atomic export support as authoritative before real Atomic fixture validation
 - using legacy EDAS scores to override EV4 failure evidence or hard gates
@@ -103,11 +107,14 @@ control_plane_file: planning/EV4_QUEUE_CONTROL_PLANE.json
 run_ledger_file: planning/EV4_RUN_LEDGER.json
 automation_quality_gate_file: planning/EV4_AUTOMATION_QUALITY_GATE.json
 core_project_backlog_file: planning/EV4_CORE_PROJECT_BACKLOG.json
+pr_reconciliation_policy_doc: docs/17_PR_RECONCILIATION_PREFLIGHT.md
 controller_policy:
   one_task_per_run: true
   critique_same_task: true
   minimum_pending_tasks: 4
   refresh_every_nth_task: 5
+  pr_reconciliation_preflight_first: true
+  single_active_automation_pr: true
 ```
 
 ## Immediate Queue
@@ -172,6 +179,7 @@ reusable_rolling_queue_playbook: done
 automation_quality_gate: done
 cross_critique_execution_stub: done
 issue8_label_state_consistency_check: done
+pr_reconciliation_preflight_policy: done
 ```
 
 ## Automation Reliability State
@@ -186,6 +194,9 @@ queue_control_plane_required: true
 task_quality_gate_required: true
 cross_critique_required_for_sensitive_tasks: true
 delayed_reviewer_window_required_for_sensitive_prs: true
+pr_reconciliation_preflight_required: true
+single_active_automation_pr_required: true
+gemini_review_handling_counts_as_queue_task: false
 pending_ledger_intent_reconciliation_documented: true
 risk_based_merge_policy_required: true
 ci_must_include_rolling_queue_check: true
