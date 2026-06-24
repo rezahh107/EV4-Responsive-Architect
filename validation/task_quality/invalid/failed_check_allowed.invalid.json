@@ -1,0 +1,41 @@
+{
+  "$schema_file": "ev4-responsive-task-quality-review.schema.json",
+  "schema": "ev4-responsive-task-quality-review@1.0.0",
+  "review_id": "TQR-0003",
+  "task_ref": "RQ-0023",
+  "task_type": "schema_hardening",
+  "task_sensitivity": "critical",
+  "deterministic_checks": {
+    "acceptance_criteria_checked": true,
+    "scope_respected": true,
+    "forbidden_work_absent": true,
+    "ci_checked_or_no_ci_reason_recorded": false,
+    "artifacts_listed": true,
+    "queue_state_checked": true,
+    "ledger_state_checked": true,
+    "stale_reference_search_done": true,
+    "delayed_bot_review_window_checked": true,
+    "boundary_assertions_checked": true
+  },
+  "self_critique": {
+    "recorded": true,
+    "summary": ["Self review was recorded."]
+  },
+  "cross_critique": {
+    "required": true,
+    "status": "completed",
+    "reviewer_role": "strict_pessimistic_reviewer",
+    "prompt_separation": true,
+    "temperature_policy": "temperature_0_1_recommended"
+  },
+  "findings": [],
+  "boundary_assertions": [
+    "no_self_critique_only_completion",
+    "cross_critique_completed_when_required",
+    "bot_review_window_checked",
+    "no_production_claim",
+    "no_unrelated_task"
+  ],
+  "final_verdict": "pass",
+  "completion_allowed": true
+}

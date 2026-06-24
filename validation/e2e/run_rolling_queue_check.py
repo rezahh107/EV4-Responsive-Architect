@@ -8,6 +8,8 @@ from typing import Any
 
 from jsonschema import Draft202012Validator
 
+from run_task_quality_gate_check import main as run_task_quality_gate
+
 ROOT = Path(__file__).resolve().parents[2]
 QUEUE = ROOT / "planning" / "EV4_ROLLING_QUEUE.json"
 QUEUE_SCHEMA = ROOT / "schemas" / "ev4-responsive-rolling-queue.schema.json"
@@ -128,6 +130,9 @@ def main() -> None:
     assert_schema_valid(queue, queue_schema, "rolling queue")
     assert_schema_negative_paths(queue, queue_schema)
     assert_control_plane(control, control_schema)
+
+    if run_task_quality_gate() != 0:
+        fail("task quality gate validation failed")
 
     policy = queue["controller_policy"]
     tasks = queue["tasks"]
