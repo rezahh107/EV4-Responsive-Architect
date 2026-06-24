@@ -1,6 +1,6 @@
 # Reusable Rolling Queue Automation Playbook
 
-Version: 1.1.0
+Version: 1.1.1
 Status: reusable_pattern_document
 Audience: a language model or automation agent with no prior project context
 
@@ -224,6 +224,73 @@ perform one bounded action
 read actual tool result
 commit queue and ledger update with expected parent SHA
 ```
+
+### 8.1 Pending ledger intent reconciliation
+
+A pending ledger intent is a pre-mutation marker. It must contain enough lookup data for the next controller run to reconstruct what really happened after a crash.
+
+Recommended pending intent fields:
+
+```yaml
+pending_intent:
+  task_id:
+  controller_run_id:
+  intended_action:
+  expected_branch_name:
+  expected_pr_title_prefix:
+  expected_pr_label:
+  expected_base_branch:
+  created_before_mutation_at:
+  idempotency_key:
+```
+
+The next controller run must query GitHub before deciding whether the task is blocked. It should search by branch name first, then PR title prefix or label, then task id if the project embeds task ids in PR metadata.
+
+Decision table:
+
+```yaml
+pending_intent_exists:
+  branch_found: false
+  pr_found: false
+  action:
+    task_status: blocked
+    diagnostic: RQ_PENDING_INTENT_WITHOUT_GITHUB_ARTIFACT
+    required_action: retry_or_cancel_after_review
+
+pending_intent_exists:
+  branch_found: true
+  pr_found: false
+  action:
+    task_status: needs_review
+    diagnostic: RQ_BRANCH_WITHOUT_PR_AFTER_CRASH
+    required_action: create_pr_or_close_branch_after_review
+
+pending_intent_exists:
+  pr_found: true
+  pr_state: open
+  action:
+    task_status: awaiting_external
+    diagnostic: RQ_PR_RECONSTRUCTED_FROM_GITHUB
+    required_action: poll_ci_review_and_update_ledger
+
+pending_intent_exists:
+  pr_found: true
+  pr_state: merged
+  action:
+    task_status: needs_review
+    diagnostic: RQ_MERGED_PR_WITHOUT_LEDGER_RECORD
+    required_action: reconstruct_ledger_from_merge_sha_and_ci
+
+pending_intent_exists:
+  pr_found: true
+  pr_state: closed_unmerged
+  action:
+    task_status: blocked
+    diagnostic: RQ_PR_CLOSED_WITHOUT_COMPLETION
+    required_action: inspect_close_reason
+```
+
+Do not mark a task completed from pending intent alone. Completion requires a valid ledger record, the relevant GitHub artifact state, and the task quality gate.
 
 This is not a rollback system for arbitrary code. It is a reconciliation system for controller state.
 
