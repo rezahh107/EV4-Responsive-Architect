@@ -45,6 +45,9 @@ jobs:
           fi
           echo "Sample packet correctly rejected by evidence submitted mode"
 
+      - name: Run submitted packet source-kind lock validation
+        run: python validation/e2e/run_submitted_packet_source_kind_lock_check.py
+
       - name: Run pilot readiness validation
         run: python validation/e2e/run_pilot_readiness_check.py
 

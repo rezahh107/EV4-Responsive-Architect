@@ -20,6 +20,8 @@ SCREENSHOT_CAPABILITIES = {"visible_viewport_state", "visible_collision", "visib
 VISUAL_ONLY_TYPES = {"frontend_screenshot", "editor_screenshot"}
 VISUAL_MUST_NOT_SUPPORT = {"computed_css_value", "dom_structure_observation", "exported_widget_structure", "exported_control_value", "declared_breakpoint_value"}
 VISUAL_REQUIRED_CANNOT_SUPPORT = {"exact_css_cause", "dom_reading_order", "accessibility_pass", "production_ready_claim"}
+REAL_ELIGIBLE_STATUSES = {"submitted", "validated"}
+REAL_SHADOW_SCOPE = "real_shadow_mode_only"
 
 
 def load_json(path: Path) -> dict[str, Any]:
@@ -69,6 +71,37 @@ def validate_submitted_mode(packet: dict[str, Any], packet_path: Path) -> None:
     indicators = sample_indicators(packet, packet_path)
     if indicators:
         raise AssertionError(f"submitted mode rejects sample or placeholder markers: {indicators}")
+
+
+def validate_submitted_packet_source_kind_lock(packet: dict[str, Any]) -> None:
+    """Require real shadow-mode eligibility to come from an actual submitted issue packet."""
+    origin = packet.get("packet_origin")
+    packet_status = packet.get("packet_status")
+    issue_reference = packet.get("issue_reference")
+    verdict = packet.get("intake_verdict")
+    if not isinstance(verdict, dict):
+        verdict = {}
+
+    real_eligible_requested = (
+        verdict.get("allowed_scope") == REAL_SHADOW_SCOPE
+        or verdict.get("real_pilot_allowed_to_start") is True
+        or (verdict.get("pilot_allowed_to_start") is True and verdict.get("sample_dry_run_allowed") is not True)
+    )
+    if not real_eligible_requested:
+        return
+
+    if origin != "real_issue_submission":
+        raise AssertionError("real shadow-mode eligibility requires packet_origin=real_issue_submission")
+    if packet_status not in REAL_ELIGIBLE_STATUSES:
+        raise AssertionError("real shadow-mode eligibility requires packet_status=submitted or validated")
+    if not isinstance(issue_reference, dict):
+        raise AssertionError("real shadow-mode eligibility requires structured issue_reference")
+    if issue_reference.get("evidence_submission_status") not in REAL_ELIGIBLE_STATUSES:
+        raise AssertionError("real shadow-mode eligibility requires issue_reference.evidence_submission_status=submitted or validated")
+    if issue_reference.get("issue_number") != 8:
+        raise AssertionError("real shadow-mode eligibility is locked to Issue #8 evidence submission")
+    if verdict.get("real_pilot_allowed_to_start") is not True:
+        raise AssertionError("real shadow-mode eligibility requires real_pilot_allowed_to_start=true")
 
 
 def validate_packet_origin(packet: dict[str, Any], packet_path: Path) -> None:
@@ -178,6 +211,7 @@ def validate_packet(packet_path: Path, *, run_full_schema_validator: bool = True
     if submitted_mode:
         validate_submitted_mode(packet, packet_path)
     validate_packet_origin(packet, packet_path)
+    validate_submitted_packet_source_kind_lock(packet)
     validate_desktop_baseline(packet)
     validate_evidence_items(packet)
     validate_breakpoint_policy(packet)
