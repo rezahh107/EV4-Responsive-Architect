@@ -1,0 +1,54 @@
+{
+  "schema": "ev4-responsive-run-ledger@1.0.0",
+  "ledger_id": "EV4LEDGER-0001-SMART-HOME",
+  "project": "EV4 Responsive Architect",
+  "ledger_status": "active",
+  "source_queue": "planning/EV4_ROLLING_QUEUE.json",
+  "record_policy": {
+    "one_record_per_completed_controller_run": true,
+    "pr_required_for_repo_changes": true,
+    "ci_result_required_for_repo_changes": true,
+    "boundary_assertions_required": true,
+    "critique_summary_required": true
+  },
+  "imported_history": {
+    "status": "initialized_from_existing_queue_history",
+    "cutoff_task": "RQ-0016",
+    "cutoff_pr": 40,
+    "note": "Earlier queue history remains in planning/EV4_ROLLING_QUEUE.json. This ledger starts as an audit companion from RQ-0016 forward."
+  },
+  "ledger_records": [
+    {
+      "record_id": "LEDGER-0001",
+      "run_id": "automation-run-016",
+      "task_ref": "RQ-0016",
+      "run_type": "automation_task",
+      "status": "merged",
+      "pr_number": 40,
+      "merge_sha": "4add94836a05ca4ee8c7b6ef925f20de43646f3c",
+      "ci_conclusion": "success",
+      "created_at_utc": "2026-06-24T08:38:12Z",
+      "artifacts": [
+        {"path": "validation/e2e/run_submitted_privacy_review_guard_check.py", "artifact_type": "validator", "status": "created"},
+        {"path": ".github/workflows/validate.yml", "artifact_type": "workflow", "status": "updated"},
+        {"path": "planning/EV4_ROLLING_QUEUE.json", "artifact_type": "queue", "status": "updated"},
+        {"path": "STATUS.md", "artifact_type": "status", "status": "updated"}
+      ],
+      "critique_summary": [
+        "Privacy acknowledgement must remain required for submitted readiness.",
+        "Privacy acknowledgement does not prove live render, export validation, accessibility, production readiness, or release readiness."
+      ],
+      "boundary_assertions": [
+        "no_real_evidence_created",
+        "no_real_pilot_run",
+        "no_production_claim",
+        "no_release_claim",
+        "no_live_render_claim",
+        "no_export_validation_claim",
+        "no_accessibility_pass_claim",
+        "sample_not_used_as_real"
+      ],
+      "next_queue_effect": "RQ-0017 through RQ-0020 remain pending; real pilot stays blocked until real submitted packet and readiness pass exist."
+    }
+  ]
+}
