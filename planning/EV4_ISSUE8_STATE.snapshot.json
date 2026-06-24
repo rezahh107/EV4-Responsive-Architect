@@ -1,0 +1,22 @@
+{
+  "schema": "ev4-responsive-issue8-state-snapshot@1.0.0",
+  "issue_number": 8,
+  "issue_title": "Collect and validate smart-home connector pilot evidence",
+  "issue_state": "open",
+  "labels": [
+    "pilot",
+    "evidence-intake",
+    "evidence-pending"
+  ],
+  "packet_status": "draft",
+  "packet_origin": "real_issue_submission",
+  "evidence_submission_status": "draft",
+  "real_submitted_packet_present": false,
+  "submitted_packet_path": "examples/smart-home-connector/intake/EVIDENCE_INTAKE_PACKET.submitted.json",
+  "pilot_allowed_to_start": false,
+  "real_pilot_allowed_to_start": false,
+  "allowed_scope": "not_allowed",
+  "source_issue_ref": "#8",
+  "snapshot_updated_at_utc": "2026-06-24T17:58:00Z",
+  "boundary": "Issue prose/checklist and labels are state metadata only; they are not a machine-checkable submitted evidence packet."
+}
