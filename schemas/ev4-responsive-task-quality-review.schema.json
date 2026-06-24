@@ -31,6 +31,7 @@
         "sample_vs_real_safety",
         "risk_priority_engine",
         "evidence_boundary",
+        "production_boundary",
         "ci_workflow",
         "repo_maintenance"
       ]
@@ -48,6 +49,7 @@
         "queue_state_checked",
         "ledger_state_checked",
         "stale_reference_search_done",
+        "delayed_bot_review_window_checked",
         "boundary_assertions_checked"
       ],
       "properties": {
@@ -59,6 +61,7 @@
         "queue_state_checked": {"type": "boolean"},
         "ledger_state_checked": {"type": "boolean"},
         "stale_reference_search_done": {"type": "boolean"},
+        "delayed_bot_review_window_checked": {"type": "boolean"},
         "boundary_assertions_checked": {"type": "boolean"}
       }
     },
@@ -107,6 +110,7 @@
           "no_self_critique_only_completion",
           "deterministic_checks_passed",
           "cross_critique_completed_when_required",
+          "bot_review_window_checked",
           "no_production_claim",
           "no_release_claim",
           "no_unrelated_task",
