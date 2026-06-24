@@ -38,6 +38,11 @@ REQUIRED_FORBIDDEN_CLAIMS = {
     "accessibility_passed",
 }
 
+VALID_NON_REAL_REJECTION_FRAGMENTS = (
+    "contract fixtures must not allow real pilot start",
+    "only real_issue_submission may set real_pilot_allowed_to_start=true",
+)
+
 
 def real_issue_packet_from_fixture() -> dict[str, Any]:
     """Build an in-memory real_issue_submission packet from the complete fixture.
@@ -105,7 +110,8 @@ def assert_non_real_origin_cannot_self_authorize() -> None:
     try:
         validate_packet_origin(packet, BASE_FIXTURE)
     except AssertionError as exc:
-        if "only real_issue_submission" not in str(exc):
+        message = str(exc)
+        if not any(fragment in message for fragment in VALID_NON_REAL_REJECTION_FRAGMENTS):
             raise
         return
     raise AssertionError("non-real packet origin must not set real_pilot_allowed_to_start=true")
