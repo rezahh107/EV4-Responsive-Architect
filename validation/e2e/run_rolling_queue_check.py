@@ -9,6 +9,7 @@ from typing import Any
 from jsonschema import Draft202012Validator
 
 from run_task_quality_gate_check import main as run_task_quality_gate
+from run_cross_critique_stub_check import main as run_cross_critique_stub
 
 ROOT = Path(__file__).resolve().parents[2]
 QUEUE = ROOT / "planning" / "EV4_ROLLING_QUEUE.json"
@@ -133,6 +134,8 @@ def main() -> None:
 
     if run_task_quality_gate() != 0:
         fail("task quality gate validation failed")
+    if run_cross_critique_stub() != 0:
+        fail("cross-critique stub validation failed")
 
     policy = queue["controller_policy"]
     tasks = queue["tasks"]
