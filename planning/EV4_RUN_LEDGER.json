@@ -15,7 +15,7 @@
     "status": "initialized_from_existing_queue_history",
     "cutoff_task": "RQ-0016",
     "cutoff_pr": 40,
-    "note": "Earlier queue history remains in planning/EV4_ROLLING_QUEUE.json. This ledger starts as an audit companion from RQ-0016 forward."
+    "note": "Earlier queue history remains in planning/EV4_ROLLING_QUEUE.json. This ledger starts as an audit companion from RQ-0016 forward. PRs 43-46 are recorded as manual_controller_hardening because they improved the queue/control/quality system outside the numbered rolling queue task sequence."
   },
   "ledger_records": [
     {
@@ -49,6 +49,116 @@
         "sample_not_used_as_real"
       ],
       "next_queue_effect": "RQ-0017 through RQ-0020 remain pending; real pilot stays blocked until real submitted packet and readiness pass exist."
+    },
+    {
+      "record_id": "LEDGER-0002",
+      "run_id": "manual-control-hardening-pr-43",
+      "task_ref": null,
+      "run_type": "manual_controller_hardening",
+      "status": "merged",
+      "pr_number": 43,
+      "merge_sha": "6cc1feaa1e4b3ff5ed72b1d41dcb3f63782ad8ea",
+      "ci_conclusion": "success",
+      "created_at_utc": "2026-06-24T09:46:06Z",
+      "artifacts": [
+        {"path": "planning/EV4_QUEUE_CONTROL_PLANE.json", "artifact_type": "other", "status": "created"},
+        {"path": "schemas/ev4-responsive-queue-control-plane.schema.json", "artifact_type": "schema", "status": "created"},
+        {"path": "validation/e2e/run_rolling_queue_check.py", "artifact_type": "validator", "status": "updated"},
+        {"path": "docs/14_EV4_ROLLING_QUEUE.md", "artifact_type": "doc", "status": "updated"}
+      ],
+      "critique_summary": [
+        "Queue control plane now records truth boundaries, transition policy, lease intent, and diagnostics without moving runtime queue state to a new branch.",
+        "Lease and transition enforcement remain contract-level and require future runtime implementation before they can prevent concurrent execution."
+      ],
+      "boundary_assertions": [
+        "queue_completion_not_evidence_validation",
+        "ci_success_not_responsive_validation",
+        "merged_pr_not_authoritative_evidence",
+        "no_real_pilot_run"
+      ],
+      "next_queue_effect": "Numbered rolling queue tasks remain unchanged; control-plane hardening is recorded as out-of-band controller hardening."
+    },
+    {
+      "record_id": "LEDGER-0003",
+      "run_id": "manual-control-hardening-pr-44",
+      "task_ref": null,
+      "run_type": "manual_controller_hardening",
+      "status": "merged",
+      "pr_number": 44,
+      "merge_sha": "fa5d85eb5ad2ecb5500546cbdebbe99495279cac",
+      "ci_conclusion": "success",
+      "created_at_utc": "2026-06-24T09:52:42Z",
+      "artifacts": [
+        {"path": "docs/15_REUSABLE_ROLLING_QUEUE_AUTOMATION_PLAYBOOK.md", "artifact_type": "doc", "status": "created"}
+      ],
+      "critique_summary": [
+        "Reusable playbook documents the repo-backed queue pattern for future projects.",
+        "Later review found and fixed gaps around evidence-vs-merge separation, lease recovery, blocked escalation, ledger retention, prompt tiering, and delayed reviewer policy."
+      ],
+      "boundary_assertions": [
+        "playbook_is_guidance_not_runtime_evidence",
+        "merged_pr_not_authoritative_evidence",
+        "no_real_pilot_run"
+      ],
+      "next_queue_effect": "Reusable automation documentation is available without changing the active EV4 evidence/pilot state."
+    },
+    {
+      "record_id": "LEDGER-0004",
+      "run_id": "manual-control-hardening-pr-45",
+      "task_ref": null,
+      "run_type": "manual_controller_hardening",
+      "status": "merged",
+      "pr_number": 45,
+      "merge_sha": "63bd27900033f1a6fa54f004280f7d7e73e09dfb",
+      "ci_conclusion": "success",
+      "created_at_utc": "2026-06-24T10:35:14Z",
+      "artifacts": [
+        {"path": "planning/EV4_AUTOMATION_QUALITY_GATE.json", "artifact_type": "other", "status": "created"},
+        {"path": "schemas/ev4-responsive-automation-quality-gate.schema.json", "artifact_type": "schema", "status": "created"},
+        {"path": "schemas/ev4-responsive-task-quality-review.schema.json", "artifact_type": "schema", "status": "created"},
+        {"path": "validation/e2e/run_task_quality_gate_check.py", "artifact_type": "validator", "status": "created"}
+      ],
+      "critique_summary": [
+        "Self-critique is now explicitly insufficient for sensitive automation tasks.",
+        "Quality gate requires deterministic checks and cross-critique records for sensitive task types; external second-agent execution remains a future implementation step."
+      ],
+      "boundary_assertions": [
+        "self_critique_only_not_enough_for_sensitive_tasks",
+        "quality_gate_is_contract_and_validation_not_domain_evidence",
+        "no_real_pilot_run"
+      ],
+      "next_queue_effect": "Sensitive automation-control work should provide a task-quality review record before being considered quality-passed."
+    },
+    {
+      "record_id": "LEDGER-0005",
+      "run_id": "manual-control-hardening-pr-46",
+      "task_ref": null,
+      "run_type": "manual_controller_hardening",
+      "status": "merged",
+      "pr_number": 46,
+      "merge_sha": "e51deebe3691097edd45b1b4329141b8014fe5d2",
+      "ci_conclusion": "success",
+      "created_at_utc": "2026-06-24T13:16:14Z",
+      "artifacts": [
+        {"path": "prompts/CROSS_CRITIQUE_STRICT_REVIEWER_PROMPT.md", "artifact_type": "doc", "status": "created"},
+        {"path": "planning/reviews/CROSS_CRITIQUE_REQUEST.template.md", "artifact_type": "doc", "status": "created"},
+        {"path": "planning/reviews/TQR-RQ-0000.cross-review.example.json", "artifact_type": "fixture", "status": "created"},
+        {"path": "validation/e2e/run_cross_critique_stub_check.py", "artifact_type": "validator", "status": "created"},
+        {"path": "docs/16_CROSS_CRITIQUE_EXECUTION_STUB.md", "artifact_type": "doc", "status": "created"},
+        {"path": "docs/15_REUSABLE_ROLLING_QUEUE_AUTOMATION_PLAYBOOK.md", "artifact_type": "doc", "status": "updated"}
+      ],
+      "critique_summary": [
+        "Cross-critique execution stub provides the prompt, request template, review example, and validator wiring needed for independent review records.",
+        "Delayed reviewer policy was exercised; Gemini feedback was inspected and duplicate validation logic was removed before merge.",
+        "Actual external low-temperature reviewer execution is still not implemented."
+      ],
+      "boundary_assertions": [
+        "cross_critique_stub_not_external_llm_execution",
+        "delayed_reviewer_feedback_checked_before_merge",
+        "no_real_pilot_run",
+        "merged_pr_not_authoritative_evidence"
+      ],
+      "next_queue_effect": "A future task may implement real cross-review record generation; current queue tasks RQ-0018 through RQ-0021 remain pending."
     }
   ]
 }
