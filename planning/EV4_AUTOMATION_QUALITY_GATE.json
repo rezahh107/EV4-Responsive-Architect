@@ -39,6 +39,32 @@
     "block_merge_on_unresolved_high_priority_review": true,
     "allowed_outcome_if_feedback_arrives_after_merge": "create_follow_up_task_and_record_in_ledger"
   },
+  "pr_reconciliation_policy": {
+    "enabled": true,
+    "runs_before_new_task_selection": true,
+    "single_active_automation_pr": true,
+    "open_automation_pr_effect": "block_new_queue_task_until_reconciled",
+    "review_handling_counts_as_queue_task": false,
+    "previous_pr_resolution_order": [
+      "inspect_open_automation_prs",
+      "check_ci_status",
+      "check_mergeability_and_head_sha",
+      "read_pr_comments_and_review_comments",
+      "evaluate_gemini_or_reviewer_feedback",
+      "fix_small_in_scope_feedback_on_same_pr",
+      "rerun_ci_after_fixes",
+      "merge_when_green_mergeable_and_no_unresolved_feedback",
+      "stop_after_merge_unless_next_task_is_trivial_and_no_state_drift"
+    ],
+    "broad_feedback_policy": "create_backlog_or_queue_candidate_do_not_force_into_current_pr",
+    "forbidden_during_open_pr": [
+      "start_new_queue_task",
+      "create_parallel_automation_pr",
+      "overwrite_queue_from_stale_snapshot",
+      "merge_without_comment_check",
+      "treat_review_comment_as_domain_evidence"
+    ]
+  },
   "completion_policy": {
     "completion_allowed_requires": [
       "deterministic_checks_pass",
@@ -55,7 +81,8 @@
       "ci_required_but_missing",
       "cross_critique_required_but_missing",
       "delayed_reviewer_feedback_unchecked",
-      "unfixed_p0_or_p1_finding_without_follow_up"
+      "unfixed_p0_or_p1_finding_without_follow_up",
+      "open_automation_pr_unreconciled"
     ]
   },
   "sensitive_task_types": [
@@ -73,6 +100,8 @@
     "green_ci_as_quality_proof",
     "merged_pr_as_evidence_truth",
     "unstructured_reviewer_opinion_as_gate",
-    "silent_follow_up_omission"
+    "silent_follow_up_omission",
+    "parallel_automation_prs_without_reconciliation",
+    "gemini_review_as_independent_queue_task"
   ]
 }
