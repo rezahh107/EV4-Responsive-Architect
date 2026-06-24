@@ -2,7 +2,7 @@
 
 ```yaml
 project: EV4 Responsive Architect
-version: 0.2.24-automation-quality-and-cross-critique-sync
+version: 0.2.25-rq0022-ledger-sync
 status: rolling_queue_controller_active
 production_ready: false
 prompt_pack_release_ready: false
@@ -60,6 +60,7 @@ Allowed now:
 - delayed reviewer policy documentation
 - cross-critique execution stub validation
 - pending ledger intent reconciliation documentation
+- cross-review generation task queued
 ```
 
 Forbidden now:
@@ -109,6 +110,7 @@ next_tasks:
   - RQ-0018 add Issue #8 label-state consistency check
   - RQ-0019 add submitted packet source-kind lock check
   - RQ-0021 add submitted packet artifact-path allowlist check
+  - RQ-0022 add actual cross-review record generation path
 next_refresh:
   - RQ-0020 refresh rolling queue after submitted-packet guard set
 ```
@@ -168,6 +170,7 @@ delayed_reviewer_window_required_for_sensitive_prs: true
 pending_ledger_intent_reconciliation_documented: true
 risk_based_merge_policy_required: true
 ci_must_include_rolling_queue_check: true
+actual_cross_review_generation_path: queued_as_RQ_0022
 ```
 
 ## Real Evidence State
