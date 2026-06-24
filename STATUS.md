@@ -2,7 +2,7 @@
 
 ```yaml
 project: EV4 Responsive Architect
-version: 0.2.13-rolling-queue-refresh-after-validation-hardening
+version: 0.2.14-readiness-generated-output-policy
 status: rolling_queue_controller_active
 production_ready: false
 prompt_pack_release_ready: false
@@ -47,6 +47,7 @@ Allowed now:
 - rolling queue schema compatibility validation
 - submitted-mode packet path validation
 - post-validation-hardening queue refresh
+- readiness generated-output policy check
 ```
 
 Forbidden now:
@@ -62,6 +63,7 @@ Forbidden now:
 - numeric score used as readiness evidence
 - average score used to override a hard gate
 - starting the real pilot before a real submitted packet and readiness pass exist
+- committing runtime .generated.json readiness/report outputs as evidence
 ```
 
 ## Rolling Queue
@@ -81,7 +83,6 @@ controller_policy:
 
 ```yaml
 next_tasks:
-  - RQ-0011 add readiness generated-output policy check
   - RQ-0012 add readiness provenance policy check
   - RQ-0013 add submitted readiness status contract check
   - RQ-0014 add Issue #8 submitted-packet absence check
@@ -115,6 +116,7 @@ generated_conflict_report_check: done
 rolling_queue_schema_compatibility: done
 submitted_mode_command_support: done
 post_validation_hardening_queue_refresh: done
+readiness_generated_output_policy_check: done
 ```
 
 ## Automation Reliability State
