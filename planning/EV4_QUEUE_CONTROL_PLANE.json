@@ -1,0 +1,67 @@
+{
+  "schema": "ev4-responsive-queue-control-plane@1.0.0",
+  "project": "EV4 Responsive Architect",
+  "status": "active",
+  "truth_boundary": {
+    "queue_task_completion_is_not_evidence_validation": true,
+    "ci_success_is_not_responsive_validation": true,
+    "merged_pr_is_not_authoritative_evidence": true,
+    "queue_may_not_upgrade_evidence_truth": true,
+    "real_pilot_requires_submitted_packet_and_readiness": true
+  },
+  "runtime_state_policy": {
+    "current_location": "main",
+    "future_runtime_branch_candidate": "control/rolling-queue",
+    "migration_required_before_branch_split": true,
+    "queue_file": "planning/EV4_ROLLING_QUEUE.json",
+    "ledger_file": "planning/EV4_RUN_LEDGER.json"
+  },
+  "lease_policy": {
+    "enabled": true,
+    "max_active_leases": 1,
+    "lease_duration_minutes": 55,
+    "stale_lease_action": "block_and_require_reconcile",
+    "optimistic_locking_required": true
+  },
+  "transition_policy": {
+    "allowed_transitions": [
+      {"from": "pending", "to": "leased"},
+      {"from": "leased", "to": "executing"},
+      {"from": "leased", "to": "pending"},
+      {"from": "leased", "to": "blocked"},
+      {"from": "executing", "to": "awaiting_external"},
+      {"from": "executing", "to": "needs_review"},
+      {"from": "executing", "to": "blocked"},
+      {"from": "executing", "to": "completed"},
+      {"from": "awaiting_external", "to": "executing"},
+      {"from": "awaiting_external", "to": "blocked"},
+      {"from": "needs_review", "to": "executing"},
+      {"from": "needs_review", "to": "completed"},
+      {"from": "blocked", "to": "pending"},
+      {"from": "blocked", "to": "superseded"},
+      {"from": "blocked", "to": "cancelled"}
+    ],
+    "forbidden_transitions": [
+      {"from": "pending", "to": "completed"},
+      {"from": "awaiting_external", "to": "completed"},
+      {"from": "blocked", "to": "completed"}
+    ]
+  },
+  "diagnostic_registry": [
+    {"code": "RQ_SCHEMA_INVALID", "severity": "P0", "required_action": "Block the run and fix the queue/control schema error."},
+    {"code": "RQ_ILLEGAL_TRANSITION", "severity": "P0", "required_action": "Block transition and create a reconciliation task."},
+    {"code": "RQ_LEASE_CONFLICT", "severity": "P0", "required_action": "Do not execute a second task; reconcile the active lease."},
+    {"code": "RQ_STALE_QUEUE_REVISION", "severity": "P1", "required_action": "Reload queue state and retry with current revision."},
+    {"code": "RQ_PR_STATE_DRIFT", "severity": "P1", "required_action": "Reconcile queue task status with PR status."},
+    {"code": "RQ_CI_FAILED", "severity": "P0", "required_action": "Do not merge; fix or mark blocked."},
+    {"code": "RQ_CI_ACTION_REQUIRED", "severity": "P0", "required_action": "Treat workflow as blocked until a real job/result exists."},
+    {"code": "RQ_REVIEW_MISSING", "severity": "P1", "required_action": "Do not mark independent review complete."},
+    {"code": "RQ_EVIDENCE_STATE_MISMATCH", "severity": "P0", "required_action": "Do not treat queue completion as evidence validation."}
+  ],
+  "implementation_boundary": {
+    "does_not_move_queue_to_control_branch_yet": true,
+    "does_not_start_real_pilot": true,
+    "does_not_mark_evidence_authoritative": true,
+    "does_not_change_issue_8_evidence_state": true
+  }
+}
