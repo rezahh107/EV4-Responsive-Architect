@@ -2,7 +2,7 @@
 
 ```yaml
 project: EV4 Responsive Architect
-version: 0.2.26-rq0018-label-state-check
+version: 0.2.27-core-artifact-backlog
 status: rolling_queue_controller_active
 production_ready: false
 prompt_pack_release_ready: false
@@ -62,6 +62,7 @@ Allowed now:
 - pending ledger intent reconciliation documentation
 - cross-review generation task queued
 - Issue #8 label-state consistency validation
+- core responsive artifact backlog planning
 ```
 
 Forbidden now:
@@ -97,6 +98,7 @@ queue_status: active
 control_plane_file: planning/EV4_QUEUE_CONTROL_PLANE.json
 run_ledger_file: planning/EV4_RUN_LEDGER.json
 automation_quality_gate_file: planning/EV4_AUTOMATION_QUALITY_GATE.json
+core_project_backlog_file: planning/EV4_CORE_PROJECT_BACKLOG.json
 controller_policy:
   one_task_per_run: true
   critique_same_task: true
@@ -114,6 +116,16 @@ next_tasks:
   - RQ-0022 add actual cross-review record generation path
 completed_this_run:
   - RQ-0018 add Issue #8 label-state consistency check
+core_backlog_queue_feed:
+  source_file: planning/EV4_CORE_PROJECT_BACKLOG.json
+  integration_mode: queue_refresh_intake
+  next_refresh_task: RQ-0020
+  candidates:
+    - CORE-001 add Evidence Intake human form and sufficiency table
+    - CORE-002 add Responsive Failure Map schema and template
+    - CORE-003 add categorical risk decision table
+    - CORE-004 add Repair Option decision table
+    - CORE-005 add Final Audit Summary schema and template
 ```
 
 ## Completed Foundation
@@ -173,6 +185,7 @@ pending_ledger_intent_reconciliation_documented: true
 risk_based_merge_policy_required: true
 ci_must_include_rolling_queue_check: true
 actual_cross_review_generation_path: queued_as_RQ_0022
+core_artifact_backlog_file: planning/EV4_CORE_PROJECT_BACKLOG.json
 ```
 
 ## Real Evidence State
