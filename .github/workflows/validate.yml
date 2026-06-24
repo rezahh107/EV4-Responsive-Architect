@@ -97,5 +97,8 @@ jobs:
       - name: Run Issue #8 submitted-packet absence validation
         run: python validation/e2e/run_issue8_submitted_packet_absence_check.py
 
+      - name: Run Issue #8 label-state consistency validation
+        run: python validation/e2e/run_issue8_label_state_check.py
+
       - name: Run rolling queue validation
         run: python validation/e2e/run_rolling_queue_check.py
