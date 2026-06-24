@@ -1,0 +1,298 @@
+{
+  "schema": "ev4-responsive-core-project-backlog@1.0.1",
+  "backlog_id": "EV4CORE-0001-ARTIFACT-FIRST",
+  "project": "EV4 Responsive Architect",
+  "status": "active_queue_feed",
+  "source": {
+    "kind": "external_llm_core_project_review_plus_cross_system_integration_review",
+    "reviewed_by_ev4_architect": true,
+    "raw_feedback_adjusted": true,
+    "adjustments": [
+      "EvidencePacket.schema already exists; replace raw schema request with a human intake form and sufficiency table.",
+      "Avoid numeric RiskMatrix scoring; use categorical decision rules because numeric averages must not override hard gates.",
+      "Treat ConnectorLine behavior as a later repair-option/overlay-containment subtask, not an immediate P0/P1 core artifact.",
+      "Treat EDIS/EDAS integration as an external evidence adapter problem, not a direct merge of audit systems into responsive repair logic.",
+      "EDAS/legacy design-system violations must not be directly translated into EV4 responsive failure types without EV4 evidence mapping.",
+      "EDAS-v4 usefulness is conditional until validated against a real Elementor V4 Atomic export fixture."
+    ],
+    "integration_principle": "EDIS proves runtime facts. EDAS-v4 proves exported/design structure facts. Legacy EDAS suggests possible design issues. EV4 decides repair ownership and handoff."
+  },
+  "queue_integration_policy": {
+    "active_queue_file": "planning/EV4_ROLLING_QUEUE.json",
+    "integration_mode": "queue_refresh_intake",
+    "next_refresh_task": "RQ-0020",
+    "do_not_overwrite_active_queue_state": true,
+    "reason": "The rolling queue has active automation-controlled state; core backlog candidates must be integrated during a queue refresh instead of overwriting concurrent queue progress."
+  },
+  "tasks": [
+    {
+      "core_task_id": "CORE-001",
+      "recommended_queue_title": "Add Evidence Intake human form and sufficiency table",
+      "priority": "P0",
+      "suggested_task_type": "evidence_bridge",
+      "objective": "Create a submitter-facing intake form and evidence sufficiency decision table that complement the existing evidence packet schema without redefining it.",
+      "why_it_matters": "The machine schema exists, but humans still need an exact form and sufficiency table to know what evidence is acceptable before pilot readiness.",
+      "expected_artifacts": [
+        "Evidence intake human form/template",
+        "Evidence sufficiency decision table",
+        "Docs update explaining sufficient/partial/blocked evidence states"
+      ],
+      "forbidden_work": [
+        "Do not replace the existing EvidencePacket schema.",
+        "Do not treat prose, examples, or samples as real submitted evidence.",
+        "Do not run the real pilot."
+      ],
+      "acceptance_criteria": [
+        "Submitters can see exactly what evidence is required before pilot readiness.",
+        "Sufficiency states preserve unknowns and block sample/prose-only evidence.",
+        "CI passes without creating real submitted evidence."
+      ]
+    },
+    {
+      "core_task_id": "CORE-002",
+      "recommended_queue_title": "Add Responsive Failure Map schema and template",
+      "priority": "P0",
+      "suggested_task_type": "schema_hardening",
+      "objective": "Create a machine-checkable failure map artifact for breakpoint failures, evidence references, affected elements, likely causes, uncertainty, and ownership hints.",
+      "why_it_matters": "Downstream pilot outputs depend on structured failures; prose-only failure mapping is hard to compare or audit.",
+      "expected_artifacts": [
+        "RESPONSIVE_FAILURE_MAP schema",
+        "Failure map template or fixture",
+        "Validation/docs update"
+      ],
+      "forbidden_work": [
+        "Do not infer tablet/mobile behavior without evidence.",
+        "Do not claim repaired state from failure mapping.",
+        "Do not run the real pilot."
+      ],
+      "acceptance_criteria": [
+        "Failure map outputs become comparable across runs.",
+        "Unknowns and evidence confidence remain explicit.",
+        "CI passes without real evidence execution."
+      ]
+    },
+    {
+      "core_task_id": "CORE-003",
+      "recommended_queue_title": "Add categorical risk decision table",
+      "priority": "P1",
+      "suggested_task_type": "validator_hardening",
+      "objective": "Define auditable non-numeric decision rules for risk priority derivation while preserving hard-gate behavior and avoiding average-score overrides.",
+      "why_it_matters": "Risk schema exists, but priority derivation should be repeatable and explainable without numeric averaging.",
+      "expected_artifacts": [
+        "Categorical risk decision table",
+        "Risk priority examples or fixtures",
+        "Docs/validator update if needed"
+      ],
+      "forbidden_work": [
+        "Do not add average-score priority overrides.",
+        "Do not downgrade hard gates using totals or weights.",
+        "Do not run the real pilot."
+      ],
+      "acceptance_criteria": [
+        "Priority derivation is explainable without numeric averaging.",
+        "Hard gates remain stronger than heuristic priority.",
+        "CI passes without real evidence execution."
+      ]
+    },
+    {
+      "core_task_id": "CORE-004",
+      "recommended_queue_title": "Add Repair Option decision table",
+      "priority": "P1",
+      "suggested_task_type": "validator_hardening",
+      "objective": "Define precedence rules for choosing among repair options based on normal-flow safety, editability, responsiveness, accessibility, performance, and regression risk.",
+      "why_it_matters": "Repair option analysis needs explicit selection rules so it does not collapse into subjective preference.",
+      "expected_artifacts": [
+        "Repair option decision table",
+        "Overlay/normal-flow decision examples",
+        "Docs/validator update if needed"
+      ],
+      "forbidden_work": [
+        "Do not privilege visual match over normal-flow safety without an explicit exception.",
+        "Do not flatten meaningful content into static images.",
+        "Do not run the real pilot."
+      ],
+      "acceptance_criteria": [
+        "Repair option selection becomes auditable and repeatable.",
+        "Decision rules preserve Elementor-native and normal-flow priorities.",
+        "CI passes without real evidence execution."
+      ]
+    },
+    {
+      "core_task_id": "CORE-005",
+      "recommended_queue_title": "Add Final Audit Summary schema and template",
+      "priority": "P1",
+      "suggested_task_type": "schema_hardening",
+      "objective": "Create a stable final audit artifact for repaired items, unresolved items, missing evidence, forbidden claims, and next evidence required after builder execution.",
+      "why_it_matters": "Final audit should be archiveable and comparable instead of prose-only, while preserving forbidden-claim boundaries.",
+      "expected_artifacts": [
+        "Final audit summary schema/template",
+        "Forbidden-claims section",
+        "Evidence-after-execution requirements"
+      ],
+      "forbidden_work": [
+        "Do not claim production-ready, release-ready, live-render, export, or accessibility validation without evidence.",
+        "Do not treat builder checklist completion as final validation.",
+        "Do not run the real pilot."
+      ],
+      "acceptance_criteria": [
+        "Final handoff output becomes archiveable and comparable.",
+        "Forbidden claims remain explicit in final audit.",
+        "CI passes without real evidence execution."
+      ]
+    },
+    {
+      "core_task_id": "CORE-006",
+      "recommended_queue_title": "Add External Evidence Adapter Contract for EDIS/EDAS outputs",
+      "priority": "P0",
+      "suggested_task_type": "evidence_bridge",
+      "objective": "Define the adapter contract that allows EDIS Browser Runtime evidence, EDAS-v4 TruthReport output, and legacy Elementor Design Audit reports to enter EV4 Responsive Architect without becoming direct repair authority.",
+      "why_it_matters": "EDIS and EDAS can close major evidence gaps, but without an adapter contract their outputs could be misused as direct responsive repair decisions or production-readiness evidence.",
+      "architecture_principle": "EDIS proves runtime facts. EDAS-v4 proves exported/design structure facts. Legacy EDAS suggests possible design issues. EV4 decides repair ownership and handoff.",
+      "producer_authority_matrix": {
+        "edis_runtime_zip": {
+          "verdict": "highly_useful_as_runtime_evidence",
+          "confidence_cap": "L5_live_render_plus_dom_plus_visual",
+          "can_support": [
+            "breakpoint_observation",
+            "element_geometry_evidence",
+            "overflow_or_clipping_observation",
+            "visibility_or_positioning_observation",
+            "connector_line_runtime_geometry",
+            "failure_map_seed"
+          ],
+          "cannot_support": [
+            "repair_decision",
+            "production_readiness_claim",
+            "release_readiness_claim",
+            "export_validation_claim",
+            "accessibility_pass_claim"
+          ]
+        },
+        "edas_v4_truth_report": {
+          "verdict": "conditionally_highly_useful_as_export_structure_truth",
+          "condition": "parser_validation_against_real_elementor_v4_atomic_json_required_before_use",
+          "confidence_cap": "L4_dom_or_export_structure",
+          "can_support": [
+            "exported_widget_structure",
+            "exported_control_value",
+            "elementor_generation_profile",
+            "class_or_variable_presence_evidence",
+            "repair_ownership_corroboration"
+          ],
+          "cannot_support": [
+            "live_render_fact",
+            "runtime_overflow_fact",
+            "responsive_repair_decision_by_itself",
+            "production_readiness_claim",
+            "live_render_validation_claim"
+          ]
+        },
+        "legacy_audit_report": {
+          "verdict": "useful_only_as_non_authoritative_audit_signal",
+          "confidence_cap": "L2_static_analysis_only",
+          "can_support": [
+            "advisory_design_system_signal",
+            "possible_violation_candidate",
+            "design_token_hint",
+            "non_authoritative_responsive_fix_suggestion"
+          ],
+          "cannot_support": [
+            "hard_gate_override",
+            "failure_type_direct_translation",
+            "repair_decision",
+            "pilot_readiness_authority",
+            "production_readiness_claim"
+          ]
+        }
+      },
+      "downstream_allowed_use_sets": {
+        "failure_map_seed": "May create a candidate observation only; EV4 must still preserve evidence reference, confidence, and uncertainty.",
+        "breakpoint_observation": "May support measured breakpoint-specific facts when viewport metadata is present.",
+        "repair_ownership_corroboration": "May corroborate a route, but cannot select the route without EV4 failure and risk analysis.",
+        "advisory_design_system_signal": "May be recorded as advisory context only; must not override EV4 hard gates."
+      },
+      "section_scope_contract": {
+        "required_input": [
+          "section_id",
+          "section_path_in_tree"
+        ],
+        "requirement_mode": "at_least_one_required",
+        "if_missing": "treat_as_ambiguous_evidence",
+        "cannot_assume": [
+          "first_section",
+          "largest_section",
+          "only_section",
+          "visually_centered_section"
+        ],
+        "required_behavior": "Adapters must extract or bind external evidence to the selected EV4 section before downstream use."
+      },
+      "v4_atomic_parser_validation": {
+        "required_before_ed_as_v4_authority": true,
+        "required_fixture": "real_elementor_v4_atomic_export_json",
+        "required_golden_output": "edas_v4_truth_report_golden_fixture",
+        "minimum_assertions": [
+          "atomic_elements_detected",
+          "variables_or_classes_preserved_when_present",
+          "components_or_exposed_properties_preserved_when_present",
+          "section_scope_mapping_verified"
+        ],
+        "pre_validation_status": "conditional_only"
+      },
+      "conflict_resolution_rules": [
+        {
+          "if": "legacy_score_high AND ev4_failure_map_has_critical",
+          "then": "ev4_failure_map_wins",
+          "legacy_score": "demoted_to_advisory_note",
+          "forbidden": [
+            "averaging_scores",
+            "weighting_scores",
+            "using_legacy_score_to_downgrade_ev4_critical_failure"
+          ]
+        },
+        {
+          "if": "edas_design_system_violation AND no_ev4_responsive_failure_evidence",
+          "then": "record_as_advisory_context_only",
+          "forbidden": [
+            "direct_translation_to_failure_type",
+            "repair_scope_expansion_without_ev4_evidence"
+          ]
+        }
+      ],
+      "fixture_based_bridge_validation_definition": {
+        "definition": "A bridge validation is fixture-based only when representative external artifacts and expected EV4 adapter outputs are committed as test fixtures and checked by CI.",
+        "minimum_fixture_set": [
+          "sample_edis_runtime_zip_or_manifest_fixture",
+          "sample_edas_v4_truth_report_fixture",
+          "sample_legacy_audit_report_fixture",
+          "expected_ev4_adapter_output_fixture",
+          "invalid_section_scope_fixture",
+          "legacy_score_conflict_fixture"
+        ],
+        "pass_condition": "CI confirms each producer is mapped only to its allowed downstream use and forbidden uses are rejected."
+      },
+      "expected_artifacts": [
+        "External evidence adapter contract document",
+        "Producer authority matrix",
+        "Evidence type enum extension proposal",
+        "Section-scope contract",
+        "V4 Atomic parser validation fixture plan",
+        "Conflict resolution decision table",
+        "Fixture-based bridge validation plan or runner"
+      ],
+      "forbidden_work": [
+        "Do not directly merge EDAS/EDIS outputs into EV4 repair decisions.",
+        "Do not translate design-system violations directly into EV4 responsive failure types.",
+        "Do not use legacy scores to override EV4 hard gates.",
+        "Do not treat EDAS-v4 as authoritative for V4 Atomic exports until a real V4 Atomic fixture passes.",
+        "Do not run the real pilot."
+      ],
+      "acceptance_criteria": [
+        "Adapter fields have explicit allowed values and forbidden downstream uses.",
+        "Section-scope ambiguity is blocked instead of guessed.",
+        "EDAS-v4 authority remains conditional until V4 Atomic parser validation passes.",
+        "Legacy score conflicts resolve in favor of EV4 failure evidence and hard gates.",
+        "Fixture-based validation is defined with pass/fail conditions."
+      ]
+    }
+  ]
+}
