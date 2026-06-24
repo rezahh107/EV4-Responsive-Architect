@@ -2,7 +2,7 @@
 
 ```yaml
 project: EV4 Responsive Architect
-version: 0.2.25-rq0022-ledger-sync
+version: 0.2.26-rq0018-label-state-check
 status: rolling_queue_controller_active
 production_ready: false
 prompt_pack_release_ready: false
@@ -61,6 +61,7 @@ Allowed now:
 - cross-critique execution stub validation
 - pending ledger intent reconciliation documentation
 - cross-review generation task queued
+- Issue #8 label-state consistency validation
 ```
 
 Forbidden now:
@@ -107,12 +108,12 @@ controller_policy:
 
 ```yaml
 next_tasks:
-  - RQ-0018 add Issue #8 label-state consistency check
   - RQ-0019 add submitted packet source-kind lock check
+  - RQ-0020 refresh rolling queue after submitted-packet guard set
   - RQ-0021 add submitted packet artifact-path allowlist check
   - RQ-0022 add actual cross-review record generation path
-next_refresh:
-  - RQ-0020 refresh rolling queue after submitted-packet guard set
+completed_this_run:
+  - RQ-0018 add Issue #8 label-state consistency check
 ```
 
 ## Completed Foundation
@@ -153,6 +154,7 @@ queue_control_plane_contract: done
 reusable_rolling_queue_playbook: done
 automation_quality_gate: done
 cross_critique_execution_stub: done
+issue8_label_state_consistency_check: done
 ```
 
 ## Automation Reliability State
@@ -181,6 +183,11 @@ evidence_intake_schema: ev4-responsive-evidence-intake-packet@1.1.0
 issue_to_packet_bridge_schema: ev4-responsive-issue-to-packet-bridge@1.0.0
 readiness_schema: ev4-responsive-pilot-readiness@1.0.0
 real_submitted_packet_present: false
+issue_8_labels:
+  - pilot
+  - evidence-intake
+  - evidence-pending
+issue_8_label_state_consistency_check: active
 pilot_allowed_to_start: false
 reason: Issue #8 remains evidence-pending; issue prose/checklist is not a machine-checkable real_issue_submission packet
 ```
