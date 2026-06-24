@@ -3,7 +3,7 @@
   "schema": "ev4-responsive-task-quality-review@1.0.0",
   "review_id": "TQR-0001",
   "task_ref": "RQ-0021",
-  "task_type": "automation_control",
+  "task_type": "production_boundary",
   "task_sensitivity": "sensitive",
   "deterministic_checks": {
     "acceptance_criteria_checked": true,
@@ -14,12 +14,13 @@
     "queue_state_checked": true,
     "ledger_state_checked": true,
     "stale_reference_search_done": true,
+    "delayed_bot_review_window_checked": true,
     "boundary_assertions_checked": true
   },
   "self_critique": {
     "recorded": true,
     "summary": [
-      "The task updated only the automation control surface and did not alter evidence truth."
+      "The task updated only the automation quality boundary and did not upgrade evidence truth."
     ]
   },
   "cross_critique": {
@@ -43,6 +44,7 @@
     "no_self_critique_only_completion",
     "deterministic_checks_passed",
     "cross_critique_completed_when_required",
+    "bot_review_window_checked",
     "no_production_claim",
     "no_unrelated_task",
     "follow_up_created_when_required"
