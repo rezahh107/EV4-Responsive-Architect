@@ -50,32 +50,14 @@
       "status": "completed",
       "title": "Sync STATUS and Issue 8",
       "objective": "Completed queue task.",
-      "allowed_work": [
-        "Preserve state."
-      ],
-      "forbidden_work": [
-        "No real pilot."
-      ],
+      "allowed_work": ["Preserve state."],
+      "forbidden_work": ["No real pilot."],
       "requires_real_evidence": false,
-      "expected_artifacts": [
-        "Run ledger"
-      ],
-      "acceptance_criteria": [
-        "Recorded complete."
-      ],
+      "expected_artifacts": ["Run ledger"],
+      "acceptance_criteria": ["Recorded complete."],
       "critique_required": true,
       "dependencies": [],
-      "completion": {
-        "run_id": "run-0001",
-        "status": "completed",
-        "artifacts": [
-          "planning/EV4_RUN_LEDGER.json"
-        ],
-        "critique_findings": [
-          "See run ledger."
-        ],
-        "boundary": "No real evidence, real pilot, or production validation claim."
-      }
+      "completion": {"run_id": "run-0001", "status": "completed", "artifacts": ["planning/EV4_RUN_LEDGER.json"], "critique_findings": ["See run ledger."], "boundary": "No real evidence, real pilot, or production validation claim."}
     },
     {
       "task_id": "RQ-0002",
@@ -84,34 +66,14 @@
       "status": "completed",
       "title": "Define Issue-to-Packet bridge",
       "objective": "Completed queue task.",
-      "allowed_work": [
-        "Preserve state."
-      ],
-      "forbidden_work": [
-        "No real pilot."
-      ],
+      "allowed_work": ["Preserve state."],
+      "forbidden_work": ["No real pilot."],
       "requires_real_evidence": false,
-      "expected_artifacts": [
-        "Run ledger"
-      ],
-      "acceptance_criteria": [
-        "Recorded complete."
-      ],
+      "expected_artifacts": ["Run ledger"],
+      "acceptance_criteria": ["Recorded complete."],
       "critique_required": true,
-      "dependencies": [
-        "RQ-0001"
-      ],
-      "completion": {
-        "run_id": "run-0002",
-        "status": "completed",
-        "artifacts": [
-          "planning/EV4_RUN_LEDGER.json"
-        ],
-        "critique_findings": [
-          "See run ledger."
-        ],
-        "boundary": "No real evidence, real pilot, or production validation claim."
-      }
+      "dependencies": ["RQ-0001"],
+      "completion": {"run_id": "run-0002", "status": "completed", "artifacts": ["planning/EV4_RUN_LEDGER.json"], "critique_findings": ["See run ledger."], "boundary": "No real evidence, real pilot, or production validation claim."}
     },
     {
       "task_id": "RQ-0003",
@@ -120,34 +82,14 @@
       "status": "completed",
       "title": "Add conflict summary",
       "objective": "Completed queue task.",
-      "allowed_work": [
-        "Preserve state."
-      ],
-      "forbidden_work": [
-        "No real pilot."
-      ],
+      "allowed_work": ["Preserve state."],
+      "forbidden_work": ["No real pilot."],
       "requires_real_evidence": false,
-      "expected_artifacts": [
-        "Run ledger"
-      ],
-      "acceptance_criteria": [
-        "Recorded complete."
-      ],
+      "expected_artifacts": ["Run ledger"],
+      "acceptance_criteria": ["Recorded complete."],
       "critique_required": true,
-      "dependencies": [
-        "RQ-0002"
-      ],
-      "completion": {
-        "run_id": "run-0003",
-        "status": "completed",
-        "artifacts": [
-          "planning/EV4_RUN_LEDGER.json"
-        ],
-        "critique_findings": [
-          "See run ledger."
-        ],
-        "boundary": "No real evidence, real pilot, or production validation claim."
-      }
+      "dependencies": ["RQ-0002"],
+      "completion": {"run_id": "run-0003", "status": "completed", "artifacts": ["planning/EV4_RUN_LEDGER.json"], "critique_findings": ["See run ledger."], "boundary": "No real evidence, real pilot, or production validation claim."}
     },
     {
       "task_id": "RQ-0004",
@@ -156,34 +98,14 @@
       "status": "completed",
       "title": "Prepare pilot slots",
       "objective": "Completed queue task.",
-      "allowed_work": [
-        "Preserve state."
-      ],
-      "forbidden_work": [
-        "No real pilot."
-      ],
+      "allowed_work": ["Preserve state."],
+      "forbidden_work": ["No real pilot."],
       "requires_real_evidence": false,
-      "expected_artifacts": [
-        "Run ledger"
-      ],
-      "acceptance_criteria": [
-        "Recorded complete."
-      ],
+      "expected_artifacts": ["Run ledger"],
+      "acceptance_criteria": ["Recorded complete."],
       "critique_required": true,
-      "dependencies": [
-        "RQ-0003"
-      ],
-      "completion": {
-        "run_id": "run-0004",
-        "status": "completed",
-        "artifacts": [
-          "planning/EV4_RUN_LEDGER.json"
-        ],
-        "critique_findings": [
-          "See run ledger."
-        ],
-        "boundary": "No real evidence, real pilot, or production validation claim."
-      }
+      "dependencies": ["RQ-0003"],
+      "completion": {"run_id": "run-0004", "status": "completed", "artifacts": ["planning/EV4_RUN_LEDGER.json"], "critique_findings": ["See run ledger."], "boundary": "No real evidence, real pilot, or production validation claim."}
     },
     {
       "task_id": "RQ-0005",
@@ -192,37 +114,14 @@
       "status": "completed",
       "title": "Refresh queue",
       "objective": "Completed queue task.",
-      "allowed_work": [
-        "Preserve state."
-      ],
-      "forbidden_work": [
-        "No real pilot."
-      ],
+      "allowed_work": ["Preserve state."],
+      "forbidden_work": ["No real pilot."],
       "requires_real_evidence": false,
-      "expected_artifacts": [
-        "Run ledger"
-      ],
-      "acceptance_criteria": [
-        "Recorded complete."
-      ],
+      "expected_artifacts": ["Run ledger"],
+      "acceptance_criteria": ["Recorded complete."],
       "critique_required": true,
-      "dependencies": [
-        "RQ-0001",
-        "RQ-0002",
-        "RQ-0003",
-        "RQ-0004"
-      ],
-      "completion": {
-        "run_id": "run-0005",
-        "status": "completed",
-        "artifacts": [
-          "planning/EV4_RUN_LEDGER.json"
-        ],
-        "critique_findings": [
-          "See run ledger."
-        ],
-        "boundary": "No real evidence, real pilot, or production validation claim."
-      }
+      "dependencies": ["RQ-0001", "RQ-0002", "RQ-0003", "RQ-0004"],
+      "completion": {"run_id": "run-0005", "status": "completed", "artifacts": ["planning/EV4_RUN_LEDGER.json"], "critique_findings": ["See run ledger."], "boundary": "No real evidence, real pilot, or production validation claim."}
     },
     {
       "task_id": "RQ-0006",
@@ -231,34 +130,14 @@
       "status": "completed",
       "title": "Add bridge validation",
       "objective": "Completed queue task.",
-      "allowed_work": [
-        "Preserve state."
-      ],
-      "forbidden_work": [
-        "No real pilot."
-      ],
+      "allowed_work": ["Preserve state."],
+      "forbidden_work": ["No real pilot."],
       "requires_real_evidence": false,
-      "expected_artifacts": [
-        "Run ledger"
-      ],
-      "acceptance_criteria": [
-        "Recorded complete."
-      ],
+      "expected_artifacts": ["Run ledger"],
+      "acceptance_criteria": ["Recorded complete."],
       "critique_required": true,
-      "dependencies": [
-        "RQ-0005"
-      ],
-      "completion": {
-        "run_id": "run-0006",
-        "status": "completed",
-        "artifacts": [
-          "planning/EV4_RUN_LEDGER.json"
-        ],
-        "critique_findings": [
-          "See run ledger."
-        ],
-        "boundary": "No real evidence, real pilot, or production validation claim."
-      }
+      "dependencies": ["RQ-0005"],
+      "completion": {"run_id": "run-0006", "status": "completed", "artifacts": ["planning/EV4_RUN_LEDGER.json"], "critique_findings": ["See run ledger."], "boundary": "No real evidence, real pilot, or production validation claim."}
     },
     {
       "task_id": "RQ-0007",
@@ -267,34 +146,14 @@
       "status": "completed",
       "title": "Add conflict report check",
       "objective": "Completed queue task.",
-      "allowed_work": [
-        "Preserve state."
-      ],
-      "forbidden_work": [
-        "No real pilot."
-      ],
+      "allowed_work": ["Preserve state."],
+      "forbidden_work": ["No real pilot."],
       "requires_real_evidence": false,
-      "expected_artifacts": [
-        "Run ledger"
-      ],
-      "acceptance_criteria": [
-        "Recorded complete."
-      ],
+      "expected_artifacts": ["Run ledger"],
+      "acceptance_criteria": ["Recorded complete."],
       "critique_required": true,
-      "dependencies": [
-        "RQ-0005"
-      ],
-      "completion": {
-        "run_id": "run-0007",
-        "status": "completed",
-        "artifacts": [
-          "planning/EV4_RUN_LEDGER.json"
-        ],
-        "critique_findings": [
-          "See run ledger."
-        ],
-        "boundary": "No real evidence, real pilot, or production validation claim."
-      }
+      "dependencies": ["RQ-0005"],
+      "completion": {"run_id": "run-0007", "status": "completed", "artifacts": ["planning/EV4_RUN_LEDGER.json"], "critique_findings": ["See run ledger."], "boundary": "No real evidence, real pilot, or production validation claim."}
     },
     {
       "task_id": "RQ-0008",
@@ -303,34 +162,14 @@
       "status": "completed",
       "title": "Harden queue schema",
       "objective": "Completed queue task.",
-      "allowed_work": [
-        "Preserve state."
-      ],
-      "forbidden_work": [
-        "No real pilot."
-      ],
+      "allowed_work": ["Preserve state."],
+      "forbidden_work": ["No real pilot."],
       "requires_real_evidence": false,
-      "expected_artifacts": [
-        "Run ledger"
-      ],
-      "acceptance_criteria": [
-        "Recorded complete."
-      ],
+      "expected_artifacts": ["Run ledger"],
+      "acceptance_criteria": ["Recorded complete."],
       "critique_required": true,
-      "dependencies": [
-        "RQ-0005"
-      ],
-      "completion": {
-        "run_id": "run-0008",
-        "status": "completed",
-        "artifacts": [
-          "planning/EV4_RUN_LEDGER.json"
-        ],
-        "critique_findings": [
-          "See run ledger."
-        ],
-        "boundary": "No real evidence, real pilot, or production validation claim."
-      }
+      "dependencies": ["RQ-0005"],
+      "completion": {"run_id": "run-0008", "status": "completed", "artifacts": ["planning/EV4_RUN_LEDGER.json"], "critique_findings": ["See run ledger."], "boundary": "No real evidence, real pilot, or production validation claim."}
     },
     {
       "task_id": "RQ-0009",
@@ -339,34 +178,14 @@
       "status": "completed",
       "title": "Add submitted command",
       "objective": "Completed queue task.",
-      "allowed_work": [
-        "Preserve state."
-      ],
-      "forbidden_work": [
-        "No real pilot."
-      ],
+      "allowed_work": ["Preserve state."],
+      "forbidden_work": ["No real pilot."],
       "requires_real_evidence": false,
-      "expected_artifacts": [
-        "Run ledger"
-      ],
-      "acceptance_criteria": [
-        "Recorded complete."
-      ],
+      "expected_artifacts": ["Run ledger"],
+      "acceptance_criteria": ["Recorded complete."],
       "critique_required": true,
-      "dependencies": [
-        "RQ-0005"
-      ],
-      "completion": {
-        "run_id": "run-0009",
-        "status": "completed",
-        "artifacts": [
-          "planning/EV4_RUN_LEDGER.json"
-        ],
-        "critique_findings": [
-          "See run ledger."
-        ],
-        "boundary": "No real evidence, real pilot, or production validation claim."
-      }
+      "dependencies": ["RQ-0005"],
+      "completion": {"run_id": "run-0009", "status": "completed", "artifacts": ["planning/EV4_RUN_LEDGER.json"], "critique_findings": ["See run ledger."], "boundary": "No real evidence, real pilot, or production validation claim."}
     },
     {
       "task_id": "RQ-0010",
@@ -375,37 +194,14 @@
       "status": "completed",
       "title": "Refresh queue",
       "objective": "Completed queue task.",
-      "allowed_work": [
-        "Preserve state."
-      ],
-      "forbidden_work": [
-        "No real pilot."
-      ],
+      "allowed_work": ["Preserve state."],
+      "forbidden_work": ["No real pilot."],
       "requires_real_evidence": false,
-      "expected_artifacts": [
-        "Run ledger"
-      ],
-      "acceptance_criteria": [
-        "Recorded complete."
-      ],
+      "expected_artifacts": ["Run ledger"],
+      "acceptance_criteria": ["Recorded complete."],
       "critique_required": true,
-      "dependencies": [
-        "RQ-0006",
-        "RQ-0007",
-        "RQ-0008",
-        "RQ-0009"
-      ],
-      "completion": {
-        "run_id": "run-0010",
-        "status": "completed",
-        "artifacts": [
-          "planning/EV4_RUN_LEDGER.json"
-        ],
-        "critique_findings": [
-          "See run ledger."
-        ],
-        "boundary": "No real evidence, real pilot, or production validation claim."
-      }
+      "dependencies": ["RQ-0006", "RQ-0007", "RQ-0008", "RQ-0009"],
+      "completion": {"run_id": "run-0010", "status": "completed", "artifacts": ["planning/EV4_RUN_LEDGER.json"], "critique_findings": ["See run ledger."], "boundary": "No real evidence, real pilot, or production validation claim."}
     },
     {
       "task_id": "RQ-0011",
@@ -414,34 +210,14 @@
       "status": "completed",
       "title": "Add readiness output policy",
       "objective": "Completed queue task.",
-      "allowed_work": [
-        "Preserve state."
-      ],
-      "forbidden_work": [
-        "No real pilot."
-      ],
+      "allowed_work": ["Preserve state."],
+      "forbidden_work": ["No real pilot."],
       "requires_real_evidence": false,
-      "expected_artifacts": [
-        "Run ledger"
-      ],
-      "acceptance_criteria": [
-        "Recorded complete."
-      ],
+      "expected_artifacts": ["Run ledger"],
+      "acceptance_criteria": ["Recorded complete."],
       "critique_required": true,
-      "dependencies": [
-        "RQ-0010"
-      ],
-      "completion": {
-        "run_id": "run-0011",
-        "status": "completed",
-        "artifacts": [
-          "planning/EV4_RUN_LEDGER.json"
-        ],
-        "critique_findings": [
-          "See run ledger."
-        ],
-        "boundary": "No real evidence, real pilot, or production validation claim."
-      }
+      "dependencies": ["RQ-0010"],
+      "completion": {"run_id": "run-0011", "status": "completed", "artifacts": ["planning/EV4_RUN_LEDGER.json"], "critique_findings": ["See run ledger."], "boundary": "No real evidence, real pilot, or production validation claim."}
     },
     {
       "task_id": "RQ-0012",
@@ -450,34 +226,14 @@
       "status": "completed",
       "title": "Add readiness provenance policy",
       "objective": "Completed queue task.",
-      "allowed_work": [
-        "Preserve state."
-      ],
-      "forbidden_work": [
-        "No real pilot."
-      ],
+      "allowed_work": ["Preserve state."],
+      "forbidden_work": ["No real pilot."],
       "requires_real_evidence": false,
-      "expected_artifacts": [
-        "Run ledger"
-      ],
-      "acceptance_criteria": [
-        "Recorded complete."
-      ],
+      "expected_artifacts": ["Run ledger"],
+      "acceptance_criteria": ["Recorded complete."],
       "critique_required": true,
-      "dependencies": [
-        "RQ-0010"
-      ],
-      "completion": {
-        "run_id": "run-0012",
-        "status": "completed",
-        "artifacts": [
-          "planning/EV4_RUN_LEDGER.json"
-        ],
-        "critique_findings": [
-          "See run ledger."
-        ],
-        "boundary": "No real evidence, real pilot, or production validation claim."
-      }
+      "dependencies": ["RQ-0010"],
+      "completion": {"run_id": "run-0012", "status": "completed", "artifacts": ["planning/EV4_RUN_LEDGER.json"], "critique_findings": ["See run ledger."], "boundary": "No real evidence, real pilot, or production validation claim."}
     },
     {
       "task_id": "RQ-0013",
@@ -486,34 +242,14 @@
       "status": "completed",
       "title": "Add submitted readiness contract",
       "objective": "Completed queue task.",
-      "allowed_work": [
-        "Preserve state."
-      ],
-      "forbidden_work": [
-        "No real pilot."
-      ],
+      "allowed_work": ["Preserve state."],
+      "forbidden_work": ["No real pilot."],
       "requires_real_evidence": false,
-      "expected_artifacts": [
-        "Run ledger"
-      ],
-      "acceptance_criteria": [
-        "Recorded complete."
-      ],
+      "expected_artifacts": ["Run ledger"],
+      "acceptance_criteria": ["Recorded complete."],
       "critique_required": true,
-      "dependencies": [
-        "RQ-0010"
-      ],
-      "completion": {
-        "run_id": "run-0013",
-        "status": "completed",
-        "artifacts": [
-          "planning/EV4_RUN_LEDGER.json"
-        ],
-        "critique_findings": [
-          "See run ledger."
-        ],
-        "boundary": "No real evidence, real pilot, or production validation claim."
-      }
+      "dependencies": ["RQ-0010"],
+      "completion": {"run_id": "run-0013", "status": "completed", "artifacts": ["planning/EV4_RUN_LEDGER.json"], "critique_findings": ["See run ledger."], "boundary": "No real evidence, real pilot, or production validation claim."}
     },
     {
       "task_id": "RQ-0014",
@@ -522,34 +258,14 @@
       "status": "completed",
       "title": "Add Issue 8 absence check",
       "objective": "Completed queue task.",
-      "allowed_work": [
-        "Preserve state."
-      ],
-      "forbidden_work": [
-        "No real pilot."
-      ],
+      "allowed_work": ["Preserve state."],
+      "forbidden_work": ["No real pilot."],
       "requires_real_evidence": false,
-      "expected_artifacts": [
-        "Run ledger"
-      ],
-      "acceptance_criteria": [
-        "Recorded complete."
-      ],
+      "expected_artifacts": ["Run ledger"],
+      "acceptance_criteria": ["Recorded complete."],
       "critique_required": true,
-      "dependencies": [
-        "RQ-0010"
-      ],
-      "completion": {
-        "run_id": "run-0014",
-        "status": "completed",
-        "artifacts": [
-          "planning/EV4_RUN_LEDGER.json"
-        ],
-        "critique_findings": [
-          "See run ledger."
-        ],
-        "boundary": "No real evidence, real pilot, or production validation claim."
-      }
+      "dependencies": ["RQ-0010"],
+      "completion": {"run_id": "run-0014", "status": "completed", "artifacts": ["planning/EV4_RUN_LEDGER.json"], "critique_findings": ["See run ledger."], "boundary": "No real evidence, real pilot, or production validation claim."}
     },
     {
       "task_id": "RQ-0015",
@@ -558,37 +274,14 @@
       "status": "completed",
       "title": "Refresh queue",
       "objective": "Completed queue task.",
-      "allowed_work": [
-        "Preserve state."
-      ],
-      "forbidden_work": [
-        "No real pilot."
-      ],
+      "allowed_work": ["Preserve state."],
+      "forbidden_work": ["No real pilot."],
       "requires_real_evidence": false,
-      "expected_artifacts": [
-        "Run ledger"
-      ],
-      "acceptance_criteria": [
-        "Recorded complete."
-      ],
+      "expected_artifacts": ["Run ledger"],
+      "acceptance_criteria": ["Recorded complete."],
       "critique_required": true,
-      "dependencies": [
-        "RQ-0011",
-        "RQ-0012",
-        "RQ-0013",
-        "RQ-0014"
-      ],
-      "completion": {
-        "run_id": "run-0015",
-        "status": "completed",
-        "artifacts": [
-          "planning/EV4_RUN_LEDGER.json"
-        ],
-        "critique_findings": [
-          "See run ledger."
-        ],
-        "boundary": "No real evidence, real pilot, or production validation claim."
-      }
+      "dependencies": ["RQ-0011", "RQ-0012", "RQ-0013", "RQ-0014"],
+      "completion": {"run_id": "run-0015", "status": "completed", "artifacts": ["planning/EV4_RUN_LEDGER.json"], "critique_findings": ["See run ledger."], "boundary": "No real evidence, real pilot, or production validation claim."}
     },
     {
       "task_id": "RQ-0016",
@@ -597,34 +290,14 @@
       "status": "completed",
       "title": "Add privacy guard",
       "objective": "Completed queue task.",
-      "allowed_work": [
-        "Preserve state."
-      ],
-      "forbidden_work": [
-        "No real pilot."
-      ],
+      "allowed_work": ["Preserve state."],
+      "forbidden_work": ["No real pilot."],
       "requires_real_evidence": false,
-      "expected_artifacts": [
-        "Run ledger"
-      ],
-      "acceptance_criteria": [
-        "Recorded complete."
-      ],
+      "expected_artifacts": ["Run ledger"],
+      "acceptance_criteria": ["Recorded complete."],
       "critique_required": true,
-      "dependencies": [
-        "RQ-0015"
-      ],
-      "completion": {
-        "run_id": "run-0016",
-        "status": "completed",
-        "artifacts": [
-          "planning/EV4_RUN_LEDGER.json"
-        ],
-        "critique_findings": [
-          "See run ledger."
-        ],
-        "boundary": "No real evidence, real pilot, or production validation claim."
-      }
+      "dependencies": ["RQ-0015"],
+      "completion": {"run_id": "run-0016", "status": "completed", "artifacts": ["planning/EV4_RUN_LEDGER.json"], "critique_findings": ["See run ledger."], "boundary": "No real evidence, real pilot, or production validation claim."}
     },
     {
       "task_id": "RQ-0017",
@@ -633,62 +306,53 @@
       "status": "completed",
       "title": "Add evidence completeness check",
       "objective": "Completed queue task.",
-      "allowed_work": [
-        "Preserve state."
-      ],
-      "forbidden_work": [
-        "No real pilot."
-      ],
+      "allowed_work": ["Preserve state."],
+      "forbidden_work": ["No real pilot."],
       "requires_real_evidence": false,
-      "expected_artifacts": [
-        "Run ledger"
-      ],
-      "acceptance_criteria": [
-        "Recorded complete."
-      ],
+      "expected_artifacts": ["Run ledger"],
+      "acceptance_criteria": ["Recorded complete."],
       "critique_required": true,
-      "dependencies": [
-        "RQ-0015"
-      ],
-      "completion": {
-        "run_id": "run-0017",
-        "status": "completed",
-        "artifacts": [
-          "planning/EV4_RUN_LEDGER.json"
-        ],
-        "critique_findings": [
-          "See run ledger."
-        ],
-        "boundary": "No real evidence, real pilot, or production validation claim."
-      }
+      "dependencies": ["RQ-0015"],
+      "completion": {"run_id": "run-0017", "status": "completed", "artifacts": ["planning/EV4_RUN_LEDGER.json"], "critique_findings": ["See run ledger."], "boundary": "No real evidence, real pilot, or production validation claim."}
     },
     {
       "task_id": "RQ-0018",
       "cycle_position": 18,
       "task_type": "validator_hardening",
-      "status": "pending",
+      "status": "completed",
       "title": "Add Issue #8 label-state consistency check",
       "objective": "Check Issue #8 labels cannot contradict submitted-packet absence.",
-      "allowed_work": [
-        "Bounded validator/docs work."
-      ],
+      "allowed_work": ["Bounded validator/docs work."],
       "forbidden_work": [
         "Do not create submitted evidence.",
         "Do not run the real pilot.",
         "Do not claim production/export/live/accessibility validation."
       ],
       "requires_real_evidence": false,
-      "expected_artifacts": [
-        "Validator or documentation update"
-      ],
+      "expected_artifacts": ["Validator or documentation update"],
       "acceptance_criteria": [
         "CI passes without real evidence execution.",
         "Boundaries remain intact."
       ],
       "critique_required": true,
-      "dependencies": [
-        "RQ-0015"
-      ]
+      "dependencies": ["RQ-0015"],
+      "completed_pr": 50,
+      "completion": {
+        "run_id": "automation-run-018",
+        "status": "completed",
+        "artifacts": [
+          "planning/EV4_ISSUE8_STATE.snapshot.json",
+          "validation/e2e/run_issue8_label_state_check.py",
+          ".github/workflows/validate.yml",
+          "STATUS.md",
+          "planning/EV4_RUN_LEDGER.json"
+        ],
+        "critique_findings": [
+          "Issue #8 labels are metadata only and cannot substitute for a machine-checkable submitted packet.",
+          "Contradictory labels or scope claims fail while real_submitted_packet_present=false."
+        ],
+        "boundary": "No real evidence, real pilot, production, release, export, live-render, or accessibility validation claim."
+      }
     },
     {
       "task_id": "RQ-0019",
@@ -697,26 +361,17 @@
       "status": "pending",
       "title": "Add submitted packet source-kind lock check",
       "objective": "Check only real_issue_submission can be eligible when other gates pass.",
-      "allowed_work": [
-        "Bounded validator/docs work."
-      ],
+      "allowed_work": ["Bounded validator/docs work."],
       "forbidden_work": [
         "Do not create submitted evidence.",
         "Do not run the real pilot.",
         "Do not claim production/export/live/accessibility validation."
       ],
       "requires_real_evidence": false,
-      "expected_artifacts": [
-        "Validator or documentation update"
-      ],
-      "acceptance_criteria": [
-        "CI passes without real evidence execution.",
-        "Boundaries remain intact."
-      ],
+      "expected_artifacts": ["Validator or documentation update"],
+      "acceptance_criteria": ["CI passes without real evidence execution.", "Boundaries remain intact."],
       "critique_required": true,
-      "dependencies": [
-        "RQ-0015"
-      ]
+      "dependencies": ["RQ-0015"]
     },
     {
       "task_id": "RQ-0020",
@@ -729,24 +384,15 @@
         "Review merged work and CI outcomes.",
         "Carry forward evidence-pending blockers."
       ],
-      "forbidden_work": [
-        "Do not schedule real pilot without real evidence and readiness."
-      ],
+      "forbidden_work": ["Do not schedule real pilot without real evidence and readiness."],
       "requires_real_evidence": false,
-      "expected_artifacts": [
-        "Updated queue"
-      ],
+      "expected_artifacts": ["Updated queue"],
       "acceptance_criteria": [
         "Every fifth task remains queue_refresh.",
         "Missing real evidence remains visible."
       ],
       "critique_required": true,
-      "dependencies": [
-        "RQ-0016",
-        "RQ-0017",
-        "RQ-0018",
-        "RQ-0019"
-      ]
+      "dependencies": ["RQ-0016", "RQ-0017", "RQ-0018", "RQ-0019"]
     },
     {
       "task_id": "RQ-0021",
@@ -755,26 +401,17 @@
       "status": "pending",
       "title": "Add submitted packet artifact-path allowlist check",
       "objective": "Check generated reports cannot be used as submitted source evidence.",
-      "allowed_work": [
-        "Bounded validator/docs work."
-      ],
+      "allowed_work": ["Bounded validator/docs work."],
       "forbidden_work": [
         "Do not create submitted evidence.",
         "Do not run the real pilot.",
         "Do not claim production/export/live/accessibility validation."
       ],
       "requires_real_evidence": false,
-      "expected_artifacts": [
-        "Validator or documentation update"
-      ],
-      "acceptance_criteria": [
-        "CI passes without real evidence execution.",
-        "Boundaries remain intact."
-      ],
+      "expected_artifacts": ["Validator or documentation update"],
+      "acceptance_criteria": ["CI passes without real evidence execution.", "Boundaries remain intact."],
       "critique_required": true,
-      "dependencies": [
-        "RQ-0020"
-      ]
+      "dependencies": ["RQ-0020"]
     },
     {
       "task_id": "RQ-0022",
@@ -805,9 +442,7 @@
         "CI passes without real evidence or production claims."
       ],
       "critique_required": true,
-      "dependencies": [
-        "RQ-0021"
-      ]
+      "dependencies": ["RQ-0021"]
     }
   ],
   "forbidden_claims": [
