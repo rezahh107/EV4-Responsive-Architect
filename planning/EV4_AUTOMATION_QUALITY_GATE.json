@@ -18,6 +18,7 @@
       "queue_state_checked",
       "ledger_state_checked",
       "stale_reference_search_done",
+      "delayed_bot_review_window_checked",
       "boundary_assertions_checked"
     ],
     "failed_required_check_effect": "block_completion_or_create_follow_up"
@@ -28,11 +29,22 @@
     "low_temperature_policy": "temperature_0_1_recommended",
     "sensitive_task_effect": "completion_blocked_until_cross_critique_recorded"
   },
+  "delayed_review_policy": {
+    "enabled": true,
+    "minimum_wait_minutes_before_merge": 10,
+    "review_sources_to_check": [
+      "github_review_threads",
+      "gemini-code-assist[bot]"
+    ],
+    "block_merge_on_unresolved_high_priority_review": true,
+    "allowed_outcome_if_feedback_arrives_after_merge": "create_follow_up_task_and_record_in_ledger"
+  },
   "completion_policy": {
     "completion_allowed_requires": [
       "deterministic_checks_pass",
       "self_critique_recorded",
       "cross_critique_completed_when_required",
+      "delayed_reviewer_window_checked",
       "unfixed_p0_or_p1_findings_absent",
       "follow_up_tasks_created_when_needed",
       "boundary_assertions_present"
@@ -42,6 +54,7 @@
       "deterministic_check_failed_without_follow_up",
       "ci_required_but_missing",
       "cross_critique_required_but_missing",
+      "delayed_reviewer_feedback_unchecked",
       "unfixed_p0_or_p1_finding_without_follow_up"
     ]
   },
