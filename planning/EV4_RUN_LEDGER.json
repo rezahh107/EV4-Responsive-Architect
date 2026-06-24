@@ -71,10 +71,17 @@
         "Lease and transition enforcement remain contract-level and require future runtime implementation before they can prevent concurrent execution."
       ],
       "boundary_assertions": [
+        "no_real_evidence_created",
+        "no_real_pilot_run",
+        "no_production_claim",
+        "no_release_claim",
+        "no_live_render_claim",
+        "no_export_validation_claim",
+        "no_accessibility_pass_claim",
+        "sample_not_used_as_real",
         "queue_completion_not_evidence_validation",
         "ci_success_not_responsive_validation",
-        "merged_pr_not_authoritative_evidence",
-        "no_real_pilot_run"
+        "merged_pr_not_authoritative_evidence"
       ],
       "next_queue_effect": "Numbered rolling queue tasks remain unchanged; control-plane hardening is recorded as out-of-band controller hardening."
     },
@@ -96,9 +103,16 @@
         "Later review found and fixed gaps around evidence-vs-merge separation, lease recovery, blocked escalation, ledger retention, prompt tiering, and delayed reviewer policy."
       ],
       "boundary_assertions": [
+        "no_real_evidence_created",
+        "no_real_pilot_run",
+        "no_production_claim",
+        "no_release_claim",
+        "no_live_render_claim",
+        "no_export_validation_claim",
+        "no_accessibility_pass_claim",
+        "sample_not_used_as_real",
         "playbook_is_guidance_not_runtime_evidence",
-        "merged_pr_not_authoritative_evidence",
-        "no_real_pilot_run"
+        "merged_pr_not_authoritative_evidence"
       ],
       "next_queue_effect": "Reusable automation documentation is available without changing the active EV4 evidence/pilot state."
     },
@@ -123,9 +137,16 @@
         "Quality gate requires deterministic checks and cross-critique records for sensitive task types; external second-agent execution remains a future implementation step."
       ],
       "boundary_assertions": [
+        "no_real_evidence_created",
+        "no_real_pilot_run",
+        "no_production_claim",
+        "no_release_claim",
+        "no_live_render_claim",
+        "no_export_validation_claim",
+        "no_accessibility_pass_claim",
+        "sample_not_used_as_real",
         "self_critique_only_not_enough_for_sensitive_tasks",
-        "quality_gate_is_contract_and_validation_not_domain_evidence",
-        "no_real_pilot_run"
+        "quality_gate_is_contract_and_validation_not_domain_evidence"
       ],
       "next_queue_effect": "Sensitive automation-control work should provide a task-quality review record before being considered quality-passed."
     },
@@ -153,9 +174,16 @@
         "Actual external low-temperature reviewer execution is still not implemented."
       ],
       "boundary_assertions": [
+        "no_real_evidence_created",
+        "no_real_pilot_run",
+        "no_production_claim",
+        "no_release_claim",
+        "no_live_render_claim",
+        "no_export_validation_claim",
+        "no_accessibility_pass_claim",
+        "sample_not_used_as_real",
         "cross_critique_stub_not_external_llm_execution",
         "delayed_reviewer_feedback_checked_before_merge",
-        "no_real_pilot_run",
         "merged_pr_not_authoritative_evidence"
       ],
       "next_queue_effect": "A future task may implement real cross-review record generation; current queue tasks RQ-0018 through RQ-0021 remain pending."
