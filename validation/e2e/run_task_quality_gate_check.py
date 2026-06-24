@@ -68,6 +68,24 @@ def assert_policy(policy: dict[str, Any], schema: dict[str, Any]) -> None:
     if not delayed["block_merge_on_unresolved_high_priority_review"]:
         raise QualityGateError("high-priority external review feedback must block merge until resolved")
 
+    reconciliation = policy["pr_reconciliation_policy"]
+    if reconciliation["enabled"] is not True:
+        raise QualityGateError("PR reconciliation preflight must remain enabled")
+    if reconciliation["runs_before_new_task_selection"] is not True:
+        raise QualityGateError("PR reconciliation must run before selecting a new queue task")
+    if reconciliation["single_active_automation_pr"] is not True:
+        raise QualityGateError("policy must enforce a single active automation PR")
+    if reconciliation["review_handling_counts_as_queue_task"] is not False:
+        raise QualityGateError("review handling must remain a PR lifecycle step, not a queue task")
+    if reconciliation["open_automation_pr_effect"] != "block_new_queue_task_until_reconciled":
+        raise QualityGateError("an open automation PR must block new queue task execution")
+    if "start_new_queue_task" not in reconciliation["forbidden_during_open_pr"]:
+        raise QualityGateError("policy must forbid starting a new queue task while an automation PR is open")
+    if "create_parallel_automation_pr" not in reconciliation["forbidden_during_open_pr"]:
+        raise QualityGateError("policy must forbid parallel automation PRs before reconciliation")
+    if "open_automation_pr_unreconciled" not in policy["completion_policy"]["blocked_if"]:
+        raise QualityGateError("completion policy must block unresolved open automation PRs")
+
 
 def semantic_validate_review(review: dict[str, Any]) -> None:
     checks = review["deterministic_checks"]
