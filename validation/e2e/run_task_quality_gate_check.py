@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import json
+import traceback
 from pathlib import Path
 from typing import Any
 
@@ -13,13 +14,15 @@ POLICY_SCHEMA = ROOT / "schemas" / "ev4-responsive-automation-quality-gate.schem
 REVIEW_SCHEMA = ROOT / "schemas" / "ev4-responsive-task-quality-review.schema.json"
 VALID_REVIEW = ROOT / "validation" / "fixtures" / "valid" / "task_quality_review.valid.json"
 INVALID_DIR = ROOT / "validation" / "task_quality" / "invalid"
-SENSITIVE_TYPES = {
+
+REQUIRED_SENSITIVE_TYPES = {
     "schema_hardening",
     "automation_control",
     "readiness_gate",
     "sample_vs_real_safety",
     "risk_priority_engine",
     "evidence_boundary",
+    "production_boundary",
     "ci_workflow",
 }
 
@@ -54,14 +57,22 @@ def assert_policy(policy: dict[str, Any], schema: dict[str, Any]) -> None:
         raise QualityGateError("sensitive tasks must require cross critique")
     if "self_critique_only_completion" not in policy["forbidden_quality_shortcuts"]:
         raise QualityGateError("policy must forbid self-critique-only completion")
-    if set(policy["sensitive_task_types"]) < SENSITIVE_TYPES:
+    if not REQUIRED_SENSITIVE_TYPES.issubset(set(policy["sensitive_task_types"])):
         raise QualityGateError("policy is missing required sensitive task types")
+
+    delayed = policy["delayed_review_policy"]
+    if delayed["enabled"] is not True:
+        raise QualityGateError("delayed reviewer window must remain enabled")
+    if delayed["minimum_wait_minutes_before_merge"] < 10:
+        raise QualityGateError("delayed reviewer window must be at least 10 minutes")
+    if not delayed["block_merge_on_unresolved_high_priority_review"]:
+        raise QualityGateError("high-priority external review feedback must block merge until resolved")
 
 
 def semantic_validate_review(review: dict[str, Any]) -> None:
     checks = review["deterministic_checks"]
     failed_checks = [name for name, value in checks.items() if value is not True]
-    sensitive = review["task_sensitivity"] in {"sensitive", "critical"} or review["task_type"] in SENSITIVE_TYPES
+    sensitive = review["task_sensitivity"] in {"sensitive", "critical"} or review["task_type"] in REQUIRED_SENSITIVE_TYPES
     cross = review["cross_critique"]
     findings = review.get("findings", [])
     boundary = set(review.get("boundary_assertions", []))
@@ -101,6 +112,7 @@ def semantic_validate_review(review: dict[str, Any]) -> None:
         required_boundary = {
             "no_self_critique_only_completion",
             "deterministic_checks_passed",
+            "bot_review_window_checked",
             "no_production_claim",
             "no_unrelated_task",
         }
@@ -134,8 +146,11 @@ def main() -> int:
         assert_valid_review(VALID_REVIEW, review_schema)
         for path in sorted(INVALID_DIR.glob("*.invalid.json")):
             assert_invalid_review(path, review_schema)
-    except Exception as exc:
+    except QualityGateError as exc:
         print(f"task quality gate validation failed: {exc}")
+        return 1
+    except Exception:
+        traceback.print_exc()
         return 1
     print("Task quality gate validation passed")
     return 0
