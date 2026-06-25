@@ -1,4 +1,6 @@
 import json
+import subprocess
+import sys
 from pathlib import Path
 
 from jsonschema import Draft202012Validator
@@ -69,6 +71,12 @@ EXPECTED_ROUTES = {
     'hybrid_split_architecture',
 }
 
+QUEUE_CHECKS = [
+    'validation/e2e/run_rolling_queue_check.py',
+    'validation/e2e/run_run_ledger_check.py',
+    'validation/e2e/run_task_quality_gate_check.py',
+]
+
 
 def load_json(path):
     return json.loads(path.read_text(encoding='utf-8'))
@@ -124,11 +132,6 @@ def assert_step_integrity(payload, path):
         prefix, sep, suffix = step_id.partition('-')
         if not prefix or sep != '-' or not suffix.isdigit():
             raise ValueError(f'Invalid step_id format: {step_id} in {path}')
-    first_prefix = None
-    for index, step_id in enumerate(step_ids, start=1):
-        prefix, sep, suffix = step_id.partition('-')
-        if not prefix or sep != '-' or not suffix.isdigit():
-            raise ValueError(f'Invalid step_id format: {step_id} in {path}')
         if first_prefix is None:
             first_prefix = prefix
         elif prefix != first_prefix:
@@ -156,9 +159,17 @@ def validate_payload(payload, path, validator):
     assert_route_mode(payload, path)
 
 
+def run_queue_checks():
+    for check in QUEUE_CHECKS:
+        result = subprocess.run([sys.executable, check], cwd=ROOT, text=True, capture_output=True, check=False)
+        if result.returncode != 0:
+            raise ValueError(f'{check} failed\nSTDOUT:\n{result.stdout}\nSTDERR:\n{result.stderr}')
+
+
 def main():
     assert_required_files()
     assert_required_terms()
+    run_queue_checks()
 
     schema = load_json(SCHEMA)
     Draft202012Validator.check_schema(schema)
