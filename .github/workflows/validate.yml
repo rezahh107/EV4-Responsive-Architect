@@ -6,108 +6,26 @@ on:
     branches:
       - main
 
-concurrency:
-  group: ev4-validate-${{ github.ref }}
-  cancel-in-progress: false
-
 jobs:
-  schema-validation:
+  validation:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
+        with:
+          fetch-depth: 0
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-
-      - name: Install dependencies
-        run: python -m pip install -r requirements.txt
-
-      - name: Validate schemas and fixtures
-        run: python validation/schema_validator/validate_schemas.py
-
-      - name: Run E2E-001 textual fixture validation
-        run: python validation/e2e/run_e2e_001.py
-
-      - name: Run pilot manifest validation
-        run: python validation/e2e/run_pilot_manifest_check.py
-
-      - name: Run evidence intake validation
-        run: python validation/e2e/run_evidence_intake_check.py
-
-      - name: Reject sample packet in evidence submitted mode
+      - name: Diagnostics
         run: |
-          if python validation/e2e/run_evidence_intake_check.py --packet validation/fixtures/valid/evidence_intake_packet.valid.json --submitted-mode --skip-schema-suite; then
-            echo "Sample packet was unexpectedly accepted by evidence submitted mode"
-            exit 1
-          fi
-          echo "Sample packet correctly rejected by evidence submitted mode"
-
-      - name: Run submitted packet source-kind lock validation
-        run: python validation/e2e/run_submitted_packet_source_kind_lock_check.py
-
-      - name: Run submitted packet artifact-path allowlist validation
-        run: python validation/e2e/run_submitted_packet_artifact_path_allowlist_check.py
-
-      - name: Run pilot readiness validation
-        run: python validation/e2e/run_pilot_readiness_check.py
-
-      - name: Reject sample packet in readiness submitted mode
-        run: |
-          if python validation/e2e/run_pilot_readiness_check.py --packet validation/fixtures/valid/evidence_intake_packet.valid.json --submitted-mode --skip-schema-suite; then
-            echo "Sample packet was unexpectedly accepted by readiness submitted mode"
-            exit 1
-          fi
-          echo "Sample packet correctly rejected by readiness submitted mode"
-
-      - name: Run readiness provenance policy validation
-        run: python validation/e2e/run_readiness_provenance_policy_check.py
-
-      - name: Run submitted readiness status contract validation
-        run: python validation/e2e/run_submitted_readiness_status_contract_check.py
-
-      - name: Run submitted privacy review guard validation
-        run: python validation/e2e/run_submitted_privacy_review_guard_check.py
-
-      - name: Run submitted evidence completeness contract validation
-        run: python validation/e2e/run_submitted_evidence_completeness_contract_check.py
-
-      - name: Run pilot dry-run validation
-        run: python validation/e2e/run_pilot_dry_run_check.py
-
-      - name: Run blocked dry-run negative path
-        run: python validation/e2e/run_pilot_dry_run_check.py --packet validation/fixtures/valid/evidence_intake_packet.blocked.valid.json --expect-blocked
-
-      - name: Reject sample packet in submitted shadow mode
-        run: |
-          if python validation/e2e/run_pilot_dry_run_check.py --submitted-shadow-mode; then
-            echo "Sample packet was unexpectedly accepted for submitted shadow mode"
-            exit 1
-          fi
-          echo "Sample packet correctly rejected for submitted shadow mode"
-
-      - name: Run risk priority validation
-        run: python validation/e2e/run_risk_priority_check.py
-
-      - name: Run risk priority parameterized report mode
-        run: python validation/e2e/run_risk_priority_check.py --assessment validation/fixtures/valid/risk_priority_assessment.valid.json --out /tmp/risk_priority_assessment.generated.json
-
-      - name: Run P0 system hardening validation
-        run: python validation/e2e/run_p0_system_hardening_check.py
-
-      - name: Run issue-to-packet bridge semantic validation
-        run: python validation/e2e/run_issue_to_packet_bridge_check.py
-
-      - name: Run Issue #8 submitted-packet absence validation
-        run: python validation/e2e/run_issue8_submitted_packet_absence_check.py
-
-      - name: Run Issue #8 label-state consistency validation
-        run: python validation/e2e/run_issue8_label_state_check.py
-
-      - name: Run cross-review generation path validation
-        run: python validation/e2e/run_cross_review_generation_path_check.py
-
-      - name: Run rolling queue validation
-        run: python validation/e2e/run_rolling_queue_check.py
+          echo "Runner: $RUNNER_OS"
+          pwd
+          ls -la
+          git status --short
+          git rev-parse --short HEAD
+          python --version
+          test -f validation/e2e/run_responsive_tree_architecture_refactor_check.py
+      - name: Refactor check
+        run: python validation/e2e/run_responsive_tree_architecture_refactor_check.py

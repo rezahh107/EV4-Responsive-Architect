@@ -1,19 +1,46 @@
 # 00 — Overview
 
-`EV4 Responsive Architect` is a post-build responsive repair and validation system for Elementor V4 sections already architected by EV4 Architect.
+`EV4 Responsive Architect` is a responsive-tree architecture and Elementor handoff system for sections already architected by EV4 Architect.
 
 ## System Boundary
 
 ```text
-EV4 Architect = architecture selection + build tree + implementation handoff.
-EV4 Responsive Architect = responsive evidence audit + repair ownership + atomic repair plan + validation handoff.
+EV4 Architect = desktop/section architecture selection + build tree + implementation handoff.
+EV4 Responsive Architect = responsive relationship classification + route selection + responsive tree/override generation + builder handoff + validation plan.
 ```
 
 ## Main Principle
 
 ```text
-Repair responsive behavior without silently changing architecture.
+Classify first. Route second. Generate responsive tree or overrides third. Validate claims only with matching evidence.
 ```
+
+## Primary Workflow
+
+```text
+EV4_RESPONSIVE_START_PACKET
+→ responsive design intake
+→ viewport source ledger
+→ section relationship classification
+→ Elementor strategy routing
+→ responsive tree ownership contract
+→ same-tree overrides OR viewport tree OR composite plan
+→ display and breakpoint contract
+→ content/accessibility/duplication gate
+→ responsive builder handoff
+→ validation plan
+→ final review
+→ output package
+```
+
+## Supported Modes
+
+```yaml
+primary_mode: design_to_responsive_tree
+secondary_mode: responsive_repair
+```
+
+Repair is no longer the primary identity of the system. It remains a fallback when a responsive implementation already exists and real evidence identifies an issue.
 
 ## Repository Layers
 
@@ -22,25 +49,8 @@ Repair responsive behavior without silently changing architecture.
 2. contracts/  Normative rules and gates
 3. stages/     Stage protocols
 4. schemas/    Machine-readable schemas
-5. state/      State as Code JSON files
+5. planning/   State and queue files
 6. validation/ Programmatic validators and fixtures
 7. examples/   Pilot and E2E cases
 8. prompts/    Run prompts and builder session starters
-```
-
-## First Supported Workflow
-
-```text
-completed EV4 handoff
-→ responsive evidence ingest
-→ desktop baseline lock
-→ breakpoint inventory lock
-→ breakpoint observation
-→ failure map
-→ repair ownership routing
-→ repair option analysis
-→ repair selection
-→ repair scope freeze
-→ atomic repair plan
-→ final audit
 ```
