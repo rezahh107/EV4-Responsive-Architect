@@ -129,7 +129,8 @@
             "schema_hardening",
             "pilot_preparation",
             "real_evidence_execution",
-            "queue_refresh"
+            "queue_refresh",
+            "evidence_boundary"
           ]
         },
         "status": {

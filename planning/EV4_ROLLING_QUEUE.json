@@ -39,7 +39,9 @@
       "RQ-0019",
       "RQ-0020",
       "RQ-0021",
-      "RQ-0022"
+      "RQ-0022",
+      "RQ-0023",
+      "RQ-0024"
     ]
   },
   "tasks": [
@@ -297,7 +299,8 @@
       "acceptance_criteria": ["Recorded complete."],
       "critique_required": true,
       "dependencies": ["RQ-0015"],
-      "completion": {"run_id": "run-0016", "status": "completed", "artifacts": ["planning/EV4_RUN_LEDGER.json"], "critique_findings": ["See run ledger."], "boundary": "No real evidence, real pilot, or production validation claim."}
+      "completed_pr": 40,
+      "completion": {"run_id": "automation-run-016", "status": "completed", "artifacts": ["validation/e2e/run_submitted_privacy_review_guard_check.py", ".github/workflows/validate.yml", "planning/EV4_RUN_LEDGER.json", "planning/EV4_ROLLING_QUEUE.json", "STATUS.md"], "critique_findings": ["Privacy acknowledgement remains necessary but does not prove live render, export, accessibility, production, or release readiness."], "boundary": "No real evidence, real pilot, or production validation claim."}
     },
     {
       "task_id": "RQ-0017",
@@ -313,7 +316,8 @@
       "acceptance_criteria": ["Recorded complete."],
       "critique_required": true,
       "dependencies": ["RQ-0015"],
-      "completion": {"run_id": "run-0017", "status": "completed", "artifacts": ["planning/EV4_RUN_LEDGER.json"], "critique_findings": ["See run ledger."], "boundary": "No real evidence, real pilot, or production validation claim."}
+      "completed_pr": 42,
+      "completion": {"run_id": "automation-run-017", "status": "completed", "artifacts": ["validation/e2e/run_submitted_evidence_completeness_contract_check.py", ".github/workflows/validate.yml", "planning/EV4_RUN_LEDGER.json"], "critique_findings": ["Evidence completeness flags remain contract checks and do not prove live render, export, accessibility, production, or release readiness."], "boundary": "No real evidence, real pilot, or production validation claim."}
     },
     {
       "task_id": "RQ-0018",
@@ -323,76 +327,47 @@
       "title": "Add Issue #8 label-state consistency check",
       "objective": "Check Issue #8 labels cannot contradict submitted-packet absence.",
       "allowed_work": ["Bounded validator/docs work."],
-      "forbidden_work": [
-        "Do not create submitted evidence.",
-        "Do not run the real pilot.",
-        "Do not claim production/export/live/accessibility validation."
-      ],
+      "forbidden_work": ["Do not create submitted evidence.", "Do not run the real pilot.", "Do not claim production/export/live/accessibility validation."],
       "requires_real_evidence": false,
       "expected_artifacts": ["Validator or documentation update"],
-      "acceptance_criteria": [
-        "CI passes without real evidence execution.",
-        "Boundaries remain intact."
-      ],
+      "acceptance_criteria": ["CI passes without real evidence execution.", "Boundaries remain intact."],
       "critique_required": true,
       "dependencies": ["RQ-0015"],
       "completed_pr": 50,
-      "completion": {
-        "run_id": "automation-run-018",
-        "status": "completed",
-        "artifacts": [
-          "planning/EV4_ISSUE8_STATE.snapshot.json",
-          "validation/e2e/run_issue8_label_state_check.py",
-          ".github/workflows/validate.yml",
-          "STATUS.md",
-          "planning/EV4_RUN_LEDGER.json"
-        ],
-        "critique_findings": [
-          "Issue #8 labels are metadata only and cannot substitute for a machine-checkable submitted packet.",
-          "Contradictory labels or scope claims fail while real_submitted_packet_present=false."
-        ],
-        "boundary": "No real evidence, real pilot, production, release, export, live-render, or accessibility validation claim."
-      }
+      "completion": {"run_id": "automation-run-018", "status": "completed", "artifacts": ["planning/EV4_ISSUE8_STATE.snapshot.json", "validation/e2e/run_issue8_label_state_check.py", ".github/workflows/validate.yml", "STATUS.md", "planning/EV4_RUN_LEDGER.json"], "critique_findings": ["Issue #8 labels are metadata only and cannot substitute for a machine-checkable submitted packet.", "Contradictory labels or scope claims fail while real_submitted_packet_present=false."], "boundary": "No real evidence, real pilot, production, release, export, live-render, or accessibility validation claim."}
     },
     {
       "task_id": "RQ-0019",
       "cycle_position": 19,
       "task_type": "validator_hardening",
-      "status": "pending",
+      "status": "completed",
       "title": "Add submitted packet source-kind lock check",
       "objective": "Check only real_issue_submission can be eligible when other gates pass.",
       "allowed_work": ["Bounded validator/docs work."],
-      "forbidden_work": [
-        "Do not create submitted evidence.",
-        "Do not run the real pilot.",
-        "Do not claim production/export/live/accessibility validation."
-      ],
+      "forbidden_work": ["Do not create submitted evidence.", "Do not run the real pilot.", "Do not claim production/export/live/accessibility validation."],
       "requires_real_evidence": false,
-      "expected_artifacts": ["Validator or documentation update"],
-      "acceptance_criteria": ["CI passes without real evidence execution.", "Boundaries remain intact."],
+      "expected_artifacts": ["Validator update", "Workflow update"],
+      "acceptance_criteria": ["CI passes without real evidence execution.", "Boundaries remain intact.", "Only real_issue_submission can be shadow-mode eligible when other readiness gates pass."],
       "critique_required": true,
-      "dependencies": ["RQ-0015"]
+      "dependencies": ["RQ-0015"],
+      "completed_pr": 54,
+      "completion": {"run_id": "automation-run-019", "status": "completed", "artifacts": ["validation/e2e/run_evidence_intake_check.py", "validation/e2e/run_submitted_packet_source_kind_lock_check.py", "validation/e2e/run_submitted_privacy_review_guard_check.py", "validation/e2e/run_submitted_evidence_completeness_contract_check.py", "validation/e2e/run_submitted_readiness_status_contract_check.py", ".github/workflows/validate.yml"], "critique_findings": ["Eligibility must require packet_origin=real_issue_submission and submitted/validated issue-reference status for Issue #8.", "Null intake_verdict access must remain safe when a packet fails before verdict generation.", "Boolean source-kind lock conditions must remain parenthesized and readable."], "boundary": "No submitted evidence created, no real pilot run, and no production/release/live-render/export/accessibility validation claims."}
     },
     {
       "task_id": "RQ-0020",
       "cycle_position": 20,
       "task_type": "queue_refresh",
-      "status": "pending",
+      "status": "completed",
       "title": "Refresh rolling queue after submitted-packet guard set",
       "objective": "Audit RQ-0016 through RQ-0019 and write the next bounded tasks.",
-      "allowed_work": [
-        "Review merged work and CI outcomes.",
-        "Carry forward evidence-pending blockers."
-      ],
+      "allowed_work": ["Review merged work and CI outcomes.", "Carry forward evidence-pending blockers.", "Restore minimum pending queue depth with legitimate bounded tasks."],
       "forbidden_work": ["Do not schedule real pilot without real evidence and readiness."],
       "requires_real_evidence": false,
-      "expected_artifacts": ["Updated queue"],
-      "acceptance_criteria": [
-        "Every fifth task remains queue_refresh.",
-        "Missing real evidence remains visible."
-      ],
+      "expected_artifacts": ["Updated queue", "STATUS sync", "Queue refresh audit"],
+      "acceptance_criteria": ["Every fifth task remains queue_refresh.", "Missing real evidence remains visible.", "Pending queue depth is at least four legitimate tasks."],
       "critique_required": true,
-      "dependencies": ["RQ-0016", "RQ-0017", "RQ-0018", "RQ-0019"]
+      "dependencies": ["RQ-0016", "RQ-0017", "RQ-0018", "RQ-0019"],
+      "completion": {"run_id": "automation-run-020", "status": "completed", "artifacts": ["planning/EV4_ROLLING_QUEUE.json", "STATUS.md", "planning/EV4_QUEUE_REFRESH_RQ_0020.audit.json"], "critique_findings": ["RQ-0016 through RQ-0019 strengthened submitted-readiness guards but did not create real evidence or authorize the real pilot.", "STATUS drift after PR #54 required sync: RQ-0019 is completed and RQ-0021 is now the next executable task.", "The queue needed two additional legitimate pending tasks to preserve the minimum pending backlog after RQ-0020 completion."], "boundary": "No real evidence, real pilot, production, release, export, live-render, or accessibility validation claim."}
     },
     {
       "task_id": "RQ-0021",
@@ -402,11 +377,7 @@
       "title": "Add submitted packet artifact-path allowlist check",
       "objective": "Check generated reports cannot be used as submitted source evidence.",
       "allowed_work": ["Bounded validator/docs work."],
-      "forbidden_work": [
-        "Do not create submitted evidence.",
-        "Do not run the real pilot.",
-        "Do not claim production/export/live/accessibility validation."
-      ],
+      "forbidden_work": ["Do not create submitted evidence.", "Do not run the real pilot.", "Do not claim production/export/live/accessibility validation."],
       "requires_real_evidence": false,
       "expected_artifacts": ["Validator or documentation update"],
       "acceptance_criteria": ["CI passes without real evidence execution.", "Boundaries remain intact."],
@@ -420,29 +391,43 @@
       "status": "pending",
       "title": "Add actual cross-review record generation path",
       "objective": "Add a bounded path for creating and validating cross-review request and review-record artifacts for sensitive automation tasks.",
-      "allowed_work": [
-        "Add request and record templates.",
-        "Add/extend validation for generated cross-review record paths.",
-        "Update reusable automation docs if needed."
-      ],
-      "forbidden_work": [
-        "Do not claim an external reviewer ran unless a validated review record exists.",
-        "Do not satisfy sensitive task quality with self-critique alone.",
-        "Do not run the real pilot."
-      ],
+      "allowed_work": ["Add request and record templates.", "Add/extend validation for generated cross-review record paths.", "Update reusable automation docs if needed."],
+      "forbidden_work": ["Do not claim an external reviewer ran unless a validated review record exists.", "Do not satisfy sensitive task quality with self-critique alone.", "Do not run the real pilot."],
       "requires_real_evidence": false,
-      "expected_artifacts": [
-        "planning/reviews templates",
-        "validation/e2e cross-review generation check",
-        "docs update if needed"
-      ],
-      "acceptance_criteria": [
-        "Cross-review can be requested and recorded through a machine-checkable artifact path.",
-        "Missing/malformed records cannot satisfy the quality gate.",
-        "CI passes without real evidence or production claims."
-      ],
+      "expected_artifacts": ["planning/reviews templates", "validation/e2e cross-review generation check", "docs update if needed"],
+      "acceptance_criteria": ["Cross-review can be requested and recorded through a machine-checkable artifact path.", "Missing/malformed records cannot satisfy the quality gate.", "CI passes without real evidence or production claims."],
       "critique_required": true,
       "dependencies": ["RQ-0021"]
+    },
+    {
+      "task_id": "RQ-0023",
+      "cycle_position": 23,
+      "task_type": "validator_hardening",
+      "status": "pending",
+      "title": "Add submitted packet issue-reference consistency check",
+      "objective": "Ensure submitted packets cannot claim eligibility unless issue_reference targets Issue #8 and matches the expected evidence submission state.",
+      "allowed_work": ["Add or extend a bounded validator for issue_reference consistency.", "Add negative fixtures for wrong issue number, missing issue_url_or_ref, or stale evidence_submission_status.", "Wire the check into CI if a new validator is created."],
+      "forbidden_work": ["Do not create submitted evidence.", "Do not run the real pilot.", "Do not claim production/export/live/accessibility validation."],
+      "requires_real_evidence": false,
+      "expected_artifacts": ["Validator or fixture update"],
+      "acceptance_criteria": ["Wrong issue reference cannot pass submitted-readiness eligibility.", "CI passes without real evidence execution.", "Boundaries remain intact."],
+      "critique_required": true,
+      "dependencies": ["RQ-0021"]
+    },
+    {
+      "task_id": "RQ-0024",
+      "cycle_position": 24,
+      "task_type": "evidence_boundary",
+      "status": "pending",
+      "title": "Add submitted packet freshness and sample-marker rejection check",
+      "objective": "Ensure stale, sample-marked, or placeholder-hash submitted packets cannot be treated as real issue submissions.",
+      "allowed_work": ["Add or extend bounded validation for sample markers and placeholder hashes.", "Add negative fixtures for SAMPLE, .sample, sha256-sample-placeholder, and placeholder payload hash markers.", "Document the evidence-boundary rule if needed."],
+      "forbidden_work": ["Do not create submitted evidence.", "Do not run the real pilot.", "Do not claim production/export/live/accessibility validation."],
+      "requires_real_evidence": false,
+      "expected_artifacts": ["Validator or documentation update"],
+      "acceptance_criteria": ["Sample markers and placeholder hashes block submitted eligibility.", "CI passes without real evidence execution.", "Boundaries remain intact."],
+      "critique_required": true,
+      "dependencies": ["RQ-0023"]
     }
   ],
   "forbidden_claims": [

@@ -1,0 +1,58 @@
+{
+  "schema": "ev4-responsive-queue-refresh-audit@1.0.0",
+  "refresh_task": "RQ-0020",
+  "status": "completed",
+  "reviewed_task_window": ["RQ-0016", "RQ-0017", "RQ-0018", "RQ-0019"],
+  "reviewed_prs": [40, 42, 50, 54],
+  "findings": [
+    {
+      "id": "RQ20-F1",
+      "severity": "info",
+      "finding": "Submitted-readiness guard set is stronger after RQ-0016 through RQ-0019, covering privacy acknowledgement, evidence completeness, Issue #8 label-state consistency, and source-kind lock boundaries."
+    },
+    {
+      "id": "RQ20-F2",
+      "severity": "p1",
+      "finding": "STATUS and rolling queue drifted after PR #54 merge: RQ-0019 was completed but still listed as next pending work in STATUS/queue metadata."
+    },
+    {
+      "id": "RQ20-F3",
+      "severity": "info",
+      "finding": "Real pilot remains blocked because Issue #8 is still evidence-pending and no machine-checkable real_issue_submission packet is present."
+    },
+    {
+      "id": "RQ20-F4",
+      "severity": "info",
+      "finding": "Pending queue depth after completing RQ-0020 required replenishment; RQ-0023 and RQ-0024 were added as legitimate bounded evidence-boundary tasks."
+    },
+    {
+      "id": "RQ20-F5",
+      "severity": "info",
+      "finding": "RQ-0017 maps to PR #42 and is included in reviewed_prs to preserve the refresh audit trail."
+    }
+  ],
+  "critique_summary": [
+    "This refresh must not claim that CI success or merged PRs prove responsive correctness.",
+    "The refresh must keep Issue #8 prose/checklist separate from a real submitted packet.",
+    "New pending tasks must remain bounded validators/planning work and must not start the real pilot."
+  ],
+  "boundary_assertions": [
+    "no_real_evidence_created",
+    "no_real_pilot_run",
+    "no_production_claim",
+    "no_release_claim",
+    "no_live_render_claim",
+    "no_export_validation_claim",
+    "no_accessibility_pass_claim",
+    "sample_not_used_as_real",
+    "queue_completion_not_evidence_validation",
+    "ci_success_not_responsive_validation",
+    "merged_pr_not_authoritative_evidence"
+  ],
+  "next_queue": [
+    "RQ-0021 add submitted packet artifact-path allowlist check",
+    "RQ-0022 add actual cross-review record generation path",
+    "RQ-0023 add submitted packet issue-reference consistency check",
+    "RQ-0024 add submitted packet freshness and sample-marker rejection check"
+  ]
+}
