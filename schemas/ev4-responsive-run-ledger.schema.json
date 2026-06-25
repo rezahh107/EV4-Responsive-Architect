@@ -28,8 +28,8 @@
       "additionalProperties": false,
       "required": ["status", "cutoff_task", "cutoff_pr", "note"],
       "properties": {
-        "status": { "enum": ["initialized_from_existing_queue_history", "fully_recorded"] },
-        "cutoff_task": { "type": "string", "pattern": "^RQ-[0-9]{4}$" },
+        "status": { "enum": ["initialized_from_existing_queue_history", "fully_recorded", "archived_pre_refactor_queue_history"] },
+        "cutoff_task": { "type": "string", "pattern": "^(RQ|RTAQ)-[0-9]{4}$" },
         "cutoff_pr": { "type": "integer", "minimum": 1 },
         "note": { "type": "string", "minLength": 1 }
       }
@@ -37,6 +37,10 @@
     "ledger_records": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/record" } }
   },
   "$defs": {
+    "task_id": {
+      "type": "string",
+      "pattern": "^(RQ|RTAQ)-[0-9]{4}$"
+    },
     "artifact": {
       "type": "object",
       "additionalProperties": false,
@@ -54,7 +58,7 @@
       "properties": {
         "record_id": { "type": "string", "pattern": "^LEDGER-[0-9]{4}$" },
         "run_id": { "type": "string", "minLength": 1 },
-        "task_ref": { "type": ["string", "null"], "pattern": "^RQ-[0-9]{4}$" },
+        "task_ref": { "type": ["string", "null"], "pattern": "^(RQ|RTAQ)-[0-9]{4}$" },
         "run_type": { "enum": ["automation_task", "manual_controller_hardening", "queue_refresh", "status_sync"] },
         "status": { "enum": ["merged", "completed_no_repo_change", "blocked", "skipped"] },
         "pr_number": { "type": ["integer", "null"], "minimum": 1 },
