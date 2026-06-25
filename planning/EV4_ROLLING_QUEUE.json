@@ -41,7 +41,8 @@
       "RQ-0021",
       "RQ-0022",
       "RQ-0023",
-      "RQ-0024"
+      "RQ-0024",
+      "RQ-0025"
     ]
   },
   "tasks": [
@@ -430,6 +431,21 @@
       "acceptance_criteria": ["Sample markers and placeholder hashes block submitted eligibility.", "CI passes without real evidence execution.", "Boundaries remain intact."],
       "critique_required": true,
       "dependencies": ["RQ-0023"]
+    },
+    {
+      "task_id": "RQ-0025",
+      "cycle_position": 25,
+      "task_type": "queue_refresh",
+      "status": "pending",
+      "title": "Refresh queue after cross-review and submitted-packet boundary tasks",
+      "objective": "Audit RQ-0021 through RQ-0024, reconcile bookkeeping drift, and write the next bounded tasks without creating real evidence.",
+      "allowed_work": ["Review merged work and CI outcomes for RQ-0021 through RQ-0024.", "Carry forward evidence-pending blockers.", "Restore minimum pending queue depth with legitimate bounded tasks."],
+      "forbidden_work": ["Do not create submitted evidence.", "Do not run the real pilot.", "Do not claim production/export/live/accessibility validation."],
+      "requires_real_evidence": false,
+      "expected_artifacts": ["Updated queue", "STATUS sync", "Queue refresh audit"],
+      "acceptance_criteria": ["Every fifth task remains queue_refresh.", "Missing real evidence remains visible.", "Pending queue depth is restored with legitimate tasks after completed work."],
+      "critique_required": true,
+      "dependencies": ["RQ-0021", "RQ-0022", "RQ-0023", "RQ-0024"]
     }
   ],
   "forbidden_claims": [
