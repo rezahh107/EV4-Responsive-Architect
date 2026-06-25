@@ -2,7 +2,7 @@
 
 ```yaml
 project: EV4 Responsive Architect
-version: 0.2.29-pr-reconciliation-preflight-policy
+version: 0.2.30-rq-0020-queue-refresh
 status: rolling_queue_controller_active
 production_ready: false
 prompt_pack_release_ready: false
@@ -65,6 +65,8 @@ Allowed now:
 - core responsive artifact backlog planning
 - external EDIS/EDAS evidence adapter backlog planning
 - PR reconciliation preflight policy validation
+- submitted packet source-kind lock validation
+- post-source-kind-lock queue refresh
 ```
 
 Forbidden now:
@@ -108,6 +110,7 @@ run_ledger_file: planning/EV4_RUN_LEDGER.json
 automation_quality_gate_file: planning/EV4_AUTOMATION_QUALITY_GATE.json
 core_project_backlog_file: planning/EV4_CORE_PROJECT_BACKLOG.json
 pr_reconciliation_policy_doc: docs/17_PR_RECONCILIATION_PREFLIGHT.md
+last_refresh_audit: planning/EV4_QUEUE_REFRESH_RQ_0020.audit.json
 controller_policy:
   one_task_per_run: true
   critique_same_task: true
@@ -121,16 +124,18 @@ controller_policy:
 
 ```yaml
 next_tasks:
-  - RQ-0019 add submitted packet source-kind lock check
-  - RQ-0020 refresh rolling queue after submitted-packet guard set
   - RQ-0021 add submitted packet artifact-path allowlist check
   - RQ-0022 add actual cross-review record generation path
+  - RQ-0023 add submitted packet issue-reference consistency check
+  - RQ-0024 add submitted packet freshness and sample-marker rejection check
 completed_this_run:
-  - RQ-0018 add Issue #8 label-state consistency check
+  - RQ-0020 refresh rolling queue after submitted-packet guard set
+last_completed_queue_task:
+  - RQ-0019 add submitted packet source-kind lock check
 core_backlog_queue_feed:
   source_file: planning/EV4_CORE_PROJECT_BACKLOG.json
   integration_mode: queue_refresh_intake
-  next_refresh_task: RQ-0020
+  next_refresh_task: RQ-0025
   candidates:
     - CORE-001 Add Evidence Intake human form and sufficiency table
     - CORE-002 Add Responsive Failure Map schema and template
@@ -180,6 +185,8 @@ automation_quality_gate: done
 cross_critique_execution_stub: done
 issue8_label_state_consistency_check: done
 pr_reconciliation_preflight_policy: done
+submitted_packet_source_kind_lock_check: done
+rq_0020_queue_refresh: done
 ```
 
 ## Automation Reliability State
