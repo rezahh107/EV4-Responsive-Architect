@@ -57,10 +57,12 @@ def assert_schema_negative_paths(queue: dict[str, Any], schema: dict[str, Any]) 
     }
     assert_schema_invalid(pending_with_completion, schema, "pending task with completion")
 
-    completed_without_completion = copy.deepcopy(queue)
-    completed_task = next(task for task in completed_without_completion["tasks"] if task["status"] in TERMINAL_STATUSES)
-    completed_task.pop("completion", None)
-    assert_schema_invalid(completed_without_completion, schema, "terminal task without completion")
+    terminal_tasks = [task for task in queue["tasks"] if task["status"] in TERMINAL_STATUSES]
+    if terminal_tasks:
+        completed_without_completion = copy.deepcopy(queue)
+        completed_task = next(task for task in completed_without_completion["tasks"] if task["status"] in TERMINAL_STATUSES)
+        completed_task.pop("completion", None)
+        assert_schema_invalid(completed_without_completion, schema, "terminal task without completion")
 
     malformed_refresh = copy.deepcopy(queue)
     fifth_task = next(task for task in malformed_refresh["tasks"] if task["cycle_position"] == 5)
@@ -68,8 +70,12 @@ def assert_schema_negative_paths(queue: dict[str, Any], schema: dict[str, Any]) 
     assert_schema_invalid(malformed_refresh, schema, "fifth task is not queue_refresh")
 
 
-def expected_task_id(position: int) -> str:
-    return f"RQ-{position:04d}"
+def expected_task_id(prefix: str, position: int) -> str:
+    return f"{prefix}-{position:04d}"
+
+
+def task_prefix(task_id: str) -> str:
+    return task_id.split("-", 1)[0]
 
 
 def assert_control_plane(control: dict[str, Any], control_schema: dict[str, Any]) -> None:
@@ -144,9 +150,17 @@ def main() -> None:
     if len(ids) != len(set(ids)):
         fail("task IDs must be unique")
 
+    prefixes = {task_prefix(task_id) for task_id in ids}
+    if len(prefixes) != 1:
+        fail("active queue must use a single task-id prefix")
+    prefix = prefixes.pop()
+    if prefix not in {"RQ", "RTAQ"}:
+        fail("active queue task-id prefix must be RQ or RTAQ")
+
     for position, task_id in enumerate(ids, start=1):
-        if task_id != expected_task_id(position):
-            fail(f"task IDs must be contiguous and monotonic; expected {expected_task_id(position)}, got {task_id}")
+        expected = expected_task_id(prefix, position)
+        if task_id != expected:
+            fail(f"task IDs must be contiguous and monotonic; expected {expected}, got {task_id}")
 
     task_order = queue["active_cycle"]["task_order"]
     if task_order != ids:
