@@ -1,7 +1,7 @@
 # EV4 Responsive Architect — Master Project Specification
 
-Version: 0.3.0-responsive-tree-architect-refactor  
-Status: responsive_tree_architecture_refactor_in_pull_request  
+Version: 0.3.0-responsive-tree-architecture-active  
+Status: responsive_tree_architecture_active_on_main  
 Production status: not_production_ready  
 Language: Persian reports, English technical identifiers  
 Target platform: Elementor V4  
@@ -11,20 +11,20 @@ Execution model: classification-first, route-gated, builder-handoff-oriented, ev
 
 ## 0. Executive Summary
 
-`EV4 Responsive Architect` is now a responsive-tree architecture system.
+`EV4 Responsive Architect` is now a responsive-tree architecture system on `main`.
 
-It runs after the main `EV4 Architect` pipeline has produced an approved desktop/section architecture and build tree. The primary job is to decide how a responsive design should be represented in Elementor.
+Primary mode:
 
 ```text
 Primary mode: design_to_responsive_tree
 Secondary mode: responsive_repair
 ```
 
-Repair mode is used only when a responsive implementation already exists and evidence shows a real problem.
+The system runs after the main `EV4 Architect` pipeline has produced an approved desktop/section architecture and build tree. Its job is to classify the relationship between desktop and responsive evidence, choose a safe Elementor route, produce a builder handoff, and plan validation without overstating evidence.
 
 ---
 
-## 1. Active Refactor Source of Truth
+## 1. Active Source of Truth
 
 ```yaml
 active_refactor_doc:
@@ -35,21 +35,23 @@ active_contracts:
   - contracts/EV4_RESPONSIVE_STRATEGY_ROUTING_CONTRACT.md
   - contracts/EV4_VIEWPORT_DISPLAY_CONTRACT.md
   - contracts/EV4_RESPONSIVE_HANDOFF_EXPORT_CONTRACT.md
+active_schema:
+  - schemas/ev4-responsive-output.schema.json
 active_validation:
   - validation/e2e/run_responsive_tree_architecture_refactor_check.py
 ```
 
 ---
 
-## 2. Non-Negotiable Boundaries
+## 2. Evidence Boundary
 
 ```text
 - The upstream EV4 packet route seed is advisory.
 - Desktop-only evidence must not be treated as tablet/mobile evidence.
 - Meaningful content must not be removed from a viewport without explicit authorization.
 - Route selection is planning evidence, not validation evidence.
-- CI success or a merged PR is not responsive correctness evidence.
-- No production, release, live render, export, pixel, or accessibility validation claim is allowed without matching real evidence.
+- CI success or a merged PR is repository evidence only, not responsive correctness evidence.
+- Higher-readiness claims remain blocked without matching real evidence.
 ```
 
 ---
@@ -74,7 +76,7 @@ required_inputs:
 
 ---
 
-## 4. Relationship Classification
+## 4. Classification and Routing
 
 ```yaml
 section_relationship:
@@ -83,13 +85,7 @@ section_relationship:
     - viewport_specific_variant
     - hybrid_split
     - unresolved_requires_designer_input
-```
 
----
-
-## 5. Responsive Strategy Routes
-
-```yaml
 responsive_strategy_route:
   - same_tree_responsive_overrides
   - viewport_specific_variant_tree
@@ -108,7 +104,7 @@ unresolved_requires_designer_input: blocked_pending_input
 
 ---
 
-## 6. Responsive Pipeline
+## 5. Responsive Pipeline
 
 ```text
 /responsive-start-packet-ingest
@@ -130,38 +126,44 @@ unresolved_requires_designer_input: blocked_pending_input
 
 ---
 
-## 7. Output Families
+## 6. Current Machine-Checked Chain
 
-```yaml
-outputs:
-  responsive_strategy_decision:
-  same_tree_responsive_derivation:
-  viewport_tree_architecture:
-  composite_responsive_plan:
-  display_and_breakpoint_contract:
-  content_accessibility_duplication_gate:
-  responsive_builder_handoff:
-  responsive_validation_plan:
-  responsive_final_review:
-  responsive_output_package:
-```
-
----
-
-## 8. Current Machine-Checked Chain
-
-The automatic workflow now runs:
+The automatic workflow installs validation dependencies and runs:
 
 ```bash
-python validation/schema_validator/validate_schemas.py
 python validation/e2e/run_responsive_tree_architecture_refactor_check.py
 ```
 
-The legacy run-ledger workflow is manual-only during this refactor.
+The checker covers:
+
+```text
+required responsive-tree docs/contracts/stages
+required route vocabulary terms
+ev4-responsive-output@0.3.0 schema validity
+valid route fixture acceptance
+invalid fixture rejection
+builder handoff step integrity
+route/mode consistency
+```
+
+The legacy run-ledger workflow is manual-only during this refactor path.
 
 ---
 
-## 9. Final Master Rule
+## 7. Merged Foundation
+
+```yaml
+merged_foundation:
+  - PR #59 bookkeeping sync
+  - PR #60 responsive tree architecture refactor
+  - PR #61 responsive output schema and route fixtures
+  - PR #62 responsive output negative validation fixtures
+  - PR #63 validator hardening and restored coverage checks
+```
+
+---
+
+## 8. Final Master Rule
 
 ```text
 Classify first.
