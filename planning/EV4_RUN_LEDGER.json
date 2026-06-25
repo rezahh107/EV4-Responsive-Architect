@@ -66,6 +66,66 @@
         "sample_not_used_as_real"
       ],
       "next_queue_effect": "RTAQ-0002 is next executable but remains pending."
+    },
+    {
+      "record_id": "LEDGER-0013",
+      "run_id": "merge-final-rtaq-0002-pr-67",
+      "task_ref": "RTAQ-0002",
+      "run_type": "validator_hardening",
+      "status": "merged",
+      "pr_number": 67,
+      "merge_sha": "1d0350c6b628dc18361479c60aea49fcc5c3acd5",
+      "ci_conclusion": "success",
+      "created_at_utc": "2026-06-25T22:26:00Z",
+      "artifacts": [
+        {
+          "path": "validation/e2e/run_submitted_packet_eligibility_gate_check.py",
+          "artifact_type": "validator",
+          "status": "added"
+        },
+        {
+          "path": "validation/fixtures/invalid/submitted_packet_eligibility_wrong_issue_ref.invalid.json",
+          "artifact_type": "fixture",
+          "status": "added"
+        },
+        {
+          "path": "validation/fixtures/invalid/submitted_packet_eligibility_stale_state.invalid.json",
+          "artifact_type": "fixture",
+          "status": "added"
+        },
+        {
+          "path": "validation/fixtures/invalid/submitted_packet_eligibility_sample_marker.invalid.json",
+          "artifact_type": "fixture",
+          "status": "added"
+        },
+        {
+          "path": "validation/fixtures/invalid/submitted_packet_eligibility_placeholder_hash.invalid.json",
+          "artifact_type": "fixture",
+          "status": "added"
+        },
+        {
+          "path": "validation/e2e/run_responsive_tree_architecture_refactor_check.py",
+          "artifact_type": "validator",
+          "status": "updated"
+        }
+      ],
+      "critique_summary": [
+        "PR #67 added submitted-packet eligibility hardening for Issue #8 reference lock, stale-state rejection, sample-marker rejection, and placeholder-hash rejection.",
+        "Gemini identified a misleading missing-hash rejection path; the PR was patched so missing or non-string payload_identity_hash now raises a specific payload identity hash error.",
+        "CI success is repository-check evidence only, not responsive correctness evidence."
+      ],
+      "boundary_assertions": [
+        "no_real_evidence_created",
+        "no_issue_8_mutation",
+        "no_real_pilot_run",
+        "no_production_claim",
+        "no_release_claim",
+        "no_live_render_claim",
+        "no_export_validation_claim",
+        "no_accessibility_pass_claim",
+        "sample_not_used_as_real"
+      ],
+      "next_queue_effect": "RTAQ-0003 is next executable and remains pending."
     }
   ]
 }
