@@ -16,15 +16,13 @@
     "cycle_id": "CYCLE-002",
     "cycle_status": "active",
     "started_from_status": "responsive_tree_architecture_active_on_main",
-    "goal": "Drive only post-refactor responsive-tree architecture hardening and controlled-use preparation while preserving evidence and pilot boundaries.",
+    "goal": "Drive larger bounded post-refactor responsive-tree architecture tasks while preserving evidence, pilot, and readiness boundaries.",
     "task_order": [
       "RTAQ-0001",
       "RTAQ-0002",
       "RTAQ-0003",
       "RTAQ-0004",
-      "RTAQ-0005",
-      "RTAQ-0006",
-      "RTAQ-0007"
+      "RTAQ-0005"
     ]
   },
   "tasks": [
@@ -32,7 +30,7 @@
       "task_id": "RTAQ-0001",
       "cycle_position": 1,
       "task_type": "repo_sync",
-      "status": "in_progress",
+      "status": "merged",
       "title": "Reset post-refactor active queue",
       "objective": "Archive the old pre-refactor active queue lineage as non-authoritative history and establish this post-refactor responsive-tree active queue.",
       "allowed_work": [
@@ -52,9 +50,13 @@
         "planning/EV4_RUN_LEDGER.json",
         "planning/EV4_QUEUE_RESET_RTAQ_0001.audit.json",
         "schemas/ev4-responsive-rolling-queue.schema.json",
+        "schemas/ev4-responsive-run-ledger.schema.json",
         "validation/e2e/run_rolling_queue_check.py",
         "validation/e2e/run_run_ledger_check.py",
-        "STATUS.md"
+        "validation/e2e/run_responsive_tree_architecture_refactor_check.py",
+        "STATUS.md",
+        "docs/14_EV4_ROLLING_QUEUE.md",
+        "planning/EV4_RUN_LEDGER_RQ_LEGACY_ARCHIVE_NOTE.md"
       ],
       "acceptance_criteria": [
         "Old RQ-0023 through RQ-0026 lineage no longer drives the active queue.",
@@ -64,18 +66,43 @@
       ],
       "critique_required": true,
       "dependencies": [],
-      "notes": "This task is not complete until its PR is merged and merge-final bookkeeping is intentionally reconciled."
+      "completed_pr": 65,
+      "completion": {
+        "run_id": "merge-final-rtaq-0001-pr-65",
+        "status": "merged",
+        "artifacts": [
+          "planning/EV4_ROLLING_QUEUE.json",
+          "planning/EV4_RUN_LEDGER.json",
+          "planning/EV4_QUEUE_RESET_RTAQ_0001.audit.json",
+          "schemas/ev4-responsive-rolling-queue.schema.json",
+          "schemas/ev4-responsive-run-ledger.schema.json",
+          "validation/e2e/run_rolling_queue_check.py",
+          "validation/e2e/run_run_ledger_check.py",
+          "validation/e2e/run_responsive_tree_architecture_refactor_check.py",
+          "STATUS.md",
+          "docs/14_EV4_ROLLING_QUEUE.md",
+          "planning/QUEUE_RESET_RTAQ_0001_PR_NOTE.md",
+          "planning/EV4_RUN_LEDGER_RQ_LEGACY_ARCHIVE_NOTE.md"
+        ],
+        "critique_findings": [
+          "The old RQ pending lineage must remain archived history and must not drive post-refactor execution.",
+          "CI success and queue completion remain repository bookkeeping only, not responsive correctness evidence."
+        ],
+        "boundary": "No submitted evidence, Issue #8 mutation, real pilot execution, or readiness claim upgrade."
+      }
     },
     {
       "task_id": "RTAQ-0002",
       "cycle_position": 2,
       "task_type": "validator_hardening",
       "status": "pending",
-      "title": "Add submitted packet issue-reference consistency check",
-      "objective": "Ensure submitted packet eligibility is tied to the expected Issue #8 reference and evidence submission state.",
+      "title": "Submitted packet eligibility gate hardening",
+      "objective": "Add one broader eligibility gate covering issue-reference consistency, submitted-state consistency, stale-state rejection, sample-marker rejection, and placeholder-hash rejection for submitted packets.",
       "allowed_work": [
-        "Add or extend bounded validators and fixtures for issue-reference consistency.",
-        "Keep all checks evidence-bounded and CI-exercised."
+        "Add or extend bounded validators for issue_reference consistency and Issue #8 reference lock.",
+        "Require issue_url_or_ref and submitted evidence status consistency for eligibility.",
+        "Reject stale states, sample markers, and placeholder hashes from submitted eligibility.",
+        "Add negative fixtures for each coupled failure mode and wire them into CI."
       ],
       "forbidden_work": [
         "Do not create submitted evidence.",
@@ -85,12 +112,14 @@
       ],
       "requires_real_evidence": false,
       "expected_artifacts": [
-        "Validator or fixture update"
+        "Validator updates",
+        "Negative fixtures",
+        "CI coverage"
       ],
       "acceptance_criteria": [
-        "Wrong issue reference cannot pass submitted-readiness eligibility.",
-        "Missing issue URL or ref cannot pass eligibility.",
-        "Stale or invalid evidence submission status cannot pass eligibility.",
+        "Wrong or missing Issue #8 reference cannot pass submitted eligibility.",
+        "Stale or invalid evidence submission status cannot pass submitted eligibility.",
+        "Sample markers and placeholder hashes cannot pass submitted eligibility.",
         "CI passes without real evidence execution."
       ],
       "critique_required": true,
@@ -101,28 +130,31 @@
     {
       "task_id": "RTAQ-0003",
       "cycle_position": 3,
-      "task_type": "evidence_boundary",
+      "task_type": "repo_sync",
       "status": "pending",
-      "title": "Add submitted packet freshness and sample-marker rejection",
-      "objective": "Ensure stale, sample-marked, or placeholder-hash submitted packets cannot be treated as real issue submissions.",
+      "title": "Controlled-use readiness snapshot and first-run guide",
+      "objective": "Create one evidence-bounded controlled-use readiness snapshot plus first-run guide for manual use without upgrading production, release, or validation claims.",
       "allowed_work": [
-        "Add or extend bounded validation for sample markers, placeholder hashes, and stale submitted packet state.",
-        "Add negative fixtures for sample, placeholder, and stale inputs."
+        "Write a controlled-use readiness statement with explicit non-production and non-release boundaries.",
+        "Document manual first-run inputs, outputs, stop conditions, evidence blockers, and validation command index.",
+        "Keep Issue #8 evidence-pending and pilot-blocked state explicit."
       ],
       "forbidden_work": [
         "Do not create submitted evidence.",
         "Do not modify Issue #8.",
         "Do not run or authorize the real pilot.",
-        "Do not upgrade readiness or validation claims."
+        "Do not claim production, release, live render, export, accessibility, or pixel validation."
       ],
       "requires_real_evidence": false,
       "expected_artifacts": [
-        "Validator or fixture update"
+        "Controlled-use readiness snapshot",
+        "First-run guide",
+        "Validation command index"
       ],
       "acceptance_criteria": [
-        "Sample markers and placeholder hashes block submitted eligibility.",
-        "Stale packet state blocks submitted eligibility.",
-        "CI passes without real evidence execution."
+        "Snapshot states controlled-use boundaries only.",
+        "Guide supports controlled manual use only.",
+        "Real pilot remains blocked and CI success is repository-check evidence only."
       ],
       "critique_required": true,
       "dependencies": [
@@ -134,26 +166,29 @@
       "cycle_position": 4,
       "task_type": "repo_sync",
       "status": "pending",
-      "title": "Prepare controlled-use readiness snapshot",
-      "objective": "Create an evidence-bounded controlled-use readiness snapshot that distinguishes controlled-use readiness from production or release readiness.",
+      "title": "Guarded handoff pack and drift audit",
+      "objective": "Create a guarded handoff pack and audit repository drift across queue, status, master spec, contracts, schemas, validators, and CI boundary text.",
       "allowed_work": [
-        "Summarize merged architecture contracts, validators, and remaining evidence blockers.",
-        "Keep Issue #8 evidence-pending and pilot-blocked state explicit."
+        "Package active contracts, schemas, validators, and manual-use boundaries.",
+        "Audit queue, STATUS, PROJECT_MASTER_SPEC, docs, and validators for drift.",
+        "Document CI boundary and next evidence blockers."
       ],
       "forbidden_work": [
         "Do not create submitted evidence.",
         "Do not modify Issue #8.",
         "Do not run or authorize the real pilot.",
-        "Do not claim production, release, live render, export, accessibility, or pixel validation."
+        "Do not upgrade validation or readiness claims."
       ],
       "requires_real_evidence": false,
       "expected_artifacts": [
-        "Evidence-bounded readiness snapshot"
+        "Guarded handoff pack",
+        "Repository drift audit",
+        "Active contract/schema/validator index"
       ],
       "acceptance_criteria": [
-        "Snapshot states controlled-use boundaries only.",
-        "Real pilot remains blocked.",
-        "CI success is described as repository-check evidence only."
+        "Handoff pack is guarded by explicit evidence boundaries.",
+        "Queue/status/master-spec drift is checked and documented.",
+        "Issue #8 remains evidence-pending and real pilot remains blocked."
       ],
       "critique_required": true,
       "dependencies": [
@@ -165,12 +200,12 @@
       "cycle_position": 5,
       "task_type": "queue_refresh",
       "status": "pending",
-      "title": "Refresh RTA queue after first post-refactor tasks",
-      "objective": "Audit RTAQ-0001 through RTAQ-0004 outcomes and refresh the active post-refactor queue without creating real evidence.",
+      "title": "Refresh accelerated RTA queue",
+      "objective": "Audit RTAQ-0001 through RTAQ-0004, restore pending depth, and reconcile ledger/status/docs while preserving evidence and pilot boundaries.",
       "allowed_work": [
-        "Review merged PRs and CI outcomes for RTAQ-0001 through RTAQ-0004.",
-        "Carry forward evidence-pending blockers.",
-        "Maintain at least four legitimate pending tasks."
+        "Review merged outcomes and CI status for RTAQ-0001 through RTAQ-0004.",
+        "Refresh the active queue with larger bounded tasks and at least four pending tasks.",
+        "Reconcile ledger, STATUS, docs, and queue state."
       ],
       "forbidden_work": [
         "Do not create submitted evidence.",
@@ -181,12 +216,13 @@
       "requires_real_evidence": false,
       "expected_artifacts": [
         "Updated queue",
-        "Queue refresh audit"
+        "Queue refresh audit",
+        "Ledger/status reconciliation"
       ],
       "acceptance_criteria": [
-        "Post-refactor queue remains the active driver.",
-        "Evidence-pending blockers remain visible.",
-        "CI passes without real evidence execution."
+        "RTAQ-0001 through RTAQ-0004 are audited.",
+        "Pending depth is restored.",
+        "Evidence-pending and pilot-blocked boundaries remain visible."
       ],
       "critique_required": true,
       "dependencies": [
@@ -194,68 +230,6 @@
         "RTAQ-0002",
         "RTAQ-0003",
         "RTAQ-0004"
-      ]
-    },
-    {
-      "task_id": "RTAQ-0006",
-      "cycle_position": 6,
-      "task_type": "repo_sync",
-      "status": "pending",
-      "title": "Create first-run guide for controlled manual use",
-      "objective": "Write a first-run guide for bounded manual use of the responsive-tree architecture pipeline without treating it as production readiness.",
-      "allowed_work": [
-        "Document manual inputs, expected outputs, and stop conditions.",
-        "Keep evidence, pilot, and readiness boundaries visible."
-      ],
-      "forbidden_work": [
-        "Do not create submitted evidence.",
-        "Do not modify Issue #8.",
-        "Do not run or authorize the real pilot.",
-        "Do not claim production or release readiness."
-      ],
-      "requires_real_evidence": false,
-      "expected_artifacts": [
-        "First-run guide"
-      ],
-      "acceptance_criteria": [
-        "Guide supports controlled manual use only.",
-        "Guide preserves evidence and pilot blockers.",
-        "No production or release language is introduced."
-      ],
-      "critique_required": true,
-      "dependencies": [
-        "RTAQ-0005"
-      ]
-    },
-    {
-      "task_id": "RTAQ-0007",
-      "cycle_position": 7,
-      "task_type": "repo_sync",
-      "status": "pending",
-      "title": "Create guarded handoff pack",
-      "objective": "Package the current responsive-tree architecture contracts, validators, and manual-use boundaries into a guarded handoff pack.",
-      "allowed_work": [
-        "Reference active contracts, schemas, validators, and queue boundaries.",
-        "Document what remains blocked by missing real submitted evidence."
-      ],
-      "forbidden_work": [
-        "Do not create submitted evidence.",
-        "Do not modify Issue #8.",
-        "Do not run or authorize the real pilot.",
-        "Do not upgrade validation or readiness claims."
-      ],
-      "requires_real_evidence": false,
-      "expected_artifacts": [
-        "Guarded handoff pack"
-      ],
-      "acceptance_criteria": [
-        "Handoff pack is guarded by explicit evidence boundaries.",
-        "Issue #8 remains evidence-pending unless real submitted evidence is later provided.",
-        "Real pilot remains blocked."
-      ],
-      "critique_required": true,
-      "dependencies": [
-        "RTAQ-0006"
       ]
     }
   ],
