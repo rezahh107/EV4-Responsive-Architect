@@ -3,7 +3,7 @@
   "refresh_task": "RQ-0020",
   "status": "completed",
   "reviewed_task_window": ["RQ-0016", "RQ-0017", "RQ-0018", "RQ-0019"],
-  "reviewed_prs": [40, 50, 54],
+  "reviewed_prs": [40, 42, 50, 54],
   "findings": [
     {
       "id": "RQ20-F1",
@@ -24,6 +24,11 @@
       "id": "RQ20-F4",
       "severity": "info",
       "finding": "Pending queue depth after completing RQ-0020 required replenishment; RQ-0023 and RQ-0024 were added as legitimate bounded evidence-boundary tasks."
+    },
+    {
+      "id": "RQ20-F5",
+      "severity": "info",
+      "finding": "RQ-0017 maps to PR #42 and is included in reviewed_prs to preserve the refresh audit trail."
     }
   ],
   "critique_summary": [
@@ -39,6 +44,7 @@
     "no_live_render_claim",
     "no_export_validation_claim",
     "no_accessibility_pass_claim",
+    "sample_not_used_as_real",
     "queue_completion_not_evidence_validation",
     "ci_success_not_responsive_validation",
     "merged_pr_not_authoritative_evidence"
