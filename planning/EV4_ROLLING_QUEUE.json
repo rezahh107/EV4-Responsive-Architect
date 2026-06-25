@@ -41,7 +41,8 @@
       "RQ-0021",
       "RQ-0022",
       "RQ-0023",
-      "RQ-0024"
+      "RQ-0024",
+      "RQ-0025"
     ]
   },
   "tasks": [
@@ -373,16 +374,18 @@
       "task_id": "RQ-0021",
       "cycle_position": 21,
       "task_type": "validator_hardening",
-      "status": "pending",
+      "status": "completed",
       "title": "Add submitted packet artifact-path allowlist check",
       "objective": "Check generated reports cannot be used as submitted source evidence.",
       "allowed_work": ["Bounded validator/docs work."],
       "forbidden_work": ["Do not create submitted evidence.", "Do not run the real pilot.", "Do not claim production/export/live/accessibility validation."],
       "requires_real_evidence": false,
-      "expected_artifacts": ["Validator or documentation update"],
-      "acceptance_criteria": ["CI passes without real evidence execution.", "Boundaries remain intact."],
+      "expected_artifacts": ["Validator update", "Workflow update"],
+      "acceptance_criteria": ["CI passes without real evidence execution.", "Boundaries remain intact.", "Generated reports and repo bookkeeping paths cannot be used as real submitted source evidence."],
       "critique_required": true,
-      "dependencies": ["RQ-0020"]
+      "dependencies": ["RQ-0020"],
+      "completed_pr": 56,
+      "completion": {"run_id": "automation-run-021", "status": "completed", "artifacts": ["validation/e2e/run_evidence_intake_check.py", "validation/e2e/run_submitted_packet_artifact_path_allowlist_check.py", ".github/workflows/validate.yml"], "critique_findings": ["Artifact-path allowlist must reject generated reports, readiness outputs, planning/bookkeeping files, STATUS, queue, ledger, and disallowed export paths for real_issue_submission source artifacts.", "Path normalization must strip only a leading ./ and continue rejecting ../, /../, and absolute paths.", "This validator is a submitted-source boundary check and does not create real evidence or authorize the real pilot."], "boundary": "No real evidence created, no real pilot run, and no production/release/live-render/export/accessibility validation claims."}
     },
     {
       "task_id": "RQ-0022",
@@ -428,6 +431,21 @@
       "acceptance_criteria": ["Sample markers and placeholder hashes block submitted eligibility.", "CI passes without real evidence execution.", "Boundaries remain intact."],
       "critique_required": true,
       "dependencies": ["RQ-0023"]
+    },
+    {
+      "task_id": "RQ-0025",
+      "cycle_position": 25,
+      "task_type": "queue_refresh",
+      "status": "pending",
+      "title": "Refresh queue after cross-review and submitted-packet boundary tasks",
+      "objective": "Audit RQ-0021 through RQ-0024, reconcile bookkeeping drift, and write the next bounded tasks without creating real evidence.",
+      "allowed_work": ["Review merged work and CI outcomes for RQ-0021 through RQ-0024.", "Carry forward evidence-pending blockers.", "Restore minimum pending queue depth with legitimate bounded tasks."],
+      "forbidden_work": ["Do not create submitted evidence.", "Do not run the real pilot.", "Do not claim production/export/live/accessibility validation."],
+      "requires_real_evidence": false,
+      "expected_artifacts": ["Updated queue", "STATUS sync", "Queue refresh audit"],
+      "acceptance_criteria": ["Every fifth task remains queue_refresh.", "Missing real evidence remains visible.", "Pending queue depth is restored with legitimate tasks after completed work."],
+      "critique_required": true,
+      "dependencies": ["RQ-0021", "RQ-0022", "RQ-0023", "RQ-0024"]
     }
   ],
   "forbidden_claims": [
