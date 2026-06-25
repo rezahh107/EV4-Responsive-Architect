@@ -89,7 +89,10 @@ def _repo_relative_path(path: Path) -> str | None:
 def _normalize_artifact_ref(value: Any) -> str | None:
     if not isinstance(value, str) or not value.strip():
         return None
-    return value.replace("\\", "/").strip().lstrip("./")
+    normalized = value.replace("\\", "/").strip()
+    if normalized.startswith("./"):
+        normalized = normalized[2:]
+    return normalized
 
 
 def _has_generated_artifact_marker(path_ref: str) -> bool:
@@ -108,7 +111,9 @@ def _submitted_artifact_basename_allowed(basename: str) -> bool:
 
 
 def _is_allowed_submitted_artifact_path(path_ref: str) -> bool:
-    normalized = path_ref.replace("\\", "/").strip().lstrip("./")
+    normalized = _normalize_artifact_ref(path_ref)
+    if normalized is None or normalized.startswith("../") or "/../" in normalized or normalized.startswith("/"):
+        return False
     basename = normalized.rsplit("/", 1)[-1]
     if not _submitted_artifact_basename_allowed(basename):
         return False
@@ -121,10 +126,14 @@ def submitted_source_artifact_refs(packet: dict[str, Any], packet_path: Path | N
         packet_ref = _repo_relative_path(packet_path)
         if packet_ref is not None:
             refs.append(("packet_path", packet_ref))
-    handoff_ref = _normalize_artifact_ref(packet.get("main_ev4_handoff", {}).get("source_ref"))
+    handoff = packet.get("main_ev4_handoff")
+    handoff_ref = _normalize_artifact_ref(handoff.get("source_ref")) if isinstance(handoff, dict) else None
     if handoff_ref is not None:
         refs.append(("main_ev4_handoff.source_ref", handoff_ref))
-    for index, item in enumerate(packet.get("evidence_items", [])):
+    evidence_items = packet.get("evidence_items")
+    if not isinstance(evidence_items, list):
+        return refs
+    for index, item in enumerate(evidence_items):
         if not isinstance(item, dict):
             continue
         item_id = item.get("evidence_id", f"index_{index}")
