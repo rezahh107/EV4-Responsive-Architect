@@ -1,4 +1,6 @@
 import json
+import subprocess
+import sys
 from pathlib import Path
 
 from jsonschema import Draft202012Validator
@@ -46,6 +48,7 @@ REQUIRED_FILES = [
     SCHEMA,
     *VALID_FIXTURES,
     *INVALID_FIXTURES,
+    ROOT / 'validation/e2e/run_rq0023_check.py',
 ]
 
 REQUIRED_TERMS = [
@@ -62,68 +65,54 @@ ROUTE_TO_MODE = {
     'hybrid_split_architecture': 'hybrid',
     'blocked_pending_input': 'blocked',
 }
+EXPECTED_ROUTES = set(ROUTE_TO_MODE) - {'blocked_pending_input'}
 
-EXPECTED_ROUTES = {
-    'same_tree_responsive_overrides',
-    'viewport_specific_variant_tree',
-    'hybrid_split_architecture',
-}
+
+def rel(path):
+    return path.relative_to(ROOT)
 
 
 def load_json(path):
     return json.loads(path.read_text(encoding='utf-8'))
 
 
-def relative_path(path):
-    return path.relative_to(ROOT)
-
-
-def expected_invalid_reason(path):
-    name = path.name
-    if name == 'responsive_output_missing_forbidden_claims.invalid.json':
-        return 'Schema validation failed'
-    if name == 'responsive_output_empty_steps.invalid.json':
-        return 'builder_handoff.steps cannot be empty'
-    if name == 'responsive_output_duplicate_step_id.invalid.json':
-        return 'Duplicate step_ids'
-    if name == 'responsive_output_route_mode_mismatch.invalid.json':
-        return 'Route/mode mismatch'
-    raise ValueError(f'No expected invalid failure registered for {relative_path(path)}')
-
-
 def assert_required_files():
-    missing = [str(relative_path(path)) for path in REQUIRED_FILES if not path.is_file()]
+    missing = [str(rel(path)) for path in REQUIRED_FILES if not path.is_file()]
     if missing:
         raise ValueError('Missing responsive tree files: ' + ', '.join(missing))
 
 
 def assert_required_terms():
-    combined_text = '\n'.join(path.read_text(encoding='utf-8') for path in REQUIRED_FILES)
-    missing_terms = [term for term in REQUIRED_TERMS if term not in combined_text]
-    if missing_terms:
-        raise ValueError('Missing required responsive tree terms: ' + ', '.join(missing_terms))
+    text = '\n'.join(path.read_text(encoding='utf-8') for path in REQUIRED_FILES)
+    missing = [term for term in REQUIRED_TERMS if term not in text]
+    if missing:
+        raise ValueError('Missing required responsive tree terms: ' + ', '.join(missing))
+
+
+def expected_invalid_reason(path):
+    mapping = {
+        'responsive_output_missing_forbidden_claims.invalid.json': 'Schema validation failed',
+        'responsive_output_empty_steps.invalid.json': 'builder_handoff.steps cannot be empty',
+        'responsive_output_duplicate_step_id.invalid.json': 'Duplicate step_ids',
+        'responsive_output_route_mode_mismatch.invalid.json': 'Route/mode mismatch',
+    }
+    if path.name not in mapping:
+        raise ValueError(f'No expected invalid failure registered for {rel(path)}')
+    return mapping[path.name]
 
 
 def assert_step_integrity(payload, path):
     steps = payload.get('builder_handoff', {}).get('steps', [])
     if not steps:
         raise ValueError(f'builder_handoff.steps cannot be empty: {path}')
-
     step_ids = []
     for index, step in enumerate(steps, start=1):
         step_id = step.get('step_id')
         if not step_id:
             raise ValueError(f'Missing step_id at index {index} in {path}')
         step_ids.append(step_id)
-
     if len(step_ids) != len(set(step_ids)):
         raise ValueError(f'Duplicate step_ids in {path}')
-
-    first_prefix = None
-    for index, step_id in enumerate(step_ids, start=1):
-        prefix, sep, suffix = step_id.partition('-')
-        if not prefix or sep != '-' or not suffix.isdigit():
-            raise ValueError(f'Invalid step_id format: {step_id} in {path}')
     first_prefix = None
     for index, step_id in enumerate(step_ids, start=1):
         prefix, sep, suffix = step_id.partition('-')
@@ -148,57 +137,51 @@ def assert_route_mode(payload, path):
 def validate_payload(payload, path, validator):
     errors = list(validator.iter_errors(payload))
     if errors:
-        details = '; '.join(
-            f"{'/'.join(str(part) for part in error.path)}: {error.message}" for error in errors
-        )
+        details = '; '.join(f"{'/'.join(str(part) for part in error.path)}: {error.message}" for error in errors)
         raise ValueError(f'Schema validation failed for {path}: {details}')
     assert_step_integrity(payload, path)
     assert_route_mode(payload, path)
 
 
+def run_extra_check():
+    result = subprocess.run([sys.executable, 'validation/e2e/run_rq0023_check.py'], cwd=ROOT, text=True, capture_output=True, check=False)
+    if result.returncode != 0:
+        raise ValueError(f'RQ-0023 check failed\nSTDOUT:\n{result.stdout}\nSTDERR:\n{result.stderr}')
+
+
 def main():
     assert_required_files()
     assert_required_terms()
-
+    run_extra_check()
     schema = load_json(SCHEMA)
     Draft202012Validator.check_schema(schema)
     validator = Draft202012Validator(schema)
-
     seen_routes = set()
     for path in VALID_FIXTURES:
         payload = load_json(path)
-        validate_payload(payload, relative_path(path), validator)
+        validate_payload(payload, rel(path), validator)
         seen_routes.add(payload['selected_route'])
-
     if seen_routes != EXPECTED_ROUTES:
         raise ValueError(f'Route fixture coverage mismatch: {sorted(seen_routes)}')
-
-    discovered_invalid_paths = sorted(INVALID_DIR.glob('responsive_output_*.invalid.json'))
-    missing_invalid = [
-        str(relative_path(path)) for path in INVALID_FIXTURES if path not in discovered_invalid_paths
-    ]
+    discovered_invalid = sorted(INVALID_DIR.glob('responsive_output_*.invalid.json'))
+    missing_invalid = [str(rel(path)) for path in INVALID_FIXTURES if path not in discovered_invalid]
     if missing_invalid:
         raise ValueError('Missing required invalid fixtures: ' + ', '.join(missing_invalid))
-
-    for path in discovered_invalid_paths:
+    for path in discovered_invalid:
         expected = expected_invalid_reason(path)
         try:
-            validate_payload(load_json(path), relative_path(path), validator)
+            validate_payload(load_json(path), rel(path), validator)
         except ValueError as error:
             if expected not in str(error):
-                raise ValueError(
-                    f'Invalid fixture failed for wrong reason: {relative_path(path)}; '
-                    f'expected={expected}; actual={error}'
-                ) from error
+                raise ValueError(f'Invalid fixture failed for wrong reason: {rel(path)}; expected={expected}; actual={error}') from error
         else:
-            raise ValueError(f'Invalid fixture unexpectedly passed: {relative_path(path)}')
-
+            raise ValueError(f'Invalid fixture unexpectedly passed: {rel(path)}')
     print('Responsive tree architecture refactor check passed.')
 
 
 if __name__ == '__main__':
     try:
         main()
-    except ValueError as error:
+    except (AssertionError, ValueError) as error:
         print(error)
         raise SystemExit(1)
