@@ -22,7 +22,8 @@
       "RTAQ-0002",
       "RTAQ-0003",
       "RTAQ-0004",
-      "RTAQ-0005"
+      "RTAQ-0005",
+      "RTAQ-0006"
     ]
   },
   "tasks": [
@@ -249,6 +250,40 @@
         "RTAQ-0002",
         "RTAQ-0003",
         "RTAQ-0004"
+      ]
+    },
+    {
+      "task_id": "RTAQ-0006",
+      "cycle_position": 6,
+      "task_type": "repo_sync",
+      "status": "pending",
+      "title": "Post-refresh execution boundary hardening",
+      "objective": "Reserve the first post-refresh bounded task slot for hardening any execution-boundary drift identified by RTAQ-0005 without creating evidence or authorizing pilot work.",
+      "allowed_work": [
+        "Harden docs, validators, queue, ledger, or status records only when RTAQ-0005 identifies bounded execution-boundary drift.",
+        "Keep the task narrow and evidence-boundary preserving.",
+        "Use branch, PR, CI, and critique workflow before merge."
+      ],
+      "forbidden_work": [
+        "Do not create submitted evidence.",
+        "Do not modify Issue #8.",
+        "Do not run or authorize the real pilot.",
+        "Do not upgrade readiness, production, release, live-render, export, accessibility, or pixel claims."
+      ],
+      "requires_real_evidence": false,
+      "expected_artifacts": [
+        "Bounded post-refresh hardening patch if RTAQ-0005 identifies drift",
+        "Queue/ledger/status reconciliation if required",
+        "CI result"
+      ],
+      "acceptance_criteria": [
+        "Task is only executed after RTAQ-0005 refresh completes.",
+        "Any patch is limited to bounded execution-boundary drift.",
+        "Evidence-pending and pilot-blocked boundaries remain visible."
+      ],
+      "critique_required": true,
+      "dependencies": [
+        "RTAQ-0005"
       ]
     }
   ],
