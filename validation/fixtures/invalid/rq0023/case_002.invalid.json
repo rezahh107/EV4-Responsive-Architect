@@ -1,0 +1,10 @@
+{
+  "case_id": "case_002",
+  "expected_error": "issue_reference.issue_url_or_ref",
+  "patch": {
+    "issue_reference": {
+      "issue_number": 8,
+      "evidence_submission_status": "submitted"
+    }
+  }
+}
