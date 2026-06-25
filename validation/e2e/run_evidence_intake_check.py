@@ -25,9 +25,13 @@ REAL_SHADOW_SCOPE = "real_shadow_mode_only"
 GENERATED_ARTIFACT_MARKERS = (
     ".generated.",
     "/generated/",
+    "generated/",
     "/readiness/",
+    "readiness/",
     "/planning/",
+    "planning/",
     "/reports/",
+    "reports/",
     "pilot_readiness_report",
     "pilot_dry_run_record",
     "risk_priority_assessment.generated",
@@ -44,7 +48,7 @@ SUBMITTED_ARTIFACT_ALLOWED_PREFIXES = (
 SUBMITTED_ARTIFACT_ALLOWED_BASENAMES = {
     "main-ev4-handoff.md",
     "breakpoint-inventory.json",
-    "EVIDENCE_INTAKE_PACKET.submitted.json",
+    "evidence_intake_packet.submitted.json",
 }
 SUBMITTED_SCREENSHOT_BASENAME_PREFIXES = (
     "desktop-baseline-",
@@ -73,11 +77,11 @@ def _has_sample_marker(value: Any) -> bool:
     return isinstance(value, str) and any(marker in value for marker in SAMPLE_MARKERS)
 
 
-def _repo_relative_path(path: Path) -> str:
+def _repo_relative_path(path: Path) -> str | None:
     try:
         return path.resolve().relative_to(ROOT).as_posix()
     except ValueError:
-        return path.as_posix()
+        return None
 
 
 def _normalize_artifact_ref(value: Any) -> str | None:
@@ -92,9 +96,9 @@ def _has_generated_artifact_marker(path_ref: str) -> bool:
 
 
 def _submitted_artifact_basename_allowed(basename: str) -> bool:
-    if basename in SUBMITTED_ARTIFACT_ALLOWED_BASENAMES:
-        return True
     lowered = basename.lower()
+    if lowered in SUBMITTED_ARTIFACT_ALLOWED_BASENAMES:
+        return True
     return (
         any(lowered.startswith(prefix) for prefix in SUBMITTED_SCREENSHOT_BASENAME_PREFIXES)
         and Path(lowered).suffix in SUBMITTED_SCREENSHOT_EXTENSIONS
@@ -112,7 +116,9 @@ def _is_allowed_submitted_artifact_path(path_ref: str) -> bool:
 def submitted_source_artifact_refs(packet: dict[str, Any], packet_path: Path | None = None) -> list[tuple[str, str]]:
     refs: list[tuple[str, str]] = []
     if packet_path is not None:
-        refs.append(("packet_path", _repo_relative_path(packet_path)))
+        packet_ref = _repo_relative_path(packet_path)
+        if packet_ref is not None:
+            refs.append(("packet_path", packet_ref))
     handoff_ref = _normalize_artifact_ref(packet.get("main_ev4_handoff", {}).get("source_ref"))
     if handoff_ref is not None:
         refs.append(("main_ev4_handoff.source_ref", handoff_ref))
