@@ -44,6 +44,7 @@ SUBMITTED_ARTIFACT_ALLOWED_PREFIXES = (
     "issue-8/",
     "evidence/issue-8/",
     "examples/smart-home-connector/intake/",
+    "examples/smart-home-connector/evidence/",
 )
 SUBMITTED_ARTIFACT_ALLOWED_BASENAMES = {
     "main-ev4-handoff.md",
@@ -52,6 +53,7 @@ SUBMITTED_ARTIFACT_ALLOWED_BASENAMES = {
 }
 SUBMITTED_SCREENSHOT_BASENAME_PREFIXES = (
     "desktop-baseline-",
+    "desktop-",
     "tablet-",
     "mobile-",
 )
