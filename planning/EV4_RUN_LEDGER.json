@@ -18,16 +18,533 @@
     "note": "Earlier queue history remains in planning/EV4_ROLLING_QUEUE.json. This ledger starts as an audit companion from RQ-0016 forward. PRs 43-48 are recorded as manual_controller_hardening because they improved the queue/control/quality system outside the numbered rolling queue task execution sequence. PR 50 is recorded after merge because its PR number, merge SHA, and CI result were only available after the validator PR merged. PR 56 bookkeeping is synchronized after merge because that PR intentionally left queue/status/ledger sync for merge-final reconciliation. PR 58 is recorded after merge-final reconciliation because the implementation PR intentionally deferred queue, ledger, and STATUS sync until after merge."
   },
   "ledger_records": [
-    {"record_id":"LEDGER-0001","run_id":"automation-run-016","task_ref":"RQ-0016","run_type":"automation_task","status":"merged","pr_number":40,"merge_sha":"4add94836a05ca4ee8c7b6ef925f20de43646f3c","ci_conclusion":"success","created_at_utc":"2026-06-24T08:38:12Z","artifacts":[{"path":"validation/e2e/run_submitted_privacy_review_guard_check.py","artifact_type":"validator","status":"created"},{"path":".github/workflows/validate.yml","artifact_type":"workflow","status":"updated"},{"path":"planning/EV4_ROLLING_QUEUE.json","artifact_type":"queue","status":"updated"},{"path":"STATUS.md","artifact_type":"status","status":"updated"}],"critique_summary":["Privacy acknowledgement must remain required for submitted readiness.","Privacy acknowledgement does not prove live render, export validation, accessibility, production readiness, or release readiness."],"boundary_assertions":["no_real_evidence_created","no_real_pilot_run","no_production_claim","no_release_claim","no_live_render_claim","no_export_validation_claim","no_accessibility_pass_claim","sample_not_used_as_real"],"next_queue_effect":"RQ-0017 through RQ-0020 remain pending; real pilot stays blocked until real submitted packet and readiness pass exist."},
-    {"record_id":"LEDGER-0002","run_id":"manual-control-hardening-pr-43","task_ref":null,"run_type":"manual_controller_hardening","status":"merged","pr_number":43,"merge_sha":"6cc1feaa1e4b3ff5ed72b1d41dcb3f63782ad8ea","ci_conclusion":"success","created_at_utc":"2026-06-24T09:46:06Z","artifacts":[{"path":"planning/EV4_QUEUE_CONTROL_PLANE.json","artifact_type":"other","status":"created"},{"path":"schemas/ev4-responsive-queue-control-plane.schema.json","artifact_type":"schema","status":"created"},{"path":"validation/e2e/run_rolling_queue_check.py","artifact_type":"validator","status":"updated"},{"path":"docs/14_EV4_ROLLING_QUEUE.md","artifact_type":"doc","status":"updated"}],"critique_summary":["Queue control plane records truth boundaries, transition policy, lease intent, and diagnostics without moving runtime queue state to a new branch."],"boundary_assertions":["no_real_evidence_created","no_real_pilot_run","no_production_claim","no_release_claim","no_live_render_claim","no_export_validation_claim","no_accessibility_pass_claim","sample_not_used_as_real"],"next_queue_effect":"Numbered rolling queue tasks remain unchanged; control-plane hardening is recorded as out-of-band controller hardening."},
-    {"record_id":"LEDGER-0003","run_id":"manual-control-hardening-pr-44","task_ref":null,"run_type":"manual_controller_hardening","status":"merged","pr_number":44,"merge_sha":"fa5d85eb5ad2ecb5500546cbdebbe99495279cac","ci_conclusion":"success","created_at_utc":"2026-06-24T09:52:42Z","artifacts":[{"path":"docs/15_REUSABLE_ROLLING_QUEUE_AUTOMATION_PLAYBOOK.md","artifact_type":"doc","status":"created"}],"critique_summary":["Reusable playbook documents the repo-backed queue pattern for future projects."],"boundary_assertions":["no_real_evidence_created","no_real_pilot_run","no_production_claim","no_release_claim","no_live_render_claim","no_export_validation_claim","no_accessibility_pass_claim","sample_not_used_as_real"],"next_queue_effect":"Reusable automation documentation is available without changing the active EV4 evidence/pilot state."},
-    {"record_id":"LEDGER-0004","run_id":"manual-control-hardening-pr-45","task_ref":null,"run_type":"manual_controller_hardening","status":"merged","pr_number":45,"merge_sha":"63bd27900033f1a6fa54f004280f7d7e73e09dfb","ci_conclusion":"success","created_at_utc":"2026-06-24T10:35:14Z","artifacts":[{"path":"planning/EV4_AUTOMATION_QUALITY_GATE.json","artifact_type":"other","status":"created"},{"path":"schemas/ev4-responsive-automation-quality-gate.schema.json","artifact_type":"schema","status":"created"},{"path":"schemas/ev4-responsive-task-quality-review.schema.json","artifact_type":"schema","status":"created"},{"path":"validation/e2e/run_task_quality_gate_check.py","artifact_type":"validator","status":"created"}],"critique_summary":["Self-critique is now explicitly insufficient for sensitive automation tasks.","Quality gate requires deterministic checks and cross-critique records for sensitive task types."],"boundary_assertions":["no_real_evidence_created","no_real_pilot_run","no_production_claim","no_release_claim","no_live_render_claim","no_export_validation_claim","no_accessibility_pass_claim","sample_not_used_as_real"],"next_queue_effect":"Sensitive automation-control work should provide a task-quality review record before being considered quality-passed."},
-    {"record_id":"LEDGER-0005","run_id":"manual-control-hardening-pr-46","task_ref":null,"run_type":"manual_controller_hardening","status":"merged","pr_number":46,"merge_sha":"e51deebe3691097edd45b1b4329141b8014fe5d2","ci_conclusion":"success","created_at_utc":"2026-06-24T13:16:14Z","artifacts":[{"path":"prompts/CROSS_CRITIQUE_STRICT_REVIEWER_PROMPT.md","artifact_type":"doc","status":"created"},{"path":"planning/reviews/CROSS_CRITIQUE_REQUEST.template.md","artifact_type":"doc","status":"created"},{"path":"planning/reviews/TQR-RQ-0000.cross-review.example.json","artifact_type":"fixture","status":"created"},{"path":"validation/e2e/run_cross_critique_stub_check.py","artifact_type":"validator","status":"created"},{"path":"docs/16_CROSS_CRITIQUE_EXECUTION_STUB.md","artifact_type":"doc","status":"created"}],"critique_summary":["Cross-critique execution stub provides prompt, request template, review example, and validator wiring.","Actual external low-temperature reviewer execution is still not implemented."],"boundary_assertions":["no_real_evidence_created","no_real_pilot_run","no_production_claim","no_release_claim","no_live_render_claim","no_export_validation_claim","no_accessibility_pass_claim","sample_not_used_as_real"],"next_queue_effect":"A future task may implement real cross-review record generation."},
-    {"record_id":"LEDGER-0006","run_id":"manual-control-hardening-pr-48","task_ref":null,"run_type":"manual_controller_hardening","status":"merged","pr_number":48,"merge_sha":"4732503eeccf93cd5ea400a1ba9adf04b1458b45","ci_conclusion":"success","created_at_utc":"2026-06-24T13:51:38Z","artifacts":[{"path":"planning/EV4_ROLLING_QUEUE.json","artifact_type":"queue","status":"updated"}],"critique_summary":["RQ-0022 was added to the rolling queue as a pending future task for actual cross-review record generation.","Adding RQ-0022 did not execute cross-review generation and did not alter real evidence or pilot state."],"boundary_assertions":["no_real_evidence_created","no_real_pilot_run","no_production_claim","no_release_claim","no_live_render_claim","no_export_validation_claim","no_accessibility_pass_claim","sample_not_used_as_real"],"next_queue_effect":"RQ-0022 is queued after RQ-0021; real pilot remains blocked until real submitted evidence and readiness pass exist."},
-    {"record_id":"LEDGER-0007","run_id":"automation-run-018","task_ref":"RQ-0018","run_type":"automation_task","status":"merged","pr_number":50,"merge_sha":"480bad1e0ec83e6c2d851b978e3f178907294277","ci_conclusion":"success","created_at_utc":"2026-06-24T18:03:41Z","artifacts":[{"path":"planning/EV4_ISSUE8_STATE.snapshot.json","artifact_type":"other","status":"created"},{"path":"validation/e2e/run_issue8_label_state_check.py","artifact_type":"validator","status":"created"},{"path":".github/workflows/validate.yml","artifact_type":"workflow","status":"updated"}],"critique_summary":["Issue #8 labels must remain state metadata only and must not be treated as machine-checkable submitted evidence."],"boundary_assertions":["no_real_evidence_created","no_real_pilot_run","no_production_claim","no_release_claim","no_live_render_claim","no_export_validation_claim","no_accessibility_pass_claim","sample_not_used_as_real"],"next_queue_effect":"RQ-0019 is the next legitimate queued task; real pilot remains blocked until real submitted evidence and readiness pass exist."},
-    {"record_id":"LEDGER-0008","run_id":"automation-run-019","task_ref":"RQ-0019","run_type":"automation_task","status":"merged","pr_number":54,"merge_sha":"a3745ef9707e34e998b9fc59434a83da5badaf58","ci_conclusion":"success","created_at_utc":"2026-06-25T00:00:00Z","artifacts":[{"path":"validation/e2e/run_evidence_intake_check.py","artifact_type":"validator","status":"updated"},{"path":"validation/e2e/run_submitted_packet_source_kind_lock_check.py","artifact_type":"validator","status":"created"},{"path":".github/workflows/validate.yml","artifact_type":"workflow","status":"updated"}],"critique_summary":["Source-kind lock requires real_issue_submission, submitted or validated packet status, and Issue #8 issue_reference before eligibility can be accepted."],"boundary_assertions":["no_real_evidence_created","no_real_pilot_run","no_production_claim","no_release_claim","no_live_render_claim","no_export_validation_claim","no_accessibility_pass_claim","sample_not_used_as_real"],"next_queue_effect":"RQ-0020 queue refresh follows RQ-0019; real pilot remains blocked until real submitted evidence and readiness pass exist."},
-    {"record_id":"LEDGER-0009","run_id":"automation-run-020","task_ref":"RQ-0020","run_type":"queue_refresh","status":"merged","pr_number":55,"merge_sha":"13c341efe8808a00eeed2cd7aad68b58124d0a39","ci_conclusion":"success","created_at_utc":"2026-06-25T00:00:00Z","artifacts":[{"path":"planning/EV4_ROLLING_QUEUE.json","artifact_type":"queue","status":"updated"},{"path":"STATUS.md","artifact_type":"status","status":"updated"},{"path":"planning/EV4_QUEUE_REFRESH_RQ_0020.audit.json","artifact_type":"other","status":"created"}],"critique_summary":["RQ-0016 through RQ-0019 were audited as validator/queue hardening only and did not create real evidence or authorize pilot execution.","Queue depth was restored with bounded follow-up tasks while preserving evidence-pending blockers."],"boundary_assertions":["no_real_evidence_created","no_real_pilot_run","no_production_claim","no_release_claim","no_live_render_claim","no_export_validation_claim","no_accessibility_pass_claim","sample_not_used_as_real"],"next_queue_effect":"RQ-0021 became the next executable task; real pilot remained blocked."},
-    {"record_id":"LEDGER-0010","run_id":"automation-run-021","task_ref":"RQ-0021","run_type":"automation_task","status":"merged","pr_number":56,"merge_sha":"f1bc2e234e118f548d519d9698b47b889473d0d4","ci_conclusion":"success","created_at_utc":"2026-06-25T03:18:18Z","artifacts":[{"path":"validation/e2e/run_evidence_intake_check.py","artifact_type":"validator","status":"updated"},{"path":"validation/e2e/run_submitted_packet_artifact_path_allowlist_check.py","artifact_type":"validator","status":"created"},{"path":".github/workflows/validate.yml","artifact_type":"workflow","status":"updated"},{"path":"planning/EV4_ROLLING_QUEUE.json","artifact_type":"queue","status":"updated"},{"path":"STATUS.md","artifact_type":"status","status":"updated"},{"path":"planning/EV4_RUN_LEDGER.json","artifact_type":"other","status":"updated"}],"critique_summary":["Submitted real_issue_submission source artifacts now reject generated reports, readiness outputs, planning/bookkeeping files, STATUS, queue, ledger, and disallowed export paths.","This is a submitted-source boundary check only; it does not create real evidence or authorize the pilot."],"boundary_assertions":["no_real_evidence_created","no_real_pilot_run","no_production_claim","no_release_claim","no_live_render_claim","no_export_validation_claim","no_accessibility_pass_claim","sample_not_used_as_real"],"next_queue_effect":"RQ-0022 is the next queued task; real pilot remains blocked until real submitted evidence and readiness pass exist."},
-    {"record_id":"LEDGER-0011","run_id":"automation-run-022","task_ref":"RQ-0022","run_type":"automation_task","status":"merged","pr_number":58,"merge_sha":"1d430cddaf88d93b79bfe40c027e8f1bfab8989f","ci_conclusion":"success","created_at_utc":"2026-06-25T09:51:19Z","artifacts":[{"path":"planning/reviews/CROSS_CRITIQUE_REQUEST.template.md","artifact_type":"doc","status":"updated"},{"path":"planning/reviews/CROSS_REVIEW_RECORD.template.json","artifact_type":"fixture","status":"created"},{"path":"planning/reviews/README.md","artifact_type":"doc","status":"created"},{"path":"validation/e2e/run_cross_review_generation_path_check.py","artifact_type":"validator","status":"created"},{"path":"validation/e2e/run_cross_critique_stub_check.py","artifact_type":"validator","status":"updated"},{"path":"docs/16_CROSS_CRITIQUE_EXECUTION_STUB.md","artifact_type":"doc","status":"updated"},{"path":".github/workflows/validate.yml","artifact_type":"workflow","status":"updated"},{"path":"planning/EV4_ROLLING_QUEUE.json","artifact_type":"queue","status":"updated"},{"path":"planning/EV4_RUN_LEDGER.json","artifact_type":"other","status":"updated"},{"path":"STATUS.md","artifact_type":"status","status":"updated"}],"critique_summary":["RQ-0022 added a machine-checkable path for cross-review requests and review records for sensitive automation tasks.","The generated path remains quality-control scaffolding only; it does not prove a separate external reviewer ran unless a validated record is later supplied.","Gemini feedback was addressed by explicit validator assertions for deterministic checks, cross-critique policy fields, and boundary assertions before merge."],"boundary_assertions":["no_real_evidence_created","no_real_pilot_run","no_production_claim","no_release_claim","no_live_render_claim","no_export_validation_claim","no_accessibility_pass_claim","sample_not_used_as_real","queue_completion_not_evidence_validation","ci_success_not_responsive_validation","merged_pr_not_authoritative_evidence"],"next_queue_effect":"RQ-0023 is now the next executable task; RQ-0026 was added to keep four legitimate pending tasks and to capture master-spec drift discovered during reconciliation."}
+    {
+      "record_id": "LEDGER-0001",
+      "run_id": "automation-run-016",
+      "task_ref": "RQ-0016",
+      "run_type": "automation_task",
+      "status": "merged",
+      "pr_number": 40,
+      "merge_sha": "4add94836a05ca4ee8c7b6ef925f20de43646f3c",
+      "ci_conclusion": "success",
+      "created_at_utc": "2026-06-24T08:38:12Z",
+      "artifacts": [
+        {
+          "path": "validation/e2e/run_submitted_privacy_review_guard_check.py",
+          "artifact_type": "validator",
+          "status": "created"
+        },
+        {
+          "path": ".github/workflows/validate.yml",
+          "artifact_type": "workflow",
+          "status": "updated"
+        },
+        {
+          "path": "planning/EV4_ROLLING_QUEUE.json",
+          "artifact_type": "queue",
+          "status": "updated"
+        },
+        {
+          "path": "STATUS.md",
+          "artifact_type": "status",
+          "status": "updated"
+        }
+      ],
+      "critique_summary": [
+        "Privacy acknowledgement must remain required for submitted readiness.",
+        "Privacy acknowledgement does not prove live render, export validation, accessibility, production readiness, or release readiness."
+      ],
+      "boundary_assertions": [
+        "no_real_evidence_created",
+        "no_real_pilot_run",
+        "no_production_claim",
+        "no_release_claim",
+        "no_live_render_claim",
+        "no_export_validation_claim",
+        "no_accessibility_pass_claim",
+        "sample_not_used_as_real"
+      ],
+      "next_queue_effect": "RQ-0017 through RQ-0020 remain pending; real pilot stays blocked until real submitted packet and readiness pass exist."
+    },
+    {
+      "record_id": "LEDGER-0002",
+      "run_id": "manual-control-hardening-pr-43",
+      "task_ref": null,
+      "run_type": "manual_controller_hardening",
+      "status": "merged",
+      "pr_number": 43,
+      "merge_sha": "6cc1feaa1e4b3ff5ed72b1d41dcb3f63782ad8ea",
+      "ci_conclusion": "success",
+      "created_at_utc": "2026-06-24T09:46:06Z",
+      "artifacts": [
+        {
+          "path": "planning/EV4_QUEUE_CONTROL_PLANE.json",
+          "artifact_type": "other",
+          "status": "created"
+        },
+        {
+          "path": "schemas/ev4-responsive-queue-control-plane.schema.json",
+          "artifact_type": "schema",
+          "status": "created"
+        },
+        {
+          "path": "validation/e2e/run_rolling_queue_check.py",
+          "artifact_type": "validator",
+          "status": "updated"
+        },
+        {
+          "path": "docs/14_EV4_ROLLING_QUEUE.md",
+          "artifact_type": "doc",
+          "status": "updated"
+        }
+      ],
+      "critique_summary": [
+        "Queue control plane records truth boundaries, transition policy, lease intent, and diagnostics without moving runtime queue state to a new branch."
+      ],
+      "boundary_assertions": [
+        "no_real_evidence_created",
+        "no_real_pilot_run",
+        "no_production_claim",
+        "no_release_claim",
+        "no_live_render_claim",
+        "no_export_validation_claim",
+        "no_accessibility_pass_claim",
+        "sample_not_used_as_real"
+      ],
+      "next_queue_effect": "Numbered rolling queue tasks remain unchanged; control-plane hardening is recorded as out-of-band controller hardening."
+    },
+    {
+      "record_id": "LEDGER-0003",
+      "run_id": "manual-control-hardening-pr-44",
+      "task_ref": null,
+      "run_type": "manual_controller_hardening",
+      "status": "merged",
+      "pr_number": 44,
+      "merge_sha": "fa5d85eb5ad2ecb5500546cbdebbe99495279cac",
+      "ci_conclusion": "success",
+      "created_at_utc": "2026-06-24T09:52:42Z",
+      "artifacts": [
+        {
+          "path": "docs/15_REUSABLE_ROLLING_QUEUE_AUTOMATION_PLAYBOOK.md",
+          "artifact_type": "doc",
+          "status": "created"
+        }
+      ],
+      "critique_summary": [
+        "Reusable playbook documents the repo-backed queue pattern for future projects."
+      ],
+      "boundary_assertions": [
+        "no_real_evidence_created",
+        "no_real_pilot_run",
+        "no_production_claim",
+        "no_release_claim",
+        "no_live_render_claim",
+        "no_export_validation_claim",
+        "no_accessibility_pass_claim",
+        "sample_not_used_as_real"
+      ],
+      "next_queue_effect": "Reusable automation documentation is available without changing the active EV4 evidence/pilot state."
+    },
+    {
+      "record_id": "LEDGER-0004",
+      "run_id": "manual-control-hardening-pr-45",
+      "task_ref": null,
+      "run_type": "manual_controller_hardening",
+      "status": "merged",
+      "pr_number": 45,
+      "merge_sha": "63bd27900033f1a6fa54f004280f7d7e73e09dfb",
+      "ci_conclusion": "success",
+      "created_at_utc": "2026-06-24T10:35:14Z",
+      "artifacts": [
+        {
+          "path": "planning/EV4_AUTOMATION_QUALITY_GATE.json",
+          "artifact_type": "other",
+          "status": "created"
+        },
+        {
+          "path": "schemas/ev4-responsive-automation-quality-gate.schema.json",
+          "artifact_type": "schema",
+          "status": "created"
+        },
+        {
+          "path": "schemas/ev4-responsive-task-quality-review.schema.json",
+          "artifact_type": "schema",
+          "status": "created"
+        },
+        {
+          "path": "validation/e2e/run_task_quality_gate_check.py",
+          "artifact_type": "validator",
+          "status": "created"
+        }
+      ],
+      "critique_summary": [
+        "Self-critique is now explicitly insufficient for sensitive automation tasks.",
+        "Quality gate requires deterministic checks and cross-critique records for sensitive task types."
+      ],
+      "boundary_assertions": [
+        "no_real_evidence_created",
+        "no_real_pilot_run",
+        "no_production_claim",
+        "no_release_claim",
+        "no_live_render_claim",
+        "no_export_validation_claim",
+        "no_accessibility_pass_claim",
+        "sample_not_used_as_real"
+      ],
+      "next_queue_effect": "Sensitive automation-control work should provide a task-quality review record before being considered quality-passed."
+    },
+    {
+      "record_id": "LEDGER-0005",
+      "run_id": "manual-control-hardening-pr-46",
+      "task_ref": null,
+      "run_type": "manual_controller_hardening",
+      "status": "merged",
+      "pr_number": 46,
+      "merge_sha": "e51deebe3691097edd45b1b4329141b8014fe5d2",
+      "ci_conclusion": "success",
+      "created_at_utc": "2026-06-24T13:16:14Z",
+      "artifacts": [
+        {
+          "path": "prompts/CROSS_CRITIQUE_STRICT_REVIEWER_PROMPT.md",
+          "artifact_type": "doc",
+          "status": "created"
+        },
+        {
+          "path": "planning/reviews/CROSS_CRITIQUE_REQUEST.template.md",
+          "artifact_type": "doc",
+          "status": "created"
+        },
+        {
+          "path": "planning/reviews/TQR-RQ-0000.cross-review.example.json",
+          "artifact_type": "fixture",
+          "status": "created"
+        },
+        {
+          "path": "validation/e2e/run_cross_critique_stub_check.py",
+          "artifact_type": "validator",
+          "status": "created"
+        },
+        {
+          "path": "docs/16_CROSS_CRITIQUE_EXECUTION_STUB.md",
+          "artifact_type": "doc",
+          "status": "created"
+        }
+      ],
+      "critique_summary": [
+        "Cross-critique execution stub provides prompt, request template, review example, and validator wiring.",
+        "Actual external low-temperature reviewer execution is still not implemented."
+      ],
+      "boundary_assertions": [
+        "no_real_evidence_created",
+        "no_real_pilot_run",
+        "no_production_claim",
+        "no_release_claim",
+        "no_live_render_claim",
+        "no_export_validation_claim",
+        "no_accessibility_pass_claim",
+        "sample_not_used_as_real"
+      ],
+      "next_queue_effect": "A future task may implement real cross-review record generation."
+    },
+    {
+      "record_id": "LEDGER-0006",
+      "run_id": "manual-control-hardening-pr-48",
+      "task_ref": null,
+      "run_type": "manual_controller_hardening",
+      "status": "merged",
+      "pr_number": 48,
+      "merge_sha": "4732503eeccf93cd5ea400a1ba9adf04b1458b45",
+      "ci_conclusion": "success",
+      "created_at_utc": "2026-06-24T13:51:38Z",
+      "artifacts": [
+        {
+          "path": "planning/EV4_ROLLING_QUEUE.json",
+          "artifact_type": "queue",
+          "status": "updated"
+        }
+      ],
+      "critique_summary": [
+        "RQ-0022 was added to the rolling queue as a pending future task for actual cross-review record generation.",
+        "Adding RQ-0022 did not execute cross-review generation and did not alter real evidence or pilot state."
+      ],
+      "boundary_assertions": [
+        "no_real_evidence_created",
+        "no_real_pilot_run",
+        "no_production_claim",
+        "no_release_claim",
+        "no_live_render_claim",
+        "no_export_validation_claim",
+        "no_accessibility_pass_claim",
+        "sample_not_used_as_real"
+      ],
+      "next_queue_effect": "RQ-0022 is queued after RQ-0021; real pilot remains blocked until real submitted evidence and readiness pass exist."
+    },
+    {
+      "record_id": "LEDGER-0007",
+      "run_id": "automation-run-018",
+      "task_ref": "RQ-0018",
+      "run_type": "automation_task",
+      "status": "merged",
+      "pr_number": 50,
+      "merge_sha": "480bad1e0ec83e6c2d851b978e3f178907294277",
+      "ci_conclusion": "success",
+      "created_at_utc": "2026-06-24T18:03:41Z",
+      "artifacts": [
+        {
+          "path": "planning/EV4_ISSUE8_STATE.snapshot.json",
+          "artifact_type": "other",
+          "status": "created"
+        },
+        {
+          "path": "validation/e2e/run_issue8_label_state_check.py",
+          "artifact_type": "validator",
+          "status": "created"
+        },
+        {
+          "path": ".github/workflows/validate.yml",
+          "artifact_type": "workflow",
+          "status": "updated"
+        }
+      ],
+      "critique_summary": [
+        "Issue #8 labels must remain state metadata only and must not be treated as machine-checkable submitted evidence."
+      ],
+      "boundary_assertions": [
+        "no_real_evidence_created",
+        "no_real_pilot_run",
+        "no_production_claim",
+        "no_release_claim",
+        "no_live_render_claim",
+        "no_export_validation_claim",
+        "no_accessibility_pass_claim",
+        "sample_not_used_as_real"
+      ],
+      "next_queue_effect": "RQ-0019 is the next legitimate queued task; real pilot remains blocked until real submitted evidence and readiness pass exist."
+    },
+    {
+      "record_id": "LEDGER-0008",
+      "run_id": "automation-run-019",
+      "task_ref": "RQ-0019",
+      "run_type": "automation_task",
+      "status": "merged",
+      "pr_number": 54,
+      "merge_sha": "a3745ef9707e34e998b9fc59434a83da5badaf58",
+      "ci_conclusion": "success",
+      "created_at_utc": "2026-06-25T00:00:00Z",
+      "artifacts": [
+        {
+          "path": "validation/e2e/run_evidence_intake_check.py",
+          "artifact_type": "validator",
+          "status": "updated"
+        },
+        {
+          "path": "validation/e2e/run_submitted_packet_source_kind_lock_check.py",
+          "artifact_type": "validator",
+          "status": "created"
+        },
+        {
+          "path": ".github/workflows/validate.yml",
+          "artifact_type": "workflow",
+          "status": "updated"
+        }
+      ],
+      "critique_summary": [
+        "Source-kind lock requires real_issue_submission, submitted or validated packet status, and Issue #8 issue_reference before eligibility can be accepted."
+      ],
+      "boundary_assertions": [
+        "no_real_evidence_created",
+        "no_real_pilot_run",
+        "no_production_claim",
+        "no_release_claim",
+        "no_live_render_claim",
+        "no_export_validation_claim",
+        "no_accessibility_pass_claim",
+        "sample_not_used_as_real"
+      ],
+      "next_queue_effect": "RQ-0020 queue refresh follows RQ-0019; real pilot remains blocked until real submitted evidence and readiness pass exist."
+    },
+    {
+      "record_id": "LEDGER-0009",
+      "run_id": "automation-run-020",
+      "task_ref": "RQ-0020",
+      "run_type": "queue_refresh",
+      "status": "merged",
+      "pr_number": 55,
+      "merge_sha": "13c341efe8808a00eeed2cd7aad68b58124d0a39",
+      "ci_conclusion": "success",
+      "created_at_utc": "2026-06-25T00:00:00Z",
+      "artifacts": [
+        {
+          "path": "planning/EV4_ROLLING_QUEUE.json",
+          "artifact_type": "queue",
+          "status": "updated"
+        },
+        {
+          "path": "STATUS.md",
+          "artifact_type": "status",
+          "status": "updated"
+        },
+        {
+          "path": "planning/EV4_QUEUE_REFRESH_RQ_0020.audit.json",
+          "artifact_type": "other",
+          "status": "created"
+        }
+      ],
+      "critique_summary": [
+        "RQ-0016 through RQ-0019 were audited as validator/queue hardening only and did not create real evidence or authorize pilot execution.",
+        "Queue depth was restored with bounded follow-up tasks while preserving evidence-pending blockers."
+      ],
+      "boundary_assertions": [
+        "no_real_evidence_created",
+        "no_real_pilot_run",
+        "no_production_claim",
+        "no_release_claim",
+        "no_live_render_claim",
+        "no_export_validation_claim",
+        "no_accessibility_pass_claim",
+        "sample_not_used_as_real"
+      ],
+      "next_queue_effect": "RQ-0021 became the next executable task; real pilot remained blocked."
+    },
+    {
+      "record_id": "LEDGER-0010",
+      "run_id": "automation-run-021",
+      "task_ref": "RQ-0021",
+      "run_type": "automation_task",
+      "status": "merged",
+      "pr_number": 56,
+      "merge_sha": "f1bc2e234e118f548d519d9698b47b889473d0d4",
+      "ci_conclusion": "success",
+      "created_at_utc": "2026-06-25T03:18:18Z",
+      "artifacts": [
+        {
+          "path": "validation/e2e/run_evidence_intake_check.py",
+          "artifact_type": "validator",
+          "status": "updated"
+        },
+        {
+          "path": "validation/e2e/run_submitted_packet_artifact_path_allowlist_check.py",
+          "artifact_type": "validator",
+          "status": "created"
+        },
+        {
+          "path": ".github/workflows/validate.yml",
+          "artifact_type": "workflow",
+          "status": "updated"
+        },
+        {
+          "path": "planning/EV4_ROLLING_QUEUE.json",
+          "artifact_type": "queue",
+          "status": "updated"
+        },
+        {
+          "path": "STATUS.md",
+          "artifact_type": "status",
+          "status": "updated"
+        },
+        {
+          "path": "planning/EV4_RUN_LEDGER.json",
+          "artifact_type": "other",
+          "status": "updated"
+        }
+      ],
+      "critique_summary": [
+        "Submitted real_issue_submission source artifacts now reject generated reports, readiness outputs, planning/bookkeeping files, STATUS, queue, ledger, and disallowed export paths.",
+        "This is a submitted-source boundary check only; it does not create real evidence or authorize the pilot."
+      ],
+      "boundary_assertions": [
+        "no_real_evidence_created",
+        "no_real_pilot_run",
+        "no_production_claim",
+        "no_release_claim",
+        "no_live_render_claim",
+        "no_export_validation_claim",
+        "no_accessibility_pass_claim",
+        "sample_not_used_as_real"
+      ],
+      "next_queue_effect": "RQ-0022 is the next queued task; real pilot remains blocked until real submitted evidence and readiness pass exist."
+    },
+    {
+      "record_id": "LEDGER-0011",
+      "run_id": "automation-run-022",
+      "task_ref": "RQ-0022",
+      "run_type": "automation_task",
+      "status": "merged",
+      "pr_number": 58,
+      "merge_sha": "1d430cddaf88d93b79bfe40c027e8f1bfab8989f",
+      "ci_conclusion": "success",
+      "created_at_utc": "2026-06-25T09:51:19Z",
+      "artifacts": [
+        {
+          "path": "planning/reviews/CROSS_CRITIQUE_REQUEST.template.md",
+          "artifact_type": "doc",
+          "status": "updated"
+        },
+        {
+          "path": "planning/reviews/CROSS_REVIEW_RECORD.template.json",
+          "artifact_type": "fixture",
+          "status": "created"
+        },
+        {
+          "path": "planning/reviews/README.md",
+          "artifact_type": "doc",
+          "status": "created"
+        },
+        {
+          "path": "validation/e2e/run_cross_review_generation_path_check.py",
+          "artifact_type": "validator",
+          "status": "created"
+        },
+        {
+          "path": "validation/e2e/run_cross_critique_stub_check.py",
+          "artifact_type": "validator",
+          "status": "updated"
+        },
+        {
+          "path": "docs/16_CROSS_CRITIQUE_EXECUTION_STUB.md",
+          "artifact_type": "doc",
+          "status": "updated"
+        },
+        {
+          "path": ".github/workflows/validate.yml",
+          "artifact_type": "workflow",
+          "status": "updated"
+        },
+        {
+          "path": "planning/EV4_ROLLING_QUEUE.json",
+          "artifact_type": "queue",
+          "status": "updated"
+        },
+        {
+          "path": "planning/EV4_RUN_LEDGER.json",
+          "artifact_type": "other",
+          "status": "updated"
+        },
+        {
+          "path": "STATUS.md",
+          "artifact_type": "status",
+          "status": "updated"
+        }
+      ],
+      "critique_summary": [
+        "RQ-0022 added a machine-checkable path for cross-review requests and review records for sensitive automation tasks.",
+        "The generated path remains quality-control scaffolding only; it does not prove a separate external reviewer ran unless a validated record is later supplied.",
+        "Gemini feedback was addressed by explicit validator assertions for deterministic checks, cross-critique policy fields, and boundary assertions before merge."
+      ],
+      "boundary_assertions": [
+        "no_real_evidence_created",
+        "no_real_pilot_run",
+        "no_production_claim",
+        "no_release_claim",
+        "no_live_render_claim",
+        "no_export_validation_claim",
+        "no_accessibility_pass_claim",
+        "sample_not_used_as_real",
+        "queue_completion_not_evidence_validation",
+        "ci_success_not_responsive_validation",
+        "merged_pr_not_authoritative_evidence"
+      ],
+      "next_queue_effect": "RQ-0023 is now the next executable task; RQ-0026 was added to keep four legitimate pending tasks and to capture master-spec drift discovered during reconciliation."
+    }
   ]
 }
