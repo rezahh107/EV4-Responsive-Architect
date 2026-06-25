@@ -34,6 +34,28 @@ REQUIRED_README_TERMS = {
     "not responsive evidence",
 }
 
+EXPECTED_DETERMINISTIC_CHECKS = {
+    "acceptance_criteria_checked",
+    "scope_respected",
+    "forbidden_work_absent",
+    "ci_checked_or_no_ci_reason_recorded",
+    "artifacts_listed",
+    "queue_state_checked",
+    "ledger_state_checked",
+    "stale_reference_search_done",
+    "delayed_bot_review_window_checked",
+    "boundary_assertions_checked",
+}
+
+EXPECTED_BOUNDARY_ASSERTIONS = {
+    "no_self_critique_only_completion",
+    "deterministic_checks_passed",
+    "bot_review_window_checked",
+    "no_production_claim",
+    "no_unrelated_task",
+    "follow_up_created_when_required",
+}
+
 
 def load_json(path: Path) -> dict[str, Any]:
     with path.open("r", encoding="utf-8") as handle:
@@ -62,10 +84,40 @@ def assert_blocking_template(template: dict[str, Any], schema: dict[str, Any]) -
         raise QualityGateError("cross-review record template must not allow completion")
     if template["final_verdict"] != "blocked":
         raise QualityGateError("cross-review record template must start blocked")
-    if template["cross_critique"]["status"] != "blocked_missing_cross_critique":
+
+    deterministic_checks = template["deterministic_checks"]
+    actual_checks = set(deterministic_checks)
+    if actual_checks != EXPECTED_DETERMINISTIC_CHECKS:
+        missing = sorted(EXPECTED_DETERMINISTIC_CHECKS - actual_checks)
+        extra = sorted(actual_checks - EXPECTED_DETERMINISTIC_CHECKS)
+        raise QualityGateError(
+            "cross-review record template has invalid deterministic checks; "
+            f"missing={missing}, extra={extra}"
+        )
+    for check, value in deterministic_checks.items():
+        if value is not False:
+            raise QualityGateError(f"deterministic check '{check}' must be false in the template")
+
+    cross = template["cross_critique"]
+    if cross["required"] is not True:
+        raise QualityGateError("cross-review record template must require cross critique")
+    if cross["status"] != "blocked_missing_cross_critique":
         raise QualityGateError("cross-review record template must require a completed separate review")
-    if template["cross_critique"]["reviewer_role"] != "strict_pessimistic_reviewer":
+    if cross["reviewer_role"] != "strict_pessimistic_reviewer":
         raise QualityGateError("cross-review record template must preserve strict reviewer role")
+    if cross["prompt_separation"] is not True:
+        raise QualityGateError("cross-review record template must require prompt separation")
+    if cross["temperature_policy"] != "temperature_0_1_recommended":
+        raise QualityGateError("cross-review record template must require recommended temperature policy")
+
+    actual_assertions = set(template.get("boundary_assertions", []))
+    if actual_assertions != EXPECTED_BOUNDARY_ASSERTIONS:
+        missing = sorted(EXPECTED_BOUNDARY_ASSERTIONS - actual_assertions)
+        extra = sorted(actual_assertions - EXPECTED_BOUNDARY_ASSERTIONS)
+        raise QualityGateError(
+            "cross-review record template has invalid boundary assertions; "
+            f"missing={missing}, extra={extra}"
+        )
 
 
 def main() -> int:
