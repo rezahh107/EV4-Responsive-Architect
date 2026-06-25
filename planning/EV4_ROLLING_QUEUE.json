@@ -55,7 +55,8 @@
         "validation/e2e/run_run_ledger_check.py",
         "validation/e2e/run_responsive_tree_architecture_refactor_check.py",
         "STATUS.md",
-        "docs/14_EV4_ROLLING_QUEUE.md"
+        "docs/14_EV4_ROLLING_QUEUE.md",
+        "planning/EV4_RUN_LEDGER_RQ_LEGACY_ARCHIVE_NOTE.md"
       ],
       "acceptance_criteria": [
         "Old RQ-0023 through RQ-0026 lineage no longer drives the active queue.",
@@ -80,7 +81,8 @@
           "validation/e2e/run_responsive_tree_architecture_refactor_check.py",
           "STATUS.md",
           "docs/14_EV4_ROLLING_QUEUE.md",
-          "planning/QUEUE_RESET_RTAQ_0001_PR_NOTE.md"
+          "planning/QUEUE_RESET_RTAQ_0001_PR_NOTE.md",
+          "planning/EV4_RUN_LEDGER_RQ_LEGACY_ARCHIVE_NOTE.md"
         ],
         "critique_findings": [
           "The old RQ pending lineage must remain archived history and must not drive post-refactor execution.",
