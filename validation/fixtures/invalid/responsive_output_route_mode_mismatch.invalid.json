@@ -1,0 +1,59 @@
+{
+  "schema": "ev4-responsive-output@0.3.0",
+  "source_packet_ref": "ev4-responsive-start-packet.sample.invalid-route-mismatch",
+  "selected_route": "viewport_specific_variant_tree",
+  "relationship_classification_ref": {
+    "classification": "viewport_specific_variant",
+    "confidence": "high"
+  },
+  "responsive_tree_output": {
+    "mode": "same_tree",
+    "summary": "Route and output mode mismatch should fail code-level validation."
+  },
+  "display_contract": {
+    "breakpoint_scope": {
+      "desktop": ">=1025px",
+      "tablet": "768px-1024px",
+      "mobile": "<=767px"
+    },
+    "display_rules": [
+      {
+        "node_ref": "mobile_section.root",
+        "desktop": "inactive",
+        "tablet": "active",
+        "mobile": "active",
+        "reason": "Mobile section active in responsive viewports."
+      }
+    ]
+  },
+  "builder_handoff": {
+    "mode": "viewport_specific_variant_tree",
+    "steps": [
+      {
+        "step_id": "VT-001",
+        "target_node": "mobile_section.root",
+        "viewport": "mobile",
+        "action": "Create mobile section.",
+        "expected_result": "Mobile section exists."
+      }
+    ]
+  },
+  "validation_plan": {
+    "required_checks": ["Check route/mode consistency."],
+    "evidence_to_collect": ["mobile_after_build_screenshot"],
+    "claim_boundary": "No validation claim."
+  },
+  "final_review": {
+    "handoff_ready": false,
+    "reason": "Invalid negative fixture."
+  },
+  "unresolved_unknowns": [],
+  "forbidden_claims": [
+    "production_ready",
+    "release_ready",
+    "pixel_perfect",
+    "export_validated",
+    "live_render_validated",
+    "accessibility_passed"
+  ]
+}
