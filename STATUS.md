@@ -2,7 +2,7 @@
 
 ```yaml
 project: EV4 Responsive Architect
-version: 0.2.31-rq-0021-bookkeeping-sync
+version: 0.2.32-rq-0022-bookkeeping-sync
 status: rolling_queue_controller_active
 production_ready: false
 prompt_pack_release_ready: false
@@ -60,7 +60,7 @@ Allowed now:
 - delayed reviewer policy documentation
 - cross-critique execution stub validation
 - pending ledger intent reconciliation documentation
-- cross-review generation task queued
+- cross-review generation task completed
 - Issue #8 label-state consistency validation
 - core responsive artifact backlog planning
 - external EDIS/EDAS evidence adapter backlog planning
@@ -68,6 +68,8 @@ Allowed now:
 - submitted packet source-kind lock validation
 - post-source-kind-lock queue refresh
 - submitted packet artifact-path allowlist validation
+- cross-review generation path validation
+- RQ-0022 merge-final bookkeeping sync
 ```
 
 Forbidden now:
@@ -125,13 +127,14 @@ controller_policy:
 
 ```yaml
 next_tasks:
-  - RQ-0022 add actual cross-review record generation path
   - RQ-0023 add submitted packet issue-reference consistency check
   - RQ-0024 add submitted packet freshness and sample-marker rejection check
+  - RQ-0025 refresh queue after cross-review and submitted-packet boundary tasks
+  - RQ-0026 sync master spec with rolling queue controller state
 completed_this_run:
-  - RQ-0021 add submitted packet artifact-path allowlist check bookkeeping sync
+  - RQ-0022 add actual cross-review record generation path bookkeeping sync
 last_completed_queue_task:
-  - RQ-0021 add submitted packet artifact-path allowlist check
+  - RQ-0022 add actual cross-review record generation path
 core_backlog_queue_feed:
   source_file: planning/EV4_CORE_PROJECT_BACKLOG.json
   integration_mode: queue_refresh_intake
@@ -188,6 +191,7 @@ pr_reconciliation_preflight_policy: done
 submitted_packet_source_kind_lock_check: done
 rq_0020_queue_refresh: done
 submitted_packet_artifact_path_allowlist_check: done
+actual_cross_review_generation_path: done
 ```
 
 ## Automation Reliability State
@@ -208,7 +212,7 @@ gemini_review_handling_counts_as_queue_task: false
 pending_ledger_intent_reconciliation_documented: true
 risk_based_merge_policy_required: true
 ci_must_include_rolling_queue_check: true
-actual_cross_review_generation_path: queued_as_RQ_0022
+actual_cross_review_generation_path: active
 core_project_backlog_file: planning/EV4_CORE_PROJECT_BACKLOG.json
 external_evidence_adapter_contract: queued_as_CORE_006
 ```

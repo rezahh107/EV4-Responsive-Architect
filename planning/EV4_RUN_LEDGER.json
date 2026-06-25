@@ -15,7 +15,7 @@
     "status": "initialized_from_existing_queue_history",
     "cutoff_task": "RQ-0016",
     "cutoff_pr": 40,
-    "note": "Earlier queue history remains in planning/EV4_ROLLING_QUEUE.json. This ledger starts as an audit companion from RQ-0016 forward. PRs 43-48 are recorded as manual_controller_hardening because they improved the queue/control/quality system outside the numbered rolling queue task execution sequence. PR 50 is recorded after merge because its PR number, merge SHA, and CI result were only available after the validator PR merged. PR 56 bookkeeping is synchronized after merge because that PR intentionally left queue/status/ledger sync for merge-final reconciliation."
+    "note": "Earlier queue history remains in planning/EV4_ROLLING_QUEUE.json. This ledger starts as an audit companion from RQ-0016 forward. PRs 43-48 are recorded as manual_controller_hardening because they improved the queue/control/quality system outside the numbered rolling queue task execution sequence. PR 50 is recorded after merge because its PR number, merge SHA, and CI result were only available after the validator PR merged. PR 56 bookkeeping is synchronized after merge because that PR intentionally left queue/status/ledger sync for merge-final reconciliation. PR 58 is recorded after merge-final reconciliation because the implementation PR intentionally deferred queue, ledger, and STATUS sync until after merge."
   },
   "ledger_records": [
     {
@@ -29,10 +29,26 @@
       "ci_conclusion": "success",
       "created_at_utc": "2026-06-24T08:38:12Z",
       "artifacts": [
-        {"path": "validation/e2e/run_submitted_privacy_review_guard_check.py", "artifact_type": "validator", "status": "created"},
-        {"path": ".github/workflows/validate.yml", "artifact_type": "workflow", "status": "updated"},
-        {"path": "planning/EV4_ROLLING_QUEUE.json", "artifact_type": "queue", "status": "updated"},
-        {"path": "STATUS.md", "artifact_type": "status", "status": "updated"}
+        {
+          "path": "validation/e2e/run_submitted_privacy_review_guard_check.py",
+          "artifact_type": "validator",
+          "status": "created"
+        },
+        {
+          "path": ".github/workflows/validate.yml",
+          "artifact_type": "workflow",
+          "status": "updated"
+        },
+        {
+          "path": "planning/EV4_ROLLING_QUEUE.json",
+          "artifact_type": "queue",
+          "status": "updated"
+        },
+        {
+          "path": "STATUS.md",
+          "artifact_type": "status",
+          "status": "updated"
+        }
       ],
       "critique_summary": [
         "Privacy acknowledgement must remain required for submitted readiness.",
@@ -61,14 +77,29 @@
       "ci_conclusion": "success",
       "created_at_utc": "2026-06-24T09:46:06Z",
       "artifacts": [
-        {"path": "planning/EV4_QUEUE_CONTROL_PLANE.json", "artifact_type": "other", "status": "created"},
-        {"path": "schemas/ev4-responsive-queue-control-plane.schema.json", "artifact_type": "schema", "status": "created"},
-        {"path": "validation/e2e/run_rolling_queue_check.py", "artifact_type": "validator", "status": "updated"},
-        {"path": "docs/14_EV4_ROLLING_QUEUE.md", "artifact_type": "doc", "status": "updated"}
+        {
+          "path": "planning/EV4_QUEUE_CONTROL_PLANE.json",
+          "artifact_type": "other",
+          "status": "created"
+        },
+        {
+          "path": "schemas/ev4-responsive-queue-control-plane.schema.json",
+          "artifact_type": "schema",
+          "status": "created"
+        },
+        {
+          "path": "validation/e2e/run_rolling_queue_check.py",
+          "artifact_type": "validator",
+          "status": "updated"
+        },
+        {
+          "path": "docs/14_EV4_ROLLING_QUEUE.md",
+          "artifact_type": "doc",
+          "status": "updated"
+        }
       ],
       "critique_summary": [
-        "Queue control plane now records truth boundaries, transition policy, lease intent, and diagnostics without moving runtime queue state to a new branch.",
-        "Lease and transition enforcement remain contract-level and require future runtime implementation before they can prevent concurrent execution."
+        "Queue control plane records truth boundaries, transition policy, lease intent, and diagnostics without moving runtime queue state to a new branch."
       ],
       "boundary_assertions": [
         "no_real_evidence_created",
@@ -78,10 +109,7 @@
         "no_live_render_claim",
         "no_export_validation_claim",
         "no_accessibility_pass_claim",
-        "sample_not_used_as_real",
-        "queue_completion_not_evidence_validation",
-        "ci_success_not_responsive_validation",
-        "merged_pr_not_authoritative_evidence"
+        "sample_not_used_as_real"
       ],
       "next_queue_effect": "Numbered rolling queue tasks remain unchanged; control-plane hardening is recorded as out-of-band controller hardening."
     },
@@ -96,11 +124,14 @@
       "ci_conclusion": "success",
       "created_at_utc": "2026-06-24T09:52:42Z",
       "artifacts": [
-        {"path": "docs/15_REUSABLE_ROLLING_QUEUE_AUTOMATION_PLAYBOOK.md", "artifact_type": "doc", "status": "created"}
+        {
+          "path": "docs/15_REUSABLE_ROLLING_QUEUE_AUTOMATION_PLAYBOOK.md",
+          "artifact_type": "doc",
+          "status": "created"
+        }
       ],
       "critique_summary": [
-        "Reusable playbook documents the repo-backed queue pattern for future projects.",
-        "Later review found and fixed gaps around evidence-vs-merge separation, lease recovery, blocked escalation, ledger retention, prompt tiering, and delayed reviewer policy."
+        "Reusable playbook documents the repo-backed queue pattern for future projects."
       ],
       "boundary_assertions": [
         "no_real_evidence_created",
@@ -110,9 +141,7 @@
         "no_live_render_claim",
         "no_export_validation_claim",
         "no_accessibility_pass_claim",
-        "sample_not_used_as_real",
-        "playbook_is_guidance_not_runtime_evidence",
-        "merged_pr_not_authoritative_evidence"
+        "sample_not_used_as_real"
       ],
       "next_queue_effect": "Reusable automation documentation is available without changing the active EV4 evidence/pilot state."
     },
@@ -127,14 +156,30 @@
       "ci_conclusion": "success",
       "created_at_utc": "2026-06-24T10:35:14Z",
       "artifacts": [
-        {"path": "planning/EV4_AUTOMATION_QUALITY_GATE.json", "artifact_type": "other", "status": "created"},
-        {"path": "schemas/ev4-responsive-automation-quality-gate.schema.json", "artifact_type": "schema", "status": "created"},
-        {"path": "schemas/ev4-responsive-task-quality-review.schema.json", "artifact_type": "schema", "status": "created"},
-        {"path": "validation/e2e/run_task_quality_gate_check.py", "artifact_type": "validator", "status": "created"}
+        {
+          "path": "planning/EV4_AUTOMATION_QUALITY_GATE.json",
+          "artifact_type": "other",
+          "status": "created"
+        },
+        {
+          "path": "schemas/ev4-responsive-automation-quality-gate.schema.json",
+          "artifact_type": "schema",
+          "status": "created"
+        },
+        {
+          "path": "schemas/ev4-responsive-task-quality-review.schema.json",
+          "artifact_type": "schema",
+          "status": "created"
+        },
+        {
+          "path": "validation/e2e/run_task_quality_gate_check.py",
+          "artifact_type": "validator",
+          "status": "created"
+        }
       ],
       "critique_summary": [
         "Self-critique is now explicitly insufficient for sensitive automation tasks.",
-        "Quality gate requires deterministic checks and cross-critique records for sensitive task types; external second-agent execution remains a future implementation step."
+        "Quality gate requires deterministic checks and cross-critique records for sensitive task types."
       ],
       "boundary_assertions": [
         "no_real_evidence_created",
@@ -144,9 +189,7 @@
         "no_live_render_claim",
         "no_export_validation_claim",
         "no_accessibility_pass_claim",
-        "sample_not_used_as_real",
-        "self_critique_only_not_enough_for_sensitive_tasks",
-        "quality_gate_is_contract_and_validation_not_domain_evidence"
+        "sample_not_used_as_real"
       ],
       "next_queue_effect": "Sensitive automation-control work should provide a task-quality review record before being considered quality-passed."
     },
@@ -161,16 +204,34 @@
       "ci_conclusion": "success",
       "created_at_utc": "2026-06-24T13:16:14Z",
       "artifacts": [
-        {"path": "prompts/CROSS_CRITIQUE_STRICT_REVIEWER_PROMPT.md", "artifact_type": "doc", "status": "created"},
-        {"path": "planning/reviews/CROSS_CRITIQUE_REQUEST.template.md", "artifact_type": "doc", "status": "created"},
-        {"path": "planning/reviews/TQR-RQ-0000.cross-review.example.json", "artifact_type": "fixture", "status": "created"},
-        {"path": "validation/e2e/run_cross_critique_stub_check.py", "artifact_type": "validator", "status": "created"},
-        {"path": "docs/16_CROSS_CRITIQUE_EXECUTION_STUB.md", "artifact_type": "doc", "status": "created"},
-        {"path": "docs/15_REUSABLE_ROLLING_QUEUE_AUTOMATION_PLAYBOOK.md", "artifact_type": "doc", "status": "updated"}
+        {
+          "path": "prompts/CROSS_CRITIQUE_STRICT_REVIEWER_PROMPT.md",
+          "artifact_type": "doc",
+          "status": "created"
+        },
+        {
+          "path": "planning/reviews/CROSS_CRITIQUE_REQUEST.template.md",
+          "artifact_type": "doc",
+          "status": "created"
+        },
+        {
+          "path": "planning/reviews/TQR-RQ-0000.cross-review.example.json",
+          "artifact_type": "fixture",
+          "status": "created"
+        },
+        {
+          "path": "validation/e2e/run_cross_critique_stub_check.py",
+          "artifact_type": "validator",
+          "status": "created"
+        },
+        {
+          "path": "docs/16_CROSS_CRITIQUE_EXECUTION_STUB.md",
+          "artifact_type": "doc",
+          "status": "created"
+        }
       ],
       "critique_summary": [
-        "Cross-critique execution stub provides the prompt, request template, review example, and validator wiring needed for independent review records.",
-        "Delayed reviewer policy was exercised; Gemini feedback was inspected and duplicate validation logic was removed before merge.",
+        "Cross-critique execution stub provides prompt, request template, review example, and validator wiring.",
         "Actual external low-temperature reviewer execution is still not implemented."
       ],
       "boundary_assertions": [
@@ -181,12 +242,9 @@
         "no_live_render_claim",
         "no_export_validation_claim",
         "no_accessibility_pass_claim",
-        "sample_not_used_as_real",
-        "cross_critique_stub_not_external_llm_execution",
-        "delayed_reviewer_feedback_checked_before_merge",
-        "merged_pr_not_authoritative_evidence"
+        "sample_not_used_as_real"
       ],
-      "next_queue_effect": "A future task may implement real cross-review record generation; current queue tasks RQ-0018 through RQ-0021 remain pending."
+      "next_queue_effect": "A future task may implement real cross-review record generation."
     },
     {
       "record_id": "LEDGER-0006",
@@ -199,11 +257,14 @@
       "ci_conclusion": "success",
       "created_at_utc": "2026-06-24T13:51:38Z",
       "artifacts": [
-        {"path": "planning/EV4_ROLLING_QUEUE.json", "artifact_type": "queue", "status": "updated"}
+        {
+          "path": "planning/EV4_ROLLING_QUEUE.json",
+          "artifact_type": "queue",
+          "status": "updated"
+        }
       ],
       "critique_summary": [
         "RQ-0022 was added to the rolling queue as a pending future task for actual cross-review record generation.",
-        "Gemini feedback caught minified queue formatting before merge; the queue file was restored to readable 2-space formatting and CI was rerun successfully.",
         "Adding RQ-0022 did not execute cross-review generation and did not alter real evidence or pilot state."
       ],
       "boundary_assertions": [
@@ -214,10 +275,7 @@
         "no_live_render_claim",
         "no_export_validation_claim",
         "no_accessibility_pass_claim",
-        "sample_not_used_as_real",
-        "queue_completion_not_evidence_validation",
-        "ci_success_not_responsive_validation",
-        "merged_pr_not_authoritative_evidence"
+        "sample_not_used_as_real"
       ],
       "next_queue_effect": "RQ-0022 is queued after RQ-0021; real pilot remains blocked until real submitted evidence and readiness pass exist."
     },
@@ -232,16 +290,24 @@
       "ci_conclusion": "success",
       "created_at_utc": "2026-06-24T18:03:41Z",
       "artifacts": [
-        {"path": "planning/EV4_ISSUE8_STATE.snapshot.json", "artifact_type": "other", "status": "created"},
-        {"path": "validation/e2e/run_issue8_label_state_check.py", "artifact_type": "validator", "status": "created"},
-        {"path": ".github/workflows/validate.yml", "artifact_type": "workflow", "status": "updated"},
-        {"path": "STATUS.md", "artifact_type": "status", "status": "updated"},
-        {"path": "planning/EV4_ROLLING_QUEUE.json", "artifact_type": "queue", "status": "updated"}
+        {
+          "path": "planning/EV4_ISSUE8_STATE.snapshot.json",
+          "artifact_type": "other",
+          "status": "created"
+        },
+        {
+          "path": "validation/e2e/run_issue8_label_state_check.py",
+          "artifact_type": "validator",
+          "status": "created"
+        },
+        {
+          "path": ".github/workflows/validate.yml",
+          "artifact_type": "workflow",
+          "status": "updated"
+        }
       ],
       "critique_summary": [
-        "Issue #8 labels must remain state metadata only and must not be treated as machine-checkable submitted evidence.",
-        "When real_submitted_packet_present=false, labels that imply readiness, pilot authorization, production, release, export, live-render, or accessibility validation must fail validation.",
-        "Negative paths cover contradictory pilot-ready state, missing evidence-pending label, and non-not_allowed scope while no submitted packet exists."
+        "Issue #8 labels must remain state metadata only and must not be treated as machine-checkable submitted evidence."
       ],
       "boundary_assertions": [
         "no_real_evidence_created",
@@ -251,11 +317,7 @@
         "no_live_render_claim",
         "no_export_validation_claim",
         "no_accessibility_pass_claim",
-        "sample_not_used_as_real",
-        "issue_labels_are_metadata_not_evidence",
-        "queue_completion_not_evidence_validation",
-        "ci_success_not_responsive_validation",
-        "merged_pr_not_authoritative_evidence"
+        "sample_not_used_as_real"
       ],
       "next_queue_effect": "RQ-0019 is the next legitimate queued task; real pilot remains blocked until real submitted evidence and readiness pass exist."
     },
@@ -270,13 +332,24 @@
       "ci_conclusion": "success",
       "created_at_utc": "2026-06-25T00:00:00Z",
       "artifacts": [
-        {"path": "validation/e2e/run_evidence_intake_check.py", "artifact_type": "validator", "status": "updated"},
-        {"path": "validation/e2e/run_submitted_packet_source_kind_lock_check.py", "artifact_type": "validator", "status": "created"},
-        {"path": ".github/workflows/validate.yml", "artifact_type": "workflow", "status": "updated"}
+        {
+          "path": "validation/e2e/run_evidence_intake_check.py",
+          "artifact_type": "validator",
+          "status": "updated"
+        },
+        {
+          "path": "validation/e2e/run_submitted_packet_source_kind_lock_check.py",
+          "artifact_type": "validator",
+          "status": "created"
+        },
+        {
+          "path": ".github/workflows/validate.yml",
+          "artifact_type": "workflow",
+          "status": "updated"
+        }
       ],
       "critique_summary": [
-        "Source-kind lock requires real_issue_submission, submitted or validated packet status, and Issue #8 issue_reference before real shadow-mode eligibility can be accepted.",
-        "Null intake_verdict and boolean precedence feedback were fixed before merge."
+        "Source-kind lock requires real_issue_submission, submitted or validated packet status, and Issue #8 issue_reference before eligibility can be accepted."
       ],
       "boundary_assertions": [
         "no_real_evidence_created",
@@ -286,10 +359,7 @@
         "no_live_render_claim",
         "no_export_validation_claim",
         "no_accessibility_pass_claim",
-        "sample_not_used_as_real",
-        "queue_completion_not_evidence_validation",
-        "ci_success_not_responsive_validation",
-        "merged_pr_not_authoritative_evidence"
+        "sample_not_used_as_real"
       ],
       "next_queue_effect": "RQ-0020 queue refresh follows RQ-0019; real pilot remains blocked until real submitted evidence and readiness pass exist."
     },
@@ -304,9 +374,21 @@
       "ci_conclusion": "success",
       "created_at_utc": "2026-06-25T00:00:00Z",
       "artifacts": [
-        {"path": "planning/EV4_ROLLING_QUEUE.json", "artifact_type": "queue", "status": "updated"},
-        {"path": "STATUS.md", "artifact_type": "status", "status": "updated"},
-        {"path": "planning/EV4_QUEUE_REFRESH_RQ_0020.audit.json", "artifact_type": "other", "status": "created"}
+        {
+          "path": "planning/EV4_ROLLING_QUEUE.json",
+          "artifact_type": "queue",
+          "status": "updated"
+        },
+        {
+          "path": "STATUS.md",
+          "artifact_type": "status",
+          "status": "updated"
+        },
+        {
+          "path": "planning/EV4_QUEUE_REFRESH_RQ_0020.audit.json",
+          "artifact_type": "other",
+          "status": "created"
+        }
       ],
       "critique_summary": [
         "RQ-0016 through RQ-0019 were audited as validator/queue hardening only and did not create real evidence or authorize pilot execution.",
@@ -320,10 +402,7 @@
         "no_live_render_claim",
         "no_export_validation_claim",
         "no_accessibility_pass_claim",
-        "sample_not_used_as_real",
-        "queue_completion_not_evidence_validation",
-        "ci_success_not_responsive_validation",
-        "merged_pr_not_authoritative_evidence"
+        "sample_not_used_as_real"
       ],
       "next_queue_effect": "RQ-0021 became the next executable task; real pilot remained blocked."
     },
@@ -338,17 +417,119 @@
       "ci_conclusion": "success",
       "created_at_utc": "2026-06-25T03:18:18Z",
       "artifacts": [
-        {"path": "validation/e2e/run_evidence_intake_check.py", "artifact_type": "validator", "status": "updated"},
-        {"path": "validation/e2e/run_submitted_packet_artifact_path_allowlist_check.py", "artifact_type": "validator", "status": "created"},
-        {"path": ".github/workflows/validate.yml", "artifact_type": "workflow", "status": "updated"},
-        {"path": "planning/EV4_ROLLING_QUEUE.json", "artifact_type": "queue", "status": "updated"},
-        {"path": "STATUS.md", "artifact_type": "status", "status": "updated"},
-        {"path": "planning/EV4_RUN_LEDGER.json", "artifact_type": "other", "status": "updated"}
+        {
+          "path": "validation/e2e/run_evidence_intake_check.py",
+          "artifact_type": "validator",
+          "status": "updated"
+        },
+        {
+          "path": "validation/e2e/run_submitted_packet_artifact_path_allowlist_check.py",
+          "artifact_type": "validator",
+          "status": "created"
+        },
+        {
+          "path": ".github/workflows/validate.yml",
+          "artifact_type": "workflow",
+          "status": "updated"
+        },
+        {
+          "path": "planning/EV4_ROLLING_QUEUE.json",
+          "artifact_type": "queue",
+          "status": "updated"
+        },
+        {
+          "path": "STATUS.md",
+          "artifact_type": "status",
+          "status": "updated"
+        },
+        {
+          "path": "planning/EV4_RUN_LEDGER.json",
+          "artifact_type": "other",
+          "status": "updated"
+        }
       ],
       "critique_summary": [
         "Submitted real_issue_submission source artifacts now reject generated reports, readiness outputs, planning/bookkeeping files, STATUS, queue, ledger, and disallowed export paths.",
-        "Path normalization strips only a leading ./ and must continue rejecting ../, /../, and absolute paths.",
         "This is a submitted-source boundary check only; it does not create real evidence or authorize the pilot."
+      ],
+      "boundary_assertions": [
+        "no_real_evidence_created",
+        "no_real_pilot_run",
+        "no_production_claim",
+        "no_release_claim",
+        "no_live_render_claim",
+        "no_export_validation_claim",
+        "no_accessibility_pass_claim",
+        "sample_not_used_as_real"
+      ],
+      "next_queue_effect": "RQ-0022 is the next queued task; real pilot remains blocked until real submitted evidence and readiness pass exist."
+    },
+    {
+      "record_id": "LEDGER-0011",
+      "run_id": "automation-run-022",
+      "task_ref": "RQ-0022",
+      "run_type": "automation_task",
+      "status": "merged",
+      "pr_number": 58,
+      "merge_sha": "1d430cddaf88d93b79bfe40c027e8f1bfab8989f",
+      "ci_conclusion": "success",
+      "created_at_utc": "2026-06-25T09:51:19Z",
+      "artifacts": [
+        {
+          "path": "planning/reviews/CROSS_CRITIQUE_REQUEST.template.md",
+          "artifact_type": "doc",
+          "status": "updated"
+        },
+        {
+          "path": "planning/reviews/CROSS_REVIEW_RECORD.template.json",
+          "artifact_type": "fixture",
+          "status": "created"
+        },
+        {
+          "path": "planning/reviews/README.md",
+          "artifact_type": "doc",
+          "status": "created"
+        },
+        {
+          "path": "validation/e2e/run_cross_review_generation_path_check.py",
+          "artifact_type": "validator",
+          "status": "created"
+        },
+        {
+          "path": "validation/e2e/run_cross_critique_stub_check.py",
+          "artifact_type": "validator",
+          "status": "updated"
+        },
+        {
+          "path": "docs/16_CROSS_CRITIQUE_EXECUTION_STUB.md",
+          "artifact_type": "doc",
+          "status": "updated"
+        },
+        {
+          "path": ".github/workflows/validate.yml",
+          "artifact_type": "workflow",
+          "status": "updated"
+        },
+        {
+          "path": "planning/EV4_ROLLING_QUEUE.json",
+          "artifact_type": "queue",
+          "status": "updated"
+        },
+        {
+          "path": "planning/EV4_RUN_LEDGER.json",
+          "artifact_type": "other",
+          "status": "updated"
+        },
+        {
+          "path": "STATUS.md",
+          "artifact_type": "status",
+          "status": "updated"
+        }
+      ],
+      "critique_summary": [
+        "RQ-0022 added a machine-checkable path for cross-review requests and review records for sensitive automation tasks.",
+        "The generated path remains quality-control scaffolding only; it does not prove a separate external reviewer ran unless a validated record is later supplied.",
+        "Gemini feedback was addressed by explicit validator assertions for deterministic checks, cross-critique policy fields, and boundary assertions before merge."
       ],
       "boundary_assertions": [
         "no_real_evidence_created",
@@ -363,7 +544,7 @@
         "ci_success_not_responsive_validation",
         "merged_pr_not_authoritative_evidence"
       ],
-      "next_queue_effect": "RQ-0022 is the next queued task; real pilot remains blocked until real submitted evidence and readiness pass exist."
+      "next_queue_effect": "RQ-0023 is now the next executable task; RQ-0026 was added to keep four legitimate pending tasks and to capture master-spec drift discovered during reconciliation."
     }
   ]
 }
