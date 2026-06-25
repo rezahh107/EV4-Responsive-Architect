@@ -2,7 +2,7 @@
 
 ```yaml
 project: EV4 Responsive Architect
-version: 0.2.30-rq-0020-queue-refresh
+version: 0.2.31-rq-0021-bookkeeping-sync
 status: rolling_queue_controller_active
 production_ready: false
 prompt_pack_release_ready: false
@@ -67,6 +67,7 @@ Allowed now:
 - PR reconciliation preflight policy validation
 - submitted packet source-kind lock validation
 - post-source-kind-lock queue refresh
+- submitted packet artifact-path allowlist validation
 ```
 
 Forbidden now:
@@ -124,14 +125,13 @@ controller_policy:
 
 ```yaml
 next_tasks:
-  - RQ-0021 add submitted packet artifact-path allowlist check
   - RQ-0022 add actual cross-review record generation path
   - RQ-0023 add submitted packet issue-reference consistency check
   - RQ-0024 add submitted packet freshness and sample-marker rejection check
 completed_this_run:
-  - RQ-0020 refresh rolling queue after submitted-packet guard set
+  - RQ-0021 add submitted packet artifact-path allowlist check bookkeeping sync
 last_completed_queue_task:
-  - RQ-0019 add submitted packet source-kind lock check
+  - RQ-0021 add submitted packet artifact-path allowlist check
 core_backlog_queue_feed:
   source_file: planning/EV4_CORE_PROJECT_BACKLOG.json
   integration_mode: queue_refresh_intake
@@ -187,6 +187,7 @@ issue8_label_state_consistency_check: done
 pr_reconciliation_preflight_policy: done
 submitted_packet_source_kind_lock_check: done
 rq_0020_queue_refresh: done
+submitted_packet_artifact_path_allowlist_check: done
 ```
 
 ## Automation Reliability State
