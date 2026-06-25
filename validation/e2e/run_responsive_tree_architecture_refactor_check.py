@@ -31,6 +31,10 @@ files = [
     'validation/fixtures/valid/responsive_output_same_tree.valid.json',
     'validation/fixtures/valid/responsive_output_viewport_tree.valid.json',
     'validation/fixtures/valid/responsive_output_hybrid.valid.json',
+    'validation/fixtures/invalid/responsive_output_missing_forbidden_claims.invalid.json',
+    'validation/fixtures/invalid/responsive_output_empty_steps.invalid.json',
+    'validation/fixtures/invalid/responsive_output_duplicate_step_id.invalid.json',
+    'validation/fixtures/invalid/responsive_output_route_mode_mismatch.invalid.json',
 ]
 
 terms = [
@@ -41,38 +45,68 @@ terms = [
     'blocked_pending_input',
 ]
 
-fixture_paths = [
+valid_fixture_paths = [
     'validation/fixtures/valid/responsive_output_same_tree.valid.json',
     'validation/fixtures/valid/responsive_output_viewport_tree.valid.json',
     'validation/fixtures/valid/responsive_output_hybrid.valid.json',
 ]
 
+invalid_fixture_paths = [
+    'validation/fixtures/invalid/responsive_output_missing_forbidden_claims.invalid.json',
+    'validation/fixtures/invalid/responsive_output_empty_steps.invalid.json',
+    'validation/fixtures/invalid/responsive_output_duplicate_step_id.invalid.json',
+    'validation/fixtures/invalid/responsive_output_route_mode_mismatch.invalid.json',
+]
+
+route_to_mode = {
+    'same_tree_responsive_overrides': 'same_tree',
+    'viewport_specific_variant_tree': 'viewport_tree',
+    'hybrid_split_architecture': 'hybrid',
+    'blocked_pending_input': 'blocked',
+}
+
 
 def assert_builder_handoff_steps(payload, fixture_path):
     steps = payload.get('builder_handoff', {}).get('steps', [])
     if not steps:
-        print('builder_handoff.steps cannot be empty:', fixture_path)
-        raise SystemExit(1)
+        raise ValueError(f'builder_handoff.steps cannot be empty: {fixture_path}')
 
     step_ids = []
     for index, step in enumerate(steps, start=1):
         step_id = step.get('step_id')
         if not step_id:
-            print('Missing step_id at index', index, 'in', fixture_path)
-            raise SystemExit(1)
+            raise ValueError(f'Missing step_id at index {index} in {fixture_path}')
         step_ids.append(step_id)
 
         parts = step_id.split('-')
         if len(parts) != 2 or not parts[0] or not parts[1].isdigit():
-            print('Invalid step_id format:', step_id, 'in', fixture_path)
-            raise SystemExit(1)
+            raise ValueError(f'Invalid step_id format: {step_id} in {fixture_path}')
         if int(parts[1]) != index:
-            print('Non-sequential step_id:', step_id, 'in', fixture_path)
-            raise SystemExit(1)
+            raise ValueError(f'Non-sequential step_id: {step_id} in {fixture_path}')
 
     if len(step_ids) != len(set(step_ids)):
-        print('Duplicate step_ids in', fixture_path)
-        raise SystemExit(1)
+        raise ValueError(f'Duplicate step_ids in {fixture_path}')
+
+
+def assert_route_mode_consistency(payload, fixture_path):
+    route = payload.get('selected_route')
+    mode = payload.get('responsive_tree_output', {}).get('mode')
+    expected_mode = route_to_mode.get(route)
+    if expected_mode != mode:
+        raise ValueError(
+            f'Route/mode mismatch in {fixture_path}: route={route}, mode={mode}, expected={expected_mode}'
+        )
+
+
+def validate_payload(payload, fixture_path, validator):
+    errors = sorted(validator.iter_errors(payload), key=lambda error: list(error.path))
+    if errors:
+        details = '; '.join(
+            f"{'/'.join(str(part) for part in error.path)} {error.message}" for error in errors
+        )
+        raise ValueError(f'Schema validation failed for {fixture_path}: {details}')
+    assert_builder_handoff_steps(payload, fixture_path)
+    assert_route_mode_consistency(payload, fixture_path)
 
 
 missing = [p for p in files if not (ROOT / p).is_file()]
@@ -94,15 +128,13 @@ Draft202012Validator.check_schema(schema)
 validator = Draft202012Validator(schema)
 
 seen_routes = set()
-for fixture_path in fixture_paths:
+for fixture_path in valid_fixture_paths:
     payload = json.loads((ROOT / fixture_path).read_text(encoding='utf-8'))
-    errors = sorted(validator.iter_errors(payload), key=lambda error: list(error.path))
-    if errors:
-        print('Fixture failed schema validation:', fixture_path)
-        for error in errors:
-            print('-', '/'.join(str(part) for part in error.path), error.message)
+    try:
+        validate_payload(payload, fixture_path, validator)
+    except ValueError as error:
+        print(error)
         raise SystemExit(1)
-    assert_builder_handoff_steps(payload, fixture_path)
     seen_routes.add(payload['selected_route'])
 
 expected_routes = {
@@ -112,6 +144,15 @@ expected_routes = {
 }
 if seen_routes != expected_routes:
     print('Route fixture coverage mismatch:', sorted(seen_routes))
+    raise SystemExit(1)
+
+for fixture_path in invalid_fixture_paths:
+    payload = json.loads((ROOT / fixture_path).read_text(encoding='utf-8'))
+    try:
+        validate_payload(payload, fixture_path, validator)
+    except ValueError:
+        continue
+    print('Invalid fixture unexpectedly passed:', fixture_path)
     raise SystemExit(1)
 
 print('Responsive tree architecture refactor check passed.')
