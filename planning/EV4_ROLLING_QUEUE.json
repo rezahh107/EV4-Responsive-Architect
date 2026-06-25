@@ -95,7 +95,7 @@
       "task_id": "RTAQ-0002",
       "cycle_position": 2,
       "task_type": "validator_hardening",
-      "status": "pending",
+      "status": "merged",
       "title": "Submitted packet eligibility gate hardening",
       "objective": "Add one broader eligibility gate covering issue-reference consistency, submitted-state consistency, stale-state rejection, sample-marker rejection, and placeholder-hash rejection for submitted packets.",
       "allowed_work": [
@@ -125,7 +125,26 @@
       "critique_required": true,
       "dependencies": [
         "RTAQ-0001"
-      ]
+      ],
+      "completed_pr": 67,
+      "completion": {
+        "run_id": "merge-final-rtaq-0002-pr-67",
+        "status": "merged",
+        "artifacts": [
+          "validation/e2e/run_submitted_packet_eligibility_gate_check.py",
+          "validation/fixtures/invalid/submitted_packet_eligibility_wrong_issue_ref.invalid.json",
+          "validation/fixtures/invalid/submitted_packet_eligibility_stale_state.invalid.json",
+          "validation/fixtures/invalid/submitted_packet_eligibility_sample_marker.invalid.json",
+          "validation/fixtures/invalid/submitted_packet_eligibility_placeholder_hash.invalid.json",
+          "validation/e2e/run_responsive_tree_architecture_refactor_check.py"
+        ],
+        "critique_findings": [
+          "Gemini correctly identified a misleading rejection path for missing or non-string payload_identity_hash.",
+          "The validator now rejects missing or invalid payload identity hashes with a specific payload identity hash error before placeholder-hash checks.",
+          "CI success remains repository-check evidence only, not responsive correctness evidence."
+        ],
+        "boundary": "No submitted evidence, Issue #8 mutation, real pilot execution, readiness claim upgrade, or production/release claim upgrade."
+      }
     },
     {
       "task_id": "RTAQ-0003",
