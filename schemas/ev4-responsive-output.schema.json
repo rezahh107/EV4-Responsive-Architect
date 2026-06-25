@@ -1,0 +1,193 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ev4-responsive-architect.local/schemas/ev4-responsive-output.schema.json",
+  "title": "EV4 Responsive Output",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "source_packet_ref",
+    "selected_route",
+    "relationship_classification_ref",
+    "responsive_tree_output",
+    "display_contract",
+    "builder_handoff",
+    "validation_plan",
+    "final_review",
+    "unresolved_unknowns",
+    "forbidden_claims"
+  ],
+  "properties": {
+    "schema": {
+      "const": "ev4-responsive-output@0.3.0"
+    },
+    "source_packet_ref": {
+      "type": "string",
+      "minLength": 1
+    },
+    "selected_route": {
+      "enum": [
+        "same_tree_responsive_overrides",
+        "viewport_specific_variant_tree",
+        "hybrid_split_architecture",
+        "blocked_pending_input"
+      ]
+    },
+    "relationship_classification_ref": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["classification", "confidence"],
+      "properties": {
+        "classification": {
+          "enum": [
+            "same_section_adaptation",
+            "viewport_specific_variant",
+            "hybrid_split",
+            "unresolved_requires_designer_input"
+          ]
+        },
+        "confidence": {
+          "enum": ["high", "medium", "low", "unknown"]
+        },
+        "evidence_refs": {
+          "type": "array",
+          "items": {"type": "string"}
+        }
+      }
+    },
+    "responsive_tree_output": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mode", "summary"],
+      "properties": {
+        "mode": {
+          "enum": ["same_tree", "viewport_tree", "hybrid", "blocked"]
+        },
+        "summary": {
+          "type": "string",
+          "minLength": 1
+        },
+        "tree_ref": {
+          "type": ["string", "null"]
+        },
+        "breakpoint_overrides": {
+          "type": "object"
+        },
+        "viewport_tree": {
+          "type": "object"
+        },
+        "composite_plan": {
+          "type": "object"
+        }
+      }
+    },
+    "display_contract": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["breakpoint_scope", "display_rules"],
+      "properties": {
+        "breakpoint_scope": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["desktop", "tablet", "mobile"],
+          "properties": {
+            "desktop": {"type": "string"},
+            "tablet": {"type": "string"},
+            "mobile": {"type": "string"}
+          }
+        },
+        "display_rules": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["node_ref", "desktop", "tablet", "mobile", "reason"],
+            "properties": {
+              "node_ref": {"type": "string"},
+              "desktop": {"enum": ["active", "inactive", "inherited", "unknown"]},
+              "tablet": {"enum": ["active", "inactive", "inherited", "unknown"]},
+              "mobile": {"enum": ["active", "inactive", "inherited", "unknown"]},
+              "reason": {"type": "string"}
+            }
+          }
+        },
+        "content_policy": {"type": "string"},
+        "sync_policy": {"type": "string"}
+      }
+    },
+    "builder_handoff": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mode", "steps"],
+      "properties": {
+        "mode": {
+          "enum": [
+            "same_tree_responsive_overrides",
+            "viewport_specific_variant_tree",
+            "hybrid_split_architecture",
+            "blocked_pending_input"
+          ]
+        },
+        "steps": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["step_id", "target_node", "viewport", "action", "expected_result"],
+            "properties": {
+              "step_id": {"type": "string"},
+              "target_node": {"type": "string"},
+              "viewport": {"enum": ["desktop", "tablet", "mobile", "all", "n/a"]},
+              "action": {"type": "string"},
+              "expected_result": {"type": "string"}
+            }
+          }
+        }
+      }
+    },
+    "validation_plan": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["required_checks", "evidence_to_collect", "claim_boundary"],
+      "properties": {
+        "required_checks": {
+          "type": "array",
+          "items": {"type": "string"}
+        },
+        "evidence_to_collect": {
+          "type": "array",
+          "items": {"type": "string"}
+        },
+        "claim_boundary": {
+          "type": "string"
+        }
+      }
+    },
+    "final_review": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["handoff_ready", "reason"],
+      "properties": {
+        "handoff_ready": {"type": "boolean"},
+        "reason": {"type": "string"}
+      }
+    },
+    "unresolved_unknowns": {
+      "type": "array",
+      "items": {"type": "string"}
+    },
+    "forbidden_claims": {
+      "type": "array",
+      "items": {
+        "enum": [
+          "production_ready",
+          "release_ready",
+          "pixel_perfect",
+          "export_validated",
+          "live_render_validated",
+          "accessibility_passed"
+        ]
+      }
+    }
+  }
+}
