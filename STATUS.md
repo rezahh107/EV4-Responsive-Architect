@@ -74,8 +74,14 @@ ci_success_claim_boundary: repository checks passed only; not responsive correct
 ## Queue Boundary
 
 ```yaml
+active_queue_file: planning/EV4_ROLLING_QUEUE.json
+active_queue_lineage: RTAQ
+active_queue_reset_task: RTAQ-0001
+legacy_rq_lineage_status: archived_non_authoritative_history
+legacy_rq_pending_driver_removed: true
 rq_0023_started: false
-reason: RQ-0023 remains blocked until post-merge documentation synchronization is cleanly reconciled.
+next_post_refactor_task_after_reset: RTAQ-0002
+reason: The old RQ-0023/RQ-0024/RQ-0025/RQ-0026 lineage is no longer the active driver after the responsive-tree refactor; submitted-packet issue-reference work may be reintroduced only as RTAQ-0002 after the queue reset is merged and reconciled.
 ```
 
 ## Release Boundary

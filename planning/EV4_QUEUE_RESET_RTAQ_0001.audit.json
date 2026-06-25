@@ -1,0 +1,42 @@
+{
+  "schema": "ev4-queue-reset-audit@1.0.0",
+  "audit_id": "QUEUE-RESET-RTAQ-0001",
+  "project": "EV4 Responsive Architect",
+  "reset_context": {
+    "from_status": "responsive_tree_architecture_active_on_main",
+    "previous_active_queue_file": "planning/EV4_ROLLING_QUEUE.json",
+    "previous_queue_blob_sha": "eece99ad7fb8a835c9a79e6b7ba2ac378736b122",
+    "previous_lineage": "RQ-0001 through RQ-0026",
+    "previous_pending_driver": [
+      "RQ-0023",
+      "RQ-0024",
+      "RQ-0025",
+      "RQ-0026"
+    ],
+    "new_active_lineage": "RTAQ-0001 through RTAQ-0007"
+  },
+  "historical_preservation": {
+    "legacy_queue_history_status": "preserved_in_git_history_and_run_ledger",
+    "legacy_queue_is_authoritative_driver": false,
+    "legacy_ledger_records_remain_authoritative_history": true,
+    "legacy_pending_tasks_are_superseded_by_post_refactor_queue": true
+  },
+  "boundary_assertions": [
+    "no_submitted_evidence_created",
+    "issue_8_not_modified",
+    "real_pilot_not_run_or_authorized",
+    "no_production_claim",
+    "no_release_claim",
+    "no_live_render_claim",
+    "no_export_validation_claim",
+    "no_accessibility_pass_claim",
+    "no_pixel_claim",
+    "ci_success_is_repository_check_only"
+  ],
+  "active_queue_policy": {
+    "task_prefix": "RTAQ",
+    "first_task": "RTAQ-0001",
+    "first_task_meaning": "queue-system reset and reconciliation",
+    "old_rq_0023_not_started": true
+  }
+}

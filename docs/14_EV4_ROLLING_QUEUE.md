@@ -1,11 +1,11 @@
 # EV4 Rolling Queue Controller
 
-Version: 1.2.0
-Status: active_with_control_plane_and_run_ledger
+Version: 1.3.0
+Status: active_with_control_plane_run_ledger_and_post_refactor_rtaq_lineage
 
 ## Purpose
 
-The rolling queue keeps the EV4 Responsive Architect project moving without losing state between hourly automation runs.
+The rolling queue keeps the EV4 Responsive Architect project moving without losing state between automation or manual-controller runs.
 
 The queue is an execution-control tool. It is not an evidence authority.
 
@@ -36,6 +36,12 @@ The run ledger is stored in:
 planning/EV4_RUN_LEDGER.json
 ```
 
+The queue reset audit is stored in:
+
+```text
+planning/EV4_QUEUE_RESET_RTAQ_0001.audit.json
+```
+
 The queue and control plane are validated by:
 
 ```bash
@@ -48,9 +54,20 @@ The run ledger is validated by:
 python validation/e2e/run_run_ledger_check.py
 ```
 
+## Post-Refactor Queue Lineage
+
+After the responsive-tree architecture refactor, the active queue uses the `RTAQ` task prefix.
+
+```text
+RTAQ-* = active post-refactor responsive-tree architecture queue
+RQ-*   = legacy pre-refactor queue history unless explicitly reintroduced by the active queue
+```
+
+The old `RQ-0023` through `RQ-0026` pending lineage is no longer the active project driver. Those tasks are preserved as historical context through git history, the run ledger, and the queue-reset audit. New work must be selected from the active `RTAQ-*` queue.
+
 ## Operating Model
 
-Each automation run must execute exactly one bounded task from the queue.
+Each controller run must execute exactly one bounded task from the queue.
 
 After the task is complete, the same run must critique that task. Small fixes are allowed only when they are inside the same task scope.
 
@@ -58,7 +75,7 @@ The fifth task in each active cycle is always a queue-refresh task. It audits th
 
 ## Control-Plane Boundary
 
-The queue control plane records rules that the automation must obey before executing a task:
+The queue control plane records rules that the controller must obey before executing a task:
 
 ```text
 - the queue cannot create or upgrade evidence truth
@@ -73,7 +90,7 @@ This step intentionally does not move runtime queue state to a dedicated branch.
 ## Queue Rules
 
 ```text
-- one task per automation run
+- one task per controller run
 - same-task critique required
 - at least four pending tasks while queue_status is active
 - every fifth active-cycle task must be queue_refresh
@@ -135,6 +152,8 @@ A ledger record must include:
 
 The ledger is not a replacement for the queue. It is an audit companion that prevents completed tasks from being recorded only as generic merged artifacts.
 
+Legacy `RQ-*` ledger records remain historical records after the `RTAQ` reset. They do not drive the active queue unless the live queue explicitly reintroduces them.
+
 ## Status Values
 
 ```text
@@ -161,13 +180,14 @@ schema_hardening
 pilot_preparation
 real_evidence_execution
 queue_refresh
+evidence_boundary
 ```
 
 `real_evidence_execution` tasks must explicitly require real evidence.
 
 ## Live Queue Source
 
-Do not copy the current task list into this document. The live cycle changes as automation runs.
+Do not copy the current task list into this document. The live cycle changes as controller runs.
 
 Read the current queue from:
 
