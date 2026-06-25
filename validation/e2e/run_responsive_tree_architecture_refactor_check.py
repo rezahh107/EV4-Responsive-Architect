@@ -47,6 +47,34 @@ fixture_paths = [
     'validation/fixtures/valid/responsive_output_hybrid.valid.json',
 ]
 
+
+def assert_builder_handoff_steps(payload, fixture_path):
+    steps = payload.get('builder_handoff', {}).get('steps', [])
+    if not steps:
+        print('builder_handoff.steps cannot be empty:', fixture_path)
+        raise SystemExit(1)
+
+    step_ids = []
+    for index, step in enumerate(steps, start=1):
+        step_id = step.get('step_id')
+        if not step_id:
+            print('Missing step_id at index', index, 'in', fixture_path)
+            raise SystemExit(1)
+        step_ids.append(step_id)
+
+        parts = step_id.split('-')
+        if len(parts) != 2 or not parts[0] or not parts[1].isdigit():
+            print('Invalid step_id format:', step_id, 'in', fixture_path)
+            raise SystemExit(1)
+        if int(parts[1]) != index:
+            print('Non-sequential step_id:', step_id, 'in', fixture_path)
+            raise SystemExit(1)
+
+    if len(step_ids) != len(set(step_ids)):
+        print('Duplicate step_ids in', fixture_path)
+        raise SystemExit(1)
+
+
 missing = [p for p in files if not (ROOT / p).is_file()]
 if missing:
     print('Missing responsive tree files:')
@@ -74,6 +102,7 @@ for fixture_path in fixture_paths:
         for error in errors:
             print('-', '/'.join(str(part) for part in error.path), error.message)
         raise SystemExit(1)
+    assert_builder_handoff_steps(payload, fixture_path)
     seen_routes.add(payload['selected_route'])
 
 expected_routes = {
