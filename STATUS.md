@@ -15,6 +15,7 @@ merged_foundation:
   - PR #61 responsive output schema and route fixtures
   - PR #62 responsive output negative validation fixtures
   - PR #63 validator hardening and restored coverage checks
+  - PR #65 post-refactor active queue reset
 ```
 
 ## Current Phase
@@ -22,7 +23,7 @@ merged_foundation:
 ```yaml
 current_phase:
   name: post_merge_refactor_hardening
-  goal: keep the merged responsive-tree architecture path synchronized while preserving evidence and pilot boundaries
+  goal: execute larger bounded post-refactor responsive-tree tasks while preserving evidence and pilot boundaries
 ```
 
 ## Active Refactor Source of Truth
@@ -41,26 +42,6 @@ active_validation:
   - validation/e2e/run_responsive_tree_architecture_refactor_check.py
 ```
 
-## Current Pipeline
-
-```text
-/responsive-start-packet-ingest
-/responsive-design-intake
-/viewport-source-ledger
-/section-relationship-classification
-/elementor-strategy-routing
-/responsive-tree-ownership-contract
-/same-tree-responsive-derivation
-/viewport-tree-architecture
-/composite-responsive-plan
-/display-and-breakpoint-contract
-/content-accessibility-duplication-gate
-/responsive-builder-handoff
-/responsive-validation-plan
-/responsive-final-review
-/responsive-output-package
-```
-
 ## CI Boundary
 
 ```yaml
@@ -77,34 +58,22 @@ ci_success_claim_boundary: repository checks passed only; not responsive correct
 active_queue_file: planning/EV4_ROLLING_QUEUE.json
 active_queue_lineage: RTAQ
 active_queue_reset_task: RTAQ-0001
+active_queue_reset_status: merged
+active_queue_reset_pr: 65
+active_queue_reset_merge_sha: 7dd76a1952466ae723183643b413501b94dbdbc5
 legacy_rq_lineage_status: archived_non_authoritative_history
 legacy_rq_pending_driver_removed: true
+next_executable_task: RTAQ-0002
+rtaq_0002_started: false
 rq_0023_started: false
-next_post_refactor_task_after_reset: RTAQ-0002
-reason: The old RQ-0023/RQ-0024/RQ-0025/RQ-0026 lineage is no longer the active driver after the responsive-tree refactor; submitted-packet issue-reference work may be reintroduced only as RTAQ-0002 after the queue reset is merged and reconciled.
+reason: RTAQ-0001 is merged and reconciled. RTAQ-0002 is the next executable post-refactor task but has not been executed by merge-final bookkeeping.
 ```
 
-## Release Boundary
-
-Forbidden now:
-
-```text
-- production-ready claim
-- release-ready claim
-- pixel-perfect claim
-- export-validated claim
-- live-render-validated claim
-- accessibility-passed claim
-- treating route selection as validation evidence
-- treating CI success or merged PR as authoritative responsive evidence
-- treating desktop-only evidence as tablet/mobile evidence
-- treating the upstream EV4 packet route seed as final responsive truth
-```
-
-## Real Evidence State
+## Evidence Boundary
 
 ```yaml
 real_submitted_packet_present: false
 pilot_allowed_to_start: false
-reason: This refactor defines and hardens the architecture pipeline only; it does not create real Elementor render/export/accessibility evidence.
+ci_success_claim_boundary: repository checks only
+readiness_claims_upgraded: false
 ```
