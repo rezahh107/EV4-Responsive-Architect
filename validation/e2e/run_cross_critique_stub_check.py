@@ -16,6 +16,7 @@ ROOT = Path(__file__).resolve().parents[2]
 PROMPT = ROOT / "prompts" / "CROSS_CRITIQUE_STRICT_REVIEWER_PROMPT.md"
 REQUEST_TEMPLATE = ROOT / "planning" / "reviews" / "CROSS_CRITIQUE_REQUEST.template.md"
 REVIEW_EXAMPLE = ROOT / "planning" / "reviews" / "TQR-RQ-0000.cross-review.example.json"
+REVIEW_RECORD_TEMPLATE = ROOT / "planning" / "reviews" / "CROSS_REVIEW_RECORD.template.json"
 REVIEW_SCHEMA = ROOT / "schemas" / "ev4-responsive-task-quality-review.schema.json"
 
 REQUIRED_PROMPT_TERMS = {
@@ -32,6 +33,7 @@ REQUIRED_REQUEST_TERMS = {
     "required_output_schema: ev4-responsive-task-quality-review@1.0.0",
     "task_sensitivity: sensitive",
     "reviewer_role: strict_pessimistic_reviewer",
+    "review_record_path: planning/reviews/TQR-{TASK_REF}.cross-review.json",
 }
 
 
@@ -57,10 +59,15 @@ def main() -> int:
         require_terms(prompt_text, REQUIRED_PROMPT_TERMS, "cross-critique reviewer prompt")
         require_terms(request_text, REQUIRED_REQUEST_TERMS, "cross-critique request template")
 
-        review = load_json(REVIEW_EXAMPLE)
         schema = load_json(REVIEW_SCHEMA)
+        review = load_json(REVIEW_EXAMPLE)
         assert_schema_valid(review, schema, "cross-critique review example")
         semantic_validate_review(review)
+
+        record_template = load_json(REVIEW_RECORD_TEMPLATE)
+        assert_schema_valid(record_template, schema, "cross-review record template")
+        if record_template["completion_allowed"] is not False:
+            raise QualityGateError("cross-review record template must block completion until completed")
     except QualityGateError as exc:
         print(f"cross-critique stub validation failed: {exc}")
         return 1
