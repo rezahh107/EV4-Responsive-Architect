@@ -124,6 +124,11 @@ def assert_step_integrity(payload, path):
         prefix, sep, suffix = step_id.partition('-')
         if not prefix or sep != '-' or not suffix.isdigit():
             raise ValueError(f'Invalid step_id format: {step_id} in {path}')
+    first_prefix = None
+    for index, step_id in enumerate(step_ids, start=1):
+        prefix, sep, suffix = step_id.partition('-')
+        if not prefix or sep != '-' or not suffix.isdigit():
+            raise ValueError(f'Invalid step_id format: {step_id} in {path}')
         if first_prefix is None:
             first_prefix = prefix
         elif prefix != first_prefix:
