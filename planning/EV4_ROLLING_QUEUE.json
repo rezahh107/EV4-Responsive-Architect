@@ -22,7 +22,8 @@
       "RTAQ-0002",
       "RTAQ-0003",
       "RTAQ-0004",
-      "RTAQ-0005"
+      "RTAQ-0005",
+      "RTAQ-0006"
     ]
   },
   "tasks": [
@@ -95,7 +96,7 @@
       "task_id": "RTAQ-0002",
       "cycle_position": 2,
       "task_type": "validator_hardening",
-      "status": "pending",
+      "status": "merged",
       "title": "Submitted packet eligibility gate hardening",
       "objective": "Add one broader eligibility gate covering issue-reference consistency, submitted-state consistency, stale-state rejection, sample-marker rejection, and placeholder-hash rejection for submitted packets.",
       "allowed_work": [
@@ -125,7 +126,26 @@
       "critique_required": true,
       "dependencies": [
         "RTAQ-0001"
-      ]
+      ],
+      "completed_pr": 67,
+      "completion": {
+        "run_id": "merge-final-rtaq-0002-pr-67",
+        "status": "merged",
+        "artifacts": [
+          "validation/e2e/run_submitted_packet_eligibility_gate_check.py",
+          "validation/fixtures/invalid/submitted_packet_eligibility_wrong_issue_ref.invalid.json",
+          "validation/fixtures/invalid/submitted_packet_eligibility_stale_state.invalid.json",
+          "validation/fixtures/invalid/submitted_packet_eligibility_sample_marker.invalid.json",
+          "validation/fixtures/invalid/submitted_packet_eligibility_placeholder_hash.invalid.json",
+          "validation/e2e/run_responsive_tree_architecture_refactor_check.py"
+        ],
+        "critique_findings": [
+          "Gemini correctly identified a misleading rejection path for missing or non-string payload_identity_hash.",
+          "The validator now rejects missing or invalid payload identity hashes with a specific payload identity hash error before placeholder-hash checks.",
+          "CI success remains repository-check evidence only, not responsive correctness evidence."
+        ],
+        "boundary": "No submitted evidence, Issue #8 mutation, real pilot execution, readiness claim upgrade, or production/release claim upgrade."
+      }
     },
     {
       "task_id": "RTAQ-0003",
@@ -230,6 +250,40 @@
         "RTAQ-0002",
         "RTAQ-0003",
         "RTAQ-0004"
+      ]
+    },
+    {
+      "task_id": "RTAQ-0006",
+      "cycle_position": 6,
+      "task_type": "repo_sync",
+      "status": "pending",
+      "title": "Post-refresh execution boundary hardening",
+      "objective": "Reserve the first post-refresh bounded task slot for hardening any execution-boundary drift identified by RTAQ-0005 without creating evidence or authorizing pilot work.",
+      "allowed_work": [
+        "Harden docs, validators, queue, ledger, or status records only when RTAQ-0005 identifies bounded execution-boundary drift.",
+        "Keep the task narrow and evidence-boundary preserving.",
+        "Use branch, PR, CI, and critique workflow before merge."
+      ],
+      "forbidden_work": [
+        "Do not create submitted evidence.",
+        "Do not modify Issue #8.",
+        "Do not run or authorize the real pilot.",
+        "Do not upgrade readiness, production, release, live-render, export, accessibility, or pixel claims."
+      ],
+      "requires_real_evidence": false,
+      "expected_artifacts": [
+        "Bounded post-refresh hardening patch if RTAQ-0005 identifies drift",
+        "Queue/ledger/status reconciliation if required",
+        "CI result"
+      ],
+      "acceptance_criteria": [
+        "Task is only executed after RTAQ-0005 refresh completes.",
+        "Any patch is limited to bounded execution-boundary drift.",
+        "Evidence-pending and pilot-blocked boundaries remain visible."
+      ],
+      "critique_required": true,
+      "dependencies": [
+        "RTAQ-0005"
       ]
     }
   ],

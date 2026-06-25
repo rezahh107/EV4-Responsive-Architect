@@ -16,6 +16,7 @@ merged_foundation:
   - PR #62 responsive output negative validation fixtures
   - PR #63 validator hardening and restored coverage checks
   - PR #65 post-refactor active queue reset
+  - PR #67 submitted packet eligibility gate hardening
 ```
 
 ## Current Phase
@@ -40,6 +41,7 @@ active_schema:
   - schemas/ev4-responsive-output.schema.json
 active_validation:
   - validation/e2e/run_responsive_tree_architecture_refactor_check.py
+  - validation/e2e/run_submitted_packet_eligibility_gate_check.py
 ```
 
 ## CI Boundary
@@ -61,12 +63,17 @@ active_queue_reset_task: RTAQ-0001
 active_queue_reset_status: merged
 active_queue_reset_pr: 65
 active_queue_reset_merge_sha: 7dd76a1952466ae723183643b413501b94dbdbc5
+latest_completed_task: RTAQ-0002
+latest_completed_pr: 67
+latest_completed_merge_sha: 1d0350c6b628dc18361479c60aea49fcc5c3acd5
 legacy_rq_lineage_status: archived_non_authoritative_history
 legacy_rq_pending_driver_removed: true
-next_executable_task: RTAQ-0002
-rtaq_0002_started: false
+next_executable_task: RTAQ-0003
+rtaq_0002_started: true
+rtaq_0002_status: merged
+rtaq_0003_started: false
 rq_0023_started: false
-reason: RTAQ-0001 is merged and reconciled. RTAQ-0002 is the next executable post-refactor task but has not been executed by merge-final bookkeeping.
+reason: RTAQ-0002 is merged and reconciled. RTAQ-0003 is the next executable post-refactor task.
 ```
 
 ## Evidence Boundary
