@@ -22,6 +22,36 @@ VISUAL_MUST_NOT_SUPPORT = {"computed_css_value", "dom_structure_observation", "e
 VISUAL_REQUIRED_CANNOT_SUPPORT = {"exact_css_cause", "dom_reading_order", "accessibility_pass", "production_ready_claim"}
 REAL_ELIGIBLE_STATUSES = {"submitted", "validated"}
 REAL_SHADOW_SCOPE = "real_shadow_mode_only"
+GENERATED_ARTIFACT_MARKERS = (
+    ".generated.",
+    "/generated/",
+    "/readiness/",
+    "/planning/",
+    "/reports/",
+    "pilot_readiness_report",
+    "pilot_dry_run_record",
+    "risk_priority_assessment.generated",
+    "ev4_run_ledger",
+    "ev4_rolling_queue",
+    "status.md",
+)
+SUBMITTED_ARTIFACT_ALLOWED_PREFIXES = (
+    "issues/8/",
+    "issue-8/",
+    "evidence/issue-8/",
+    "examples/smart-home-connector/intake/",
+)
+SUBMITTED_ARTIFACT_ALLOWED_BASENAMES = {
+    "main-ev4-handoff.md",
+    "breakpoint-inventory.json",
+    "EVIDENCE_INTAKE_PACKET.submitted.json",
+}
+SUBMITTED_SCREENSHOT_BASENAME_PREFIXES = (
+    "desktop-baseline-",
+    "tablet-",
+    "mobile-",
+)
+SUBMITTED_SCREENSHOT_EXTENSIONS = {".png", ".jpg", ".jpeg", ".webp"}
 
 
 def load_json(path: Path) -> dict[str, Any]:
@@ -41,6 +71,76 @@ def run_schema_validator() -> None:
 
 def _has_sample_marker(value: Any) -> bool:
     return isinstance(value, str) and any(marker in value for marker in SAMPLE_MARKERS)
+
+
+def _repo_relative_path(path: Path) -> str:
+    try:
+        return path.resolve().relative_to(ROOT).as_posix()
+    except ValueError:
+        return path.as_posix()
+
+
+def _normalize_artifact_ref(value: Any) -> str | None:
+    if not isinstance(value, str) or not value.strip():
+        return None
+    return value.replace("\\", "/").strip().lstrip("./")
+
+
+def _has_generated_artifact_marker(path_ref: str) -> bool:
+    lowered = path_ref.lower()
+    return any(marker in lowered for marker in GENERATED_ARTIFACT_MARKERS)
+
+
+def _submitted_artifact_basename_allowed(basename: str) -> bool:
+    if basename in SUBMITTED_ARTIFACT_ALLOWED_BASENAMES:
+        return True
+    lowered = basename.lower()
+    return (
+        any(lowered.startswith(prefix) for prefix in SUBMITTED_SCREENSHOT_BASENAME_PREFIXES)
+        and Path(lowered).suffix in SUBMITTED_SCREENSHOT_EXTENSIONS
+    )
+
+
+def _is_allowed_submitted_artifact_path(path_ref: str) -> bool:
+    normalized = path_ref.replace("\\", "/").strip().lstrip("./")
+    basename = normalized.rsplit("/", 1)[-1]
+    if not _submitted_artifact_basename_allowed(basename):
+        return False
+    return "/" not in normalized or any(normalized.startswith(prefix) for prefix in SUBMITTED_ARTIFACT_ALLOWED_PREFIXES)
+
+
+def submitted_source_artifact_refs(packet: dict[str, Any], packet_path: Path | None = None) -> list[tuple[str, str]]:
+    refs: list[tuple[str, str]] = []
+    if packet_path is not None:
+        refs.append(("packet_path", _repo_relative_path(packet_path)))
+    handoff_ref = _normalize_artifact_ref(packet.get("main_ev4_handoff", {}).get("source_ref"))
+    if handoff_ref is not None:
+        refs.append(("main_ev4_handoff.source_ref", handoff_ref))
+    for index, item in enumerate(packet.get("evidence_items", [])):
+        if not isinstance(item, dict):
+            continue
+        item_id = item.get("evidence_id", f"index_{index}")
+        file_name = _normalize_artifact_ref(item.get("file_name"))
+        if file_name is not None:
+            refs.append((f"evidence_items.{item_id}.file_name", file_name))
+    return refs
+
+
+def validate_submitted_packet_artifact_path_allowlist(packet: dict[str, Any], packet_path: Path | None = None) -> None:
+    """Ensure real submitted evidence does not point at generated reports or repo bookkeeping."""
+    if packet.get("packet_origin") != "real_issue_submission":
+        return
+
+    rejected: list[str] = []
+    for field, path_ref in submitted_source_artifact_refs(packet, packet_path):
+        if _has_generated_artifact_marker(path_ref):
+            rejected.append(f"{field}={path_ref} uses generated/report/bookkeeping artifact path")
+            continue
+        if not _is_allowed_submitted_artifact_path(path_ref):
+            rejected.append(f"{field}={path_ref} is outside the submitted evidence artifact allowlist")
+
+    if rejected:
+        raise AssertionError(f"real_issue_submission source artifacts must use submitted evidence paths only: {rejected}")
 
 
 def sample_indicators(packet: dict[str, Any], packet_path: Path | None = None) -> list[str]:
@@ -212,6 +312,7 @@ def validate_packet(packet_path: Path, *, run_full_schema_validator: bool = True
         validate_submitted_mode(packet, packet_path)
     validate_packet_origin(packet, packet_path)
     validate_submitted_packet_source_kind_lock(packet)
+    validate_submitted_packet_artifact_path_allowlist(packet, packet_path)
     validate_desktop_baseline(packet)
     validate_evidence_items(packet)
     validate_breakpoint_policy(packet)
