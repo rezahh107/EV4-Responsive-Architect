@@ -77,7 +77,7 @@ def run_self_test() -> None:
     )
     assert_rejects(
         real_issue_packet(),
-        "outside the submitted evidence artifact allowlist",
+        "generated/report/bookkeeping",
         ROOT / "examples/smart-home-connector/readiness/PILOT_READINESS_REPORT.generated.json",
     )
 
