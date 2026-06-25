@@ -151,7 +151,9 @@ def validate_submitted_packet_eligibility_gate(packet: dict[str, Any]) -> None:
         raise AssertionError(f"real eligibility rejects stale state fields: {stale_hits}")
 
     identity_hash = _payload_identity_hash(packet)
-    lowered_hash = identity_hash.lower() if isinstance(identity_hash, str) else ""
+    if identity_hash is None:
+        raise AssertionError("real eligibility requires a payload identity hash")
+    lowered_hash = identity_hash.lower()
     if lowered_hash in PLACEHOLDER_HASH_VALUES or "placeholder" in lowered_hash or "sample" in lowered_hash or "fixture" in lowered_hash:
         raise AssertionError("real eligibility rejects placeholder identity hash")
 
@@ -185,6 +187,14 @@ def run_self_test() -> None:
     missing_url_ref = copy.deepcopy(real_eligible_packet())
     missing_url_ref["issue_reference"].pop("issue_url_or_ref")
     assert_rejects(missing_url_ref, "issue_reference.issue_url_or_ref")
+
+    missing_identity_hash = copy.deepcopy(real_eligible_packet())
+    missing_identity_hash["main_ev4_handoff"].pop("payload_identity_hash")
+    assert_rejects(missing_identity_hash, "payload identity hash")
+
+    invalid_identity_hash = copy.deepcopy(real_eligible_packet())
+    invalid_identity_hash["main_ev4_handoff"]["payload_identity_hash"] = {"not": "a string"}
+    assert_rejects(invalid_identity_hash, "payload identity hash")
 
 
 def main() -> int:
