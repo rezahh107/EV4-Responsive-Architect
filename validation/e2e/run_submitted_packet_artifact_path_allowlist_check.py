@@ -76,6 +76,16 @@ def run_self_test() -> None:
         "outside the submitted evidence artifact allowlist",
     )
     assert_rejects(
+        mutated_packet(lambda packet: packet["main_ev4_handoff"].__setitem__("source_ref", "../issues/8/main-ev4-handoff.md")),
+        "outside the submitted evidence artifact allowlist",
+    )
+    assert_accepts(
+        mutated_packet(lambda packet: packet.__setitem__("main_ev4_handoff", None)),
+    )
+    assert_accepts(
+        mutated_packet(lambda packet: packet.__setitem__("evidence_items", None)),
+    )
+    assert_rejects(
         real_issue_packet(),
         "generated/report/bookkeeping",
         ROOT / "examples/smart-home-connector/readiness/PILOT_READINESS_REPORT.generated.json",
