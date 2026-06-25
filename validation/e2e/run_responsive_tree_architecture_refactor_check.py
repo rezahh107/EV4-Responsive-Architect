@@ -60,10 +60,15 @@ def assert_step_integrity(payload, path):
     if len(step_ids) != len(set(step_ids)):
         raise ValueError(f'Duplicate step_ids in {path}')
 
+    first_prefix = None
     for index, step_id in enumerate(step_ids, start=1):
         prefix, sep, suffix = step_id.partition('-')
         if not prefix or sep != '-' or not suffix.isdigit():
             raise ValueError(f'Invalid step_id format: {step_id} in {path}')
+        if first_prefix is None:
+            first_prefix = prefix
+        elif prefix != first_prefix:
+            raise ValueError(f'Inconsistent step_id prefix: expected {first_prefix}, got {prefix} in {path}')
         if int(suffix) != index:
             raise ValueError(f'Non-sequential step_id: {step_id} in {path}')
 
@@ -77,8 +82,12 @@ def assert_route_mode(payload, path):
 
 
 def validate_payload(payload, path, validator):
-    if list(validator.iter_errors(payload)):
-        raise ValueError(f'Schema validation failed for {path}')
+    errors = list(validator.iter_errors(payload))
+    if errors:
+        details = '; '.join(
+            f"{'/'.join(str(part) for part in error.path)}: {error.message}" for error in errors
+        )
+        raise ValueError(f'Schema validation failed for {path}: {details}')
     assert_step_integrity(payload, path)
     assert_route_mode(payload, path)
 
