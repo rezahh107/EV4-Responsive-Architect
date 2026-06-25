@@ -22,6 +22,8 @@ REQUIRED_BOUNDARIES = {
     "no_accessibility_pass_claim",
     "sample_not_used_as_real",
 }
+LEGACY_PREFIXES = {"RQ"}
+ACTIVE_PREFIXES = {"RTAQ"}
 
 
 def load(path: Path) -> dict[str, Any]:
@@ -40,6 +42,10 @@ def validate_schema(payload: dict[str, Any], schema: dict[str, Any]) -> None:
         fail(f"run ledger schema validation failed: {errors[0].message}")
 
 
+def task_prefix(task_id: str) -> str:
+    return task_id.split("-", 1)[0]
+
+
 def main() -> None:
     ledger = load(LEDGER)
     schema = load(LEDGER_SCHEMA)
@@ -48,14 +54,21 @@ def main() -> None:
     validate_schema(ledger, schema)
 
     task_by_id = {task["task_id"]: task for task in queue["tasks"]}
+    active_prefixes = {task_prefix(task_id) for task_id in task_by_id}
+    archived_legacy = ledger["imported_history"]["status"] == "archived_pre_refactor_queue_history"
+
+    if archived_legacy and not active_prefixes <= ACTIVE_PREFIXES:
+        fail("archived pre-refactor ledger requires a post-refactor active queue prefix")
+
     record_ids = [record["record_id"] for record in ledger["ledger_records"]]
     if len(record_ids) != len(set(record_ids)):
         fail("run ledger record IDs must be unique")
 
     cutoff_task = ledger["imported_history"]["cutoff_task"]
     if cutoff_task not in task_by_id:
-        fail("run ledger cutoff task must exist in rolling queue")
-    if task_by_id[cutoff_task]["status"] not in {"completed", "merged", "skipped", "superseded", "cancelled"}:
+        if not (archived_legacy and task_prefix(cutoff_task) in LEGACY_PREFIXES):
+            fail("run ledger cutoff task must exist in rolling queue unless archived as legacy history")
+    elif task_by_id[cutoff_task]["status"] not in {"completed", "merged", "skipped", "superseded", "cancelled"}:
         fail("run ledger cutoff task must be terminal in rolling queue")
 
     latest_record_task = None
@@ -63,8 +76,9 @@ def main() -> None:
         task_ref = record["task_ref"]
         if task_ref is not None:
             if task_ref not in task_by_id:
-                fail(f"ledger record references unknown task {task_ref}")
-            if task_by_id[task_ref]["status"] not in {"completed", "merged"}:
+                if not (archived_legacy and task_prefix(task_ref) in LEGACY_PREFIXES):
+                    fail(f"ledger record references unknown task {task_ref}")
+            elif task_by_id[task_ref]["status"] not in {"completed", "merged"}:
                 fail(f"ledger record references non-completed task {task_ref}")
             latest_record_task = task_ref
 
