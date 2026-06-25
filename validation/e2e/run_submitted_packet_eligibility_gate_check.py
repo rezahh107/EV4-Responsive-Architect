@@ -150,14 +150,14 @@ def validate_submitted_packet_eligibility_gate(packet: dict[str, Any]) -> None:
     if stale_hits:
         raise AssertionError(f"real eligibility rejects stale state fields: {stale_hits}")
 
-    indicators = sample_indicators(packet)
-    if indicators:
-        raise AssertionError(f"real eligibility rejects sample or placeholder markers: {indicators}")
-
     identity_hash = _payload_identity_hash(packet)
     lowered_hash = identity_hash.lower() if isinstance(identity_hash, str) else ""
     if lowered_hash in PLACEHOLDER_HASH_VALUES or "placeholder" in lowered_hash or "sample" in lowered_hash or "fixture" in lowered_hash:
         raise AssertionError("real eligibility rejects placeholder identity hash")
+
+    indicators = sample_indicators(packet)
+    if indicators:
+        raise AssertionError(f"real eligibility rejects sample or placeholder markers: {indicators}")
 
 
 def assert_accepts(packet: dict[str, Any]) -> None:
