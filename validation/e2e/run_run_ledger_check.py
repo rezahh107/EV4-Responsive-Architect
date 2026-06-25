@@ -11,6 +11,7 @@ ROOT = Path(__file__).resolve().parents[2]
 LEDGER = ROOT / "planning" / "EV4_RUN_LEDGER.json"
 LEDGER_SCHEMA = ROOT / "schemas" / "ev4-responsive-run-ledger.schema.json"
 QUEUE = ROOT / "planning" / "EV4_ROLLING_QUEUE.json"
+RESET_AUDIT = ROOT / "planning" / "EV4_QUEUE_RESET_RTAQ_0001.audit.json"
 
 REQUIRED_BOUNDARIES = {
     "no_real_evidence_created",
@@ -46,6 +47,19 @@ def task_prefix(task_id: str) -> str:
     return task_id.split("-", 1)[0]
 
 
+def legacy_history_allowed(active_prefixes: set[str]) -> bool:
+    if not active_prefixes <= ACTIVE_PREFIXES:
+        return False
+    if not RESET_AUDIT.is_file():
+        return False
+    audit = load(RESET_AUDIT)
+    return (
+        audit.get("historical_preservation", {}).get("legacy_ledger_records_remain_authoritative_history") is True
+        and audit.get("historical_preservation", {}).get("legacy_queue_is_authoritative_driver") is False
+        and audit.get("active_queue_policy", {}).get("task_prefix") == "RTAQ"
+    )
+
+
 def main() -> None:
     ledger = load(LEDGER)
     schema = load(LEDGER_SCHEMA)
@@ -55,10 +69,7 @@ def main() -> None:
 
     task_by_id = {task["task_id"]: task for task in queue["tasks"]}
     active_prefixes = {task_prefix(task_id) for task_id in task_by_id}
-    archived_legacy = ledger["imported_history"]["status"] == "archived_pre_refactor_queue_history"
-
-    if archived_legacy and not active_prefixes <= ACTIVE_PREFIXES:
-        fail("archived pre-refactor ledger requires a post-refactor active queue prefix")
+    allow_legacy_refs = legacy_history_allowed(active_prefixes)
 
     record_ids = [record["record_id"] for record in ledger["ledger_records"]]
     if len(record_ids) != len(set(record_ids)):
@@ -66,7 +77,7 @@ def main() -> None:
 
     cutoff_task = ledger["imported_history"]["cutoff_task"]
     if cutoff_task not in task_by_id:
-        if not (archived_legacy and task_prefix(cutoff_task) in LEGACY_PREFIXES):
+        if not (allow_legacy_refs and task_prefix(cutoff_task) in LEGACY_PREFIXES):
             fail("run ledger cutoff task must exist in rolling queue unless archived as legacy history")
     elif task_by_id[cutoff_task]["status"] not in {"completed", "merged", "skipped", "superseded", "cancelled"}:
         fail("run ledger cutoff task must be terminal in rolling queue")
@@ -76,7 +87,7 @@ def main() -> None:
         task_ref = record["task_ref"]
         if task_ref is not None:
             if task_ref not in task_by_id:
-                if not (archived_legacy and task_prefix(task_ref) in LEGACY_PREFIXES):
+                if not (allow_legacy_refs and task_prefix(task_ref) in LEGACY_PREFIXES):
                     fail(f"ledger record references unknown task {task_ref}")
             elif task_by_id[task_ref]["status"] not in {"completed", "merged"}:
                 fail(f"ledger record references non-completed task {task_ref}")
