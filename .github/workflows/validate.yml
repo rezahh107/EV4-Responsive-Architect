@@ -12,9 +12,20 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+      - name: Diagnostics
+        run: |
+          echo "Runner: $RUNNER_OS"
+          pwd
+          ls -la
+          git status --short
+          git rev-parse --short HEAD
+          python --version
+          test -f validation/e2e/run_responsive_tree_architecture_refactor_check.py
       - name: Refactor check
         run: python validation/e2e/run_responsive_tree_architecture_refactor_check.py
