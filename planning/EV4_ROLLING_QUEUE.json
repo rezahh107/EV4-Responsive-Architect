@@ -299,6 +299,7 @@
       "acceptance_criteria": ["Recorded complete."],
       "critique_required": true,
       "dependencies": ["RQ-0015"],
+      "completed_pr": 40,
       "completion": {"run_id": "automation-run-016", "status": "completed", "artifacts": ["validation/e2e/run_submitted_privacy_review_guard_check.py", ".github/workflows/validate.yml", "planning/EV4_RUN_LEDGER.json", "planning/EV4_ROLLING_QUEUE.json", "STATUS.md"], "critique_findings": ["Privacy acknowledgement remains necessary but does not prove live render, export, accessibility, production, or release readiness."], "boundary": "No real evidence, real pilot, or production validation claim."}
     },
     {
@@ -315,6 +316,7 @@
       "acceptance_criteria": ["Recorded complete."],
       "critique_required": true,
       "dependencies": ["RQ-0015"],
+      "completed_pr": 42,
       "completion": {"run_id": "automation-run-017", "status": "completed", "artifacts": ["validation/e2e/run_submitted_evidence_completeness_contract_check.py", ".github/workflows/validate.yml", "planning/EV4_RUN_LEDGER.json"], "critique_findings": ["Evidence completeness flags remain contract checks and do not prove live render, export, accessibility, production, or release readiness."], "boundary": "No real evidence, real pilot, or production validation claim."}
     },
     {
