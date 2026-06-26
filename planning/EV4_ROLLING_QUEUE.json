@@ -202,7 +202,7 @@
       "task_id": "RTAQ-0004",
       "cycle_position": 4,
       "task_type": "repo_sync",
-      "status": "pending",
+      "status": "merged",
       "title": "Guarded handoff pack and drift audit",
       "objective": "Create a guarded handoff pack and audit repository drift across queue, status, master spec, contracts, schemas, validators, and CI boundary text.",
       "allowed_work": [
@@ -230,7 +230,23 @@
       "critique_required": true,
       "dependencies": [
         "RTAQ-0003"
-      ]
+      ],
+      "completed_pr": 71,
+      "completion": {
+        "run_id": "merge-final-rtaq-0004-pr-71",
+        "status": "merged",
+        "artifacts": [
+          "docs/18_GUARDED_HANDOFF_PACK.md",
+          "docs/19_REPOSITORY_DRIFT_AUDIT_RTAQ_0004.md",
+          "docs/20_ACTIVE_CONTRACT_SCHEMA_VALIDATOR_INDEX.md"
+        ],
+        "critique_findings": [
+          "Gemini identified incomplete controlled-use document inventory and missing task quality gate validator references; the PR was patched before merge.",
+          "PROJECT_MASTER_SPEC.md documentation drift remains a bounded RTAQ-0005 follow-up candidate rather than a RTAQ-0004 scope expansion.",
+          "CI success remains repository-check evidence only, not responsive correctness evidence."
+        ],
+        "boundary": "No submitted evidence, Issue #8 mutation, real pilot execution, readiness claim upgrade, or production/release claim upgrade."
+      }
     },
     {
       "task_id": "RTAQ-0005",
