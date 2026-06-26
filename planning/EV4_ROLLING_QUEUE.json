@@ -17,17 +17,7 @@
     "cycle_status": "active",
     "started_from_status": "responsive_tree_architecture_active_on_main",
     "goal": "Drive larger bounded post-refactor responsive-tree architecture tasks while preserving evidence, pilot, and readiness boundaries.",
-    "task_order": [
-      "RTAQ-0001",
-      "RTAQ-0002",
-      "RTAQ-0003",
-      "RTAQ-0004",
-      "RTAQ-0005",
-      "RTAQ-0006",
-      "RTAQ-0007",
-      "RTAQ-0008",
-      "RTAQ-0009"
-    ]
+    "task_order": ["RTAQ-0001", "RTAQ-0002", "RTAQ-0003", "RTAQ-0004", "RTAQ-0005", "RTAQ-0006", "RTAQ-0007", "RTAQ-0008", "RTAQ-0009"]
   },
   "tasks": [
     {
@@ -37,61 +27,19 @@
       "status": "merged",
       "title": "Reset post-refactor active queue",
       "objective": "Archive the old pre-refactor active queue lineage as non-authoritative history and establish this post-refactor responsive-tree active queue.",
-      "allowed_work": [
-        "Inventory queue, ledger, control-plane, schemas, validators, and workflow state.",
-        "Preserve legacy queue and ledger history as non-authoritative history.",
-        "Replace the active queue driver with post-refactor RTAQ tasks."
-      ],
-      "forbidden_work": [
-        "Do not create submitted evidence.",
-        "Do not modify Issue #8.",
-        "Do not run or authorize the real pilot.",
-        "Do not upgrade readiness or validation claims."
-      ],
+      "allowed_work": ["Inventory queue, ledger, control-plane, schemas, validators, and workflow state.", "Preserve legacy queue and ledger history as non-authoritative history.", "Replace the active queue driver with post-refactor RTAQ tasks."],
+      "forbidden_work": ["Do not create submitted evidence.", "Do not modify Issue #8.", "Do not run or authorize the real pilot.", "Do not upgrade readiness or validation claims."],
       "requires_real_evidence": false,
-      "expected_artifacts": [
-        "planning/EV4_ROLLING_QUEUE.json",
-        "planning/EV4_RUN_LEDGER.json",
-        "planning/EV4_QUEUE_RESET_RTAQ_0001.audit.json",
-        "schemas/ev4-responsive-rolling-queue.schema.json",
-        "schemas/ev4-responsive-run-ledger.schema.json",
-        "validation/e2e/run_rolling_queue_check.py",
-        "validation/e2e/run_run_ledger_check.py",
-        "validation/e2e/run_responsive_tree_architecture_refactor_check.py",
-        "STATUS.md",
-        "docs/14_EV4_ROLLING_QUEUE.md",
-        "planning/EV4_RUN_LEDGER_RQ_LEGACY_ARCHIVE_NOTE.md"
-      ],
-      "acceptance_criteria": [
-        "Old RQ-0023 through RQ-0026 lineage no longer drives the active queue.",
-        "Historical queue and ledger lineage remains preserved or explicitly referenced as archived history.",
-        "Post-refactor active queue uses RTAQ task IDs.",
-        "Queue and ledger validators pass."
-      ],
+      "expected_artifacts": ["planning/EV4_ROLLING_QUEUE.json", "planning/EV4_RUN_LEDGER.json", "planning/EV4_QUEUE_RESET_RTAQ_0001.audit.json", "schemas/ev4-responsive-rolling-queue.schema.json", "schemas/ev4-responsive-run-ledger.schema.json", "validation/e2e/run_rolling_queue_check.py", "validation/e2e/run_run_ledger_check.py", "validation/e2e/run_responsive_tree_architecture_refactor_check.py", "STATUS.md", "docs/14_EV4_ROLLING_QUEUE.md", "planning/EV4_RUN_LEDGER_RQ_LEGACY_ARCHIVE_NOTE.md"],
+      "acceptance_criteria": ["Old RQ-0023 through RQ-0026 lineage no longer drives the active queue.", "Historical queue and ledger lineage remains preserved or explicitly referenced as archived history.", "Post-refactor active queue uses RTAQ task IDs.", "Queue and ledger validators pass."],
       "critique_required": true,
       "dependencies": [],
       "completed_pr": 65,
       "completion": {
         "run_id": "merge-final-rtaq-0001-pr-65",
         "status": "merged",
-        "artifacts": [
-          "planning/EV4_ROLLING_QUEUE.json",
-          "planning/EV4_RUN_LEDGER.json",
-          "planning/EV4_QUEUE_RESET_RTAQ_0001.audit.json",
-          "schemas/ev4-responsive-rolling-queue.schema.json",
-          "schemas/ev4-responsive-run-ledger.schema.json",
-          "validation/e2e/run_rolling_queue_check.py",
-          "validation/e2e/run_run_ledger_check.py",
-          "validation/e2e/run_responsive_tree_architecture_refactor_check.py",
-          "STATUS.md",
-          "docs/14_EV4_ROLLING_QUEUE.md",
-          "planning/QUEUE_RESET_RTAQ_0001_PR_NOTE.md",
-          "planning/EV4_RUN_LEDGER_RQ_LEGACY_ARCHIVE_NOTE.md"
-        ],
-        "critique_findings": [
-          "The old RQ pending lineage must remain archived history and must not drive post-refactor execution.",
-          "CI success and queue completion remain repository bookkeeping only, not responsive correctness evidence."
-        ],
+        "artifacts": ["planning/EV4_ROLLING_QUEUE.json", "planning/EV4_RUN_LEDGER.json", "planning/EV4_QUEUE_RESET_RTAQ_0001.audit.json", "schemas/ev4-responsive-rolling-queue.schema.json", "schemas/ev4-responsive-run-ledger.schema.json", "validation/e2e/run_rolling_queue_check.py", "validation/e2e/run_run_ledger_check.py", "validation/e2e/run_responsive_tree_architecture_refactor_check.py", "STATUS.md", "docs/14_EV4_ROLLING_QUEUE.md", "planning/QUEUE_RESET_RTAQ_0001_PR_NOTE.md", "planning/EV4_RUN_LEDGER_RQ_LEGACY_ARCHIVE_NOTE.md"],
+        "critique_findings": ["The old RQ pending lineage must remain archived history and must not drive post-refactor execution.", "CI success and queue completion remain repository bookkeeping only, not responsive correctness evidence."],
         "boundary": "No submitted evidence, Issue #8 mutation, real pilot execution, or readiness claim upgrade."
       }
     },
@@ -102,51 +50,19 @@
       "status": "merged",
       "title": "Submitted packet eligibility gate hardening",
       "objective": "Add one broader eligibility gate covering issue-reference consistency, submitted-state consistency, stale-state rejection, sample-marker rejection, and placeholder-hash rejection for submitted packets.",
-      "allowed_work": [
-        "Add or extend bounded validators for issue_reference consistency and Issue #8 reference lock.",
-        "Require issue_url_or_ref and submitted evidence status consistency for eligibility.",
-        "Reject stale states, sample markers, and placeholder hashes from submitted eligibility.",
-        "Add negative fixtures for each coupled failure mode and wire them into CI."
-      ],
-      "forbidden_work": [
-        "Do not create submitted evidence.",
-        "Do not modify Issue #8.",
-        "Do not run or authorize the real pilot.",
-        "Do not upgrade readiness or validation claims."
-      ],
+      "allowed_work": ["Add or extend bounded validators for issue_reference consistency and Issue #8 reference lock.", "Require issue_url_or_ref and submitted evidence status consistency for eligibility.", "Reject stale states, sample markers, and placeholder hashes from submitted eligibility.", "Add negative fixtures for each coupled failure mode and wire them into CI."],
+      "forbidden_work": ["Do not create submitted evidence.", "Do not modify Issue #8.", "Do not run or authorize the real pilot.", "Do not upgrade readiness or validation claims."],
       "requires_real_evidence": false,
-      "expected_artifacts": [
-        "Validator updates",
-        "Negative fixtures",
-        "CI coverage"
-      ],
-      "acceptance_criteria": [
-        "Wrong or missing Issue #8 reference cannot pass submitted eligibility.",
-        "Stale or invalid evidence submission status cannot pass submitted eligibility.",
-        "Sample markers and placeholder hashes cannot pass submitted eligibility.",
-        "CI passes without real evidence execution."
-      ],
+      "expected_artifacts": ["Validator updates", "Negative fixtures", "CI coverage"],
+      "acceptance_criteria": ["Wrong or missing Issue #8 reference cannot pass submitted eligibility.", "Stale or invalid evidence submission status cannot pass submitted eligibility.", "Sample markers and placeholder hashes cannot pass submitted eligibility.", "CI passes without real evidence execution."],
       "critique_required": true,
-      "dependencies": [
-        "RTAQ-0001"
-      ],
+      "dependencies": ["RTAQ-0001"],
       "completed_pr": 67,
       "completion": {
         "run_id": "merge-final-rtaq-0002-pr-67",
         "status": "merged",
-        "artifacts": [
-          "validation/e2e/run_submitted_packet_eligibility_gate_check.py",
-          "validation/fixtures/invalid/submitted_packet_eligibility_wrong_issue_ref.invalid.json",
-          "validation/fixtures/invalid/submitted_packet_eligibility_stale_state.invalid.json",
-          "validation/fixtures/invalid/submitted_packet_eligibility_sample_marker.invalid.json",
-          "validation/fixtures/invalid/submitted_packet_eligibility_placeholder_hash.invalid.json",
-          "validation/e2e/run_responsive_tree_architecture_refactor_check.py"
-        ],
-        "critique_findings": [
-          "Gemini correctly identified a misleading rejection path for missing or non-string payload_identity_hash.",
-          "The validator now rejects missing or invalid payload identity hashes with a specific payload identity hash error before placeholder-hash checks.",
-          "CI success remains repository-check evidence only, not responsive correctness evidence."
-        ],
+        "artifacts": ["validation/e2e/run_submitted_packet_eligibility_gate_check.py", "validation/fixtures/invalid/submitted_packet_eligibility_wrong_issue_ref.invalid.json", "validation/fixtures/invalid/submitted_packet_eligibility_stale_state.invalid.json", "validation/fixtures/invalid/submitted_packet_eligibility_sample_marker.invalid.json", "validation/fixtures/invalid/submitted_packet_eligibility_placeholder_hash.invalid.json", "validation/e2e/run_responsive_tree_architecture_refactor_check.py"],
+        "critique_findings": ["Gemini correctly identified a misleading rejection path for missing or non-string payload_identity_hash.", "The validator now rejects missing or invalid payload identity hashes with a specific payload identity hash error before placeholder-hash checks.", "CI success remains repository-check evidence only, not responsive correctness evidence."],
         "boundary": "No submitted evidence, Issue #8 mutation, real pilot execution, readiness claim upgrade, or production/release claim upgrade."
       }
     },
@@ -157,46 +73,19 @@
       "status": "merged",
       "title": "Controlled-use readiness snapshot and first-run guide",
       "objective": "Create one evidence-bounded controlled-use readiness snapshot plus first-run guide for manual use without upgrading production, release, or validation claims.",
-      "allowed_work": [
-        "Write a controlled-use readiness statement with explicit non-production and non-release boundaries.",
-        "Document manual first-run inputs, outputs, stop conditions, evidence blockers, and validation command index.",
-        "Keep Issue #8 evidence-pending and pilot-blocked state explicit."
-      ],
-      "forbidden_work": [
-        "Do not create submitted evidence.",
-        "Do not modify Issue #8.",
-        "Do not run or authorize the real pilot.",
-        "Do not claim production, release, live render, export, accessibility, or pixel validation."
-      ],
+      "allowed_work": ["Write a controlled-use readiness statement with explicit non-production and non-release boundaries.", "Document manual first-run inputs, outputs, stop conditions, evidence blockers, and validation command index.", "Keep Issue #8 evidence-pending and pilot-blocked state explicit."],
+      "forbidden_work": ["Do not create submitted evidence.", "Do not modify Issue #8.", "Do not run or authorize the real pilot.", "Do not claim production, release, live render, export, accessibility, or pixel validation."],
       "requires_real_evidence": false,
-      "expected_artifacts": [
-        "Controlled-use readiness snapshot",
-        "First-run guide",
-        "Validation command index"
-      ],
-      "acceptance_criteria": [
-        "Snapshot states controlled-use boundaries only.",
-        "Guide supports controlled manual use only.",
-        "Real pilot remains blocked and CI success is repository-check evidence only."
-      ],
+      "expected_artifacts": ["Controlled-use readiness snapshot", "First-run guide", "Validation command index"],
+      "acceptance_criteria": ["Snapshot states controlled-use boundaries only.", "Guide supports controlled manual use only.", "Real pilot remains blocked and CI success is repository-check evidence only."],
       "critique_required": true,
-      "dependencies": [
-        "RTAQ-0002"
-      ],
+      "dependencies": ["RTAQ-0002"],
       "completed_pr": 69,
       "completion": {
         "run_id": "merge-final-rtaq-0003-pr-69",
         "status": "merged",
-        "artifacts": [
-          "docs/15_CONTROLLED_USE_READINESS_SNAPSHOT.md",
-          "docs/16_CONTROLLED_MANUAL_FIRST_RUN_GUIDE.md",
-          "docs/17_VALIDATION_COMMAND_INDEX.md"
-        ],
-        "critique_findings": [
-          "The task stayed documentation-only and preserved controlled-use boundaries.",
-          "Gemini identified inconsistent non-clickable path references in the first-run guide; the PR was patched with relative Markdown links.",
-          "CI success remains repository-check evidence only, not responsive correctness evidence."
-        ],
+        "artifacts": ["docs/15_CONTROLLED_USE_READINESS_SNAPSHOT.md", "docs/16_CONTROLLED_MANUAL_FIRST_RUN_GUIDE.md", "docs/17_VALIDATION_COMMAND_INDEX.md"],
+        "critique_findings": ["The task stayed documentation-only and preserved controlled-use boundaries.", "Gemini identified inconsistent non-clickable path references in the first-run guide; the PR was patched with relative Markdown links.", "CI success remains repository-check evidence only, not responsive correctness evidence."],
         "boundary": "No submitted evidence, Issue #8 mutation, real pilot execution, readiness claim upgrade, or production/release claim upgrade."
       }
     },
@@ -207,47 +96,19 @@
       "status": "merged",
       "title": "Guarded handoff pack and drift audit",
       "objective": "Create a guarded handoff pack and audit repository drift across queue, status, master spec, contracts, schemas, validators, and CI boundary text.",
-      "allowed_work": [
-        "Package active contracts, schemas, validators, and manual-use boundaries.",
-        "Audit queue, STATUS, PROJECT_MASTER_SPEC, docs, and validators for drift.",
-        "Document CI boundary and next evidence blockers."
-      ],
-      "forbidden_work": [
-        "Do not create submitted evidence.",
-        "Do not modify Issue #8.",
-        "Do not run or authorize the real pilot.",
-        "Do not upgrade validation or readiness claims."
-      ],
+      "allowed_work": ["Package active contracts, schemas, validators, and manual-use boundaries.", "Audit queue, STATUS, PROJECT_MASTER_SPEC, docs, and validators for drift.", "Document CI boundary and next evidence blockers."],
+      "forbidden_work": ["Do not create submitted evidence.", "Do not modify Issue #8.", "Do not run or authorize the real pilot.", "Do not upgrade validation or readiness claims."],
       "requires_real_evidence": false,
-      "expected_artifacts": [
-        "Guarded handoff pack",
-        "Repository drift audit",
-        "Active contract/schema/validator index"
-      ],
-      "acceptance_criteria": [
-        "Handoff pack is guarded by explicit evidence boundaries.",
-        "Queue/status/master-spec drift is checked and documented.",
-        "Issue #8 remains evidence-pending and real pilot remains blocked."
-      ],
+      "expected_artifacts": ["Guarded handoff pack", "Repository drift audit", "Active contract/schema/validator index"],
+      "acceptance_criteria": ["Handoff pack is guarded by explicit evidence boundaries.", "Queue/status/master-spec drift is checked and documented.", "Issue #8 remains evidence-pending and real pilot remains blocked."],
       "critique_required": true,
-      "dependencies": [
-        "RTAQ-0003"
-      ],
+      "dependencies": ["RTAQ-0003"],
       "completed_pr": 71,
       "completion": {
         "run_id": "merge-final-rtaq-0004-pr-71",
         "status": "merged",
-        "artifacts": [
-          "docs/18_GUARDED_HANDOFF_PACK.md",
-          "docs/19_REPOSITORY_DRIFT_AUDIT_RTAQ_0004.md",
-          "docs/20_ACTIVE_CONTRACT_SCHEMA_VALIDATOR_INDEX.md",
-          "validation/e2e/run_task_quality_gate_check.py"
-        ],
-        "critique_findings": [
-          "Gemini identified incomplete controlled-use document inventory and missing task quality gate validator references; the PR was patched before merge.",
-          "PROJECT_MASTER_SPEC.md documentation drift remains a bounded RTAQ-0005 follow-up candidate rather than a RTAQ-0004 scope expansion.",
-          "CI success remains repository-check evidence only, not responsive correctness evidence."
-        ],
+        "artifacts": ["docs/18_GUARDED_HANDOFF_PACK.md", "docs/19_REPOSITORY_DRIFT_AUDIT_RTAQ_0004.md", "docs/20_ACTIVE_CONTRACT_SCHEMA_VALIDATOR_INDEX.md", "validation/e2e/run_task_quality_gate_check.py"],
+        "critique_findings": ["Gemini identified incomplete controlled-use document inventory and missing task quality gate validator references; the PR was patched before merge.", "PROJECT_MASTER_SPEC.md documentation drift remains a bounded RTAQ-0005 follow-up candidate rather than a RTAQ-0004 scope expansion.", "CI success remains repository-check evidence only, not responsive correctness evidence."],
         "boundary": "No submitted evidence, Issue #8 mutation, real pilot execution, readiness claim upgrade, or production/release claim upgrade."
       }
     },
@@ -255,39 +116,24 @@
       "task_id": "RTAQ-0005",
       "cycle_position": 5,
       "task_type": "queue_refresh",
-      "status": "in_progress",
+      "status": "merged",
       "title": "Refresh accelerated RTA queue",
       "objective": "Audit RTAQ-0001 through RTAQ-0004, restore pending depth, and reconcile ledger/status/docs while preserving evidence and pilot boundaries.",
-      "allowed_work": [
-        "Review merged outcomes and CI status for RTAQ-0001 through RTAQ-0004.",
-        "Refresh the active queue with larger bounded tasks and at least four pending tasks.",
-        "Reconcile ledger, STATUS, docs, and queue state."
-      ],
-      "forbidden_work": [
-        "Do not create submitted evidence.",
-        "Do not modify Issue #8.",
-        "Do not run or authorize the real pilot.",
-        "Do not upgrade readiness or validation claims."
-      ],
+      "allowed_work": ["Review merged outcomes and CI status for RTAQ-0001 through RTAQ-0004.", "Refresh the active queue with larger bounded tasks and at least four pending tasks.", "Reconcile ledger, STATUS, docs, and queue state."],
+      "forbidden_work": ["Do not create submitted evidence.", "Do not modify Issue #8.", "Do not run or authorize the real pilot.", "Do not upgrade readiness or validation claims."],
       "requires_real_evidence": false,
-      "expected_artifacts": [
-        "planning/EV4_ROLLING_QUEUE.json",
-        "STATUS.md",
-        "PROJECT_MASTER_SPEC.md",
-        "docs/21_QUEUE_REFRESH_AUDIT_RTAQ_0005.md"
-      ],
-      "acceptance_criteria": [
-        "RTAQ-0001 through RTAQ-0004 are audited.",
-        "Pending depth is restored.",
-        "Evidence-pending and pilot-blocked boundaries remain visible."
-      ],
+      "expected_artifacts": ["planning/EV4_ROLLING_QUEUE.json", "STATUS.md", "PROJECT_MASTER_SPEC.md", "docs/21_QUEUE_REFRESH_AUDIT_RTAQ_0005.md"],
+      "acceptance_criteria": ["RTAQ-0001 through RTAQ-0004 are audited.", "Pending depth is restored.", "Evidence-pending and pilot-blocked boundaries remain visible."],
       "critique_required": true,
-      "dependencies": [
-        "RTAQ-0001",
-        "RTAQ-0002",
-        "RTAQ-0003",
-        "RTAQ-0004"
-      ]
+      "dependencies": ["RTAQ-0001", "RTAQ-0002", "RTAQ-0003", "RTAQ-0004"],
+      "completed_pr": 73,
+      "completion": {
+        "run_id": "merge-final-rtaq-0005-pr-73",
+        "status": "merged",
+        "artifacts": ["planning/EV4_ROLLING_QUEUE.json", "STATUS.md", "PROJECT_MASTER_SPEC.md", "docs/21_QUEUE_REFRESH_AUDIT_RTAQ_0005.md"],
+        "critique_findings": ["RTAQ-0005 correctly treated the fifth-cycle refresh as planning and repository synchronization only.", "The queue refresh restored at least four pending tasks for RTAQ-0006 through RTAQ-0009.", "Post-merge sync was required because merge SHA and final CI conclusion were unavailable before PR #73 merged.", "CI success remains repository-check evidence only, not responsive correctness evidence."],
+        "boundary": "No submitted evidence, Issue #8 mutation, real pilot execution, readiness claim upgrade, or production/release claim upgrade."
+      }
     },
     {
       "task_id": "RTAQ-0006",
@@ -296,32 +142,13 @@
       "status": "pending",
       "title": "Master spec and status drift closure",
       "objective": "Close bounded master-spec/status drift identified by RTAQ-0005 without adding evidence or changing pilot state.",
-      "allowed_work": [
-        "Update or reconcile PROJECT_MASTER_SPEC.md, STATUS.md, and controlled-use documentation indexes if drift remains after RTAQ-0005.",
-        "Keep the active validator and controlled-use document inventory aligned.",
-        "Use branch, PR, CI, and critique workflow before merge."
-      ],
-      "forbidden_work": [
-        "Do not create submitted evidence.",
-        "Do not modify Issue #8.",
-        "Do not run or authorize the real pilot.",
-        "Do not upgrade readiness, production, release, live-render, export, accessibility, or pixel claims."
-      ],
+      "allowed_work": ["Update or reconcile PROJECT_MASTER_SPEC.md, STATUS.md, and controlled-use documentation indexes if drift remains after RTAQ-0005.", "Keep the active validator and controlled-use document inventory aligned.", "Use branch, PR, CI, and critique workflow before merge."],
+      "forbidden_work": ["Do not create submitted evidence.", "Do not modify Issue #8.", "Do not run or authorize the real pilot.", "Do not upgrade readiness, production, release, live-render, export, accessibility, or pixel claims."],
       "requires_real_evidence": false,
-      "expected_artifacts": [
-        "Bounded master-spec/status drift patch if still required",
-        "Queue/ledger/status reconciliation if required",
-        "CI result"
-      ],
-      "acceptance_criteria": [
-        "Task is only executed after RTAQ-0005 refresh completes.",
-        "Master spec, STATUS, and docs indexes do not contradict the active bounded state.",
-        "Evidence-pending and pilot-blocked boundaries remain visible."
-      ],
+      "expected_artifacts": ["Bounded master-spec/status drift patch if still required", "Queue/ledger/status reconciliation if required", "CI result"],
+      "acceptance_criteria": ["Task is only executed after RTAQ-0005 refresh completes.", "Master spec, STATUS, and docs indexes do not contradict the active bounded state.", "Evidence-pending and pilot-blocked boundaries remain visible."],
       "critique_required": true,
-      "dependencies": [
-        "RTAQ-0005"
-      ]
+      "dependencies": ["RTAQ-0005"]
     },
     {
       "task_id": "RTAQ-0007",
@@ -330,32 +157,13 @@
       "status": "pending",
       "title": "Validator and command index hardening",
       "objective": "Harden validator and command indexing for active responsive-tree, submitted-packet, and task-quality checks without claiming responsive correctness evidence.",
-      "allowed_work": [
-        "Audit docs/17 and docs/20 against validation/e2e validators.",
-        "Patch missing command references, boundaries, or repo-check caveats.",
-        "Use branch, PR, CI, and critique workflow before merge."
-      ],
-      "forbidden_work": [
-        "Do not create submitted evidence.",
-        "Do not modify Issue #8.",
-        "Do not run or authorize the real pilot.",
-        "Do not upgrade readiness, production, release, live-render, export, accessibility, or pixel claims."
-      ],
+      "allowed_work": ["Audit docs/17 and docs/20 against validation/e2e validators.", "Patch missing command references, boundaries, or repo-check caveats.", "Use branch, PR, CI, and critique workflow before merge."],
+      "forbidden_work": ["Do not create submitted evidence.", "Do not modify Issue #8.", "Do not run or authorize the real pilot.", "Do not upgrade readiness, production, release, live-render, export, accessibility, or pixel claims."],
       "requires_real_evidence": false,
-      "expected_artifacts": [
-        "Validator command index patch if drift is found",
-        "Queue/ledger/status reconciliation if required",
-        "CI result"
-      ],
-      "acceptance_criteria": [
-        "Validation command references are current and bounded.",
-        "CI remains described as repository-check evidence only.",
-        "Evidence-pending and pilot-blocked boundaries remain visible."
-      ],
+      "expected_artifacts": ["Validator command index patch if drift is found", "Queue/ledger/status reconciliation if required", "CI result"],
+      "acceptance_criteria": ["Validation command references are current and bounded.", "CI remains described as repository-check evidence only.", "Evidence-pending and pilot-blocked boundaries remain visible."],
       "critique_required": true,
-      "dependencies": [
-        "RTAQ-0005"
-      ]
+      "dependencies": ["RTAQ-0005"]
     },
     {
       "task_id": "RTAQ-0008",
@@ -364,32 +172,13 @@
       "status": "pending",
       "title": "Evidence-bound documentation guard",
       "objective": "Close bounded documentation drift around submitted evidence, Issue #8, and pilot blockers without creating or validating real submitted evidence.",
-      "allowed_work": [
-        "Audit controlled-use docs for evidence and pilot boundary consistency.",
-        "Patch only documentation, queue, ledger, status, or validator-index records if drift is found.",
-        "Use branch, PR, CI, and critique workflow before merge."
-      ],
-      "forbidden_work": [
-        "Do not create submitted evidence.",
-        "Do not modify Issue #8.",
-        "Do not run or authorize the real pilot.",
-        "Do not upgrade readiness, production, release, live-render, export, accessibility, or pixel claims."
-      ],
+      "allowed_work": ["Audit controlled-use docs for evidence and pilot boundary consistency.", "Patch only documentation, queue, ledger, status, or validator-index records if drift is found.", "Use branch, PR, CI, and critique workflow before merge."],
+      "forbidden_work": ["Do not create submitted evidence.", "Do not modify Issue #8.", "Do not run or authorize the real pilot.", "Do not upgrade readiness, production, release, live-render, export, accessibility, or pixel claims."],
       "requires_real_evidence": false,
-      "expected_artifacts": [
-        "Evidence-bound documentation drift patch if drift is found",
-        "Queue/ledger/status reconciliation if required",
-        "CI result"
-      ],
-      "acceptance_criteria": [
-        "Issue #8 remains evidence-pending.",
-        "Real pilot remains blocked until submitted packet and readiness gates pass.",
-        "No readiness or validation claim is upgraded."
-      ],
+      "expected_artifacts": ["Evidence-bound documentation drift patch if drift is found", "Queue/ledger/status reconciliation if required", "CI result"],
+      "acceptance_criteria": ["Issue #8 remains evidence-pending.", "Real pilot remains blocked until submitted packet and readiness gates pass.", "No readiness or validation claim is upgraded."],
       "critique_required": true,
-      "dependencies": [
-        "RTAQ-0005"
-      ]
+      "dependencies": ["RTAQ-0005"]
     },
     {
       "task_id": "RTAQ-0009",
@@ -398,42 +187,14 @@
       "status": "pending",
       "title": "Automation quality gate enforcement audit",
       "objective": "Audit queue, control-plane, and quality-gate consistency and harden bounded quality-gate text or validators if needed, without expanding into evidence or pilot work.",
-      "allowed_work": [
-        "Audit planning/EV4_AUTOMATION_QUALITY_GATE.json against queue and control-plane practice.",
-        "Patch bounded quality-gate documentation or validators if drift is found.",
-        "Use branch, PR, CI, and critique workflow before merge."
-      ],
-      "forbidden_work": [
-        "Do not create submitted evidence.",
-        "Do not modify Issue #8.",
-        "Do not run or authorize the real pilot.",
-        "Do not upgrade readiness, production, release, live-render, export, accessibility, or pixel claims."
-      ],
+      "allowed_work": ["Audit planning/EV4_AUTOMATION_QUALITY_GATE.json against queue and control-plane practice.", "Patch bounded quality-gate documentation or validators if drift is found.", "Use branch, PR, CI, and critique workflow before merge."],
+      "forbidden_work": ["Do not create submitted evidence.", "Do not modify Issue #8.", "Do not run or authorize the real pilot.", "Do not upgrade readiness, production, release, live-render, export, accessibility, or pixel claims."],
       "requires_real_evidence": false,
-      "expected_artifacts": [
-        "Quality-gate drift patch if drift is found",
-        "Queue/ledger/status reconciliation if required",
-        "CI result"
-      ],
-      "acceptance_criteria": [
-        "One-task-per-run, PR reconciliation, critique, and CI-required policies remain visible.",
-        "No quality shortcut treats CI, merge, or Gemini review as responsive correctness evidence.",
-        "Pending depth remains at least four after RTAQ-0005 completion."
-      ],
+      "expected_artifacts": ["Quality-gate drift patch if drift is found", "Queue/ledger/status reconciliation if required", "CI result"],
+      "acceptance_criteria": ["One-task-per-run, PR reconciliation, critique, and CI-required policies remain visible.", "No quality shortcut treats CI, merge, or Gemini review as responsive correctness evidence.", "Pending depth remains at least four after RTAQ-0005 completion."],
       "critique_required": true,
-      "dependencies": [
-        "RTAQ-0005"
-      ]
+      "dependencies": ["RTAQ-0005"]
     }
   ],
-  "forbidden_claims": [
-    "production_ready",
-    "release_ready",
-    "pixel_perfect",
-    "live_render_validated",
-    "export_json_validated",
-    "accessibility_passed",
-    "sample_packet_used_as_real_evidence",
-    "numeric_score_overrides_gate"
-  ]
+  "forbidden_claims": ["production_ready", "release_ready", "pixel_perfect", "live_render_validated", "export_json_validated", "accessibility_passed", "sample_packet_used_as_real_evidence", "numeric_score_overrides_gate"]
 }
