@@ -98,10 +98,10 @@ rtaq_0005_status: merged
 rtaq_0006_started: true
 rtaq_0006_status: in_progress
 pending_tasks:
-  - RTAQ-0006
   - RTAQ-0007
   - RTAQ-0008
   - RTAQ-0009
+  - RTAQ-0010
 rq_0023_started: false
 reason: RTAQ-0006 is reconciling bounded master-spec/status/index drift after RTAQ-0005. Evidence and pilot boundaries remain unchanged.
 ```
