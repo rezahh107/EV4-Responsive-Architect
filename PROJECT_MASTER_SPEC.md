@@ -49,6 +49,7 @@ controlled_use_docs:
   - docs/19_REPOSITORY_DRIFT_AUDIT_RTAQ_0004.md
   - docs/20_ACTIVE_CONTRACT_SCHEMA_VALIDATOR_INDEX.md
   - docs/21_QUEUE_REFRESH_AUDIT_RTAQ_0005.md
+  - docs/22_MASTER_STATUS_DRIFT_CLOSURE_RTAQ_0006.md
 active_queue:
   - planning/EV4_ROLLING_QUEUE.json
 active_run_ledger:
@@ -160,6 +161,7 @@ valid route fixture acceptance
 invalid fixture rejection
 builder handoff step integrity
 route/mode consistency
+delegated RTAQ queue, ledger, task-quality, and submitted-packet eligibility checks
 ```
 
 Additional repository-check validators are active in the bounded RTAQ path:
@@ -169,7 +171,14 @@ python validation/e2e/run_submitted_packet_eligibility_gate_check.py
 python validation/e2e/run_task_quality_gate_check.py
 ```
 
-These validators harden repository contracts, submitted-packet eligibility, task quality-gate structure, and queue discipline. They do not prove live render correctness, export validation, accessibility pass, pixel accuracy, production readiness, or release readiness.
+The responsive-tree checker also delegates these queue-control validators:
+
+```bash
+python validation/e2e/run_rolling_queue_check.py
+python validation/e2e/run_run_ledger_check.py
+```
+
+These validators harden repository contracts, submitted-packet eligibility, task quality-gate structure, queue discipline, and ledger discipline. They do not prove live render correctness, export validation, accessibility pass, pixel accuracy, production readiness, or release readiness.
 
 The legacy run-ledger workflow is manual-only during this refactor path.
 
