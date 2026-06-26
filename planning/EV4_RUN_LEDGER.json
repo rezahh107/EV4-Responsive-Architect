@@ -171,6 +171,52 @@
         "no_issue_8_mutation"
       ],
       "next_queue_effect": "RTAQ-0004 is next executable and remains pending."
+    },
+    {
+      "record_id": "LEDGER-0015",
+      "run_id": "merge-final-rtaq-0004-pr-71",
+      "task_ref": "RTAQ-0004",
+      "run_type": "status_sync",
+      "status": "merged",
+      "pr_number": 71,
+      "merge_sha": "7b50080ba33974580987f43ceb46660e95b5944c",
+      "ci_conclusion": "success",
+      "created_at_utc": "2026-06-26T04:30:00Z",
+      "artifacts": [
+        {
+          "path": "docs/18_GUARDED_HANDOFF_PACK.md",
+          "artifact_type": "doc",
+          "status": "created"
+        },
+        {
+          "path": "docs/19_REPOSITORY_DRIFT_AUDIT_RTAQ_0004.md",
+          "artifact_type": "doc",
+          "status": "created"
+        },
+        {
+          "path": "docs/20_ACTIVE_CONTRACT_SCHEMA_VALIDATOR_INDEX.md",
+          "artifact_type": "doc",
+          "status": "created"
+        }
+      ],
+      "critique_summary": [
+        "PR #71 added guarded handoff, drift audit, and active index documentation only.",
+        "Gemini identified incomplete controlled-use doc and validator inventories; the PR was patched and review threads were resolved before merge.",
+        "PROJECT_MASTER_SPEC.md drift remains a bounded RTAQ-0005 queue-refresh candidate.",
+        "CI success is repository-check evidence only, not responsive correctness evidence."
+      ],
+      "boundary_assertions": [
+        "no_real_evidence_created",
+        "no_real_pilot_run",
+        "no_production_claim",
+        "no_release_claim",
+        "no_live_render_claim",
+        "no_export_validation_claim",
+        "no_accessibility_pass_claim",
+        "sample_not_used_as_real",
+        "no_issue_8_mutation"
+      ],
+      "next_queue_effect": "RTAQ-0005 is next executable and remains pending."
     }
   ]
 }
