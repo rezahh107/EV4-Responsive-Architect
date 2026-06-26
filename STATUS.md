@@ -57,6 +57,7 @@ controlled_use_docs:
   - docs/20_ACTIVE_CONTRACT_SCHEMA_VALIDATOR_INDEX.md
   - docs/21_QUEUE_REFRESH_AUDIT_RTAQ_0005.md
   - docs/22_MASTER_STATUS_DRIFT_CLOSURE_RTAQ_0006.md
+  - docs/23_EVIDENCE_BOUND_DOCUMENTATION_GUARD_RTAQ_0008.md
 ```
 
 ## CI Boundary
@@ -101,13 +102,15 @@ rtaq_0006_started: true
 rtaq_0006_status: merged
 rtaq_0007_started: true
 rtaq_0007_status: merged
+rtaq_0008_started: true
+rtaq_0008_status: in_progress
 pending_tasks:
   - RTAQ-0008
   - RTAQ-0009
   - RTAQ-0010
   - RTAQ-0011
 rq_0023_started: false
-reason: RTAQ-0007 is merge-final synced. RTAQ-0011 restores minimum pending depth. RTAQ-0008 is next executable. Evidence and pilot boundaries remain unchanged.
+reason: RTAQ-0008 is active in a narrow documentation-only PR. Evidence and pilot boundaries remain unchanged.
 ```
 
 ## Evidence Boundary
