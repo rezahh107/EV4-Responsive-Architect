@@ -39,6 +39,20 @@ active_schema:
   - schemas/ev4-responsive-output.schema.json
 active_validation:
   - validation/e2e/run_responsive_tree_architecture_refactor_check.py
+  - validation/e2e/run_submitted_packet_eligibility_gate_check.py
+  - validation/e2e/run_task_quality_gate_check.py
+controlled_use_docs:
+  - docs/15_CONTROLLED_USE_READINESS_SNAPSHOT.md
+  - docs/16_CONTROLLED_MANUAL_FIRST_RUN_GUIDE.md
+  - docs/17_VALIDATION_COMMAND_INDEX.md
+  - docs/18_GUARDED_HANDOFF_PACK.md
+  - docs/19_REPOSITORY_DRIFT_AUDIT_RTAQ_0004.md
+  - docs/20_ACTIVE_CONTRACT_SCHEMA_VALIDATOR_INDEX.md
+  - docs/21_QUEUE_REFRESH_AUDIT_RTAQ_0005.md
+active_queue:
+  - planning/EV4_ROLLING_QUEUE.json
+active_run_ledger:
+  - planning/EV4_RUN_LEDGER.json
 ```
 
 ---
@@ -52,6 +66,8 @@ active_validation:
 - Route selection is planning evidence, not validation evidence.
 - CI success or a merged PR is repository evidence only, not responsive correctness evidence.
 - Higher-readiness claims remain blocked without matching real evidence.
+- Issue #8 remains evidence-pending until a real submitted packet validates.
+- The real pilot remains blocked until submitted packet and readiness gates pass.
 ```
 
 ---
@@ -146,6 +162,15 @@ builder handoff step integrity
 route/mode consistency
 ```
 
+Additional repository-check validators are active in the bounded RTAQ path:
+
+```bash
+python validation/e2e/run_submitted_packet_eligibility_gate_check.py
+python validation/e2e/run_task_quality_gate_check.py
+```
+
+These validators harden repository contracts, submitted-packet eligibility, task quality-gate structure, and queue discipline. They do not prove live render correctness, export validation, accessibility pass, pixel accuracy, production readiness, or release readiness.
+
 The legacy run-ledger workflow is manual-only during this refactor path.
 
 ---
@@ -159,6 +184,10 @@ merged_foundation:
   - PR #61 responsive output schema and route fixtures
   - PR #62 responsive output negative validation fixtures
   - PR #63 validator hardening and restored coverage checks
+  - PR #65 post-refactor active queue reset
+  - PR #67 submitted packet eligibility gate hardening
+  - PR #69 controlled-use readiness snapshot and first-run guide
+  - PR #71 guarded handoff pack and drift audit
 ```
 
 ---
