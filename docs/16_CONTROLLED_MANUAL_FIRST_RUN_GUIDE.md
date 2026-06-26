@@ -34,15 +34,13 @@ Do not infer missing tablet/mobile evidence from desktop-only material. If an in
 
 Use this order:
 
-```text
-1. Read STATUS.md and PROJECT_MASTER_SPEC.md.
-2. Read docs/RESPONSIVE_TREE_ARCHITECTURE_REFACTOR_v0.3.0.md.
-3. Read the active contracts in contracts/.
-4. Inspect schemas/ev4-responsive-output.schema.json.
+1. Read [STATUS.md](../STATUS.md) and [PROJECT_MASTER_SPEC.md](../PROJECT_MASTER_SPEC.md).
+2. Read [RESPONSIVE_TREE_ARCHITECTURE_REFACTOR_v0.3.0.md](RESPONSIVE_TREE_ARCHITECTURE_REFACTOR_v0.3.0.md).
+3. Read the active contracts in [contracts/](../contracts/).
+4. Inspect [schemas/ev4-responsive-output.schema.json](../schemas/ev4-responsive-output.schema.json).
 5. Run the validation command index below.
 6. Review whether any output is only planning material or eligible for a future evidence gate.
 7. Stop if any evidence, readiness, or pilot boundary would be crossed.
-```
 
 ## Stop conditions
 
