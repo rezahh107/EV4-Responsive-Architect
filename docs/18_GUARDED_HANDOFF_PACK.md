@@ -34,6 +34,9 @@ controlled_use_docs:
   - docs/15_CONTROLLED_USE_READINESS_SNAPSHOT.md
   - docs/16_CONTROLLED_MANUAL_FIRST_RUN_GUIDE.md
   - docs/17_VALIDATION_COMMAND_INDEX.md
+  - docs/18_GUARDED_HANDOFF_PACK.md
+  - docs/19_REPOSITORY_DRIFT_AUDIT_RTAQ_0004.md
+  - docs/20_ACTIVE_CONTRACT_SCHEMA_VALIDATOR_INDEX.md
 ```
 
 ## Active contracts
@@ -64,6 +67,7 @@ validators:
   - validation/e2e/run_submitted_packet_eligibility_gate_check.py
   - validation/e2e/run_rolling_queue_check.py
   - validation/e2e/run_run_ledger_check.py
+  - validation/e2e/run_task_quality_gate_check.py
 ```
 
 ## Manual-use boundary
