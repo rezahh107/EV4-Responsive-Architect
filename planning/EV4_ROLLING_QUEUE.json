@@ -17,7 +17,7 @@
     "cycle_status": "active",
     "started_from_status": "responsive_tree_architecture_active_on_main",
     "goal": "Drive larger bounded post-refactor responsive-tree architecture tasks while preserving evidence, pilot, and readiness boundaries.",
-    "task_order": ["RTAQ-0001", "RTAQ-0002", "RTAQ-0003", "RTAQ-0004", "RTAQ-0005", "RTAQ-0006", "RTAQ-0007", "RTAQ-0008", "RTAQ-0009", "RTAQ-0010"]
+    "task_order": ["RTAQ-0001", "RTAQ-0002", "RTAQ-0003", "RTAQ-0004", "RTAQ-0005", "RTAQ-0006", "RTAQ-0007", "RTAQ-0008", "RTAQ-0009", "RTAQ-0010", "RTAQ-0011"]
   },
   "tasks": [
     {
@@ -183,6 +183,21 @@
       "acceptance_criteria": ["The previous four bounded tasks are audited before the next cycle is planned.", "Pending depth is restored.", "Evidence-pending and pilot-blocked boundaries remain visible."],
       "critique_required": true,
       "dependencies": ["RTAQ-0006", "RTAQ-0007", "RTAQ-0008", "RTAQ-0009"]
+    },
+    {
+      "task_id": "RTAQ-0011",
+      "cycle_position": 11,
+      "task_type": "repo_sync",
+      "status": "pending",
+      "title": "Pending depth reserve after RTAQ-0007 sync",
+      "objective": "Maintain minimum pending depth after RTAQ-0007 merge-final sync without starting new evidence, pilot, readiness, or production work.",
+      "allowed_work": ["Audit post-sync queue depth after RTAQ-0008 through RTAQ-0010 remain pending.", "Patch queue, ledger, status, or docs only if bounded synchronization drift is found.", "Use branch, PR, CI, and critique workflow before merge."],
+      "forbidden_work": ["Do not create submitted evidence.", "Do not modify Issue #8.", "Do not run or authorize the real pilot.", "Do not upgrade readiness, production, release, live-render, export, accessibility, or pixel claims."],
+      "requires_real_evidence": false,
+      "expected_artifacts": ["Bounded queue/status sync patch if drift is found", "CI result"],
+      "acceptance_criteria": ["Minimum pending depth remains visible.", "RTAQ-0008 remains the next executable task until started in a later run.", "Evidence-pending and pilot-blocked boundaries remain visible."],
+      "critique_required": true,
+      "dependencies": ["RTAQ-0007"]
     }
   ],
   "forbidden_claims": ["production_ready", "release_ready", "pixel_perfect", "live_render_validated", "export_json_validated", "accessibility_passed", "sample_packet_used_as_real_evidence", "numeric_score_overrides_gate"]
