@@ -6,7 +6,7 @@ version: 0.3.0-responsive-tree-architecture-active
 status: responsive_tree_architecture_active_on_main
 production_ready: false
 prompt_pack_release_ready: false
-current_branch: automation/rtaq-0005-queue-refresh
+current_branch: main
 primary_mode: design_to_responsive_tree
 secondary_mode: responsive_repair
 merged_foundation:
@@ -19,6 +19,7 @@ merged_foundation:
   - PR #67 submitted packet eligibility gate hardening
   - PR #69 controlled-use readiness snapshot and first-run guide
   - PR #71 guarded handoff pack and drift audit
+  - PR #73 queue refresh audit and next bounded task plan
 ```
 
 ## Current Phase
@@ -74,12 +75,12 @@ active_queue_reset_task: RTAQ-0001
 active_queue_reset_status: merged
 active_queue_reset_pr: 65
 active_queue_reset_merge_sha: 7dd76a1952466ae723183643b413501b94dbdbc5
-latest_completed_task: RTAQ-0004
-latest_completed_pr: 71
-latest_completed_merge_sha: 7b50080ba33974580987f43ceb46660e95b5944c
+latest_completed_task: RTAQ-0005
+latest_completed_pr: 73
+latest_completed_merge_sha: fd8ac9492066c6ee718899ebe0d36e32086bf3f0
 legacy_rq_lineage_status: archived_non_authoritative_history
 legacy_rq_pending_driver_removed: true
-next_executable_task: RTAQ-0005
+next_executable_task: RTAQ-0006
 rtaq_0002_started: true
 rtaq_0002_status: merged
 rtaq_0003_started: true
@@ -87,14 +88,14 @@ rtaq_0003_status: merged
 rtaq_0004_started: true
 rtaq_0004_status: merged
 rtaq_0005_started: true
-rtaq_0005_status: in_progress
+rtaq_0005_status: merged
 pending_tasks:
   - RTAQ-0006
   - RTAQ-0007
   - RTAQ-0008
   - RTAQ-0009
 rq_0023_started: false
-reason: RTAQ-0005 is the active fifth-cycle queue-refresh task. It audits RTAQ-0001 through RTAQ-0004, restores pending depth, and preserves evidence/pilot boundaries.
+reason: RTAQ-0005 completed the fifth-cycle queue refresh. RTAQ-0006 is next executable, while evidence and pilot boundaries remain unchanged.
 ```
 
 ## Evidence Boundary
