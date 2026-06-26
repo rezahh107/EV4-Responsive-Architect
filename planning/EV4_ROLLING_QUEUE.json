@@ -23,7 +23,8 @@
       "RTAQ-0003",
       "RTAQ-0004",
       "RTAQ-0005",
-      "RTAQ-0006"
+      "RTAQ-0006",
+      "RTAQ-0007"
     ]
   },
   "tasks": [
@@ -151,7 +152,7 @@
       "task_id": "RTAQ-0003",
       "cycle_position": 3,
       "task_type": "repo_sync",
-      "status": "pending",
+      "status": "merged",
       "title": "Controlled-use readiness snapshot and first-run guide",
       "objective": "Create one evidence-bounded controlled-use readiness snapshot plus first-run guide for manual use without upgrading production, release, or validation claims.",
       "allowed_work": [
@@ -179,7 +180,23 @@
       "critique_required": true,
       "dependencies": [
         "RTAQ-0002"
-      ]
+      ],
+      "completed_pr": 69,
+      "completion": {
+        "run_id": "merge-final-rtaq-0003-pr-69",
+        "status": "merged",
+        "artifacts": [
+          "docs/15_CONTROLLED_USE_READINESS_SNAPSHOT.md",
+          "docs/16_CONTROLLED_MANUAL_FIRST_RUN_GUIDE.md",
+          "docs/17_VALIDATION_COMMAND_INDEX.md"
+        ],
+        "critique_findings": [
+          "The task stayed documentation-only and preserved controlled-use boundaries.",
+          "Gemini identified inconsistent non-clickable path references in the first-run guide; the PR was patched with relative Markdown links.",
+          "CI success remains repository-check evidence only, not responsive correctness evidence."
+        ],
+        "boundary": "No submitted evidence, Issue #8 mutation, real pilot execution, readiness claim upgrade, or production/release claim upgrade."
+      }
     },
     {
       "task_id": "RTAQ-0004",
@@ -279,6 +296,40 @@
       "acceptance_criteria": [
         "Task is only executed after RTAQ-0005 refresh completes.",
         "Any patch is limited to bounded execution-boundary drift.",
+        "Evidence-pending and pilot-blocked boundaries remain visible."
+      ],
+      "critique_required": true,
+      "dependencies": [
+        "RTAQ-0005"
+      ]
+    },
+    {
+      "task_id": "RTAQ-0007",
+      "cycle_position": 7,
+      "task_type": "repo_sync",
+      "status": "pending",
+      "title": "Post-refresh contract and index drift closure",
+      "objective": "Reserve a bounded post-refresh slot for closing any contract, documentation index, validator index, or status drift identified by RTAQ-0005 without creating evidence or authorizing pilot work.",
+      "allowed_work": [
+        "Close bounded contract or index drift identified by RTAQ-0005.",
+        "Keep changes documentation, schema, validator-index, queue, ledger, or status scoped.",
+        "Use branch, PR, CI, and critique workflow before merge."
+      ],
+      "forbidden_work": [
+        "Do not create submitted evidence.",
+        "Do not modify Issue #8.",
+        "Do not run or authorize the real pilot.",
+        "Do not upgrade readiness, production, release, live-render, export, accessibility, or pixel claims."
+      ],
+      "requires_real_evidence": false,
+      "expected_artifacts": [
+        "Bounded drift-closure patch if RTAQ-0005 identifies drift",
+        "Queue/ledger/status reconciliation if required",
+        "CI result"
+      ],
+      "acceptance_criteria": [
+        "Task is only executed after RTAQ-0005 refresh completes.",
+        "Any patch is limited to bounded contract, index, or status drift.",
         "Evidence-pending and pilot-blocked boundaries remain visible."
       ],
       "critique_required": true,

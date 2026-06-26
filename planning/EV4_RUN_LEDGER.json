@@ -126,6 +126,51 @@
         "no_issue_8_mutation"
       ],
       "next_queue_effect": "RTAQ-0003 is next executable and remains pending."
+    },
+    {
+      "record_id": "LEDGER-0014",
+      "run_id": "merge-final-rtaq-0003-pr-69",
+      "task_ref": "RTAQ-0003",
+      "run_type": "status_sync",
+      "status": "merged",
+      "pr_number": 69,
+      "merge_sha": "e98b7029b82f80e5a4db872d20ce6774f3f35465",
+      "ci_conclusion": "success",
+      "created_at_utc": "2026-06-26T01:25:00Z",
+      "artifacts": [
+        {
+          "path": "docs/15_CONTROLLED_USE_READINESS_SNAPSHOT.md",
+          "artifact_type": "doc",
+          "status": "created"
+        },
+        {
+          "path": "docs/16_CONTROLLED_MANUAL_FIRST_RUN_GUIDE.md",
+          "artifact_type": "doc",
+          "status": "created"
+        },
+        {
+          "path": "docs/17_VALIDATION_COMMAND_INDEX.md",
+          "artifact_type": "doc",
+          "status": "created"
+        }
+      ],
+      "critique_summary": [
+        "PR #69 added controlled-use documentation only and did not create submitted evidence or authorize real pilot execution.",
+        "Gemini identified inconsistent non-clickable path references; the first-run guide was patched with relative Markdown links before merge.",
+        "CI success is repository-check evidence only, not responsive correctness evidence."
+      ],
+      "boundary_assertions": [
+        "no_real_evidence_created",
+        "no_real_pilot_run",
+        "no_production_claim",
+        "no_release_claim",
+        "no_live_render_claim",
+        "no_export_validation_claim",
+        "no_accessibility_pass_claim",
+        "sample_not_used_as_real",
+        "no_issue_8_mutation"
+      ],
+      "next_queue_effect": "RTAQ-0004 is next executable and remains pending."
     }
   ]
 }
