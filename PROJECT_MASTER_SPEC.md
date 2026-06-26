@@ -199,6 +199,7 @@ merged_foundation:
   - PR #71 guarded handoff pack and drift audit
   - PR #73 queue refresh audit and next bounded task plan
   - PR #75 master spec and status drift closure
+  - PR #77 validator and command index hardening
 ```
 
 ---
