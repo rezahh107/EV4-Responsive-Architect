@@ -35,13 +35,7 @@
       "critique_required": true,
       "dependencies": [],
       "completed_pr": 65,
-      "completion": {
-        "run_id": "merge-final-rtaq-0001-pr-65",
-        "status": "merged",
-        "artifacts": ["planning/EV4_ROLLING_QUEUE.json", "planning/EV4_RUN_LEDGER.json", "planning/EV4_QUEUE_RESET_RTAQ_0001.audit.json", "schemas/ev4-responsive-rolling-queue.schema.json", "schemas/ev4-responsive-run-ledger.schema.json", "validation/e2e/run_rolling_queue_check.py", "validation/e2e/run_run_ledger_check.py", "validation/e2e/run_responsive_tree_architecture_refactor_check.py", "STATUS.md", "docs/14_EV4_ROLLING_QUEUE.md", "planning/QUEUE_RESET_RTAQ_0001_PR_NOTE.md", "planning/EV4_RUN_LEDGER_RQ_LEGACY_ARCHIVE_NOTE.md"],
-        "critique_findings": ["The old RQ pending lineage must remain archived history and must not drive post-refactor execution.", "CI success and queue completion remain repository bookkeeping only, not responsive correctness evidence."],
-        "boundary": "No submitted evidence, Issue #8 mutation, real pilot execution, or readiness claim upgrade."
-      }
+      "completion": {"run_id": "merge-final-rtaq-0001-pr-65", "status": "merged", "artifacts": ["planning/EV4_ROLLING_QUEUE.json", "planning/EV4_RUN_LEDGER.json", "planning/EV4_QUEUE_RESET_RTAQ_0001.audit.json", "schemas/ev4-responsive-rolling-queue.schema.json", "schemas/ev4-responsive-run-ledger.schema.json", "validation/e2e/run_rolling_queue_check.py", "validation/e2e/run_run_ledger_check.py", "validation/e2e/run_responsive_tree_architecture_refactor_check.py", "STATUS.md", "docs/14_EV4_ROLLING_QUEUE.md", "planning/QUEUE_RESET_RTAQ_0001_PR_NOTE.md", "planning/EV4_RUN_LEDGER_RQ_LEGACY_ARCHIVE_NOTE.md"], "critique_findings": ["The old RQ pending lineage must remain archived history and must not drive post-refactor execution.", "CI success and queue completion remain repository bookkeeping only, not responsive correctness evidence."], "boundary": "No submitted evidence, Issue #8 mutation, real pilot execution, or readiness claim upgrade."}
     },
     {
       "task_id": "RTAQ-0002",
@@ -58,13 +52,7 @@
       "critique_required": true,
       "dependencies": ["RTAQ-0001"],
       "completed_pr": 67,
-      "completion": {
-        "run_id": "merge-final-rtaq-0002-pr-67",
-        "status": "merged",
-        "artifacts": ["validation/e2e/run_submitted_packet_eligibility_gate_check.py", "validation/fixtures/invalid/submitted_packet_eligibility_wrong_issue_ref.invalid.json", "validation/fixtures/invalid/submitted_packet_eligibility_stale_state.invalid.json", "validation/fixtures/invalid/submitted_packet_eligibility_sample_marker.invalid.json", "validation/fixtures/invalid/submitted_packet_eligibility_placeholder_hash.invalid.json", "validation/e2e/run_responsive_tree_architecture_refactor_check.py"],
-        "critique_findings": ["Gemini correctly identified a misleading rejection path for missing or non-string payload_identity_hash.", "The validator now rejects missing or invalid payload identity hashes with a specific payload identity hash error before placeholder-hash checks.", "CI success remains repository-check evidence only, not responsive correctness evidence."],
-        "boundary": "No submitted evidence, Issue #8 mutation, real pilot execution, readiness claim upgrade, or production/release claim upgrade."
-      }
+      "completion": {"run_id": "merge-final-rtaq-0002-pr-67", "status": "merged", "artifacts": ["validation/e2e/run_submitted_packet_eligibility_gate_check.py", "validation/fixtures/invalid/submitted_packet_eligibility_wrong_issue_ref.invalid.json", "validation/fixtures/invalid/submitted_packet_eligibility_stale_state.invalid.json", "validation/fixtures/invalid/submitted_packet_eligibility_sample_marker.invalid.json", "validation/fixtures/invalid/submitted_packet_eligibility_placeholder_hash.invalid.json", "validation/e2e/run_responsive_tree_architecture_refactor_check.py"], "critique_findings": ["Gemini correctly identified a misleading rejection path for missing or non-string payload_identity_hash.", "The validator now rejects missing or invalid payload identity hashes with a specific payload identity hash error before placeholder-hash checks.", "CI success remains repository-check evidence only, not responsive correctness evidence."], "boundary": "No submitted evidence, Issue #8 mutation, real pilot execution, readiness claim upgrade, or production/release claim upgrade."}
     },
     {
       "task_id": "RTAQ-0003",
@@ -81,13 +69,7 @@
       "critique_required": true,
       "dependencies": ["RTAQ-0002"],
       "completed_pr": 69,
-      "completion": {
-        "run_id": "merge-final-rtaq-0003-pr-69",
-        "status": "merged",
-        "artifacts": ["docs/15_CONTROLLED_USE_READINESS_SNAPSHOT.md", "docs/16_CONTROLLED_MANUAL_FIRST_RUN_GUIDE.md", "docs/17_VALIDATION_COMMAND_INDEX.md"],
-        "critique_findings": ["The task stayed documentation-only and preserved controlled-use boundaries.", "Gemini identified inconsistent non-clickable path references in the first-run guide; the PR was patched with relative Markdown links.", "CI success remains repository-check evidence only, not responsive correctness evidence."],
-        "boundary": "No submitted evidence, Issue #8 mutation, real pilot execution, readiness claim upgrade, or production/release claim upgrade."
-      }
+      "completion": {"run_id": "merge-final-rtaq-0003-pr-69", "status": "merged", "artifacts": ["docs/15_CONTROLLED_USE_READINESS_SNAPSHOT.md", "docs/16_CONTROLLED_MANUAL_FIRST_RUN_GUIDE.md", "docs/17_VALIDATION_COMMAND_INDEX.md"], "critique_findings": ["The task stayed documentation-only and preserved controlled-use boundaries.", "Gemini identified inconsistent non-clickable path references in the first-run guide; the PR was patched with relative Markdown links.", "CI success remains repository-check evidence only, not responsive correctness evidence."], "boundary": "No submitted evidence, Issue #8 mutation, real pilot execution, readiness claim upgrade, or production/release claim upgrade."}
     },
     {
       "task_id": "RTAQ-0004",
@@ -104,13 +86,7 @@
       "critique_required": true,
       "dependencies": ["RTAQ-0003"],
       "completed_pr": 71,
-      "completion": {
-        "run_id": "merge-final-rtaq-0004-pr-71",
-        "status": "merged",
-        "artifacts": ["docs/18_GUARDED_HANDOFF_PACK.md", "docs/19_REPOSITORY_DRIFT_AUDIT_RTAQ_0004.md", "docs/20_ACTIVE_CONTRACT_SCHEMA_VALIDATOR_INDEX.md", "validation/e2e/run_task_quality_gate_check.py"],
-        "critique_findings": ["Gemini identified incomplete controlled-use document inventory and missing task quality gate validator references; the PR was patched before merge.", "PROJECT_MASTER_SPEC.md documentation drift remains a bounded RTAQ-0005 follow-up candidate rather than a RTAQ-0004 scope expansion.", "CI success remains repository-check evidence only, not responsive correctness evidence."],
-        "boundary": "No submitted evidence, Issue #8 mutation, real pilot execution, readiness claim upgrade, or production/release claim upgrade."
-      }
+      "completion": {"run_id": "merge-final-rtaq-0004-pr-71", "status": "merged", "artifacts": ["docs/18_GUARDED_HANDOFF_PACK.md", "docs/19_REPOSITORY_DRIFT_AUDIT_RTAQ_0004.md", "docs/20_ACTIVE_CONTRACT_SCHEMA_VALIDATOR_INDEX.md", "validation/e2e/run_task_quality_gate_check.py"], "critique_findings": ["Gemini identified incomplete controlled-use document inventory and missing task quality gate validator references; the PR was patched before merge.", "PROJECT_MASTER_SPEC.md documentation drift remains a bounded RTAQ-0005 follow-up candidate rather than a RTAQ-0004 scope expansion.", "CI success remains repository-check evidence only, not responsive correctness evidence."], "boundary": "No submitted evidence, Issue #8 mutation, real pilot execution, readiness claim upgrade, or production/release claim upgrade."}
     },
     {
       "task_id": "RTAQ-0005",
@@ -127,13 +103,7 @@
       "critique_required": true,
       "dependencies": ["RTAQ-0001", "RTAQ-0002", "RTAQ-0003", "RTAQ-0004"],
       "completed_pr": 73,
-      "completion": {
-        "run_id": "merge-final-rtaq-0005-pr-73",
-        "status": "merged",
-        "artifacts": ["planning/EV4_ROLLING_QUEUE.json", "STATUS.md", "PROJECT_MASTER_SPEC.md", "docs/21_QUEUE_REFRESH_AUDIT_RTAQ_0005.md"],
-        "critique_findings": ["RTAQ-0005 correctly treated the fifth-cycle refresh as planning and repository synchronization only.", "The queue refresh restored at least four pending tasks for RTAQ-0006 through RTAQ-0009.", "Post-merge sync was required because merge SHA and final CI conclusion were unavailable before PR #73 merged.", "CI success remains repository-check evidence only, not responsive correctness evidence."],
-        "boundary": "No submitted evidence, Issue #8 mutation, real pilot execution, readiness claim upgrade, or production/release claim upgrade."
-      }
+      "completion": {"run_id": "merge-final-rtaq-0005-pr-73", "status": "merged", "artifacts": ["planning/EV4_ROLLING_QUEUE.json", "STATUS.md", "PROJECT_MASTER_SPEC.md", "docs/21_QUEUE_REFRESH_AUDIT_RTAQ_0005.md"], "critique_findings": ["RTAQ-0005 correctly treated the fifth-cycle refresh as planning and repository synchronization only.", "The queue refresh restored at least four pending tasks for RTAQ-0006 through RTAQ-0009.", "Post-merge sync was required because merge SHA and final CI conclusion were unavailable before PR #73 merged.", "CI success remains repository-check evidence only, not responsive correctness evidence."], "boundary": "No submitted evidence, Issue #8 mutation, real pilot execution, readiness claim upgrade, or production/release claim upgrade."}
     },
     {
       "task_id": "RTAQ-0006",
@@ -150,19 +120,13 @@
       "critique_required": true,
       "dependencies": ["RTAQ-0005"],
       "completed_pr": 75,
-      "completion": {
-        "run_id": "merge-final-rtaq-0006-pr-75",
-        "status": "merged",
-        "artifacts": ["docs/17_VALIDATION_COMMAND_INDEX.md", "docs/20_ACTIVE_CONTRACT_SCHEMA_VALIDATOR_INDEX.md", "docs/22_MASTER_STATUS_DRIFT_CLOSURE_RTAQ_0006.md", "PROJECT_MASTER_SPEC.md", "STATUS.md", "planning/EV4_ROLLING_QUEUE.json"],
-        "critique_findings": ["RTAQ-0006 closed bounded master-spec/status/index drift after RTAQ-0005.", "Gemini identified two small in-scope issues; the PR was patched with clearer validator wording and pending-depth restoration before merge.", "This merge-final sync does not start RTAQ-0007.", "CI success remains repository-check evidence only, not responsive correctness evidence."],
-        "boundary": "No submitted evidence, Issue #8 mutation, real pilot execution, readiness claim upgrade, or production/release claim upgrade."
-      }
+      "completion": {"run_id": "merge-final-rtaq-0006-pr-75", "status": "merged", "artifacts": ["docs/17_VALIDATION_COMMAND_INDEX.md", "docs/20_ACTIVE_CONTRACT_SCHEMA_VALIDATOR_INDEX.md", "docs/22_MASTER_STATUS_DRIFT_CLOSURE_RTAQ_0006.md", "PROJECT_MASTER_SPEC.md", "STATUS.md", "planning/EV4_ROLLING_QUEUE.json"], "critique_findings": ["RTAQ-0006 closed bounded master-spec/status/index drift after RTAQ-0005.", "Gemini identified two small in-scope issues; the PR was patched with clearer validator wording and pending-depth restoration before merge.", "This merge-final sync does not start RTAQ-0007.", "CI success remains repository-check evidence only, not responsive correctness evidence."], "boundary": "No submitted evidence, Issue #8 mutation, real pilot execution, readiness claim upgrade, or production/release claim upgrade."}
     },
     {
       "task_id": "RTAQ-0007",
       "cycle_position": 7,
       "task_type": "validator_hardening",
-      "status": "pending",
+      "status": "merged",
       "title": "Validator and command index hardening",
       "objective": "Harden validator and command indexing for active responsive-tree, submitted-packet, and task-quality checks without claiming responsive correctness evidence.",
       "allowed_work": ["Audit docs/17 and docs/20 against validation/e2e validators.", "Patch missing command references, boundaries, or repo-check caveats.", "Use branch, PR, CI, and critique workflow before merge."],
@@ -171,7 +135,9 @@
       "expected_artifacts": ["Validator command index patch if drift is found", "Queue/ledger/status reconciliation if required", "CI result"],
       "acceptance_criteria": ["Validation command references are current and bounded.", "CI remains described as repository-check evidence only.", "Evidence-pending and pilot-blocked boundaries remain visible."],
       "critique_required": true,
-      "dependencies": ["RTAQ-0005"]
+      "dependencies": ["RTAQ-0005"],
+      "completed_pr": 77,
+      "completion": {"run_id": "merge-final-rtaq-0007-pr-77", "status": "merged", "artifacts": ["docs/17_VALIDATION_COMMAND_INDEX.md", "docs/20_ACTIVE_CONTRACT_SCHEMA_VALIDATOR_INDEX.md", "PROJECT_MASTER_SPEC.md", "STATUS.md", "planning/EV4_ROLLING_QUEUE.json"], "critique_findings": ["RTAQ-0007 hardened validation command and active validator indexes without creating evidence or changing pilot state.", "Gemini reported no actionable review comments for PR #77.", "This merge-final sync does not start RTAQ-0008.", "CI success remains repository-check evidence only, not responsive correctness evidence."], "boundary": "No submitted evidence, Issue #8 mutation, real pilot execution, readiness claim upgrade, or production/release claim upgrade."}
     },
     {
       "task_id": "RTAQ-0008",
