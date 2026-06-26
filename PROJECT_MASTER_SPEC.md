@@ -178,7 +178,7 @@ python validation/e2e/run_rolling_queue_check.py
 python validation/e2e/run_run_ledger_check.py
 ```
 
-These validators harden repository contracts, submitted-packet eligibility, task quality-gate structure, queue discipline, and ledger discipline. They do not prove live render correctness, export validation, accessibility pass, pixel accuracy, production readiness, or release readiness.
+All of these active and delegated validators harden repository contracts, submitted-packet eligibility, task quality-gate structure, queue discipline, and ledger discipline. They do not prove live render correctness, export validation, accessibility pass, pixel accuracy, production readiness, or release readiness.
 
 The legacy run-ledger workflow is manual-only during this refactor path.
 
