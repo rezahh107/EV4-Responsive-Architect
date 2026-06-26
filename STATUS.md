@@ -105,8 +105,9 @@ pending_tasks:
   - RTAQ-0008
   - RTAQ-0009
   - RTAQ-0010
+  - RTAQ-0011
 rq_0023_started: false
-reason: RTAQ-0007 is merge-final synced. RTAQ-0008 is next executable. Evidence and pilot boundaries remain unchanged.
+reason: RTAQ-0007 is merge-final synced. RTAQ-0011 restores minimum pending depth. RTAQ-0008 is next executable. Evidence and pilot boundaries remain unchanged.
 ```
 
 ## Evidence Boundary
