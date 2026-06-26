@@ -188,6 +188,7 @@ merged_foundation:
   - PR #67 submitted packet eligibility gate hardening
   - PR #69 controlled-use readiness snapshot and first-run guide
   - PR #71 guarded handoff pack and drift audit
+  - PR #73 queue refresh audit and next bounded task plan
 ```
 
 ---
