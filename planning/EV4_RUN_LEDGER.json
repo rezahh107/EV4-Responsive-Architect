@@ -131,7 +131,7 @@
       "record_id": "LEDGER-0014",
       "run_id": "merge-final-rtaq-0003-pr-69",
       "task_ref": "RTAQ-0003",
-      "run_type": "automation_task",
+      "run_type": "status_sync",
       "status": "merged",
       "pr_number": 69,
       "merge_sha": "e98b7029b82f80e5a4db872d20ce6774f3f35465",
