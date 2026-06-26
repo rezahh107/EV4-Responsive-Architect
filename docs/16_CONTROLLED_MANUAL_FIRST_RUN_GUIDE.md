@@ -1,6 +1,7 @@
 # Controlled Manual First-Run Guide
 
 Task: `RTAQ-0003`
+Updated by: `RTAQ-0008`
 
 This guide describes how to perform a controlled manual first run of the EV4 Responsive Architect repository without upgrading evidence, readiness, production, release, or pilot claims.
 
@@ -38,7 +39,7 @@ Use this order:
 2. Read [RESPONSIVE_TREE_ARCHITECTURE_REFACTOR_v0.3.0.md](RESPONSIVE_TREE_ARCHITECTURE_REFACTOR_v0.3.0.md).
 3. Read the active contracts in [contracts/](../contracts/).
 4. Inspect [schemas/ev4-responsive-output.schema.json](../schemas/ev4-responsive-output.schema.json).
-5. Run the validation command index below.
+5. Use the authoritative command list in [docs/17_VALIDATION_COMMAND_INDEX.md](17_VALIDATION_COMMAND_INDEX.md).
 6. Review whether any output is only planning material or eligible for a future evidence gate.
 7. Stop if any evidence, readiness, or pilot boundary would be crossed.
 
@@ -60,7 +61,10 @@ Run from repository root:
 ```bash
 python validation/e2e/run_responsive_tree_architecture_refactor_check.py
 python validation/e2e/run_submitted_packet_eligibility_gate_check.py
+python validation/e2e/run_task_quality_gate_check.py
 ```
+
+For the full active/delegated/manual guard command list, use [docs/17_VALIDATION_COMMAND_INDEX.md](17_VALIDATION_COMMAND_INDEX.md). That index is authoritative for controlled manual validation commands.
 
 If dependencies are missing, install the repository requirements first:
 
@@ -68,7 +72,7 @@ If dependencies are missing, install the repository requirements first:
 python -m pip install -r requirements.txt
 ```
 
-The automated GitHub workflow currently runs the responsive-tree refactor check. The submitted-packet eligibility gate is part of the active validation index, but its result remains repository-check evidence only.
+The automated GitHub workflow currently runs the responsive-tree refactor check. The submitted-packet eligibility gate and task-quality gate are active repository checks, and queue/ledger checks are delegated through the responsive-tree checker. Their results remain repository-check evidence only.
 
 ## Expected outputs
 

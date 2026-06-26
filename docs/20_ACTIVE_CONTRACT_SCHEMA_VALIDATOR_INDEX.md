@@ -1,7 +1,7 @@
 # Active Contract / Schema / Validator Index
 
 Task: `RTAQ-0004`
-Updated by: `RTAQ-0007`
+Updated by: `RTAQ-0008`
 
 This index records the active repository surfaces needed for controlled manual use and queue-safe handoff. It is an index only; it does not validate a real submitted packet or authorize pilot execution.
 
@@ -140,6 +140,9 @@ controlled_use_docs:
   master_status_drift_closure:
     path: docs/22_MASTER_STATUS_DRIFT_CLOSURE_RTAQ_0006.md
     role: RTAQ-0006 closure of remaining master-spec/status/index drift
+  evidence_bound_documentation_guard:
+    path: docs/23_EVIDENCE_BOUND_DOCUMENTATION_GUARD_RTAQ_0008.md
+    role: RTAQ-0008 evidence, Issue #8, and pilot blocker documentation guard
 ```
 
 ## CI interpretation

@@ -1,6 +1,7 @@
 # Guarded Handoff Pack
 
-Task: `RTAQ-0004`
+Task: `RTAQ-0008`
+Updated by: `RTAQ-0008`
 
 This pack summarizes the active handoff surface for controlled manual use of EV4 Responsive Architect after the responsive-tree refactor. It is guarded: it packages references and boundaries only. It does not create submitted evidence, mutate Issue #8, run a pilot, or upgrade readiness claims.
 
@@ -11,8 +12,8 @@ project: EV4 Responsive Architect
 active_mode: design_to_responsive_tree
 secondary_mode: responsive_repair
 active_queue_lineage: RTAQ
-latest_merged_task_before_pack: RTAQ-0003
-next_queue_task_after_pack: RTAQ-0005
+latest_merged_task_before_pack: RTAQ-0007
+next_queue_task_after_pack: RTAQ-0009
 production_ready: false
 prompt_pack_release_ready: false
 real_submitted_packet_present: false
@@ -37,6 +38,9 @@ controlled_use_docs:
   - docs/18_GUARDED_HANDOFF_PACK.md
   - docs/19_REPOSITORY_DRIFT_AUDIT_RTAQ_0004.md
   - docs/20_ACTIVE_CONTRACT_SCHEMA_VALIDATOR_INDEX.md
+  - docs/21_QUEUE_REFRESH_AUDIT_RTAQ_0005.md
+  - docs/22_MASTER_STATUS_DRIFT_CLOSURE_RTAQ_0006.md
+  - docs/23_EVIDENCE_BOUND_DOCUMENTATION_GUARD_RTAQ_0008.md
 ```
 
 ## Active contracts
