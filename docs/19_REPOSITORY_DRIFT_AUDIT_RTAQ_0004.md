@@ -22,6 +22,9 @@ controlled_use_docs:
   - docs/15_CONTROLLED_USE_READINESS_SNAPSHOT.md
   - docs/16_CONTROLLED_MANUAL_FIRST_RUN_GUIDE.md
   - docs/17_VALIDATION_COMMAND_INDEX.md
+  - docs/18_GUARDED_HANDOFF_PACK.md
+  - docs/19_REPOSITORY_DRIFT_AUDIT_RTAQ_0004.md
+  - docs/20_ACTIVE_CONTRACT_SCHEMA_VALIDATOR_INDEX.md
 ```
 
 ## Findings
@@ -105,7 +108,7 @@ candidate_follow_up:
   task: RTAQ-0005
   type: queue_refresh
   items:
-    - decide whether PROJECT_MASTER_SPEC.md should list docs/15, docs/16, docs/17 and the submitted-packet validator
+    - decide whether PROJECT_MASTER_SPEC.md should list docs/15, docs/16, docs/17, docs/18, docs/19, docs/20 and the submitted-packet validator
     - record RTAQ-0004 completion in queue and ledger after merge
     - preserve minimum pending task depth after RTAQ-0004 moves from pending to merged
 ```
