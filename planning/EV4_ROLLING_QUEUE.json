@@ -238,7 +238,8 @@
         "artifacts": [
           "docs/18_GUARDED_HANDOFF_PACK.md",
           "docs/19_REPOSITORY_DRIFT_AUDIT_RTAQ_0004.md",
-          "docs/20_ACTIVE_CONTRACT_SCHEMA_VALIDATOR_INDEX.md"
+          "docs/20_ACTIVE_CONTRACT_SCHEMA_VALIDATOR_INDEX.md",
+          "validation/e2e/run_task_quality_gate_check.py"
         ],
         "critique_findings": [
           "Gemini identified incomplete controlled-use document inventory and missing task quality gate validator references; the PR was patched before merge.",
