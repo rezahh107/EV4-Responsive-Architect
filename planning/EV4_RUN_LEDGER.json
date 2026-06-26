@@ -197,6 +197,11 @@
           "path": "docs/20_ACTIVE_CONTRACT_SCHEMA_VALIDATOR_INDEX.md",
           "artifact_type": "doc",
           "status": "created"
+        },
+        {
+          "path": "validation/e2e/run_task_quality_gate_check.py",
+          "artifact_type": "validator",
+          "status": "created"
         }
       ],
       "critique_summary": [
