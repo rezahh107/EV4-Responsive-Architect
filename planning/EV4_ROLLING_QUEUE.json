@@ -17,7 +17,7 @@
     "cycle_status": "active",
     "started_from_status": "responsive_tree_architecture_active_on_main",
     "goal": "Drive larger bounded post-refactor responsive-tree architecture tasks while preserving evidence, pilot, and readiness boundaries.",
-    "task_order": ["RTAQ-0001", "RTAQ-0002", "RTAQ-0003", "RTAQ-0004", "RTAQ-0005", "RTAQ-0006", "RTAQ-0007", "RTAQ-0008", "RTAQ-0009"]
+    "task_order": ["RTAQ-0001", "RTAQ-0002", "RTAQ-0003", "RTAQ-0004", "RTAQ-0005", "RTAQ-0006", "RTAQ-0007", "RTAQ-0008", "RTAQ-0009", "RTAQ-0010"]
   },
   "tasks": [
     {
@@ -139,7 +139,7 @@
       "task_id": "RTAQ-0006",
       "cycle_position": 6,
       "task_type": "repo_sync",
-      "status": "pending",
+      "status": "in_progress",
       "title": "Master spec and status drift closure",
       "objective": "Close bounded master-spec/status drift identified by RTAQ-0005 without adding evidence or changing pilot state.",
       "allowed_work": ["Update or reconcile PROJECT_MASTER_SPEC.md, STATUS.md, and controlled-use documentation indexes if drift remains after RTAQ-0005.", "Keep the active validator and controlled-use document inventory aligned.", "Use branch, PR, CI, and critique workflow before merge."],
@@ -194,6 +194,21 @@
       "acceptance_criteria": ["One-task-per-run, PR reconciliation, critique, and CI-required policies remain visible.", "No quality shortcut treats CI, merge, or Gemini review as responsive correctness evidence.", "Pending depth remains at least four after RTAQ-0005 completion."],
       "critique_required": true,
       "dependencies": ["RTAQ-0005"]
+    },
+    {
+      "task_id": "RTAQ-0010",
+      "cycle_position": 10,
+      "task_type": "queue_refresh",
+      "status": "pending",
+      "title": "Refresh RTAQ queue after second bounded batch",
+      "objective": "Audit RTAQ-0006 through RTAQ-0009, reconcile queue/ledger/status/docs, and plan the next bounded RTAQ batch while preserving evidence and pilot boundaries.",
+      "allowed_work": ["Review completed outcomes for RTAQ-0006 through RTAQ-0009 if they are merged.", "Reconcile queue, ledger, STATUS, and docs state.", "Plan the next bounded RTAQ tasks with at least four pending tasks."],
+      "forbidden_work": ["Do not create submitted evidence.", "Do not modify Issue #8.", "Do not run or authorize the real pilot.", "Do not upgrade readiness, production, release, live-render, export, accessibility, or pixel claims."],
+      "requires_real_evidence": false,
+      "expected_artifacts": ["planning/EV4_ROLLING_QUEUE.json", "planning/EV4_RUN_LEDGER.json if required", "STATUS.md", "Queue refresh audit doc if required"],
+      "acceptance_criteria": ["The previous four bounded tasks are audited before the next cycle is planned.", "Pending depth is restored.", "Evidence-pending and pilot-blocked boundaries remain visible."],
+      "critique_required": true,
+      "dependencies": ["RTAQ-0006", "RTAQ-0007", "RTAQ-0008", "RTAQ-0009"]
     }
   ],
   "forbidden_claims": ["production_ready", "release_ready", "pixel_perfect", "live_render_validated", "export_json_validated", "accessibility_passed", "sample_packet_used_as_real_evidence", "numeric_score_overrides_gate"]
