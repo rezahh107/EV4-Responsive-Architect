@@ -6,7 +6,7 @@ version: 0.3.0-responsive-tree-architecture-active
 status: responsive_tree_architecture_active_on_main
 production_ready: false
 prompt_pack_release_ready: false
-current_branch: main
+current_branch: automation/rtaq-0005-queue-refresh
 primary_mode: design_to_responsive_tree
 secondary_mode: responsive_repair
 merged_foundation:
@@ -52,6 +52,7 @@ controlled_use_docs:
   - docs/18_GUARDED_HANDOFF_PACK.md
   - docs/19_REPOSITORY_DRIFT_AUDIT_RTAQ_0004.md
   - docs/20_ACTIVE_CONTRACT_SCHEMA_VALIDATOR_INDEX.md
+  - docs/21_QUEUE_REFRESH_AUDIT_RTAQ_0005.md
 ```
 
 ## CI Boundary
@@ -85,8 +86,15 @@ rtaq_0003_started: true
 rtaq_0003_status: merged
 rtaq_0004_started: true
 rtaq_0004_status: merged
+rtaq_0005_started: true
+rtaq_0005_status: in_progress
+pending_tasks:
+  - RTAQ-0006
+  - RTAQ-0007
+  - RTAQ-0008
+  - RTAQ-0009
 rq_0023_started: false
-reason: RTAQ-0004 is merged and reconciled. RTAQ-0005 is the fifth-cycle queue-refresh task and is the next executable post-refactor task.
+reason: RTAQ-0005 is the active fifth-cycle queue-refresh task. It audits RTAQ-0001 through RTAQ-0004, restores pending depth, and preserves evidence/pilot boundaries.
 ```
 
 ## Evidence Boundary
