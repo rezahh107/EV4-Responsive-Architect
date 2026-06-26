@@ -50,6 +50,7 @@ controlled_use_docs:
   - docs/20_ACTIVE_CONTRACT_SCHEMA_VALIDATOR_INDEX.md
   - docs/21_QUEUE_REFRESH_AUDIT_RTAQ_0005.md
   - docs/22_MASTER_STATUS_DRIFT_CLOSURE_RTAQ_0006.md
+  - docs/23_EVIDENCE_BOUND_DOCUMENTATION_GUARD_RTAQ_0008.md
 active_queue:
   - planning/EV4_ROLLING_QUEUE.json
 active_run_ledger:
