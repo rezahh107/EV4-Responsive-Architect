@@ -17,6 +17,7 @@ merged_foundation:
   - PR #63 validator hardening and restored coverage checks
   - PR #65 post-refactor active queue reset
   - PR #67 submitted packet eligibility gate hardening
+  - PR #69 controlled-use readiness snapshot and first-run guide
 ```
 
 ## Current Phase
@@ -42,6 +43,10 @@ active_schema:
 active_validation:
   - validation/e2e/run_responsive_tree_architecture_refactor_check.py
   - validation/e2e/run_submitted_packet_eligibility_gate_check.py
+controlled_use_docs:
+  - docs/15_CONTROLLED_USE_READINESS_SNAPSHOT.md
+  - docs/16_CONTROLLED_MANUAL_FIRST_RUN_GUIDE.md
+  - docs/17_VALIDATION_COMMAND_INDEX.md
 ```
 
 ## CI Boundary
@@ -63,17 +68,19 @@ active_queue_reset_task: RTAQ-0001
 active_queue_reset_status: merged
 active_queue_reset_pr: 65
 active_queue_reset_merge_sha: 7dd76a1952466ae723183643b413501b94dbdbc5
-latest_completed_task: RTAQ-0002
-latest_completed_pr: 67
-latest_completed_merge_sha: 1d0350c6b628dc18361479c60aea49fcc5c3acd5
+latest_completed_task: RTAQ-0003
+latest_completed_pr: 69
+latest_completed_merge_sha: e98b7029b82f80e5a4db872d20ce6774f3f35465
 legacy_rq_lineage_status: archived_non_authoritative_history
 legacy_rq_pending_driver_removed: true
-next_executable_task: RTAQ-0003
+next_executable_task: RTAQ-0004
 rtaq_0002_started: true
 rtaq_0002_status: merged
-rtaq_0003_started: false
+rtaq_0003_started: true
+rtaq_0003_status: merged
+rtaq_0004_started: false
 rq_0023_started: false
-reason: RTAQ-0002 is merged and reconciled. RTAQ-0003 is the next executable post-refactor task.
+reason: RTAQ-0003 is merged and reconciled. RTAQ-0004 is the next executable post-refactor task.
 ```
 
 ## Evidence Boundary
