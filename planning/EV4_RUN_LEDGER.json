@@ -29,42 +29,13 @@
       "ci_conclusion": "success",
       "created_at_utc": "2026-06-25T20:00:17Z",
       "artifacts": [
-        {
-          "path": "planning/EV4_ROLLING_QUEUE.json",
-          "artifact_type": "queue",
-          "status": "updated"
-        },
-        {
-          "path": "planning/EV4_RUN_LEDGER.json",
-          "artifact_type": "other",
-          "status": "updated"
-        },
-        {
-          "path": "planning/EV4_QUEUE_RESET_RTAQ_0001.audit.json",
-          "artifact_type": "other",
-          "status": "referenced"
-        },
-        {
-          "path": "STATUS.md",
-          "artifact_type": "status",
-          "status": "updated"
-        }
+        {"path": "planning/EV4_ROLLING_QUEUE.json", "artifact_type": "queue", "status": "updated"},
+        {"path": "planning/EV4_RUN_LEDGER.json", "artifact_type": "other", "status": "updated"},
+        {"path": "planning/EV4_QUEUE_RESET_RTAQ_0001.audit.json", "artifact_type": "other", "status": "referenced"},
+        {"path": "STATUS.md", "artifact_type": "status", "status": "updated"}
       ],
-      "critique_summary": [
-        "PR #65 reset the active queue from RQ to RTAQ.",
-        "RTAQ-0002 is next executable and remains pending.",
-        "CI success is repository-check evidence only."
-      ],
-      "boundary_assertions": [
-        "no_real_evidence_created",
-        "no_real_pilot_run",
-        "no_production_claim",
-        "no_release_claim",
-        "no_live_render_claim",
-        "no_export_validation_claim",
-        "no_accessibility_pass_claim",
-        "sample_not_used_as_real"
-      ],
+      "critique_summary": ["PR #65 reset the active queue from RQ to RTAQ.", "RTAQ-0002 is next executable and remains pending.", "CI success is repository-check evidence only."],
+      "boundary_assertions": ["no_real_evidence_created", "no_real_pilot_run", "no_production_claim", "no_release_claim", "no_live_render_claim", "no_export_validation_claim", "no_accessibility_pass_claim", "sample_not_used_as_real"],
       "next_queue_effect": "RTAQ-0002 is next executable but remains pending."
     },
     {
@@ -78,53 +49,15 @@
       "ci_conclusion": "success",
       "created_at_utc": "2026-06-25T22:26:00Z",
       "artifacts": [
-        {
-          "path": "validation/e2e/run_submitted_packet_eligibility_gate_check.py",
-          "artifact_type": "validator",
-          "status": "created"
-        },
-        {
-          "path": "validation/fixtures/invalid/submitted_packet_eligibility_wrong_issue_ref.invalid.json",
-          "artifact_type": "fixture",
-          "status": "created"
-        },
-        {
-          "path": "validation/fixtures/invalid/submitted_packet_eligibility_stale_state.invalid.json",
-          "artifact_type": "fixture",
-          "status": "created"
-        },
-        {
-          "path": "validation/fixtures/invalid/submitted_packet_eligibility_sample_marker.invalid.json",
-          "artifact_type": "fixture",
-          "status": "created"
-        },
-        {
-          "path": "validation/fixtures/invalid/submitted_packet_eligibility_placeholder_hash.invalid.json",
-          "artifact_type": "fixture",
-          "status": "created"
-        },
-        {
-          "path": "validation/e2e/run_responsive_tree_architecture_refactor_check.py",
-          "artifact_type": "validator",
-          "status": "updated"
-        }
+        {"path": "validation/e2e/run_submitted_packet_eligibility_gate_check.py", "artifact_type": "validator", "status": "created"},
+        {"path": "validation/fixtures/invalid/submitted_packet_eligibility_wrong_issue_ref.invalid.json", "artifact_type": "fixture", "status": "created"},
+        {"path": "validation/fixtures/invalid/submitted_packet_eligibility_stale_state.invalid.json", "artifact_type": "fixture", "status": "created"},
+        {"path": "validation/fixtures/invalid/submitted_packet_eligibility_sample_marker.invalid.json", "artifact_type": "fixture", "status": "created"},
+        {"path": "validation/fixtures/invalid/submitted_packet_eligibility_placeholder_hash.invalid.json", "artifact_type": "fixture", "status": "created"},
+        {"path": "validation/e2e/run_responsive_tree_architecture_refactor_check.py", "artifact_type": "validator", "status": "updated"}
       ],
-      "critique_summary": [
-        "PR #67 added submitted-packet eligibility hardening for Issue #8 reference lock, stale-state rejection, sample-marker rejection, and placeholder-hash rejection.",
-        "Gemini identified a misleading missing-hash rejection path; the PR was patched so missing or non-string payload_identity_hash now raises a specific payload identity hash error.",
-        "CI success is repository-check evidence only, not responsive correctness evidence."
-      ],
-      "boundary_assertions": [
-        "no_real_evidence_created",
-        "no_real_pilot_run",
-        "no_production_claim",
-        "no_release_claim",
-        "no_live_render_claim",
-        "no_export_validation_claim",
-        "no_accessibility_pass_claim",
-        "sample_not_used_as_real",
-        "no_issue_8_mutation"
-      ],
+      "critique_summary": ["PR #67 added submitted-packet eligibility hardening for Issue #8 reference lock, stale-state rejection, sample-marker rejection, and placeholder-hash rejection.", "Gemini identified a misleading missing-hash rejection path; the PR was patched so missing or non-string payload_identity_hash now raises a specific payload identity hash error.", "CI success is repository-check evidence only, not responsive correctness evidence."],
+      "boundary_assertions": ["no_real_evidence_created", "no_real_pilot_run", "no_production_claim", "no_release_claim", "no_live_render_claim", "no_export_validation_claim", "no_accessibility_pass_claim", "sample_not_used_as_real", "no_issue_8_mutation"],
       "next_queue_effect": "RTAQ-0003 is next executable and remains pending."
     },
     {
@@ -138,38 +71,12 @@
       "ci_conclusion": "success",
       "created_at_utc": "2026-06-26T01:25:00Z",
       "artifacts": [
-        {
-          "path": "docs/15_CONTROLLED_USE_READINESS_SNAPSHOT.md",
-          "artifact_type": "doc",
-          "status": "created"
-        },
-        {
-          "path": "docs/16_CONTROLLED_MANUAL_FIRST_RUN_GUIDE.md",
-          "artifact_type": "doc",
-          "status": "created"
-        },
-        {
-          "path": "docs/17_VALIDATION_COMMAND_INDEX.md",
-          "artifact_type": "doc",
-          "status": "created"
-        }
+        {"path": "docs/15_CONTROLLED_USE_READINESS_SNAPSHOT.md", "artifact_type": "doc", "status": "created"},
+        {"path": "docs/16_CONTROLLED_MANUAL_FIRST_RUN_GUIDE.md", "artifact_type": "doc", "status": "created"},
+        {"path": "docs/17_VALIDATION_COMMAND_INDEX.md", "artifact_type": "doc", "status": "created"}
       ],
-      "critique_summary": [
-        "PR #69 added controlled-use documentation only and did not create submitted evidence or authorize real pilot execution.",
-        "Gemini identified inconsistent non-clickable path references; the first-run guide was patched with relative Markdown links before merge.",
-        "CI success is repository-check evidence only, not responsive correctness evidence."
-      ],
-      "boundary_assertions": [
-        "no_real_evidence_created",
-        "no_real_pilot_run",
-        "no_production_claim",
-        "no_release_claim",
-        "no_live_render_claim",
-        "no_export_validation_claim",
-        "no_accessibility_pass_claim",
-        "sample_not_used_as_real",
-        "no_issue_8_mutation"
-      ],
+      "critique_summary": ["PR #69 added controlled-use documentation only and did not create submitted evidence or authorize real pilot execution.", "Gemini identified inconsistent non-clickable path references; the first-run guide was patched with relative Markdown links before merge.", "CI success is repository-check evidence only, not responsive correctness evidence."],
+      "boundary_assertions": ["no_real_evidence_created", "no_real_pilot_run", "no_production_claim", "no_release_claim", "no_live_render_claim", "no_export_validation_claim", "no_accessibility_pass_claim", "sample_not_used_as_real", "no_issue_8_mutation"],
       "next_queue_effect": "RTAQ-0004 is next executable and remains pending."
     },
     {
@@ -183,45 +90,41 @@
       "ci_conclusion": "success",
       "created_at_utc": "2026-06-26T04:30:00Z",
       "artifacts": [
-        {
-          "path": "docs/18_GUARDED_HANDOFF_PACK.md",
-          "artifact_type": "doc",
-          "status": "created"
-        },
-        {
-          "path": "docs/19_REPOSITORY_DRIFT_AUDIT_RTAQ_0004.md",
-          "artifact_type": "doc",
-          "status": "created"
-        },
-        {
-          "path": "docs/20_ACTIVE_CONTRACT_SCHEMA_VALIDATOR_INDEX.md",
-          "artifact_type": "doc",
-          "status": "created"
-        },
-        {
-          "path": "validation/e2e/run_task_quality_gate_check.py",
-          "artifact_type": "validator",
-          "status": "created"
-        }
+        {"path": "docs/18_GUARDED_HANDOFF_PACK.md", "artifact_type": "doc", "status": "created"},
+        {"path": "docs/19_REPOSITORY_DRIFT_AUDIT_RTAQ_0004.md", "artifact_type": "doc", "status": "created"},
+        {"path": "docs/20_ACTIVE_CONTRACT_SCHEMA_VALIDATOR_INDEX.md", "artifact_type": "doc", "status": "created"},
+        {"path": "validation/e2e/run_task_quality_gate_check.py", "artifact_type": "validator", "status": "created"}
+      ],
+      "critique_summary": ["PR #71 added guarded handoff, drift audit, and active index documentation only.", "Gemini identified incomplete controlled-use doc and validator inventories; the PR was patched and review threads were resolved before merge.", "PROJECT_MASTER_SPEC.md drift remains a bounded RTAQ-0005 queue-refresh candidate.", "CI success is repository-check evidence only, not responsive correctness evidence."],
+      "boundary_assertions": ["no_real_evidence_created", "no_real_pilot_run", "no_production_claim", "no_release_claim", "no_live_render_claim", "no_export_validation_claim", "no_accessibility_pass_claim", "sample_not_used_as_real", "no_issue_8_mutation"],
+      "next_queue_effect": "RTAQ-0005 is next executable and remains pending."
+    },
+    {
+      "record_id": "LEDGER-0016",
+      "run_id": "merge-final-rtaq-0005-pr-73",
+      "task_ref": "RTAQ-0005",
+      "run_type": "status_sync",
+      "status": "merged",
+      "pr_number": 73,
+      "merge_sha": "fd8ac9492066c6ee718899ebe0d36e32086bf3f0",
+      "ci_conclusion": "success",
+      "created_at_utc": "2026-06-26T08:26:11Z",
+      "artifacts": [
+        {"path": "planning/EV4_ROLLING_QUEUE.json", "artifact_type": "queue", "status": "updated"},
+        {"path": "planning/EV4_RUN_LEDGER.json", "artifact_type": "other", "status": "updated"},
+        {"path": "STATUS.md", "artifact_type": "status", "status": "updated"},
+        {"path": "PROJECT_MASTER_SPEC.md", "artifact_type": "doc", "status": "updated"},
+        {"path": "docs/21_QUEUE_REFRESH_AUDIT_RTAQ_0005.md", "artifact_type": "doc", "status": "created"}
       ],
       "critique_summary": [
-        "PR #71 added guarded handoff, drift audit, and active index documentation only.",
-        "Gemini identified incomplete controlled-use doc and validator inventories; the PR was patched and review threads were resolved before merge.",
-        "PROJECT_MASTER_SPEC.md drift remains a bounded RTAQ-0005 queue-refresh candidate.",
+        "PR #73 completed the fifth-cycle RTAQ queue refresh and audited RTAQ-0001 through RTAQ-0004.",
+        "Pending depth was restored with RTAQ-0006 through RTAQ-0009 remaining pending.",
+        "Gemini had no actionable review comments for PR #73.",
+        "This sync records merge-final state only and does not start RTAQ-0006.",
         "CI success is repository-check evidence only, not responsive correctness evidence."
       ],
-      "boundary_assertions": [
-        "no_real_evidence_created",
-        "no_real_pilot_run",
-        "no_production_claim",
-        "no_release_claim",
-        "no_live_render_claim",
-        "no_export_validation_claim",
-        "no_accessibility_pass_claim",
-        "sample_not_used_as_real",
-        "no_issue_8_mutation"
-      ],
-      "next_queue_effect": "RTAQ-0005 is next executable and remains pending."
+      "boundary_assertions": ["no_real_evidence_created", "no_real_pilot_run", "no_production_claim", "no_release_claim", "no_live_render_claim", "no_export_validation_claim", "no_accessibility_pass_claim", "sample_not_used_as_real", "no_issue_8_mutation"],
+      "next_queue_effect": "RTAQ-0006 is next executable and remains pending."
     }
   ]
 }
