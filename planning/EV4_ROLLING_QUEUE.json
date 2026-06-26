@@ -139,7 +139,7 @@
       "task_id": "RTAQ-0006",
       "cycle_position": 6,
       "task_type": "repo_sync",
-      "status": "in_progress",
+      "status": "merged",
       "title": "Master spec and status drift closure",
       "objective": "Close bounded master-spec/status drift identified by RTAQ-0005 without adding evidence or changing pilot state.",
       "allowed_work": ["Update or reconcile PROJECT_MASTER_SPEC.md, STATUS.md, and controlled-use documentation indexes if drift remains after RTAQ-0005.", "Keep the active validator and controlled-use document inventory aligned.", "Use branch, PR, CI, and critique workflow before merge."],
@@ -148,7 +148,15 @@
       "expected_artifacts": ["Bounded master-spec/status drift patch if still required", "Queue/ledger/status reconciliation if required", "CI result"],
       "acceptance_criteria": ["Task is only executed after RTAQ-0005 refresh completes.", "Master spec, STATUS, and docs indexes do not contradict the active bounded state.", "Evidence-pending and pilot-blocked boundaries remain visible."],
       "critique_required": true,
-      "dependencies": ["RTAQ-0005"]
+      "dependencies": ["RTAQ-0005"],
+      "completed_pr": 75,
+      "completion": {
+        "run_id": "merge-final-rtaq-0006-pr-75",
+        "status": "merged",
+        "artifacts": ["docs/17_VALIDATION_COMMAND_INDEX.md", "docs/20_ACTIVE_CONTRACT_SCHEMA_VALIDATOR_INDEX.md", "docs/22_MASTER_STATUS_DRIFT_CLOSURE_RTAQ_0006.md", "PROJECT_MASTER_SPEC.md", "STATUS.md", "planning/EV4_ROLLING_QUEUE.json"],
+        "critique_findings": ["RTAQ-0006 closed bounded master-spec/status/index drift after RTAQ-0005.", "Gemini identified two small in-scope issues; the PR was patched with clearer validator wording and pending-depth restoration before merge.", "This merge-final sync does not start RTAQ-0007.", "CI success remains repository-check evidence only, not responsive correctness evidence."],
+        "boundary": "No submitted evidence, Issue #8 mutation, real pilot execution, readiness claim upgrade, or production/release claim upgrade."
+      }
     },
     {
       "task_id": "RTAQ-0007",
