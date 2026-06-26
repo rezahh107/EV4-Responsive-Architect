@@ -24,7 +24,8 @@
       "RTAQ-0004",
       "RTAQ-0005",
       "RTAQ-0006",
-      "RTAQ-0007"
+      "RTAQ-0007",
+      "RTAQ-0008"
     ]
   },
   "tasks": [
@@ -202,7 +203,7 @@
       "task_id": "RTAQ-0004",
       "cycle_position": 4,
       "task_type": "repo_sync",
-      "status": "pending",
+      "status": "merged",
       "title": "Guarded handoff pack and drift audit",
       "objective": "Create a guarded handoff pack and audit repository drift across queue, status, master spec, contracts, schemas, validators, and CI boundary text.",
       "allowed_work": [
@@ -230,7 +231,24 @@
       "critique_required": true,
       "dependencies": [
         "RTAQ-0003"
-      ]
+      ],
+      "completed_pr": 71,
+      "completion": {
+        "run_id": "merge-final-rtaq-0004-pr-71",
+        "status": "merged",
+        "artifacts": [
+          "docs/18_GUARDED_HANDOFF_PACK.md",
+          "docs/19_REPOSITORY_DRIFT_AUDIT_RTAQ_0004.md",
+          "docs/20_ACTIVE_CONTRACT_SCHEMA_VALIDATOR_INDEX.md",
+          "validation/e2e/run_task_quality_gate_check.py"
+        ],
+        "critique_findings": [
+          "Gemini identified incomplete controlled-use document inventory and missing task quality gate validator references; the PR was patched before merge.",
+          "PROJECT_MASTER_SPEC.md documentation drift remains a bounded RTAQ-0005 follow-up candidate rather than a RTAQ-0004 scope expansion.",
+          "CI success remains repository-check evidence only, not responsive correctness evidence."
+        ],
+        "boundary": "No submitted evidence, Issue #8 mutation, real pilot execution, readiness claim upgrade, or production/release claim upgrade."
+      }
     },
     {
       "task_id": "RTAQ-0005",
@@ -330,6 +348,40 @@
       "acceptance_criteria": [
         "Task is only executed after RTAQ-0005 refresh completes.",
         "Any patch is limited to bounded contract, index, or status drift.",
+        "Evidence-pending and pilot-blocked boundaries remain visible."
+      ],
+      "critique_required": true,
+      "dependencies": [
+        "RTAQ-0005"
+      ]
+    },
+    {
+      "task_id": "RTAQ-0008",
+      "cycle_position": 8,
+      "task_type": "repo_sync",
+      "status": "pending",
+      "title": "Post-refresh evidence-bound documentation drift guard",
+      "objective": "Reserve a bounded post-refresh slot for closing documentation drift related to evidence boundaries without creating submitted evidence or authorizing pilot work.",
+      "allowed_work": [
+        "Close bounded evidence-boundary documentation drift identified by RTAQ-0005.",
+        "Keep changes limited to documentation, queue, ledger, status, or validator-index records.",
+        "Use branch, PR, CI, and critique workflow before merge."
+      ],
+      "forbidden_work": [
+        "Do not create submitted evidence.",
+        "Do not modify Issue #8.",
+        "Do not run or authorize the real pilot.",
+        "Do not upgrade readiness, production, release, live-render, export, accessibility, or pixel claims."
+      ],
+      "requires_real_evidence": false,
+      "expected_artifacts": [
+        "Bounded evidence-boundary documentation drift patch if RTAQ-0005 identifies drift",
+        "Queue/ledger/status reconciliation if required",
+        "CI result"
+      ],
+      "acceptance_criteria": [
+        "Task is only executed after RTAQ-0005 refresh completes.",
+        "Any patch is limited to bounded evidence-boundary documentation drift.",
         "Evidence-pending and pilot-blocked boundaries remain visible."
       ],
       "critique_required": true,
