@@ -1,6 +1,7 @@
 # Active Contract / Schema / Validator Index
 
 Task: `RTAQ-0004`
+Updated by: `RTAQ-0006`
 
 This index records the active repository surfaces needed for controlled manual use and queue-safe handoff. It is an index only; it does not validate a real submitted packet or authorize pilot execution.
 
@@ -63,24 +64,24 @@ schemas:
 validators:
   responsive_tree_refactor:
     path: validation/e2e/run_responsive_tree_architecture_refactor_check.py
-    role: responsive-tree repository contract/schema/fixture checks
+    role: responsive-tree repository contract/schema/fixture checks and delegated RTAQ checks
     ci_path: automatic
   submitted_packet_eligibility:
     path: validation/e2e/run_submitted_packet_eligibility_gate_check.py
     role: negative eligibility checks for submitted-packet gate failure modes
-    ci_path: included through responsive-tree checker
+    ci_path: delegated through responsive-tree checker
   rolling_queue:
     path: validation/e2e/run_rolling_queue_check.py
     role: active queue shape and policy checks
-    ci_path: automatic only when wired by workflow/checker
+    ci_path: delegated through responsive-tree checker
   run_ledger:
     path: validation/e2e/run_run_ledger_check.py
     role: ledger shape and record-policy checks
-    ci_path: automatic only when wired by workflow/checker
+    ci_path: delegated through responsive-tree checker
   task_quality_gate:
     path: validation/e2e/run_task_quality_gate_check.py
     role: task quality gate policy checks
-    ci_path: automatic only when wired by workflow/checker
+    ci_path: delegated through responsive-tree checker
 ```
 
 ## Controlled-use docs
@@ -105,6 +106,12 @@ controlled_use_docs:
   active_contract_schema_validator_index:
     path: docs/20_ACTIVE_CONTRACT_SCHEMA_VALIDATOR_INDEX.md
     role: active contract, schema, and validator index
+  queue_refresh_audit:
+    path: docs/21_QUEUE_REFRESH_AUDIT_RTAQ_0005.md
+    role: fifth-cycle queue refresh audit and next bounded task plan
+  master_status_drift_closure:
+    path: docs/22_MASTER_STATUS_DRIFT_CLOSURE_RTAQ_0006.md
+    role: RTAQ-0006 closure of remaining master-spec/status/index drift
 ```
 
 ## CI interpretation
