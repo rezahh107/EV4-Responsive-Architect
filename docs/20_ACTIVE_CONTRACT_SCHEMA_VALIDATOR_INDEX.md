@@ -77,6 +77,10 @@ validators:
     path: validation/e2e/run_run_ledger_check.py
     role: ledger shape and record-policy checks
     ci_path: automatic only when wired by workflow/checker
+  task_quality_gate:
+    path: validation/e2e/run_task_quality_gate_check.py
+    role: task quality gate policy checks
+    ci_path: automatic only when wired by workflow/checker
 ```
 
 ## Controlled-use docs
@@ -98,6 +102,9 @@ controlled_use_docs:
   repository_drift_audit:
     path: docs/19_REPOSITORY_DRIFT_AUDIT_RTAQ_0004.md
     role: RTAQ-0004 drift findings and RTAQ-0005 follow-up candidates
+  active_contract_schema_validator_index:
+    path: docs/20_ACTIVE_CONTRACT_SCHEMA_VALIDATOR_INDEX.md
+    role: active contract, schema, and validator index
 ```
 
 ## CI interpretation
