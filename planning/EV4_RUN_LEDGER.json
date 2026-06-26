@@ -125,6 +125,33 @@
       ],
       "boundary_assertions": ["no_real_evidence_created", "no_real_pilot_run", "no_production_claim", "no_release_claim", "no_live_render_claim", "no_export_validation_claim", "no_accessibility_pass_claim", "sample_not_used_as_real", "no_issue_8_mutation"],
       "next_queue_effect": "RTAQ-0006 is next executable and remains pending."
+    },
+    {
+      "record_id": "LEDGER-0017",
+      "run_id": "merge-final-rtaq-0006-pr-75",
+      "task_ref": "RTAQ-0006",
+      "run_type": "status_sync",
+      "status": "merged",
+      "pr_number": 75,
+      "merge_sha": "b9ccdbe62b477dc9f42d052c9fd450e41a520c14",
+      "ci_conclusion": "success",
+      "created_at_utc": "2026-06-26T13:26:35Z",
+      "artifacts": [
+        {"path": "docs/17_VALIDATION_COMMAND_INDEX.md", "artifact_type": "doc", "status": "updated"},
+        {"path": "docs/20_ACTIVE_CONTRACT_SCHEMA_VALIDATOR_INDEX.md", "artifact_type": "doc", "status": "updated"},
+        {"path": "docs/22_MASTER_STATUS_DRIFT_CLOSURE_RTAQ_0006.md", "artifact_type": "doc", "status": "created"},
+        {"path": "PROJECT_MASTER_SPEC.md", "artifact_type": "doc", "status": "updated"},
+        {"path": "STATUS.md", "artifact_type": "status", "status": "updated"},
+        {"path": "planning/EV4_ROLLING_QUEUE.json", "artifact_type": "queue", "status": "updated"}
+      ],
+      "critique_summary": [
+        "PR #75 closed bounded master-spec/status/index drift after RTAQ-0005.",
+        "Gemini identified two small in-scope issues; the PR was patched with clearer validator wording and pending-depth restoration before merge.",
+        "This sync records merge-final state only and does not start RTAQ-0007.",
+        "CI success is repository-check evidence only, not responsive correctness evidence."
+      ],
+      "boundary_assertions": ["no_real_evidence_created", "no_real_pilot_run", "no_production_claim", "no_release_claim", "no_live_render_claim", "no_export_validation_claim", "no_accessibility_pass_claim", "sample_not_used_as_real", "no_issue_8_mutation"],
+      "next_queue_effect": "RTAQ-0007 is next executable and remains pending."
     }
   ]
 }
