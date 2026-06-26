@@ -23,7 +23,8 @@
       "RTAQ-0003",
       "RTAQ-0004",
       "RTAQ-0005",
-      "RTAQ-0006"
+      "RTAQ-0006",
+      "RTAQ-0007"
     ]
   },
   "tasks": [
@@ -295,6 +296,40 @@
       "acceptance_criteria": [
         "Task is only executed after RTAQ-0005 refresh completes.",
         "Any patch is limited to bounded execution-boundary drift.",
+        "Evidence-pending and pilot-blocked boundaries remain visible."
+      ],
+      "critique_required": true,
+      "dependencies": [
+        "RTAQ-0005"
+      ]
+    },
+    {
+      "task_id": "RTAQ-0007",
+      "cycle_position": 7,
+      "task_type": "repo_sync",
+      "status": "pending",
+      "title": "Post-refresh contract and index drift closure",
+      "objective": "Reserve a bounded post-refresh slot for closing any contract, documentation index, validator index, or status drift identified by RTAQ-0005 without creating evidence or authorizing pilot work.",
+      "allowed_work": [
+        "Close bounded contract or index drift identified by RTAQ-0005.",
+        "Keep changes documentation, schema, validator-index, queue, ledger, or status scoped.",
+        "Use branch, PR, CI, and critique workflow before merge."
+      ],
+      "forbidden_work": [
+        "Do not create submitted evidence.",
+        "Do not modify Issue #8.",
+        "Do not run or authorize the real pilot.",
+        "Do not upgrade readiness, production, release, live-render, export, accessibility, or pixel claims."
+      ],
+      "requires_real_evidence": false,
+      "expected_artifacts": [
+        "Bounded drift-closure patch if RTAQ-0005 identifies drift",
+        "Queue/ledger/status reconciliation if required",
+        "CI result"
+      ],
+      "acceptance_criteria": [
+        "Task is only executed after RTAQ-0005 refresh completes.",
+        "Any patch is limited to bounded contract, index, or status drift.",
         "Evidence-pending and pilot-blocked boundaries remain visible."
       ],
       "critique_required": true,
