@@ -1,7 +1,7 @@
 # Active Contract / Schema / Validator Index
 
 Task: `RTAQ-0004`
-Updated by: `RTAQ-0006`
+Updated by: `RTAQ-0007`
 
 This index records the active repository surfaces needed for controlled manual use and queue-safe handoff. It is an index only; it does not validate a real submitted packet or authorize pilot execution.
 
@@ -58,7 +58,7 @@ schemas:
     role: active RTAQ ledger schema
 ```
 
-## Validators
+## Active validators
 
 ```yaml
 validators:
@@ -83,6 +83,34 @@ validators:
     role: task quality gate policy checks
     ci_path: delegated through responsive-tree checker
 ```
+
+## Manual evidence-bound guard validators
+
+```yaml
+manual_guard_validators:
+  submitted_packet_source_kind_lock:
+    path: validation/e2e/run_submitted_packet_source_kind_lock_check.py
+    role: submitted source-kind lock guard for evidence-bound paths
+    ci_path: manual_or_legacy_guard; not a real submitted-packet validation claim
+  submitted_privacy_review_guard:
+    path: validation/e2e/run_submitted_privacy_review_guard_check.py
+    role: privacy-review acknowledgement guard for submitted evidence paths
+    ci_path: manual_or_legacy_guard; not a real submitted-packet validation claim
+  submitted_evidence_completeness_contract:
+    path: validation/e2e/run_submitted_evidence_completeness_contract_check.py
+    role: submitted evidence completeness contract guard
+    ci_path: manual_or_legacy_guard; not a real submitted-packet validation claim
+  submitted_readiness_status_contract:
+    path: validation/e2e/run_submitted_readiness_status_contract_check.py
+    role: submitted readiness status contract guard
+    ci_path: manual_or_legacy_guard; not a real pilot-readiness approval
+  submitted_packet_artifact_path_allowlist:
+    path: validation/e2e/run_submitted_packet_artifact_path_allowlist_check.py
+    role: submitted packet artifact path allowlist guard
+    ci_path: manual_or_legacy_guard; not a real submitted-packet validation claim
+```
+
+These manual guard validators may document or inspect deterministic guard behavior only. They do not create submitted evidence, satisfy Issue #8, authorize pilot execution, or prove responsive correctness.
 
 ## Controlled-use docs
 

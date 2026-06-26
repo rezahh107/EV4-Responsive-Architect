@@ -1,7 +1,7 @@
 # Validation Command Index
 
 Task: `RTAQ-0003`
-Updated by: `RTAQ-0006`
+Updated by: `RTAQ-0007`
 
 This index lists repository validation commands for controlled manual use. Command success is repository-check evidence only; it is not responsive correctness evidence and does not authorize production, release, real pilot, export, live-render, accessibility, or pixel-validation claims.
 
@@ -30,6 +30,20 @@ python validation/e2e/run_task_quality_gate_check.py
 python validation/e2e/run_submitted_packet_eligibility_gate_check.py
 ```
 
+## Manual evidence-bound guard commands
+
+The repository also contains older/manual evidence-bound guard validators that may be used only to inspect submitted-evidence guard behavior. These commands are not evidence submission, are not pilot execution, and are not live responsive validation:
+
+```bash
+python validation/e2e/run_submitted_packet_source_kind_lock_check.py
+python validation/e2e/run_submitted_privacy_review_guard_check.py
+python validation/e2e/run_submitted_evidence_completeness_contract_check.py
+python validation/e2e/run_submitted_readiness_status_contract_check.py
+python validation/e2e/run_submitted_packet_artifact_path_allowlist_check.py
+```
+
+Manual guard command success still means only that the bounded repository guard behavior passed for its fixtures or inspected inputs. It must not be used to claim that a real submitted packet exists, that Issue #8 evidence is satisfied, or that a real pilot may start.
+
 ## Automatic workflow boundary
 
 The GitHub Actions workflow runs `python validation/e2e/run_responsive_tree_architecture_refactor_check.py` for pull requests and pushes to `main`. That checker delegates the active queue, ledger, task-quality, and submitted-packet eligibility repository checks. Its success means the configured repository checks passed. It does not prove that a real submitted packet exists, that Issue #8 has real evidence, or that the responsive output is production/release ready.
@@ -41,6 +55,7 @@ The commands can be used to inspect deterministic repository behavior:
 - responsive-tree architecture contracts, schema, and route fixtures
 - invalid fixture rejection
 - submitted-packet eligibility failure modes
+- submitted evidence source-kind, completeness, readiness-status, artifact-path, and privacy guard behavior
 - task quality-gate policy shape and required boundary assertions
 - queue and ledger schema/discipline checks
 - boundary text preservation
