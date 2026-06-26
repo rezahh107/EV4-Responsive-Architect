@@ -54,6 +54,7 @@ controlled_use_docs:
   - docs/19_REPOSITORY_DRIFT_AUDIT_RTAQ_0004.md
   - docs/20_ACTIVE_CONTRACT_SCHEMA_VALIDATOR_INDEX.md
   - docs/21_QUEUE_REFRESH_AUDIT_RTAQ_0005.md
+  - docs/22_MASTER_STATUS_DRIFT_CLOSURE_RTAQ_0006.md
 ```
 
 ## CI Boundary
@@ -62,6 +63,11 @@ controlled_use_docs:
 automatic_workflow: .github/workflows/validate.yml
 automatic_check:
   - python validation/e2e/run_responsive_tree_architecture_refactor_check.py
+delegated_repository_checks:
+  - python validation/e2e/run_rolling_queue_check.py
+  - python validation/e2e/run_run_ledger_check.py
+  - python validation/e2e/run_task_quality_gate_check.py
+  - python validation/e2e/run_submitted_packet_eligibility_gate_check.py
 legacy_run_ledger_workflow: manual_only
 ci_success_claim_boundary: repository checks passed only; not responsive correctness evidence
 ```
@@ -89,13 +95,15 @@ rtaq_0004_started: true
 rtaq_0004_status: merged
 rtaq_0005_started: true
 rtaq_0005_status: merged
+rtaq_0006_started: true
+rtaq_0006_status: in_progress
 pending_tasks:
-  - RTAQ-0006
   - RTAQ-0007
   - RTAQ-0008
   - RTAQ-0009
+  - RTAQ-0010
 rq_0023_started: false
-reason: RTAQ-0005 completed the fifth-cycle queue refresh. RTAQ-0006 is next executable, while evidence and pilot boundaries remain unchanged.
+reason: RTAQ-0006 is reconciling bounded master-spec/status/index drift after RTAQ-0005. Evidence and pilot boundaries remain unchanged.
 ```
 
 ## Evidence Boundary
