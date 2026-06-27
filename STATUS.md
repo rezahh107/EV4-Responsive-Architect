@@ -92,6 +92,7 @@ active_queue_reset_merge_sha: 7dd76a1952466ae723183643b413501b94dbdbc5
 latest_completed_task: RTAQ-0010
 latest_completed_pr: 84
 latest_completed_merge_sha: 83a6487b07853219b39d20a08ef03c062941aa14
+latest_ledger_record: LEDGER-0021
 legacy_rq_lineage_status: archived_non_authoritative_history
 legacy_rq_pending_driver_removed: true
 next_executable_task: RTAQ-0011
@@ -113,13 +114,16 @@ rtaq_0009_started: true
 rtaq_0009_status: merged
 rtaq_0010_started: true
 rtaq_0010_status: merged
+rtaq_0011_started: true
+rtaq_0011_status: in_pr
 pending_tasks:
   - RTAQ-0011
   - RTAQ-0012
   - RTAQ-0013
-pending_depth_exception: "RTAQ-0010 audit PR #84 intentionally preserved existing queue IDs and moved replacement proposals to non-authoritative backlog candidates; next bounded task must reconcile pending-depth reserve placeholders before starting evidence or pilot work."
+  - RTAQ-0014
+pending_depth_status: restored_to_minimum_four
 rq_0023_started: false
-reason: "RTAQ-0010 PR #84 is merge-final synced in STATUS. RTAQ-0011 is next executable and must reconcile queue-depth drift before any new evidence, pilot, readiness, or production work."
+reason: "RTAQ-0011 reconciles RTAQ-0010 queue/ledger drift and restores minimum pending depth before any evidence, pilot, readiness, or production work."
 ```
 
 ## Evidence Boundary
