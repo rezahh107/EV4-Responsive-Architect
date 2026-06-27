@@ -70,31 +70,61 @@ Critique:
 
 ## Next bounded queue plan
 
-The next batch should prioritize bounded repository-control work only:
+The active queue remains the source of truth. This audit does not redefine existing pending task IDs that already exist in `planning/EV4_ROLLING_QUEUE.json`.
+
+Current authoritative pending tasks:
 
 ```yaml
-planned_next_tasks:
+authoritative_pending_tasks:
+  - task_id: RTAQ-0010
+    task_type: queue_refresh
+    title: Refresh RTAQ queue after second bounded batch
+    source: planning/EV4_ROLLING_QUEUE.json
   - task_id: RTAQ-0011
     task_type: repo_sync
-    title: Post-refresh active-source index reconciliation
-    objective: Reconcile active source-of-truth indexes after RTAQ-0010 if drift remains.
+    title: Pending depth reserve after RTAQ-0007 sync
+    source: planning/EV4_ROLLING_QUEUE.json
   - task_id: RTAQ-0012
-    task_type: validator_hardening
-    title: Queue and ledger validator negative-path audit
-    objective: Audit queue and ledger validators for stale-reference and illegal-transition coverage gaps.
-  - task_id: RTAQ-0013
-    task_type: evidence_boundary
-    title: Issue #8 submitted-packet boundary re-audit
-    objective: Re-audit documentation and validator references around Issue #8 evidence-pending state without mutating the issue.
-  - task_id: RTAQ-0014
     task_type: repo_sync
-    title: Controlled-use handoff inventory refresh
-    objective: Refresh controlled-use handoff inventories if bounded documentation drift is found.
-  - task_id: RTAQ-0015
-    task_type: queue_refresh
-    title: Refresh RTAQ queue after third bounded batch
-    objective: Audit RTAQ-0011 through RTAQ-0014 and plan the next bounded batch.
+    title: Pending depth reserve after RTAQ-0008 sync
+    source: planning/EV4_ROLLING_QUEUE.json
+  - task_id: RTAQ-0013
+    task_type: repo_sync
+    title: Pending depth reserve after RTAQ-0009 sync
+    source: planning/EV4_ROLLING_QUEUE.json
 ```
+
+Non-authoritative backlog candidates for a later queue mutation, if the controller elects to replace reserve placeholders in a future bounded PR:
+
+```yaml
+backlog_candidates_only:
+  - candidate_id: RTAQ-BACKLOG-0011A
+    proposed_task_type: repo_sync
+    proposed_title: Post-refresh active-source index reconciliation
+    proposed_objective: Reconcile active source-of-truth indexes after RTAQ-0010 if drift remains.
+  - candidate_id: RTAQ-BACKLOG-0012A
+    proposed_task_type: validator_hardening
+    proposed_title: Queue and ledger validator negative-path audit
+    proposed_objective: Audit queue and ledger validators for stale-reference and illegal-transition coverage gaps.
+  - candidate_id: RTAQ-BACKLOG-0013A
+    proposed_task_type: evidence_boundary
+    proposed_title: Issue #8 submitted-packet boundary re-audit
+    proposed_objective: Re-audit documentation and validator references around Issue #8 evidence-pending state without mutating the issue.
+  - candidate_id: RTAQ-BACKLOG-0014A
+    proposed_task_type: repo_sync
+    proposed_title: Controlled-use handoff inventory refresh
+    proposed_objective: Refresh controlled-use handoff inventories if bounded documentation drift is found.
+  - candidate_id: RTAQ-BACKLOG-0015A
+    proposed_task_type: queue_refresh
+    proposed_title: Refresh RTAQ queue after third bounded batch
+    proposed_objective: Audit the next four completed bounded tasks and plan the next batch.
+```
+
+Queue reconciliation note:
+
+- `RTAQ-0011`, `RTAQ-0012`, and `RTAQ-0013` are not redefined by this audit document.
+- The current pending-depth reserve tasks remain authoritative until a later bounded queue mutation explicitly changes `planning/EV4_ROLLING_QUEUE.json`.
+- Any future replacement of reserve placeholders must update the queue, ledger/status where required, and pass the same PR/CI/review-gate workflow.
 
 ## Deterministic quality checks
 
@@ -108,6 +138,7 @@ ledger_state_checked: true
 stale_reference_search_done: true
 delayed_bot_review_window_required_before_merge: true
 boundary_assertions_checked: true
+planned_task_id_conflict_reconciled: true
 ```
 
 ## Self-critique
@@ -115,7 +146,9 @@ boundary_assertions_checked: true
 Findings:
 
 - The previous four tasks are auditable from repository queue/status/ledger evidence.
-- The next bounded batch is planned, but final queue/status/ledger mutation should be completed in the PR lifecycle only after validation and review-window checks.
+- The first version of this audit document incorrectly appeared to redefine `RTAQ-0011` through `RTAQ-0013`, which already exist as pending reserve tasks in the active queue.
+- This patch reconciles that drift by preserving the active queue as authoritative and moving substantive proposals to non-authoritative backlog-candidate IDs.
+- No queue/status/ledger mutation is performed in this PR; that remains a future bounded controller decision if reserve placeholders need replacement.
 - No P0/P1 issue is introduced by this audit document.
 
 ## Boundary assertions
