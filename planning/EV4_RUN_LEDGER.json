@@ -1,1 +1,362 @@
-{"schema":"ev4-responsive-run-ledger@1.0.0","ledger_id":"EV4LEDGER-0002-RTA","project":"EV4 Responsive Architect","ledger_status":"active","source_queue":"planning/EV4_ROLLING_QUEUE.json","record_policy":{"one_record_per_completed_controller_run":true,"pr_required_for_repo_changes":true,"ci_result_required_for_repo_changes":true,"boundary_assertions_required":true,"critique_summary_required":true},"imported_history":{"status":"archived_pre_refactor_queue_history","cutoff_task":"RQ-0022","cutoff_pr":58,"note":"Earlier RQ records are preserved in repository history and the queue reset audit. This ledger records the active RTAQ lineage from RTAQ-0001 forward."},"ledger_records":[{"record_id":"LEDGER-0012","run_id":"merge-final-rtaq-0001-pr-65","task_ref":"RTAQ-0001","run_type":"status_sync","status":"merged","pr_number":65,"merge_sha":"7dd76a1952466ae723183643b413501b94dbdbc5","ci_conclusion":"success","created_at_utc":"2026-06-25T20:00:17Z","artifacts":[{"path":"planning/EV4_QUEUE_RESET_RTAQ_0001.audit.json","artifact_type":"other","status":"created"}],"critique_summary":["Task remained bounded; CI success is repository-check evidence only."],"boundary_assertions":["no_real_evidence_created","no_real_pilot_run","no_production_claim","no_release_claim","no_live_render_claim","no_export_validation_claim","no_accessibility_pass_claim","sample_not_used_as_real","no_issue_8_mutation"],"next_queue_effect":"RTAQ-0002 is next executable and remains pending."},{"record_id":"LEDGER-0013","run_id":"merge-final-rtaq-0002-pr-67","task_ref":"RTAQ-0002","run_type":"automation_task","status":"merged","pr_number":67,"merge_sha":"1d0350c6b628dc18361479c60aea49fcc5c3acd5","ci_conclusion":"success","created_at_utc":"2026-06-25T22:26:00Z","artifacts":[{"path":"validation/e2e/run_submitted_packet_eligibility_gate_check.py","artifact_type":"validator","status":"created"}],"critique_summary":["Task remained bounded; CI success is repository-check evidence only."],"boundary_assertions":["no_real_evidence_created","no_real_pilot_run","no_production_claim","no_release_claim","no_live_render_claim","no_export_validation_claim","no_accessibility_pass_claim","sample_not_used_as_real","no_issue_8_mutation"],"next_queue_effect":"RTAQ-0003 is next executable and remains pending."},{"record_id":"LEDGER-0014","run_id":"merge-final-rtaq-0003-pr-69","task_ref":"RTAQ-0003","run_type":"status_sync","status":"merged","pr_number":69,"merge_sha":"e98b7029b82f80e5a4db872d20ce6774f3f35465","ci_conclusion":"success","created_at_utc":"2026-06-26T01:25:00Z","artifacts":[{"path":"docs/15_CONTROLLED_USE_READINESS_SNAPSHOT.md","artifact_type":"doc","status":"created"}],"critique_summary":["Task remained bounded; CI success is repository-check evidence only."],"boundary_assertions":["no_real_evidence_created","no_real_pilot_run","no_production_claim","no_release_claim","no_live_render_claim","no_export_validation_claim","no_accessibility_pass_claim","sample_not_used_as_real","no_issue_8_mutation"],"next_queue_effect":"RTAQ-0004 is next executable and remains pending."},{"record_id":"LEDGER-0015","run_id":"merge-final-rtaq-0004-pr-71","task_ref":"RTAQ-0004","run_type":"status_sync","status":"merged","pr_number":71,"merge_sha":"7b50080ba33974580987f43ceb46660e95b5944c","ci_conclusion":"success","created_at_utc":"2026-06-26T04:30:00Z","artifacts":[{"path":"docs/19_REPOSITORY_DRIFT_AUDIT_RTAQ_0004.md","artifact_type":"doc","status":"created"}],"critique_summary":["Task remained bounded; CI success is repository-check evidence only."],"boundary_assertions":["no_real_evidence_created","no_real_pilot_run","no_production_claim","no_release_claim","no_live_render_claim","no_export_validation_claim","no_accessibility_pass_claim","sample_not_used_as_real","no_issue_8_mutation"],"next_queue_effect":"RTAQ-0005 is next executable and remains pending."},{"record_id":"LEDGER-0016","run_id":"merge-final-rtaq-0005-pr-73","task_ref":"RTAQ-0005","run_type":"queue_refresh","status":"merged","pr_number":73,"merge_sha":"fd8ac9492066c6ee718899ebe0d36e32086bf3f0","ci_conclusion":"success","created_at_utc":"2026-06-26T08:26:11Z","artifacts":[{"path":"docs/21_QUEUE_REFRESH_AUDIT_RTAQ_0005.md","artifact_type":"doc","status":"created"}],"critique_summary":["Task remained bounded; CI success is repository-check evidence only."],"boundary_assertions":["no_real_evidence_created","no_real_pilot_run","no_production_claim","no_release_claim","no_live_render_claim","no_export_validation_claim","no_accessibility_pass_claim","sample_not_used_as_real","no_issue_8_mutation"],"next_queue_effect":"RTAQ-0006 is next executable and remains pending."},{"record_id":"LEDGER-0017","run_id":"merge-final-rtaq-0006-pr-75","task_ref":"RTAQ-0006","run_type":"status_sync","status":"merged","pr_number":75,"merge_sha":"b9ccdbe62b477dc9f42d052c9fd450e41a520c14","ci_conclusion":"success","created_at_utc":"2026-06-26T13:26:35Z","artifacts":[{"path":"docs/22_MASTER_STATUS_DRIFT_CLOSURE_RTAQ_0006.md","artifact_type":"doc","status":"created"}],"critique_summary":["Task remained bounded; CI success is repository-check evidence only."],"boundary_assertions":["no_real_evidence_created","no_real_pilot_run","no_production_claim","no_release_claim","no_live_render_claim","no_export_validation_claim","no_accessibility_pass_claim","sample_not_used_as_real","no_issue_8_mutation"],"next_queue_effect":"RTAQ-0007 is next executable and remains pending."},{"record_id":"LEDGER-0018","run_id":"merge-final-rtaq-0007-pr-77","task_ref":"RTAQ-0007","run_type":"status_sync","status":"merged","pr_number":77,"merge_sha":"58f3f123aaafec359c5d9d9d1e581d1a9f753f1d","ci_conclusion":"success","created_at_utc":"2026-06-26T17:24:40Z","artifacts":[{"path":"docs/17_VALIDATION_COMMAND_INDEX.md","artifact_type":"doc","status":"created"}],"critique_summary":["Task remained bounded; CI success is repository-check evidence only."],"boundary_assertions":["no_real_evidence_created","no_real_pilot_run","no_production_claim","no_release_claim","no_live_render_claim","no_export_validation_claim","no_accessibility_pass_claim","sample_not_used_as_real","no_issue_8_mutation"],"next_queue_effect":"RTAQ-0008 is next executable and remains pending."},{"record_id":"LEDGER-0019","run_id":"merge-final-rtaq-0008-pr-79","task_ref":"RTAQ-0008","run_type":"status_sync","status":"merged","pr_number":79,"merge_sha":"4c66d9a61d57db66ade0b3d4318bb9608271366b","ci_conclusion":"success","created_at_utc":"2026-06-26T23:25:07Z","artifacts":[{"path":"docs/23_EVIDENCE_BOUND_DOCUMENTATION_GUARD_RTAQ_0008.md","artifact_type":"doc","status":"created"}],"critique_summary":["Task remained bounded; CI success is repository-check evidence only."],"boundary_assertions":["no_real_evidence_created","no_real_pilot_run","no_production_claim","no_release_claim","no_live_render_claim","no_export_validation_claim","no_accessibility_pass_claim","sample_not_used_as_real","no_issue_8_mutation"],"next_queue_effect":"RTAQ-0009 is next executable and remains pending."},{"record_id":"LEDGER-0020","run_id":"merge-final-rtaq-0009-pr-81","task_ref":"RTAQ-0009","run_type":"status_sync","status":"merged","pr_number":81,"merge_sha":"efc0f4413c23bf9115cda8163b38b4a6b0a8a0fc","ci_conclusion":"success","created_at_utc":"2026-06-27T04:27:18Z","artifacts":[{"path":"docs/24_AUTOMATION_QUALITY_GATE_ENFORCEMENT_AUDIT_RTAQ_0009.md","artifact_type":"doc","status":"created"}],"critique_summary":["Task remained bounded; CI success is repository-check evidence only."],"boundary_assertions":["no_real_evidence_created","no_real_pilot_run","no_production_claim","no_release_claim","no_live_render_claim","no_export_validation_claim","no_accessibility_pass_claim","sample_not_used_as_real","no_issue_8_mutation"],"next_queue_effect":"RTAQ-0010 is next executable and remains pending."},{"record_id":"LEDGER-0021","run_id":"merge-final-rtaq-0010-pr-84","task_ref":"RTAQ-0010","run_type":"queue_refresh","status":"merged","pr_number":84,"merge_sha":"83a6487b07853219b39d20a08ef03c062941aa14","ci_conclusion":"success","created_at_utc":"2026-06-27T14:26:36Z","artifacts":[{"path":"docs/25_QUEUE_REFRESH_AUDIT_RTAQ_0010.md","artifact_type":"doc","status":"created"},{"path":"STATUS.md","artifact_type":"status","status":"updated"},{"path":"planning/RTAQ_0010_MERGE_FINAL_SYNC_NOTE.md","artifact_type":"doc","status":"created"}],"critique_summary":["Task remained bounded; CI success is repository-check evidence only."],"boundary_assertions":["no_real_evidence_created","no_real_pilot_run","no_production_claim","no_release_claim","no_live_render_claim","no_export_validation_claim","no_accessibility_pass_claim","sample_not_used_as_real","no_issue_8_mutation"],"next_queue_effect":"RTAQ-0011 is next executable; RTAQ-0012 through RTAQ-0014 restore minimum pending depth."}]}
+{
+  "schema": "ev4-responsive-run-ledger@1.0.0",
+  "ledger_id": "EV4LEDGER-0002-RTA",
+  "project": "EV4 Responsive Architect",
+  "ledger_status": "active",
+  "source_queue": "planning/EV4_ROLLING_QUEUE.json",
+  "record_policy": {
+    "one_record_per_completed_controller_run": true,
+    "pr_required_for_repo_changes": true,
+    "ci_result_required_for_repo_changes": true,
+    "boundary_assertions_required": true,
+    "critique_summary_required": true
+  },
+  "imported_history": {
+    "status": "archived_pre_refactor_queue_history",
+    "cutoff_task": "RQ-0022",
+    "cutoff_pr": 58,
+    "note": "Earlier RQ records are preserved in repository history and the queue reset audit. This ledger records the active RTAQ lineage from RTAQ-0001 forward."
+  },
+  "ledger_records": [
+    {
+      "record_id": "LEDGER-0012",
+      "run_id": "merge-final-rtaq-0001-pr-65",
+      "task_ref": "RTAQ-0001",
+      "run_type": "status_sync",
+      "status": "merged",
+      "pr_number": 65,
+      "merge_sha": "7dd76a1952466ae723183643b413501b94dbdbc5",
+      "ci_conclusion": "success",
+      "created_at_utc": "2026-06-25T20:00:17Z",
+      "artifacts": [
+        {
+          "path": "planning/EV4_QUEUE_RESET_RTAQ_0001.audit.json",
+          "artifact_type": "other",
+          "status": "created"
+        }
+      ],
+      "critique_summary": [
+        "Task remained bounded; CI success is repository-check evidence only."
+      ],
+      "boundary_assertions": [
+        "no_real_evidence_created",
+        "no_real_pilot_run",
+        "no_production_claim",
+        "no_release_claim",
+        "no_live_render_claim",
+        "no_export_validation_claim",
+        "no_accessibility_pass_claim",
+        "sample_not_used_as_real",
+        "no_issue_8_mutation"
+      ],
+      "next_queue_effect": "RTAQ-0002 is next executable and remains pending."
+    },
+    {
+      "record_id": "LEDGER-0013",
+      "run_id": "merge-final-rtaq-0002-pr-67",
+      "task_ref": "RTAQ-0002",
+      "run_type": "automation_task",
+      "status": "merged",
+      "pr_number": 67,
+      "merge_sha": "1d0350c6b628dc18361479c60aea49fcc5c3acd5",
+      "ci_conclusion": "success",
+      "created_at_utc": "2026-06-25T22:26:00Z",
+      "artifacts": [
+        {
+          "path": "validation/e2e/run_submitted_packet_eligibility_gate_check.py",
+          "artifact_type": "validator",
+          "status": "created"
+        }
+      ],
+      "critique_summary": [
+        "Task remained bounded; CI success is repository-check evidence only."
+      ],
+      "boundary_assertions": [
+        "no_real_evidence_created",
+        "no_real_pilot_run",
+        "no_production_claim",
+        "no_release_claim",
+        "no_live_render_claim",
+        "no_export_validation_claim",
+        "no_accessibility_pass_claim",
+        "sample_not_used_as_real",
+        "no_issue_8_mutation"
+      ],
+      "next_queue_effect": "RTAQ-0003 is next executable and remains pending."
+    },
+    {
+      "record_id": "LEDGER-0014",
+      "run_id": "merge-final-rtaq-0003-pr-69",
+      "task_ref": "RTAQ-0003",
+      "run_type": "status_sync",
+      "status": "merged",
+      "pr_number": 69,
+      "merge_sha": "e98b7029b82f80e5a4db872d20ce6774f3f35465",
+      "ci_conclusion": "success",
+      "created_at_utc": "2026-06-26T01:25:00Z",
+      "artifacts": [
+        {
+          "path": "docs/15_CONTROLLED_USE_READINESS_SNAPSHOT.md",
+          "artifact_type": "doc",
+          "status": "created"
+        }
+      ],
+      "critique_summary": [
+        "Task remained bounded; CI success is repository-check evidence only."
+      ],
+      "boundary_assertions": [
+        "no_real_evidence_created",
+        "no_real_pilot_run",
+        "no_production_claim",
+        "no_release_claim",
+        "no_live_render_claim",
+        "no_export_validation_claim",
+        "no_accessibility_pass_claim",
+        "sample_not_used_as_real",
+        "no_issue_8_mutation"
+      ],
+      "next_queue_effect": "RTAQ-0004 is next executable and remains pending."
+    },
+    {
+      "record_id": "LEDGER-0015",
+      "run_id": "merge-final-rtaq-0004-pr-71",
+      "task_ref": "RTAQ-0004",
+      "run_type": "status_sync",
+      "status": "merged",
+      "pr_number": 71,
+      "merge_sha": "7b50080ba33974580987f43ceb46660e95b5944c",
+      "ci_conclusion": "success",
+      "created_at_utc": "2026-06-26T04:30:00Z",
+      "artifacts": [
+        {
+          "path": "docs/19_REPOSITORY_DRIFT_AUDIT_RTAQ_0004.md",
+          "artifact_type": "doc",
+          "status": "created"
+        }
+      ],
+      "critique_summary": [
+        "Task remained bounded; CI success is repository-check evidence only."
+      ],
+      "boundary_assertions": [
+        "no_real_evidence_created",
+        "no_real_pilot_run",
+        "no_production_claim",
+        "no_release_claim",
+        "no_live_render_claim",
+        "no_export_validation_claim",
+        "no_accessibility_pass_claim",
+        "sample_not_used_as_real",
+        "no_issue_8_mutation"
+      ],
+      "next_queue_effect": "RTAQ-0005 is next executable and remains pending."
+    },
+    {
+      "record_id": "LEDGER-0016",
+      "run_id": "merge-final-rtaq-0005-pr-73",
+      "task_ref": "RTAQ-0005",
+      "run_type": "queue_refresh",
+      "status": "merged",
+      "pr_number": 73,
+      "merge_sha": "fd8ac9492066c6ee718899ebe0d36e32086bf3f0",
+      "ci_conclusion": "success",
+      "created_at_utc": "2026-06-26T08:26:11Z",
+      "artifacts": [
+        {
+          "path": "docs/21_QUEUE_REFRESH_AUDIT_RTAQ_0005.md",
+          "artifact_type": "doc",
+          "status": "created"
+        }
+      ],
+      "critique_summary": [
+        "Task remained bounded; CI success is repository-check evidence only."
+      ],
+      "boundary_assertions": [
+        "no_real_evidence_created",
+        "no_real_pilot_run",
+        "no_production_claim",
+        "no_release_claim",
+        "no_live_render_claim",
+        "no_export_validation_claim",
+        "no_accessibility_pass_claim",
+        "sample_not_used_as_real",
+        "no_issue_8_mutation"
+      ],
+      "next_queue_effect": "RTAQ-0006 is next executable and remains pending."
+    },
+    {
+      "record_id": "LEDGER-0017",
+      "run_id": "merge-final-rtaq-0006-pr-75",
+      "task_ref": "RTAQ-0006",
+      "run_type": "status_sync",
+      "status": "merged",
+      "pr_number": 75,
+      "merge_sha": "b9ccdbe62b477dc9f42d052c9fd450e41a520c14",
+      "ci_conclusion": "success",
+      "created_at_utc": "2026-06-26T13:26:35Z",
+      "artifacts": [
+        {
+          "path": "docs/22_MASTER_STATUS_DRIFT_CLOSURE_RTAQ_0006.md",
+          "artifact_type": "doc",
+          "status": "created"
+        }
+      ],
+      "critique_summary": [
+        "Task remained bounded; CI success is repository-check evidence only."
+      ],
+      "boundary_assertions": [
+        "no_real_evidence_created",
+        "no_real_pilot_run",
+        "no_production_claim",
+        "no_release_claim",
+        "no_live_render_claim",
+        "no_export_validation_claim",
+        "no_accessibility_pass_claim",
+        "sample_not_used_as_real",
+        "no_issue_8_mutation"
+      ],
+      "next_queue_effect": "RTAQ-0007 is next executable and remains pending."
+    },
+    {
+      "record_id": "LEDGER-0018",
+      "run_id": "merge-final-rtaq-0007-pr-77",
+      "task_ref": "RTAQ-0007",
+      "run_type": "status_sync",
+      "status": "merged",
+      "pr_number": 77,
+      "merge_sha": "58f3f123aaafec359c5d9d9d1e581d1a9f753f1d",
+      "ci_conclusion": "success",
+      "created_at_utc": "2026-06-26T17:24:40Z",
+      "artifacts": [
+        {
+          "path": "docs/17_VALIDATION_COMMAND_INDEX.md",
+          "artifact_type": "doc",
+          "status": "created"
+        }
+      ],
+      "critique_summary": [
+        "Task remained bounded; CI success is repository-check evidence only."
+      ],
+      "boundary_assertions": [
+        "no_real_evidence_created",
+        "no_real_pilot_run",
+        "no_production_claim",
+        "no_release_claim",
+        "no_live_render_claim",
+        "no_export_validation_claim",
+        "no_accessibility_pass_claim",
+        "sample_not_used_as_real",
+        "no_issue_8_mutation"
+      ],
+      "next_queue_effect": "RTAQ-0008 is next executable and remains pending."
+    },
+    {
+      "record_id": "LEDGER-0019",
+      "run_id": "merge-final-rtaq-0008-pr-79",
+      "task_ref": "RTAQ-0008",
+      "run_type": "status_sync",
+      "status": "merged",
+      "pr_number": 79,
+      "merge_sha": "4c66d9a61d57db66ade0b3d4318bb9608271366b",
+      "ci_conclusion": "success",
+      "created_at_utc": "2026-06-26T23:25:07Z",
+      "artifacts": [
+        {
+          "path": "docs/23_EVIDENCE_BOUND_DOCUMENTATION_GUARD_RTAQ_0008.md",
+          "artifact_type": "doc",
+          "status": "created"
+        }
+      ],
+      "critique_summary": [
+        "Task remained bounded; CI success is repository-check evidence only."
+      ],
+      "boundary_assertions": [
+        "no_real_evidence_created",
+        "no_real_pilot_run",
+        "no_production_claim",
+        "no_release_claim",
+        "no_live_render_claim",
+        "no_export_validation_claim",
+        "no_accessibility_pass_claim",
+        "sample_not_used_as_real",
+        "no_issue_8_mutation"
+      ],
+      "next_queue_effect": "RTAQ-0009 is next executable and remains pending."
+    },
+    {
+      "record_id": "LEDGER-0020",
+      "run_id": "merge-final-rtaq-0009-pr-81",
+      "task_ref": "RTAQ-0009",
+      "run_type": "status_sync",
+      "status": "merged",
+      "pr_number": 81,
+      "merge_sha": "efc0f4413c23bf9115cda8163b38b4a6b0a8a0fc",
+      "ci_conclusion": "success",
+      "created_at_utc": "2026-06-27T04:27:18Z",
+      "artifacts": [
+        {
+          "path": "docs/24_AUTOMATION_QUALITY_GATE_ENFORCEMENT_AUDIT_RTAQ_0009.md",
+          "artifact_type": "doc",
+          "status": "created"
+        }
+      ],
+      "critique_summary": [
+        "Task remained bounded; CI success is repository-check evidence only."
+      ],
+      "boundary_assertions": [
+        "no_real_evidence_created",
+        "no_real_pilot_run",
+        "no_production_claim",
+        "no_release_claim",
+        "no_live_render_claim",
+        "no_export_validation_claim",
+        "no_accessibility_pass_claim",
+        "sample_not_used_as_real",
+        "no_issue_8_mutation"
+      ],
+      "next_queue_effect": "RTAQ-0010 is next executable and remains pending."
+    },
+    {
+      "record_id": "LEDGER-0021",
+      "run_id": "merge-final-rtaq-0010-pr-84",
+      "task_ref": "RTAQ-0010",
+      "run_type": "queue_refresh",
+      "status": "merged",
+      "pr_number": 84,
+      "merge_sha": "83a6487b07853219b39d20a08ef03c062941aa14",
+      "ci_conclusion": "success",
+      "created_at_utc": "2026-06-27T14:26:36Z",
+      "artifacts": [
+        {
+          "path": "docs/25_QUEUE_REFRESH_AUDIT_RTAQ_0010.md",
+          "artifact_type": "doc",
+          "status": "created"
+        },
+        {
+          "path": "STATUS.md",
+          "artifact_type": "status",
+          "status": "updated"
+        },
+        {
+          "path": "planning/RTAQ_0010_MERGE_FINAL_SYNC_NOTE.md",
+          "artifact_type": "doc",
+          "status": "created"
+        }
+      ],
+      "critique_summary": [
+        "Task remained bounded; CI success is repository-check evidence only."
+      ],
+      "boundary_assertions": [
+        "no_real_evidence_created",
+        "no_real_pilot_run",
+        "no_production_claim",
+        "no_release_claim",
+        "no_live_render_claim",
+        "no_export_validation_claim",
+        "no_accessibility_pass_claim",
+        "sample_not_used_as_real",
+        "no_issue_8_mutation"
+      ],
+      "next_queue_effect": "RTAQ-0011 is next executable; RTAQ-0012 through RTAQ-0014 restore minimum pending depth."
+    }
+  ]
+}
