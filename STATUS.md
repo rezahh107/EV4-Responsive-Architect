@@ -22,6 +22,7 @@ merged_foundation:
   - PR #73 queue refresh audit and next bounded task plan
   - PR #75 master spec and status drift closure
   - PR #77 validator and command index hardening
+  - PR #79 evidence-bound documentation guard
 ```
 
 ## Current Phase
@@ -84,12 +85,12 @@ active_queue_reset_task: RTAQ-0001
 active_queue_reset_status: merged
 active_queue_reset_pr: 65
 active_queue_reset_merge_sha: 7dd76a1952466ae723183643b413501b94dbdbc5
-latest_completed_task: RTAQ-0007
-latest_completed_pr: 77
-latest_completed_merge_sha: 58f3f123aaafec359c5d9d9d1e581d1a9f753f1d
+latest_completed_task: RTAQ-0008
+latest_completed_pr: 79
+latest_completed_merge_sha: 4c66d9a61d57db66ade0b3d4318bb9608271366b
 legacy_rq_lineage_status: archived_non_authoritative_history
 legacy_rq_pending_driver_removed: true
-next_executable_task: RTAQ-0008
+next_executable_task: RTAQ-0009
 rtaq_0002_started: true
 rtaq_0002_status: merged
 rtaq_0003_started: true
@@ -102,13 +103,15 @@ rtaq_0006_started: true
 rtaq_0006_status: merged
 rtaq_0007_started: true
 rtaq_0007_status: merged
+rtaq_0008_started: true
+rtaq_0008_status: merged
 pending_tasks:
-  - RTAQ-0008
   - RTAQ-0009
   - RTAQ-0010
   - RTAQ-0011
+  - RTAQ-0012
 rq_0023_started: false
-reason: RTAQ-0007 is merge-final synced. RTAQ-0011 restores minimum pending depth. RTAQ-0008 is next executable. Evidence and pilot boundaries remain unchanged.
+reason: RTAQ-0008 is merge-final synced. RTAQ-0012 restores minimum pending depth. RTAQ-0009 is next executable. Evidence and pilot boundaries remain unchanged.
 ```
 
 ## Evidence Boundary
