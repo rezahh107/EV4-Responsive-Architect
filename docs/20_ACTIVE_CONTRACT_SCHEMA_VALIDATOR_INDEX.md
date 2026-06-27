@@ -1,7 +1,7 @@
 # Active Contract / Schema / Validator Index
 
 Task: `RTAQ-0004`
-Updated by: `RTAQ-0008`
+Updated by: `RTAQ-0009`
 
 This index records the active repository surfaces needed for controlled manual use and queue-safe handoff. It is an index only; it does not validate a real submitted packet or authorize pilot execution.
 
@@ -56,6 +56,12 @@ schemas:
   run_ledger:
     path: schemas/ev4-responsive-run-ledger.schema.json
     role: active RTAQ ledger schema
+  automation_quality_gate:
+    path: schemas/ev4-responsive-automation-quality-gate.schema.json
+    role: automation quality-gate policy schema
+  task_quality_review:
+    path: schemas/ev4-responsive-task-quality-review.schema.json
+    role: deterministic task quality review schema
 ```
 
 ## Active validators
@@ -80,7 +86,7 @@ validators:
     ci_path: delegated through responsive-tree checker
   task_quality_gate:
     path: validation/e2e/run_task_quality_gate_check.py
-    role: task quality gate policy checks
+    role: task quality gate policy, PR reconciliation, delayed-review, and task-quality review checks
     ci_path: delegated through responsive-tree checker
 ```
 
@@ -143,6 +149,9 @@ controlled_use_docs:
   evidence_bound_documentation_guard:
     path: docs/23_EVIDENCE_BOUND_DOCUMENTATION_GUARD_RTAQ_0008.md
     role: RTAQ-0008 evidence, Issue #8, and pilot blocker documentation guard
+  automation_quality_gate_enforcement_audit:
+    path: docs/24_AUTOMATION_QUALITY_GATE_ENFORCEMENT_AUDIT_RTAQ_0009.md
+    role: RTAQ-0009 queue, control-plane, and quality-gate enforcement audit
 ```
 
 ## CI interpretation
