@@ -1,0 +1,66 @@
+{
+  "schema": "ev4-rtaq-ssot-guard-policy@1.0.0",
+  "project": "EV4 Responsive Architect",
+  "status": "active",
+  "purpose": "Prevent destructive queue, ledger, status, and control-plane state mutations during RTAQ automation runs.",
+  "protected_state_files": [
+    "planning/EV4_ROLLING_QUEUE.json",
+    "planning/EV4_RUN_LEDGER.json",
+    "STATUS.md",
+    "planning/EV4_QUEUE_CONTROL_PLANE.json",
+    "planning/EV4_AUTOMATION_QUALITY_GATE.json"
+  ],
+  "mandatory_gates": {
+    "full_untruncated_source_required": true,
+    "no_mutation_from_partial_or_truncated_snippets": true,
+    "allowlisted_semantic_patch_required": true,
+    "completed_historical_tasks_preserved": true,
+    "old_ledger_records_append_only": true,
+    "json_state_files_must_remain_pretty_printed": true,
+    "diff_budget_required_before_pr_creation": true,
+    "transient_pr_lifecycle_state_forbidden_on_main": true,
+    "status_queue_ledger_consistency_checked": true,
+    "issue_8_evidence_pilot_boundaries_preserved": true,
+    "ci_success_not_responsive_correctness_evidence": true
+  },
+  "diff_budget": {
+    "default_max_deleted_lines_for_state_sync": 20,
+    "queue_historical_completed_task_rewrites_allowed": false,
+    "ledger_existing_record_rewrites_allowed": false,
+    "ledger_append_only_required": true,
+    "status_transient_fields_allowed_on_main": false,
+    "new_note_doc_allowed": true
+  },
+  "allowed_state_patch_classes": [
+    "append_missing_ledger_record",
+    "mark_active_task_merge_final",
+    "restore_minimum_pending_depth",
+    "update_status_final_stable_state",
+    "add_reconciliation_note",
+    "add_guard_policy_or_validator"
+  ],
+  "blocked_state_patch_classes": [
+    "rewrite_completed_task_title_or_objective",
+    "rewrite_completed_task_allowed_or_forbidden_work",
+    "rewrite_existing_ledger_records",
+    "minify_json_state_file",
+    "synthesize_state_file_from_memory",
+    "synthesize_state_file_from_truncated_tool_output",
+    "merge_transient_in_pr_or_executing_status_to_main",
+    "treat_green_ci_as_responsive_correctness_evidence"
+  ],
+  "forbidden_transient_status_values_on_main": [
+    "leased",
+    "executing",
+    "in_pr",
+    "needs_review",
+    "awaiting_external"
+  ],
+  "evidence_boundaries": {
+    "may_create_submitted_evidence": false,
+    "may_modify_issue_8": false,
+    "may_run_real_pilot": false,
+    "may_upgrade_readiness_or_release_claims": false,
+    "may_claim_live_render_export_accessibility_or_pixel_validation": false
+  }
+}
