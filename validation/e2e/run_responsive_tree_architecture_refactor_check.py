@@ -77,6 +77,7 @@ QUEUE_CHECKS = [
     'validation/e2e/run_task_quality_gate_check.py',
     'validation/e2e/run_submitted_packet_eligibility_gate_check.py',
     'validation/e2e/run_rtaq_ssot_guard_check.py',
+    'validation/e2e/run_rtaq_0011_state_sync_plan_check.py',
 ]
 
 
