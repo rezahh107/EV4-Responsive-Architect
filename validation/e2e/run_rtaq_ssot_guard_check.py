@@ -161,7 +161,8 @@ def assert_ledger_shape(ledger: dict[str, Any]) -> None:
             raise SSOTGuardError(f"ledger record is missing boundary assertions: {record.get('record_id')}")
         if not record.get("critique_summary"):
             raise SSOTGuardError(f"ledger record is missing critique summary: {record.get('record_id')}")
-        if record.get("ci_conclusion") == "success" and "responsive correctness" in record.get("next_queue_effect", "").lower():
+        next_queue_effect = (record.get("next_queue_effect") or "").lower()
+        if record.get("ci_conclusion") == "success" and "responsive correctness" in next_queue_effect:
             raise SSOTGuardError("ledger must not treat CI success as responsive correctness evidence")
 
 
@@ -236,21 +237,28 @@ def main() -> int:
     parser.add_argument("--allow-task", action="append", default=[], help="Task ID allowed to change during pairwise validation.")
     args = parser.parse_args()
 
+    head_dir = args.head_dir
+    policy_path = head_dir / "planning" / "EV4_RTAQ_SSOT_GUARD_POLICY.json"
+    queue_path = head_dir / "planning" / "EV4_ROLLING_QUEUE.json"
+    ledger_path = head_dir / "planning" / "EV4_RUN_LEDGER.json"
+    status_path = head_dir / "STATUS.md"
+    state_json_files = [queue_path, ledger_path, policy_path]
+
     try:
-        policy = load_json(POLICY)
+        policy = load_json(policy_path)
         assert_policy(policy)
         forbidden_transient = set(policy.get("forbidden_transient_status_values_on_main", []))
 
-        for path in STATE_JSON_FILES:
+        for path in state_json_files:
             assert_pretty_printed_json(path)
 
-        assert_queue_shape(load_json(QUEUE), forbidden_transient)
-        assert_ledger_shape(load_json(LEDGER))
-        assert_status_text(STATUS.read_text(encoding="utf-8"), forbidden_transient)
+        assert_queue_shape(load_json(queue_path), forbidden_transient)
+        assert_ledger_shape(load_json(ledger_path))
+        assert_status_text(status_path.read_text(encoding="utf-8"), forbidden_transient)
 
         if args.base_dir is not None:
             max_deleted = int(policy["diff_budget"]["default_max_deleted_lines_for_state_sync"])
-            assert_pairwise_patch(args.base_dir, args.head_dir, set(args.allow_task), max_deleted)
+            assert_pairwise_patch(args.base_dir, head_dir, set(args.allow_task), max_deleted)
     except SSOTGuardError as exc:
         print(f"RTAQ SSOT guard failed: {exc}")
         return 1
