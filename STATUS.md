@@ -24,6 +24,7 @@ merged_foundation:
   - PR #77 validator and command index hardening
   - PR #79 evidence-bound documentation guard
   - PR #81 automation quality gate enforcement audit
+  - "PR #84 second bounded batch queue refresh audit"
 ```
 
 ## Current Phase
@@ -61,6 +62,7 @@ controlled_use_docs:
   - docs/22_MASTER_STATUS_DRIFT_CLOSURE_RTAQ_0006.md
   - docs/23_EVIDENCE_BOUND_DOCUMENTATION_GUARD_RTAQ_0008.md
   - docs/24_AUTOMATION_QUALITY_GATE_ENFORCEMENT_AUDIT_RTAQ_0009.md
+  - docs/25_QUEUE_REFRESH_AUDIT_RTAQ_0010.md
 ```
 
 ## CI Boundary
@@ -87,12 +89,12 @@ active_queue_reset_task: RTAQ-0001
 active_queue_reset_status: merged
 active_queue_reset_pr: 65
 active_queue_reset_merge_sha: 7dd76a1952466ae723183643b413501b94dbdbc5
-latest_completed_task: RTAQ-0009
-latest_completed_pr: 81
-latest_completed_merge_sha: efc0f4413c23bf9115cda8163b38b4a6b0a8a0fc
+latest_completed_task: RTAQ-0010
+latest_completed_pr: 84
+latest_completed_merge_sha: 83a6487b07853219b39d20a08ef03c062941aa14
 legacy_rq_lineage_status: archived_non_authoritative_history
 legacy_rq_pending_driver_removed: true
-next_executable_task: RTAQ-0010
+next_executable_task: RTAQ-0011
 rtaq_0002_started: true
 rtaq_0002_status: merged
 rtaq_0003_started: true
@@ -109,13 +111,15 @@ rtaq_0008_started: true
 rtaq_0008_status: merged
 rtaq_0009_started: true
 rtaq_0009_status: merged
+rtaq_0010_started: true
+rtaq_0010_status: merged
 pending_tasks:
-  - RTAQ-0010
   - RTAQ-0011
   - RTAQ-0012
   - RTAQ-0013
+pending_depth_exception: "RTAQ-0010 audit PR #84 intentionally preserved existing queue IDs and moved replacement proposals to non-authoritative backlog candidates; next bounded task must reconcile pending-depth reserve placeholders before starting evidence or pilot work."
 rq_0023_started: false
-reason: RTAQ-0009 is merge-final synced. RTAQ-0013 restores minimum pending depth. RTAQ-0010 is next executable. Evidence and pilot boundaries remain unchanged.
+reason: "RTAQ-0010 PR #84 is merge-final synced in STATUS. RTAQ-0011 is next executable and must reconcile queue-depth drift before any new evidence, pilot, readiness, or production work."
 ```
 
 ## Evidence Boundary
