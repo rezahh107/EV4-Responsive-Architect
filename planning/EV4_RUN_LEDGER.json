@@ -186,6 +186,28 @@
       "critique_summary": ["PR #79 completed the evidence-bound documentation guard without creating submitted evidence or changing Issue #8.", "Gemini identified small documentation metadata and inventory drift; PR #79 was patched before merge.", "This merge-final sync records final PR #79 state only and does not start RTAQ-0009.", "CI success is repository-check evidence only, not responsive correctness evidence."],
       "boundary_assertions": ["no_real_evidence_created", "no_real_pilot_run", "no_production_claim", "no_release_claim", "no_live_render_claim", "no_export_validation_claim", "no_accessibility_pass_claim", "sample_not_used_as_real", "no_issue_8_mutation"],
       "next_queue_effect": "RTAQ-0009 is next executable and remains pending; RTAQ-0012 restores minimum pending depth."
+    },
+    {
+      "record_id": "LEDGER-0020",
+      "run_id": "merge-final-rtaq-0009-pr-81",
+      "task_ref": "RTAQ-0009",
+      "run_type": "status_sync",
+      "status": "merged",
+      "pr_number": 81,
+      "merge_sha": "efc0f4413c23bf9115cda8163b38b4a6b0a8a0fc",
+      "ci_conclusion": "success",
+      "created_at_utc": "2026-06-27T04:27:18Z",
+      "artifacts": [
+        {"path": "docs/24_AUTOMATION_QUALITY_GATE_ENFORCEMENT_AUDIT_RTAQ_0009.md", "artifact_type": "doc", "status": "created"},
+        {"path": "docs/20_ACTIVE_CONTRACT_SCHEMA_VALIDATOR_INDEX.md", "artifact_type": "doc", "status": "updated"},
+        {"path": "STATUS.md", "artifact_type": "status", "status": "updated"},
+        {"path": "PROJECT_MASTER_SPEC.md", "artifact_type": "doc", "status": "updated"},
+        {"path": "planning/EV4_ROLLING_QUEUE.json", "artifact_type": "queue", "status": "updated"},
+        {"path": "planning/EV4_RUN_LEDGER.json", "artifact_type": "other", "status": "updated"}
+      ],
+      "critique_summary": ["PR #81 completed the automation quality gate enforcement audit without creating submitted evidence or changing Issue #8.", "Gemini identified small trailing-newline issues; PR #81 was patched before merge.", "This merge-final sync records final PR #81 state only and does not start RTAQ-0010.", "CI success is repository-check evidence only, not responsive correctness evidence."],
+      "boundary_assertions": ["no_real_evidence_created", "no_real_pilot_run", "no_production_claim", "no_release_claim", "no_live_render_claim", "no_export_validation_claim", "no_accessibility_pass_claim", "sample_not_used_as_real", "no_issue_8_mutation"],
+      "next_queue_effect": "RTAQ-0010 is next executable and remains pending; RTAQ-0013 restores minimum pending depth."
     }
   ]
 }
