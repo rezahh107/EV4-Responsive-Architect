@@ -29,7 +29,8 @@
       "RTAQ-0009",
       "RTAQ-0010",
       "RTAQ-0011",
-      "RTAQ-0012"
+      "RTAQ-0012",
+      "RTAQ-0013"
     ]
   },
   "tasks": [
@@ -476,7 +477,7 @@
       "task_id": "RTAQ-0009",
       "cycle_position": 9,
       "task_type": "repo_sync",
-      "status": "pending",
+      "status": "merged",
       "title": "Automation quality gate enforcement audit",
       "objective": "Audit queue, control-plane, and quality-gate consistency and harden bounded quality-gate text or validators if needed, without expanding into evidence or pilot work.",
       "allowed_work": [
@@ -504,7 +505,27 @@
       "critique_required": true,
       "dependencies": [
         "RTAQ-0005"
-      ]
+      ],
+      "completed_pr": 81,
+      "completion": {
+        "run_id": "merge-final-rtaq-0009-pr-81",
+        "status": "merged",
+        "artifacts": [
+          "docs/24_AUTOMATION_QUALITY_GATE_ENFORCEMENT_AUDIT_RTAQ_0009.md",
+          "docs/20_ACTIVE_CONTRACT_SCHEMA_VALIDATOR_INDEX.md",
+          "STATUS.md",
+          "PROJECT_MASTER_SPEC.md",
+          "planning/EV4_ROLLING_QUEUE.json",
+          "planning/EV4_RUN_LEDGER.json"
+        ],
+        "critique_findings": [
+          "RTAQ-0009 audited automation quality-gate enforcement and refreshed bounded documentation inventories.",
+          "Gemini identified small trailing-newline issues; PR #81 was patched before merge.",
+          "This merge-final sync records final PR #81 state only and does not start RTAQ-0010.",
+          "CI success remains repository-check evidence only, not responsive correctness evidence."
+        ],
+        "boundary": "No submitted evidence, Issue #8 mutation, real pilot execution, readiness claim upgrade, or production/release claim upgrade."
+      }
     },
     {
       "task_id": "RTAQ-0010",
@@ -608,6 +629,39 @@
       "critique_required": true,
       "dependencies": [
         "RTAQ-0008"
+      ]
+    },
+    {
+      "task_id": "RTAQ-0013",
+      "cycle_position": 13,
+      "task_type": "repo_sync",
+      "status": "pending",
+      "title": "Pending depth reserve after RTAQ-0009 sync",
+      "objective": "Maintain minimum pending depth after RTAQ-0009 merge-final sync without starting new evidence, pilot, readiness, or production work.",
+      "allowed_work": [
+        "Audit post-sync queue depth after RTAQ-0010 through RTAQ-0012 remain pending.",
+        "Patch queue, ledger, status, or docs only if bounded synchronization drift is found.",
+        "Use branch, PR, CI, and critique workflow before merge."
+      ],
+      "forbidden_work": [
+        "Do not create submitted evidence.",
+        "Do not modify Issue #8.",
+        "Do not run or authorize the real pilot.",
+        "Do not upgrade readiness, production, release, live-render, export, accessibility, or pixel claims."
+      ],
+      "requires_real_evidence": false,
+      "expected_artifacts": [
+        "Bounded queue/status sync patch if drift is found",
+        "CI result"
+      ],
+      "acceptance_criteria": [
+        "Minimum pending depth remains visible.",
+        "RTAQ-0010 remains the next executable task until started in a later run.",
+        "Evidence-pending and pilot-blocked boundaries remain visible."
+      ],
+      "critique_required": true,
+      "dependencies": [
+        "RTAQ-0009"
       ]
     }
   ],
