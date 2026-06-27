@@ -24,7 +24,7 @@ merged_foundation:
   - PR #77 validator and command index hardening
   - PR #79 evidence-bound documentation guard
   - PR #81 automation quality gate enforcement audit
-  - PR #84 second bounded batch queue refresh audit
+  - "PR #84 second bounded batch queue refresh audit"
 ```
 
 ## Current Phase
@@ -117,9 +117,9 @@ pending_tasks:
   - RTAQ-0011
   - RTAQ-0012
   - RTAQ-0013
-pending_depth_exception: RTAQ-0010 audit PR #84 intentionally preserved existing queue IDs and moved replacement proposals to non-authoritative backlog candidates; next bounded task must reconcile pending-depth reserve placeholders before starting evidence or pilot work.
+pending_depth_exception: "RTAQ-0010 audit PR #84 intentionally preserved existing queue IDs and moved replacement proposals to non-authoritative backlog candidates; next bounded task must reconcile pending-depth reserve placeholders before starting evidence or pilot work."
 rq_0023_started: false
-reason: RTAQ-0010 PR #84 is merge-final synced in STATUS. RTAQ-0011 is next executable and must reconcile queue-depth drift before any new evidence, pilot, readiness, or production work.
+reason: "RTAQ-0010 PR #84 is merge-final synced in STATUS. RTAQ-0011 is next executable and must reconcile queue-depth drift before any new evidence, pilot, readiness, or production work."
 ```
 
 ## Evidence Boundary
