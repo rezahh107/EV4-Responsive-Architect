@@ -58,6 +58,10 @@ def assert_policy_boundary(policy: dict[str, Any]) -> None:
         "old_ledger_records_append_only",
         "json_state_files_must_remain_pretty_printed",
         "diff_budget_required_before_pr_creation",
+        "transient_pr_lifecycle_state_forbidden_on_main",
+        "status_queue_ledger_consistency_checked",
+        "issue_8_evidence_pilot_boundaries_preserved",
+        "ci_success_not_responsive_correctness_evidence",
     ]
     missing = [name for name in required if gates.get(name) is not True]
     if missing:
@@ -77,6 +81,29 @@ def assert_status_boundary(status_text: str) -> None:
     missing = [item for item in required if item not in status_text]
     if missing:
         raise PlanError("STATUS.md is missing expected RTAQ-0011 boundary text: " + ", ".join(missing))
+
+
+def next_rtaq_id(existing_task_ids: set[str]) -> str:
+    numeric_ids = [
+        int(task_id.removeprefix("RTAQ-"))
+        for task_id in existing_task_ids
+        if isinstance(task_id, str)
+        and task_id.startswith("RTAQ-")
+        and task_id.removeprefix("RTAQ-").isdigit()
+    ]
+    return f"RTAQ-{max(numeric_ids, default=0) + 1:04d}"
+
+
+def restore_minimum_pending_depth(
+    planned_pending: list[str], existing_task_ids: set[str]
+) -> list[str]:
+    while len(planned_pending) < MIN_PENDING_DEPTH:
+        next_id = next_rtaq_id(existing_task_ids)
+        if next_id in planned_pending:
+            raise PlanError(f"generated duplicate pending task id: {next_id}")
+        planned_pending.append(next_id)
+        existing_task_ids.add(next_id)
+    return planned_pending
 
 
 def build_plan(queue: dict[str, Any], ledger: dict[str, Any]) -> dict[str, Any]:
@@ -115,8 +142,8 @@ def build_plan(queue: dict[str, Any], ledger: dict[str, Any]) -> dict[str, Any]:
         raise PlanError(f"{TARGET_LEDGER_RECORD} already exists while queue still marks {TARGET_TASK} pending")
 
     planned_pending = [task_id for task_id in pending if task_id != TARGET_TASK]
-    if len(planned_pending) < MIN_PENDING_DEPTH:
-        planned_pending.append("RTAQ-0014")
+    planned_pending = restore_minimum_pending_depth(planned_pending, set(tasks))
+    added_pending = [task_id for task_id in planned_pending if task_id not in pending]
 
     return {
         "mode": "sync_required",
@@ -125,7 +152,7 @@ def build_plan(queue: dict[str, Any], ledger: dict[str, Any]) -> dict[str, Any]:
         "allowed_changes": [
             "mark RTAQ-0010 merged with completed_pr 84",
             "append LEDGER-0021 for RTAQ-0010 / PR #84",
-            "restore pending depth with RTAQ-0014 if still below four",
+            "restore pending depth with sequential RTAQ task IDs until at least four pending tasks remain",
             "update STATUS.md only with stable final state",
             "add reconciliation note only if needed",
         ],
@@ -138,6 +165,7 @@ def build_plan(queue: dict[str, Any], ledger: dict[str, Any]) -> dict[str, Any]:
         ],
         "current_pending_depth_after_target_completion": len([task_id for task_id in pending if task_id != TARGET_TASK]),
         "planned_pending_tasks": planned_pending,
+        "added_pending_tasks": added_pending,
     }
 
 
