@@ -28,7 +28,8 @@
       "RTAQ-0008",
       "RTAQ-0009",
       "RTAQ-0010",
-      "RTAQ-0011"
+      "RTAQ-0011",
+      "RTAQ-0012"
     ]
   },
   "tasks": [
@@ -65,7 +66,7 @@
         "planning/EV4_RUN_LEDGER_RQ_LEGACY_ARCHIVE_NOTE.md"
       ],
       "acceptance_criteria": [
-        "Old RQ-0023 through RQ-0026 lineage no longer drives the active queue.",
+        "Old RQ lineage no longer drives the active queue.",
         "Historical queue and ledger lineage remains preserved or explicitly referenced as archived history.",
         "Post-refactor active queue uses RTAQ task IDs.",
         "Queue and ledger validators pass."
@@ -91,7 +92,7 @@
           "planning/EV4_RUN_LEDGER_RQ_LEGACY_ARCHIVE_NOTE.md"
         ],
         "critique_findings": [
-          "The old RQ pending lineage must remain archived history and must not drive post-refactor execution.",
+          "The old RQ pending lineage remains archived history and does not drive post-refactor execution.",
           "CI success and queue completion remain repository bookkeeping only, not responsive correctness evidence."
         ],
         "boundary": "No submitted evidence, Issue #8 mutation, real pilot execution, or readiness claim upgrade."
@@ -145,9 +146,9 @@
           "validation/e2e/run_responsive_tree_architecture_refactor_check.py"
         ],
         "critique_findings": [
-          "Gemini correctly identified a misleading rejection path for missing or non-string payload_identity_hash.",
-          "The validator now rejects missing or invalid payload identity hashes with a specific payload identity hash error before placeholder-hash checks.",
-          "CI success remains repository-check evidence only, not responsive correctness evidence."
+          "PR #67 added submitted-packet eligibility hardening for Issue #8 reference lock, stale-state rejection, sample-marker rejection, and placeholder-hash rejection.",
+          "Gemini identified a misleading missing-hash rejection path; the PR was patched before merge.",
+          "CI success is repository-check evidence only, not responsive correctness evidence."
         ],
         "boundary": "No submitted evidence, Issue #8 mutation, real pilot execution, readiness claim upgrade, or production/release claim upgrade."
       }
@@ -196,7 +197,7 @@
         ],
         "critique_findings": [
           "The task stayed documentation-only and preserved controlled-use boundaries.",
-          "Gemini identified inconsistent non-clickable path references in the first-run guide; the PR was patched with relative Markdown links.",
+          "Gemini identified inconsistent non-clickable path references; the first-run guide was patched before merge.",
           "CI success remains repository-check evidence only, not responsive correctness evidence."
         ],
         "boundary": "No submitted evidence, Issue #8 mutation, real pilot execution, readiness claim upgrade, or production/release claim upgrade."
@@ -247,7 +248,7 @@
         ],
         "critique_findings": [
           "Gemini identified incomplete controlled-use document inventory and missing task quality gate validator references; the PR was patched before merge.",
-          "PROJECT_MASTER_SPEC.md documentation drift remains a bounded RTAQ-0005 follow-up candidate rather than a RTAQ-0004 scope expansion.",
+          "PROJECT_MASTER_SPEC.md documentation drift remained a bounded follow-up candidate.",
           "CI success remains repository-check evidence only, not responsive correctness evidence."
         ],
         "boundary": "No submitted evidence, Issue #8 mutation, real pilot execution, readiness claim upgrade, or production/release claim upgrade."
@@ -303,7 +304,6 @@
         "critique_findings": [
           "RTAQ-0005 correctly treated the fifth-cycle refresh as planning and repository synchronization only.",
           "The queue refresh restored at least four pending tasks for RTAQ-0006 through RTAQ-0009.",
-          "Post-merge sync was required because merge SHA and final CI conclusion were unavailable before PR #73 merged.",
           "CI success remains repository-check evidence only, not responsive correctness evidence."
         ],
         "boundary": "No submitted evidence, Issue #8 mutation, real pilot execution, readiness claim upgrade, or production/release claim upgrade."
@@ -356,7 +356,7 @@
         ],
         "critique_findings": [
           "RTAQ-0006 closed bounded master-spec/status/index drift after RTAQ-0005.",
-          "Gemini identified two small in-scope issues; the PR was patched with clearer validator wording and pending-depth restoration before merge.",
+          "Gemini identified two small in-scope issues; the PR was patched before merge.",
           "This merge-final sync does not start RTAQ-0007.",
           "CI success remains repository-check evidence only, not responsive correctness evidence."
         ],
@@ -420,7 +420,7 @@
       "task_id": "RTAQ-0008",
       "cycle_position": 8,
       "task_type": "evidence_boundary",
-      "status": "pending",
+      "status": "merged",
       "title": "Evidence-bound documentation guard",
       "objective": "Close bounded documentation drift around submitted evidence, Issue #8, and pilot blockers without creating or validating real submitted evidence.",
       "allowed_work": [
@@ -448,7 +448,29 @@
       "critique_required": true,
       "dependencies": [
         "RTAQ-0005"
-      ]
+      ],
+      "completed_pr": 79,
+      "completion": {
+        "run_id": "merge-final-rtaq-0008-pr-79",
+        "status": "merged",
+        "artifacts": [
+          "docs/23_EVIDENCE_BOUND_DOCUMENTATION_GUARD_RTAQ_0008.md",
+          "docs/16_CONTROLLED_MANUAL_FIRST_RUN_GUIDE.md",
+          "docs/18_GUARDED_HANDOFF_PACK.md",
+          "docs/20_ACTIVE_CONTRACT_SCHEMA_VALIDATOR_INDEX.md",
+          "STATUS.md",
+          "PROJECT_MASTER_SPEC.md",
+          "planning/EV4_ROLLING_QUEUE.json",
+          "planning/EV4_RUN_LEDGER.json"
+        ],
+        "critique_findings": [
+          "RTAQ-0008 added an evidence-bound documentation guard and refreshed controlled-use inventories without creating submitted evidence or changing Issue #8.",
+          "Gemini identified small documentation metadata/inventory drift; PR #79 was patched before merge.",
+          "This merge-final sync records PR #79 final state only and does not start RTAQ-0009.",
+          "CI success remains repository-check evidence only, not responsive correctness evidence."
+        ],
+        "boundary": "No submitted evidence, Issue #8 mutation, real pilot execution, readiness claim upgrade, or production/release claim upgrade."
+      }
     },
     {
       "task_id": "RTAQ-0009",
@@ -553,6 +575,39 @@
       "critique_required": true,
       "dependencies": [
         "RTAQ-0007"
+      ]
+    },
+    {
+      "task_id": "RTAQ-0012",
+      "cycle_position": 12,
+      "task_type": "repo_sync",
+      "status": "pending",
+      "title": "Pending depth reserve after RTAQ-0008 sync",
+      "objective": "Maintain minimum pending depth after RTAQ-0008 merge-final sync without starting new evidence, pilot, readiness, or production work.",
+      "allowed_work": [
+        "Audit post-sync queue depth after RTAQ-0009 through RTAQ-0011 remain pending.",
+        "Patch queue, ledger, status, or docs only if bounded synchronization drift is found.",
+        "Use branch, PR, CI, and critique workflow before merge."
+      ],
+      "forbidden_work": [
+        "Do not create submitted evidence.",
+        "Do not modify Issue #8.",
+        "Do not run or authorize the real pilot.",
+        "Do not upgrade readiness, production, release, live-render, export, accessibility, or pixel claims."
+      ],
+      "requires_real_evidence": false,
+      "expected_artifacts": [
+        "Bounded queue/status sync patch if drift is found",
+        "CI result"
+      ],
+      "acceptance_criteria": [
+        "Minimum pending depth remains visible.",
+        "RTAQ-0009 remains the next executable task until started in a later run.",
+        "Evidence-pending and pilot-blocked boundaries remain visible."
+      ],
+      "critique_required": true,
+      "dependencies": [
+        "RTAQ-0008"
       ]
     }
   ],
