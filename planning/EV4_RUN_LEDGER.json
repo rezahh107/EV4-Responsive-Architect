@@ -56,7 +56,7 @@
         {"path": "validation/fixtures/invalid/submitted_packet_eligibility_placeholder_hash.invalid.json", "artifact_type": "fixture", "status": "created"},
         {"path": "validation/e2e/run_responsive_tree_architecture_refactor_check.py", "artifact_type": "validator", "status": "updated"}
       ],
-      "critique_summary": ["PR #67 added submitted-packet eligibility hardening for Issue #8 reference lock, stale-state rejection, sample-marker rejection, and placeholder-hash rejection.", "Gemini identified a misleading missing-hash rejection path; the PR was patched so missing or non-string payload_identity_hash now raises a specific payload identity hash error.", "CI success is repository-check evidence only, not responsive correctness evidence."],
+      "critique_summary": ["PR #67 added submitted-packet eligibility hardening for Issue #8 reference lock, stale-state rejection, sample-marker rejection, and placeholder-hash rejection.", "Gemini identified a misleading missing-hash rejection path; the PR was patched before merge.", "CI success is repository-check evidence only, not responsive correctness evidence."],
       "boundary_assertions": ["no_real_evidence_created", "no_real_pilot_run", "no_production_claim", "no_release_claim", "no_live_render_claim", "no_export_validation_claim", "no_accessibility_pass_claim", "sample_not_used_as_real", "no_issue_8_mutation"],
       "next_queue_effect": "RTAQ-0003 is next executable and remains pending."
     },
@@ -95,7 +95,7 @@
         {"path": "docs/20_ACTIVE_CONTRACT_SCHEMA_VALIDATOR_INDEX.md", "artifact_type": "doc", "status": "created"},
         {"path": "validation/e2e/run_task_quality_gate_check.py", "artifact_type": "validator", "status": "created"}
       ],
-      "critique_summary": ["PR #71 added guarded handoff, drift audit, and active index documentation only.", "Gemini identified incomplete controlled-use doc and validator inventories; the PR was patched and review threads were resolved before merge.", "PROJECT_MASTER_SPEC.md drift remains a bounded RTAQ-0005 queue-refresh candidate.", "CI success is repository-check evidence only, not responsive correctness evidence."],
+      "critique_summary": ["PR #71 added guarded handoff, drift audit, and active index documentation only.", "Gemini identified incomplete controlled-use doc and validator inventories; the PR was patched and review threads were resolved before merge.", "CI success is repository-check evidence only, not responsive correctness evidence."],
       "boundary_assertions": ["no_real_evidence_created", "no_real_pilot_run", "no_production_claim", "no_release_claim", "no_live_render_claim", "no_export_validation_claim", "no_accessibility_pass_claim", "sample_not_used_as_real", "no_issue_8_mutation"],
       "next_queue_effect": "RTAQ-0005 is next executable and remains pending."
     },
@@ -116,13 +116,7 @@
         {"path": "PROJECT_MASTER_SPEC.md", "artifact_type": "doc", "status": "updated"},
         {"path": "docs/21_QUEUE_REFRESH_AUDIT_RTAQ_0005.md", "artifact_type": "doc", "status": "created"}
       ],
-      "critique_summary": [
-        "PR #73 completed the fifth-cycle RTAQ queue refresh and audited RTAQ-0001 through RTAQ-0004.",
-        "Pending depth was restored with RTAQ-0006 through RTAQ-0009 remaining pending.",
-        "Gemini had no actionable review comments for PR #73.",
-        "This sync records merge-final state only and does not start RTAQ-0006.",
-        "CI success is repository-check evidence only, not responsive correctness evidence."
-      ],
+      "critique_summary": ["PR #73 completed the fifth-cycle RTAQ queue refresh and audited RTAQ-0001 through RTAQ-0004.", "Pending depth was restored with RTAQ-0006 through RTAQ-0009 remaining pending.", "Gemini had no actionable review comments for PR #73.", "This sync records merge-final state only and does not start RTAQ-0006.", "CI success is repository-check evidence only, not responsive correctness evidence."],
       "boundary_assertions": ["no_real_evidence_created", "no_real_pilot_run", "no_production_claim", "no_release_claim", "no_live_render_claim", "no_export_validation_claim", "no_accessibility_pass_claim", "sample_not_used_as_real", "no_issue_8_mutation"],
       "next_queue_effect": "RTAQ-0006 is next executable and remains pending."
     },
@@ -144,12 +138,7 @@
         {"path": "STATUS.md", "artifact_type": "status", "status": "updated"},
         {"path": "planning/EV4_ROLLING_QUEUE.json", "artifact_type": "queue", "status": "updated"}
       ],
-      "critique_summary": [
-        "PR #75 closed bounded master-spec/status/index drift after RTAQ-0005.",
-        "Gemini identified two small in-scope issues; the PR was patched with clearer validator wording and pending-depth restoration before merge.",
-        "This sync records merge-final state only and does not start RTAQ-0007.",
-        "CI success is repository-check evidence only, not responsive correctness evidence."
-      ],
+      "critique_summary": ["PR #75 closed bounded master-spec/status/index drift after RTAQ-0005.", "Gemini identified two small in-scope issues; the PR was patched with clearer validator wording and pending-depth restoration before merge.", "This sync records merge-final state only and does not start RTAQ-0007.", "CI success is repository-check evidence only, not responsive correctness evidence."],
       "boundary_assertions": ["no_real_evidence_created", "no_real_pilot_run", "no_production_claim", "no_release_claim", "no_live_render_claim", "no_export_validation_claim", "no_accessibility_pass_claim", "sample_not_used_as_real", "no_issue_8_mutation"],
       "next_queue_effect": "RTAQ-0007 is next executable and remains pending."
     },
@@ -170,14 +159,33 @@
         {"path": "STATUS.md", "artifact_type": "status", "status": "updated"},
         {"path": "planning/EV4_ROLLING_QUEUE.json", "artifact_type": "queue", "status": "updated"}
       ],
-      "critique_summary": [
-        "PR #77 hardened validation command and active validator index documentation only.",
-        "Gemini reported no actionable review comments for PR #77.",
-        "This sync records merge-final state only and does not start RTAQ-0008.",
-        "CI success is repository-check evidence only, not responsive correctness evidence."
-      ],
+      "critique_summary": ["PR #77 hardened validation command and active validator index documentation only.", "Gemini reported no actionable review comments for PR #77.", "This sync records merge-final state only and does not start RTAQ-0008.", "CI success is repository-check evidence only, not responsive correctness evidence."],
       "boundary_assertions": ["no_real_evidence_created", "no_real_pilot_run", "no_production_claim", "no_release_claim", "no_live_render_claim", "no_export_validation_claim", "no_accessibility_pass_claim", "sample_not_used_as_real", "no_issue_8_mutation"],
       "next_queue_effect": "RTAQ-0008 is next executable and remains pending."
+    },
+    {
+      "record_id": "LEDGER-0019",
+      "run_id": "merge-final-rtaq-0008-pr-79",
+      "task_ref": "RTAQ-0008",
+      "run_type": "status_sync",
+      "status": "merged",
+      "pr_number": 79,
+      "merge_sha": "4c66d9a61d57db66ade0b3d4318bb9608271366b",
+      "ci_conclusion": "success",
+      "created_at_utc": "2026-06-26T23:25:07Z",
+      "artifacts": [
+        {"path": "docs/23_EVIDENCE_BOUND_DOCUMENTATION_GUARD_RTAQ_0008.md", "artifact_type": "doc", "status": "created"},
+        {"path": "docs/16_CONTROLLED_MANUAL_FIRST_RUN_GUIDE.md", "artifact_type": "doc", "status": "updated"},
+        {"path": "docs/18_GUARDED_HANDOFF_PACK.md", "artifact_type": "doc", "status": "updated"},
+        {"path": "docs/20_ACTIVE_CONTRACT_SCHEMA_VALIDATOR_INDEX.md", "artifact_type": "doc", "status": "updated"},
+        {"path": "STATUS.md", "artifact_type": "status", "status": "updated"},
+        {"path": "PROJECT_MASTER_SPEC.md", "artifact_type": "doc", "status": "updated"},
+        {"path": "planning/EV4_ROLLING_QUEUE.json", "artifact_type": "queue", "status": "updated"},
+        {"path": "planning/EV4_RUN_LEDGER.json", "artifact_type": "other", "status": "updated"}
+      ],
+      "critique_summary": ["PR #79 completed the evidence-bound documentation guard without creating submitted evidence or changing Issue #8.", "Gemini identified small documentation metadata and inventory drift; PR #79 was patched before merge.", "This merge-final sync records final PR #79 state only and does not start RTAQ-0009.", "CI success is repository-check evidence only, not responsive correctness evidence."],
+      "boundary_assertions": ["no_real_evidence_created", "no_real_pilot_run", "no_production_claim", "no_release_claim", "no_live_render_claim", "no_export_validation_claim", "no_accessibility_pass_claim", "sample_not_used_as_real", "no_issue_8_mutation"],
+      "next_queue_effect": "RTAQ-0009 is next executable and remains pending; RTAQ-0012 restores minimum pending depth."
     }
   ]
 }
