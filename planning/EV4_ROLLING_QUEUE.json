@@ -1,1 +1,523 @@
-{"schema":"ev4-responsive-rolling-queue@1.0.0","queue_id":"EV4RQ-0002-RTA","project":"EV4 Responsive Architect","queue_status":"active","controller_policy":{"one_task_per_run":true,"critique_same_task":true,"small_in_scope_fixes_allowed":true,"ci_required_for_repo_changes":true,"minimum_pending_tasks":4,"refresh_every_nth_task":5,"real_pilot_requires_submitted_packet_and_readiness_pass":true},"active_cycle":{"cycle_id":"CYCLE-002","cycle_status":"active","started_from_status":"responsive_tree_architecture_active_on_main","goal":"Bounded RTAQ hardening with evidence and pilot boundaries preserved.","task_order":["RTAQ-0001","RTAQ-0002","RTAQ-0003","RTAQ-0004","RTAQ-0005","RTAQ-0006","RTAQ-0007","RTAQ-0008","RTAQ-0009","RTAQ-0010","RTAQ-0011","RTAQ-0012","RTAQ-0013","RTAQ-0014"]},"tasks":[{"task_id":"RTAQ-0001","cycle_position":1,"task_type":"repo_sync","status":"merged","title":"Reset queue","objective":"Bounded repository-control sync preserving evidence and pilot boundaries.","allowed_work":["Patch bounded queue/ledger/status/docs drift only."],"forbidden_work":["No evidence, pilot, Issue #8, readiness, release, production, live-render, export, a11y, or pixel change."],"requires_real_evidence":false,"expected_artifacts":["Bounded patch or CI result"],"acceptance_criteria":["Bounded scope and evidence/pilot boundaries remain visible."],"critique_required":true,"dependencies":[],"completed_pr":65,"completion":{"run_id":"merge-final-rtaq-0001-pr-65","status":"merged","artifacts":["planning/EV4_QUEUE_RESET_RTAQ_0001.audit.json"],"critique_findings":["Bounded repository-control task; CI is not responsive correctness evidence."],"boundary":"No evidence, pilot, Issue #8, readiness, release, production, live-render, export, a11y, or pixel change."}},{"task_id":"RTAQ-0002","cycle_position":2,"task_type":"validator_hardening","status":"merged","title":"Eligibility gate","objective":"Bounded repository-control sync preserving evidence and pilot boundaries.","allowed_work":["Patch bounded queue/ledger/status/docs drift only."],"forbidden_work":["No evidence, pilot, Issue #8, readiness, release, production, live-render, export, a11y, or pixel change."],"requires_real_evidence":false,"expected_artifacts":["Bounded patch or CI result"],"acceptance_criteria":["Bounded scope and evidence/pilot boundaries remain visible."],"critique_required":true,"dependencies":["RTAQ-0001"],"completed_pr":67,"completion":{"run_id":"merge-final-rtaq-0002-pr-67","status":"merged","artifacts":["validation/e2e/run_submitted_packet_eligibility_gate_check.py"],"critique_findings":["Bounded repository-control task; CI is not responsive correctness evidence."],"boundary":"No evidence, pilot, Issue #8, readiness, release, production, live-render, export, a11y, or pixel change."}},{"task_id":"RTAQ-0003","cycle_position":3,"task_type":"repo_sync","status":"merged","title":"Readiness docs","objective":"Bounded repository-control sync preserving evidence and pilot boundaries.","allowed_work":["Patch bounded queue/ledger/status/docs drift only."],"forbidden_work":["No evidence, pilot, Issue #8, readiness, release, production, live-render, export, a11y, or pixel change."],"requires_real_evidence":false,"expected_artifacts":["Bounded patch or CI result"],"acceptance_criteria":["Bounded scope and evidence/pilot boundaries remain visible."],"critique_required":true,"dependencies":["RTAQ-0002"],"completed_pr":69,"completion":{"run_id":"merge-final-rtaq-0003-pr-69","status":"merged","artifacts":["docs/15_CONTROLLED_USE_READINESS_SNAPSHOT.md"],"critique_findings":["Bounded repository-control task; CI is not responsive correctness evidence."],"boundary":"No evidence, pilot, Issue #8, readiness, release, production, live-render, export, a11y, or pixel change."}},{"task_id":"RTAQ-0004","cycle_position":4,"task_type":"repo_sync","status":"merged","title":"Handoff audit","objective":"Bounded repository-control sync preserving evidence and pilot boundaries.","allowed_work":["Patch bounded queue/ledger/status/docs drift only."],"forbidden_work":["No evidence, pilot, Issue #8, readiness, release, production, live-render, export, a11y, or pixel change."],"requires_real_evidence":false,"expected_artifacts":["Bounded patch or CI result"],"acceptance_criteria":["Bounded scope and evidence/pilot boundaries remain visible."],"critique_required":true,"dependencies":["RTAQ-0003"],"completed_pr":71,"completion":{"run_id":"merge-final-rtaq-0004-pr-71","status":"merged","artifacts":["docs/19_REPOSITORY_DRIFT_AUDIT_RTAQ_0004.md"],"critique_findings":["Bounded repository-control task; CI is not responsive correctness evidence."],"boundary":"No evidence, pilot, Issue #8, readiness, release, production, live-render, export, a11y, or pixel change."}},{"task_id":"RTAQ-0005","cycle_position":5,"task_type":"queue_refresh","status":"merged","title":"Queue refresh 1","objective":"Bounded repository-control sync preserving evidence and pilot boundaries.","allowed_work":["Patch bounded queue/ledger/status/docs drift only."],"forbidden_work":["No evidence, pilot, Issue #8, readiness, release, production, live-render, export, a11y, or pixel change."],"requires_real_evidence":false,"expected_artifacts":["Bounded patch or CI result"],"acceptance_criteria":["Bounded scope and evidence/pilot boundaries remain visible."],"critique_required":true,"dependencies":["RTAQ-0001","RTAQ-0002","RTAQ-0003","RTAQ-0004"],"completed_pr":73,"completion":{"run_id":"merge-final-rtaq-0005-pr-73","status":"merged","artifacts":["docs/21_QUEUE_REFRESH_AUDIT_RTAQ_0005.md"],"critique_findings":["Bounded repository-control task; CI is not responsive correctness evidence."],"boundary":"No evidence, pilot, Issue #8, readiness, release, production, live-render, export, a11y, or pixel change."}},{"task_id":"RTAQ-0006","cycle_position":6,"task_type":"repo_sync","status":"merged","title":"Spec/status sync","objective":"Bounded repository-control sync preserving evidence and pilot boundaries.","allowed_work":["Patch bounded queue/ledger/status/docs drift only."],"forbidden_work":["No evidence, pilot, Issue #8, readiness, release, production, live-render, export, a11y, or pixel change."],"requires_real_evidence":false,"expected_artifacts":["Bounded patch or CI result"],"acceptance_criteria":["Bounded scope and evidence/pilot boundaries remain visible."],"critique_required":true,"dependencies":["RTAQ-0005"],"completed_pr":75,"completion":{"run_id":"merge-final-rtaq-0006-pr-75","status":"merged","artifacts":["docs/22_MASTER_STATUS_DRIFT_CLOSURE_RTAQ_0006.md"],"critique_findings":["Bounded repository-control task; CI is not responsive correctness evidence."],"boundary":"No evidence, pilot, Issue #8, readiness, release, production, live-render, export, a11y, or pixel change."}},{"task_id":"RTAQ-0007","cycle_position":7,"task_type":"validator_hardening","status":"merged","title":"Validator index","objective":"Bounded repository-control sync preserving evidence and pilot boundaries.","allowed_work":["Patch bounded queue/ledger/status/docs drift only."],"forbidden_work":["No evidence, pilot, Issue #8, readiness, release, production, live-render, export, a11y, or pixel change."],"requires_real_evidence":false,"expected_artifacts":["Bounded patch or CI result"],"acceptance_criteria":["Bounded scope and evidence/pilot boundaries remain visible."],"critique_required":true,"dependencies":["RTAQ-0005"],"completed_pr":77,"completion":{"run_id":"merge-final-rtaq-0007-pr-77","status":"merged","artifacts":["docs/17_VALIDATION_COMMAND_INDEX.md"],"critique_findings":["Bounded repository-control task; CI is not responsive correctness evidence."],"boundary":"No evidence, pilot, Issue #8, readiness, release, production, live-render, export, a11y, or pixel change."}},{"task_id":"RTAQ-0008","cycle_position":8,"task_type":"evidence_boundary","status":"merged","title":"Evidence guard","objective":"Bounded repository-control sync preserving evidence and pilot boundaries.","allowed_work":["Patch bounded queue/ledger/status/docs drift only."],"forbidden_work":["No evidence, pilot, Issue #8, readiness, release, production, live-render, export, a11y, or pixel change."],"requires_real_evidence":false,"expected_artifacts":["Bounded patch or CI result"],"acceptance_criteria":["Bounded scope and evidence/pilot boundaries remain visible."],"critique_required":true,"dependencies":["RTAQ-0005"],"completed_pr":79,"completion":{"run_id":"merge-final-rtaq-0008-pr-79","status":"merged","artifacts":["docs/23_EVIDENCE_BOUND_DOCUMENTATION_GUARD_RTAQ_0008.md"],"critique_findings":["Bounded repository-control task; CI is not responsive correctness evidence."],"boundary":"No evidence, pilot, Issue #8, readiness, release, production, live-render, export, a11y, or pixel change."}},{"task_id":"RTAQ-0009","cycle_position":9,"task_type":"repo_sync","status":"merged","title":"Quality gate audit","objective":"Bounded repository-control sync preserving evidence and pilot boundaries.","allowed_work":["Patch bounded queue/ledger/status/docs drift only."],"forbidden_work":["No evidence, pilot, Issue #8, readiness, release, production, live-render, export, a11y, or pixel change."],"requires_real_evidence":false,"expected_artifacts":["Bounded patch or CI result"],"acceptance_criteria":["Bounded scope and evidence/pilot boundaries remain visible."],"critique_required":true,"dependencies":["RTAQ-0005"],"completed_pr":81,"completion":{"run_id":"merge-final-rtaq-0009-pr-81","status":"merged","artifacts":["docs/24_AUTOMATION_QUALITY_GATE_ENFORCEMENT_AUDIT_RTAQ_0009.md"],"critique_findings":["Bounded repository-control task; CI is not responsive correctness evidence."],"boundary":"No evidence, pilot, Issue #8, readiness, release, production, live-render, export, a11y, or pixel change."}},{"task_id":"RTAQ-0010","cycle_position":10,"task_type":"queue_refresh","status":"merged","title":"Queue refresh 2","objective":"Bounded repository-control sync preserving evidence and pilot boundaries.","allowed_work":["Patch bounded queue/ledger/status/docs drift only."],"forbidden_work":["No evidence, pilot, Issue #8, readiness, release, production, live-render, export, a11y, or pixel change."],"requires_real_evidence":false,"expected_artifacts":["Bounded patch or CI result"],"acceptance_criteria":["Bounded scope and evidence/pilot boundaries remain visible."],"critique_required":true,"dependencies":["RTAQ-0006","RTAQ-0007","RTAQ-0008","RTAQ-0009"],"completed_pr":84,"completion":{"run_id":"merge-final-rtaq-0010-pr-84","status":"merged","artifacts":["docs/25_QUEUE_REFRESH_AUDIT_RTAQ_0010.md"],"critique_findings":["Bounded repository-control task; CI is not responsive correctness evidence."],"boundary":"No evidence, pilot, Issue #8, readiness, release, production, live-render, export, a11y, or pixel change."}},{"task_id":"RTAQ-0011","cycle_position":11,"task_type":"repo_sync","status":"pending","title":"Reconcile RTAQ-0010 drift","objective":"Bounded repository-control sync preserving evidence and pilot boundaries.","allowed_work":["Patch bounded queue/ledger/status/docs drift only."],"forbidden_work":["No evidence, pilot, Issue #8, readiness, release, production, live-render, export, a11y, or pixel change."],"requires_real_evidence":false,"expected_artifacts":["Bounded patch or CI result"],"acceptance_criteria":["Bounded scope and evidence/pilot boundaries remain visible."],"critique_required":true,"dependencies":["RTAQ-0010"]},{"task_id":"RTAQ-0012","cycle_position":12,"task_type":"repo_sync","status":"pending","title":"Index reconciliation","objective":"Bounded repository-control sync preserving evidence and pilot boundaries.","allowed_work":["Patch bounded queue/ledger/status/docs drift only."],"forbidden_work":["No evidence, pilot, Issue #8, readiness, release, production, live-render, export, a11y, or pixel change."],"requires_real_evidence":false,"expected_artifacts":["Bounded patch or CI result"],"acceptance_criteria":["Bounded scope and evidence/pilot boundaries remain visible."],"critique_required":true,"dependencies":["RTAQ-0011"]},{"task_id":"RTAQ-0013","cycle_position":13,"task_type":"validator_hardening","status":"pending","title":"Queue ledger guard audit","objective":"Bounded repository-control sync preserving evidence and pilot boundaries.","allowed_work":["Patch bounded queue/ledger/status/docs drift only."],"forbidden_work":["No evidence, pilot, Issue #8, readiness, release, production, live-render, export, a11y, or pixel change."],"requires_real_evidence":false,"expected_artifacts":["Bounded patch or CI result"],"acceptance_criteria":["Bounded scope and evidence/pilot boundaries remain visible."],"critique_required":true,"dependencies":["RTAQ-0011"]},{"task_id":"RTAQ-0014","cycle_position":14,"task_type":"evidence_boundary","status":"pending","title":"Issue #8 boundary re-audit","objective":"Bounded repository-control sync preserving evidence and pilot boundaries.","allowed_work":["Patch bounded queue/ledger/status/docs drift only."],"forbidden_work":["No evidence, pilot, Issue #8, readiness, release, production, live-render, export, a11y, or pixel change."],"requires_real_evidence":false,"expected_artifacts":["Bounded patch or CI result"],"acceptance_criteria":["Bounded scope and evidence/pilot boundaries remain visible."],"critique_required":true,"dependencies":["RTAQ-0011"]}],"forbidden_claims":["production_ready","release_ready","pixel_perfect","live_render_validated","export_json_validated","accessibility_passed","sample_packet_used_as_real_evidence","numeric_score_overrides_gate"]}
+{
+  "schema": "ev4-responsive-rolling-queue@1.0.0",
+  "queue_id": "EV4RQ-0002-RTA",
+  "project": "EV4 Responsive Architect",
+  "queue_status": "active",
+  "controller_policy": {
+    "one_task_per_run": true,
+    "critique_same_task": true,
+    "small_in_scope_fixes_allowed": true,
+    "ci_required_for_repo_changes": true,
+    "minimum_pending_tasks": 4,
+    "refresh_every_nth_task": 5,
+    "real_pilot_requires_submitted_packet_and_readiness_pass": true
+  },
+  "active_cycle": {
+    "cycle_id": "CYCLE-002",
+    "cycle_status": "active",
+    "started_from_status": "responsive_tree_architecture_active_on_main",
+    "goal": "Bounded RTAQ hardening with evidence and pilot boundaries preserved.",
+    "task_order": [
+      "RTAQ-0001",
+      "RTAQ-0002",
+      "RTAQ-0003",
+      "RTAQ-0004",
+      "RTAQ-0005",
+      "RTAQ-0006",
+      "RTAQ-0007",
+      "RTAQ-0008",
+      "RTAQ-0009",
+      "RTAQ-0010",
+      "RTAQ-0011",
+      "RTAQ-0012",
+      "RTAQ-0013",
+      "RTAQ-0014"
+    ]
+  },
+  "tasks": [
+    {
+      "task_id": "RTAQ-0001",
+      "cycle_position": 1,
+      "task_type": "repo_sync",
+      "status": "merged",
+      "title": "Reset queue",
+      "objective": "Bounded repository-control sync preserving evidence and pilot boundaries.",
+      "allowed_work": [
+        "Patch bounded queue/ledger/status/docs drift only."
+      ],
+      "forbidden_work": [
+        "No evidence, pilot, Issue #8, readiness, release, production, live-render, export, a11y, or pixel change."
+      ],
+      "requires_real_evidence": false,
+      "expected_artifacts": [
+        "Bounded patch or CI result"
+      ],
+      "acceptance_criteria": [
+        "Bounded scope and evidence/pilot boundaries remain visible."
+      ],
+      "critique_required": true,
+      "dependencies": [],
+      "completed_pr": 65,
+      "completion": {
+        "run_id": "merge-final-rtaq-0001-pr-65",
+        "status": "merged",
+        "artifacts": [
+          "planning/EV4_QUEUE_RESET_RTAQ_0001.audit.json"
+        ],
+        "critique_findings": [
+          "Bounded repository-control task; CI is not responsive correctness evidence."
+        ],
+        "boundary": "No evidence, pilot, Issue #8, readiness, release, production, live-render, export, a11y, or pixel change."
+      }
+    },
+    {
+      "task_id": "RTAQ-0002",
+      "cycle_position": 2,
+      "task_type": "validator_hardening",
+      "status": "merged",
+      "title": "Eligibility gate",
+      "objective": "Bounded repository-control sync preserving evidence and pilot boundaries.",
+      "allowed_work": [
+        "Patch bounded queue/ledger/status/docs drift only."
+      ],
+      "forbidden_work": [
+        "No evidence, pilot, Issue #8, readiness, release, production, live-render, export, a11y, or pixel change."
+      ],
+      "requires_real_evidence": false,
+      "expected_artifacts": [
+        "Bounded patch or CI result"
+      ],
+      "acceptance_criteria": [
+        "Bounded scope and evidence/pilot boundaries remain visible."
+      ],
+      "critique_required": true,
+      "dependencies": [
+        "RTAQ-0001"
+      ],
+      "completed_pr": 67,
+      "completion": {
+        "run_id": "merge-final-rtaq-0002-pr-67",
+        "status": "merged",
+        "artifacts": [
+          "validation/e2e/run_submitted_packet_eligibility_gate_check.py"
+        ],
+        "critique_findings": [
+          "Bounded repository-control task; CI is not responsive correctness evidence."
+        ],
+        "boundary": "No evidence, pilot, Issue #8, readiness, release, production, live-render, export, a11y, or pixel change."
+      }
+    },
+    {
+      "task_id": "RTAQ-0003",
+      "cycle_position": 3,
+      "task_type": "repo_sync",
+      "status": "merged",
+      "title": "Readiness docs",
+      "objective": "Bounded repository-control sync preserving evidence and pilot boundaries.",
+      "allowed_work": [
+        "Patch bounded queue/ledger/status/docs drift only."
+      ],
+      "forbidden_work": [
+        "No evidence, pilot, Issue #8, readiness, release, production, live-render, export, a11y, or pixel change."
+      ],
+      "requires_real_evidence": false,
+      "expected_artifacts": [
+        "Bounded patch or CI result"
+      ],
+      "acceptance_criteria": [
+        "Bounded scope and evidence/pilot boundaries remain visible."
+      ],
+      "critique_required": true,
+      "dependencies": [
+        "RTAQ-0002"
+      ],
+      "completed_pr": 69,
+      "completion": {
+        "run_id": "merge-final-rtaq-0003-pr-69",
+        "status": "merged",
+        "artifacts": [
+          "docs/15_CONTROLLED_USE_READINESS_SNAPSHOT.md"
+        ],
+        "critique_findings": [
+          "Bounded repository-control task; CI is not responsive correctness evidence."
+        ],
+        "boundary": "No evidence, pilot, Issue #8, readiness, release, production, live-render, export, a11y, or pixel change."
+      }
+    },
+    {
+      "task_id": "RTAQ-0004",
+      "cycle_position": 4,
+      "task_type": "repo_sync",
+      "status": "merged",
+      "title": "Handoff audit",
+      "objective": "Bounded repository-control sync preserving evidence and pilot boundaries.",
+      "allowed_work": [
+        "Patch bounded queue/ledger/status/docs drift only."
+      ],
+      "forbidden_work": [
+        "No evidence, pilot, Issue #8, readiness, release, production, live-render, export, a11y, or pixel change."
+      ],
+      "requires_real_evidence": false,
+      "expected_artifacts": [
+        "Bounded patch or CI result"
+      ],
+      "acceptance_criteria": [
+        "Bounded scope and evidence/pilot boundaries remain visible."
+      ],
+      "critique_required": true,
+      "dependencies": [
+        "RTAQ-0003"
+      ],
+      "completed_pr": 71,
+      "completion": {
+        "run_id": "merge-final-rtaq-0004-pr-71",
+        "status": "merged",
+        "artifacts": [
+          "docs/19_REPOSITORY_DRIFT_AUDIT_RTAQ_0004.md"
+        ],
+        "critique_findings": [
+          "Bounded repository-control task; CI is not responsive correctness evidence."
+        ],
+        "boundary": "No evidence, pilot, Issue #8, readiness, release, production, live-render, export, a11y, or pixel change."
+      }
+    },
+    {
+      "task_id": "RTAQ-0005",
+      "cycle_position": 5,
+      "task_type": "queue_refresh",
+      "status": "merged",
+      "title": "Queue refresh 1",
+      "objective": "Bounded repository-control sync preserving evidence and pilot boundaries.",
+      "allowed_work": [
+        "Patch bounded queue/ledger/status/docs drift only."
+      ],
+      "forbidden_work": [
+        "No evidence, pilot, Issue #8, readiness, release, production, live-render, export, a11y, or pixel change."
+      ],
+      "requires_real_evidence": false,
+      "expected_artifacts": [
+        "Bounded patch or CI result"
+      ],
+      "acceptance_criteria": [
+        "Bounded scope and evidence/pilot boundaries remain visible."
+      ],
+      "critique_required": true,
+      "dependencies": [
+        "RTAQ-0001",
+        "RTAQ-0002",
+        "RTAQ-0003",
+        "RTAQ-0004"
+      ],
+      "completed_pr": 73,
+      "completion": {
+        "run_id": "merge-final-rtaq-0005-pr-73",
+        "status": "merged",
+        "artifacts": [
+          "docs/21_QUEUE_REFRESH_AUDIT_RTAQ_0005.md"
+        ],
+        "critique_findings": [
+          "Bounded repository-control task; CI is not responsive correctness evidence."
+        ],
+        "boundary": "No evidence, pilot, Issue #8, readiness, release, production, live-render, export, a11y, or pixel change."
+      }
+    },
+    {
+      "task_id": "RTAQ-0006",
+      "cycle_position": 6,
+      "task_type": "repo_sync",
+      "status": "merged",
+      "title": "Spec/status sync",
+      "objective": "Bounded repository-control sync preserving evidence and pilot boundaries.",
+      "allowed_work": [
+        "Patch bounded queue/ledger/status/docs drift only."
+      ],
+      "forbidden_work": [
+        "No evidence, pilot, Issue #8, readiness, release, production, live-render, export, a11y, or pixel change."
+      ],
+      "requires_real_evidence": false,
+      "expected_artifacts": [
+        "Bounded patch or CI result"
+      ],
+      "acceptance_criteria": [
+        "Bounded scope and evidence/pilot boundaries remain visible."
+      ],
+      "critique_required": true,
+      "dependencies": [
+        "RTAQ-0005"
+      ],
+      "completed_pr": 75,
+      "completion": {
+        "run_id": "merge-final-rtaq-0006-pr-75",
+        "status": "merged",
+        "artifacts": [
+          "docs/22_MASTER_STATUS_DRIFT_CLOSURE_RTAQ_0006.md"
+        ],
+        "critique_findings": [
+          "Bounded repository-control task; CI is not responsive correctness evidence."
+        ],
+        "boundary": "No evidence, pilot, Issue #8, readiness, release, production, live-render, export, a11y, or pixel change."
+      }
+    },
+    {
+      "task_id": "RTAQ-0007",
+      "cycle_position": 7,
+      "task_type": "validator_hardening",
+      "status": "merged",
+      "title": "Validator index",
+      "objective": "Bounded repository-control sync preserving evidence and pilot boundaries.",
+      "allowed_work": [
+        "Patch bounded queue/ledger/status/docs drift only."
+      ],
+      "forbidden_work": [
+        "No evidence, pilot, Issue #8, readiness, release, production, live-render, export, a11y, or pixel change."
+      ],
+      "requires_real_evidence": false,
+      "expected_artifacts": [
+        "Bounded patch or CI result"
+      ],
+      "acceptance_criteria": [
+        "Bounded scope and evidence/pilot boundaries remain visible."
+      ],
+      "critique_required": true,
+      "dependencies": [
+        "RTAQ-0005"
+      ],
+      "completed_pr": 77,
+      "completion": {
+        "run_id": "merge-final-rtaq-0007-pr-77",
+        "status": "merged",
+        "artifacts": [
+          "docs/17_VALIDATION_COMMAND_INDEX.md"
+        ],
+        "critique_findings": [
+          "Bounded repository-control task; CI is not responsive correctness evidence."
+        ],
+        "boundary": "No evidence, pilot, Issue #8, readiness, release, production, live-render, export, a11y, or pixel change."
+      }
+    },
+    {
+      "task_id": "RTAQ-0008",
+      "cycle_position": 8,
+      "task_type": "evidence_boundary",
+      "status": "merged",
+      "title": "Evidence guard",
+      "objective": "Bounded repository-control sync preserving evidence and pilot boundaries.",
+      "allowed_work": [
+        "Patch bounded queue/ledger/status/docs drift only."
+      ],
+      "forbidden_work": [
+        "No evidence, pilot, Issue #8, readiness, release, production, live-render, export, a11y, or pixel change."
+      ],
+      "requires_real_evidence": false,
+      "expected_artifacts": [
+        "Bounded patch or CI result"
+      ],
+      "acceptance_criteria": [
+        "Bounded scope and evidence/pilot boundaries remain visible."
+      ],
+      "critique_required": true,
+      "dependencies": [
+        "RTAQ-0005"
+      ],
+      "completed_pr": 79,
+      "completion": {
+        "run_id": "merge-final-rtaq-0008-pr-79",
+        "status": "merged",
+        "artifacts": [
+          "docs/23_EVIDENCE_BOUND_DOCUMENTATION_GUARD_RTAQ_0008.md"
+        ],
+        "critique_findings": [
+          "Bounded repository-control task; CI is not responsive correctness evidence."
+        ],
+        "boundary": "No evidence, pilot, Issue #8, readiness, release, production, live-render, export, a11y, or pixel change."
+      }
+    },
+    {
+      "task_id": "RTAQ-0009",
+      "cycle_position": 9,
+      "task_type": "repo_sync",
+      "status": "merged",
+      "title": "Quality gate audit",
+      "objective": "Bounded repository-control sync preserving evidence and pilot boundaries.",
+      "allowed_work": [
+        "Patch bounded queue/ledger/status/docs drift only."
+      ],
+      "forbidden_work": [
+        "No evidence, pilot, Issue #8, readiness, release, production, live-render, export, a11y, or pixel change."
+      ],
+      "requires_real_evidence": false,
+      "expected_artifacts": [
+        "Bounded patch or CI result"
+      ],
+      "acceptance_criteria": [
+        "Bounded scope and evidence/pilot boundaries remain visible."
+      ],
+      "critique_required": true,
+      "dependencies": [
+        "RTAQ-0005"
+      ],
+      "completed_pr": 81,
+      "completion": {
+        "run_id": "merge-final-rtaq-0009-pr-81",
+        "status": "merged",
+        "artifacts": [
+          "docs/24_AUTOMATION_QUALITY_GATE_ENFORCEMENT_AUDIT_RTAQ_0009.md"
+        ],
+        "critique_findings": [
+          "Bounded repository-control task; CI is not responsive correctness evidence."
+        ],
+        "boundary": "No evidence, pilot, Issue #8, readiness, release, production, live-render, export, a11y, or pixel change."
+      }
+    },
+    {
+      "task_id": "RTAQ-0010",
+      "cycle_position": 10,
+      "task_type": "queue_refresh",
+      "status": "merged",
+      "title": "Queue refresh 2",
+      "objective": "Bounded repository-control sync preserving evidence and pilot boundaries.",
+      "allowed_work": [
+        "Patch bounded queue/ledger/status/docs drift only."
+      ],
+      "forbidden_work": [
+        "No evidence, pilot, Issue #8, readiness, release, production, live-render, export, a11y, or pixel change."
+      ],
+      "requires_real_evidence": false,
+      "expected_artifacts": [
+        "Bounded patch or CI result"
+      ],
+      "acceptance_criteria": [
+        "Bounded scope and evidence/pilot boundaries remain visible."
+      ],
+      "critique_required": true,
+      "dependencies": [
+        "RTAQ-0006",
+        "RTAQ-0007",
+        "RTAQ-0008",
+        "RTAQ-0009"
+      ],
+      "completed_pr": 84,
+      "completion": {
+        "run_id": "merge-final-rtaq-0010-pr-84",
+        "status": "merged",
+        "artifacts": [
+          "docs/25_QUEUE_REFRESH_AUDIT_RTAQ_0010.md"
+        ],
+        "critique_findings": [
+          "Bounded repository-control task; CI is not responsive correctness evidence."
+        ],
+        "boundary": "No evidence, pilot, Issue #8, readiness, release, production, live-render, export, a11y, or pixel change."
+      }
+    },
+    {
+      "task_id": "RTAQ-0011",
+      "cycle_position": 11,
+      "task_type": "repo_sync",
+      "status": "pending",
+      "title": "Reconcile RTAQ-0010 drift",
+      "objective": "Bounded repository-control sync preserving evidence and pilot boundaries.",
+      "allowed_work": [
+        "Patch bounded queue/ledger/status/docs drift only."
+      ],
+      "forbidden_work": [
+        "No evidence, pilot, Issue #8, readiness, release, production, live-render, export, a11y, or pixel change."
+      ],
+      "requires_real_evidence": false,
+      "expected_artifacts": [
+        "Bounded patch or CI result"
+      ],
+      "acceptance_criteria": [
+        "Bounded scope and evidence/pilot boundaries remain visible."
+      ],
+      "critique_required": true,
+      "dependencies": [
+        "RTAQ-0010"
+      ]
+    },
+    {
+      "task_id": "RTAQ-0012",
+      "cycle_position": 12,
+      "task_type": "repo_sync",
+      "status": "pending",
+      "title": "Index reconciliation",
+      "objective": "Bounded repository-control sync preserving evidence and pilot boundaries.",
+      "allowed_work": [
+        "Patch bounded queue/ledger/status/docs drift only."
+      ],
+      "forbidden_work": [
+        "No evidence, pilot, Issue #8, readiness, release, production, live-render, export, a11y, or pixel change."
+      ],
+      "requires_real_evidence": false,
+      "expected_artifacts": [
+        "Bounded patch or CI result"
+      ],
+      "acceptance_criteria": [
+        "Bounded scope and evidence/pilot boundaries remain visible."
+      ],
+      "critique_required": true,
+      "dependencies": [
+        "RTAQ-0011"
+      ]
+    },
+    {
+      "task_id": "RTAQ-0013",
+      "cycle_position": 13,
+      "task_type": "validator_hardening",
+      "status": "pending",
+      "title": "Queue ledger guard audit",
+      "objective": "Bounded repository-control sync preserving evidence and pilot boundaries.",
+      "allowed_work": [
+        "Patch bounded queue/ledger/status/docs drift only."
+      ],
+      "forbidden_work": [
+        "No evidence, pilot, Issue #8, readiness, release, production, live-render, export, a11y, or pixel change."
+      ],
+      "requires_real_evidence": false,
+      "expected_artifacts": [
+        "Bounded patch or CI result"
+      ],
+      "acceptance_criteria": [
+        "Bounded scope and evidence/pilot boundaries remain visible."
+      ],
+      "critique_required": true,
+      "dependencies": [
+        "RTAQ-0011"
+      ]
+    },
+    {
+      "task_id": "RTAQ-0014",
+      "cycle_position": 14,
+      "task_type": "evidence_boundary",
+      "status": "pending",
+      "title": "Issue #8 boundary re-audit",
+      "objective": "Bounded repository-control sync preserving evidence and pilot boundaries.",
+      "allowed_work": [
+        "Patch bounded queue/ledger/status/docs drift only."
+      ],
+      "forbidden_work": [
+        "No evidence, pilot, Issue #8, readiness, release, production, live-render, export, a11y, or pixel change."
+      ],
+      "requires_real_evidence": false,
+      "expected_artifacts": [
+        "Bounded patch or CI result"
+      ],
+      "acceptance_criteria": [
+        "Bounded scope and evidence/pilot boundaries remain visible."
+      ],
+      "critique_required": true,
+      "dependencies": [
+        "RTAQ-0011"
+      ]
+    }
+  ],
+  "forbidden_claims": [
+    "production_ready",
+    "release_ready",
+    "pixel_perfect",
+    "live_render_validated",
+    "export_json_validated",
+    "accessibility_passed",
+    "sample_packet_used_as_real_evidence",
+    "numeric_score_overrides_gate"
+  ]
+}
