@@ -51,6 +51,7 @@ active_validation:
   - validation/e2e/run_responsive_tree_architecture_refactor_check.py
   - validation/e2e/run_submitted_packet_eligibility_gate_check.py
   - validation/e2e/run_task_quality_gate_check.py
+  - validation/e2e/run_rtaq_ssot_guard_check.py
 controlled_use_docs:
   - docs/15_CONTROLLED_USE_READINESS_SNAPSHOT.md
   - docs/16_CONTROLLED_MANUAL_FIRST_RUN_GUIDE.md
@@ -63,6 +64,7 @@ controlled_use_docs:
   - docs/23_EVIDENCE_BOUND_DOCUMENTATION_GUARD_RTAQ_0008.md
   - docs/24_AUTOMATION_QUALITY_GATE_ENFORCEMENT_AUDIT_RTAQ_0009.md
   - docs/25_QUEUE_REFRESH_AUDIT_RTAQ_0010.md
+  - docs/26_RTAQ_SSOT_GUARD_V1.md
 ```
 
 ## CI Boundary
@@ -76,6 +78,7 @@ delegated_repository_checks:
   - python validation/e2e/run_run_ledger_check.py
   - python validation/e2e/run_task_quality_gate_check.py
   - python validation/e2e/run_submitted_packet_eligibility_gate_check.py
+  - python validation/e2e/run_rtaq_ssot_guard_check.py
 legacy_run_ledger_workflow: manual_only
 ci_success_claim_boundary: repository checks passed only; not responsive correctness evidence
 ```
