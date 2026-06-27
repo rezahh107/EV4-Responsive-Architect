@@ -58,17 +58,25 @@ def load_json(path: Path) -> dict[str, Any]:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
+def display_path(path: Path) -> str:
+    try:
+        return str(path.relative_to(ROOT))
+    except ValueError:
+        return str(path)
+
+
 def assert_pretty_printed_json(path: Path) -> None:
+    path_label = display_path(path)
     text = path.read_text(encoding="utf-8")
     lines = text.splitlines()
     if len(lines) < 10:
-        raise SSOTGuardError(f"{path.relative_to(ROOT)} looks minified or truncated")
+        raise SSOTGuardError(f"{path_label} looks minified or truncated")
     if lines[0].strip() != "{":
-        raise SSOTGuardError(f"{path.relative_to(ROOT)} must start with an opening object line")
+        raise SSOTGuardError(f"{path_label} must start with an opening object line")
     if not any(line.startswith("  ") for line in lines[1:]):
-        raise SSOTGuardError(f"{path.relative_to(ROOT)} must keep readable indentation")
+        raise SSOTGuardError(f"{path_label} must keep readable indentation")
     if not text.endswith("\n"):
-        raise SSOTGuardError(f"{path.relative_to(ROOT)} must end with a newline")
+        raise SSOTGuardError(f"{path_label} must end with a newline")
 
 
 def assert_policy(policy: dict[str, Any]) -> None:
