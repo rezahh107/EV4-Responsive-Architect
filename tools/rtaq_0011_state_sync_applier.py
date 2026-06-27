@@ -47,6 +47,41 @@ def pending_task_ids(queue: dict[str, Any]) -> list[str]:
     ]
 
 
+def ledger_records(ledger: dict[str, Any]) -> list[dict[str, Any]]:
+    return ledger.get("ledger_records", [])
+
+
+def has_target_ledger_record(ledger: dict[str, Any]) -> bool:
+    return any(
+        record.get("record_id") == TARGET_LEDGER_RECORD
+        and record.get("task_ref") == TARGET_TASK
+        and record.get("pr_number") == TARGET_PR
+        and record.get("merge_sha") == TARGET_MERGE_SHA
+        for record in ledger_records(ledger)
+    )
+
+
+def is_already_synced(queue: dict[str, Any], ledger: dict[str, Any], status_text: str) -> bool:
+    tasks = tasks_by_id(queue)
+    target = tasks.get(TARGET_TASK, {})
+    pending = pending_task_ids(queue)
+    return (
+        target.get("status") == "merged"
+        and target.get("completed_pr") == TARGET_PR
+        and "completion" in target
+        and NEW_PENDING_TASK in tasks
+        and NEW_PENDING_TASK in queue.get("active_cycle", {}).get("task_order", [])
+        and len(pending) >= MIN_PENDING_DEPTH
+        and pending[:4] == ["RTAQ-0011", "RTAQ-0012", "RTAQ-0013", "RTAQ-0014"]
+        and has_target_ledger_record(ledger)
+        and "pending_depth_status: restored_to_minimum_four_after_rtaq_0010_sync" in status_text
+        and "real_submitted_packet_present: false" in status_text
+        and "pilot_allowed_to_start: false" in status_text
+        and "readiness_claims_upgraded: false" in status_text
+        and "ci_success_claim_boundary: repository checks only" in status_text
+    )
+
+
 def assert_expected_prestate(queue: dict[str, Any], ledger: dict[str, Any], status_text: str) -> None:
     tasks = tasks_by_id(queue)
     if TARGET_TASK not in tasks:
@@ -59,10 +94,9 @@ def assert_expected_prestate(queue: dict[str, Any], ledger: dict[str, Any], stat
     if NEW_PENDING_TASK in tasks:
         raise ApplyError(f"{NEW_PENDING_TASK} already exists before this sync")
 
-    ledger_records = ledger.get("ledger_records", [])
-    if any(record.get("record_id") == TARGET_LEDGER_RECORD for record in ledger_records):
+    if any(record.get("record_id") == TARGET_LEDGER_RECORD for record in ledger_records(ledger)):
         raise ApplyError(f"{TARGET_LEDGER_RECORD} already exists")
-    if any(record.get("task_ref") == TARGET_TASK for record in ledger_records):
+    if any(record.get("task_ref") == TARGET_TASK for record in ledger_records(ledger)):
         raise ApplyError(f"ledger already contains {TARGET_TASK}")
 
     required_status = [
@@ -230,8 +264,8 @@ def assert_no_historical_queue_rewrite(original: dict[str, Any], updated: dict[s
 
 
 def assert_append_only_ledger(original: dict[str, Any], updated: dict[str, Any]) -> None:
-    original_records = original.get("ledger_records", [])
-    updated_records = updated.get("ledger_records", [])
+    original_records = ledger_records(original)
+    updated_records = ledger_records(updated)
     if updated_records[: len(original_records)] != original_records:
         raise ApplyError("ledger is not append-only")
     if len(updated_records) != len(original_records) + 1:
@@ -249,6 +283,10 @@ def main() -> int:
     queue = load_json(QUEUE_PATH)
     ledger = load_json(LEDGER_PATH)
     status_text = STATUS_PATH.read_text(encoding="utf-8")
+
+    if is_already_synced(queue, ledger, status_text):
+        print("RTAQ-0011 state sync already applied. No changes required.")
+        return 0
 
     assert_expected_prestate(queue, ledger, status_text)
 
