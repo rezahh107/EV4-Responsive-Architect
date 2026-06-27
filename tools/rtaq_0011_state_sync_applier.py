@@ -247,7 +247,7 @@ def sync_status(status_text: str) -> str:
     updated = status_text
     for old, new in replacements.items():
         if old not in updated:
-            raise ApplyError("STATUS.md expected text not found for replacement")
+            raise ApplyError(f"STATUS.md expected text not found for replacement: {old!r}")
         updated = updated.replace(old, new, 1)
     return updated
 
