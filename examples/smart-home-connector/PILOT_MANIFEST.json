@@ -1,5 +1,5 @@
 {
-  "schema": "ev4-responsive-pilot-manifest@0.1.0",
+  "schema": "ev4-responsive-pilot-manifest@0.1.1",
   "pilot_id": "smart-home-connector-v0.1",
   "mode": "shadow_mode_manual",
   "production_ready": false,
@@ -18,7 +18,8 @@
     "responsive-repair-selection",
     "repair-scope-freeze",
     "responsive-repair-plan",
-    "responsive-final-audit-lite"
+    "responsive-final-audit-lite",
+    "builder-context-package-export"
   ],
   "skipped_or_conditional_stages": {
     "repair-triage": {
@@ -61,6 +62,8 @@
     "repair_selection_record_template": "examples/smart-home-connector/templates/REPAIR_SELECTION_RECORD.template.md",
     "remaining_unknowns_template": "examples/smart-home-connector/templates/REMAINING_UNKNOWNS.template.md",
     "builder_checklist_template": "examples/smart-home-connector/builder/BUILDER_REPAIR_CHECKLIST.template.md",
+    "builder_context_package_export_contract": "contracts/BUILDER_CONTEXT_PACKAGE_EXPORT_CONTRACT.md",
+    "builder_context_package_confirmation_template": "examples/smart-home-connector/builder/BUILDER_CONTEXT_PACKAGE.confirmation-request.template.json",
     "final_audit_lite_template": "examples/smart-home-connector/audits/FINAL_AUDIT_LITE.template.md"
   },
   "template_placeholder_policy": {
@@ -77,6 +80,7 @@
     "architecture_mutation_veto_check",
     "repair_option_analysis_before_selection",
     "repair_scope_freeze_before_steps",
+    "builder_context_package_confirmation_request_gate",
     "final_audit_lite_verdict"
   ],
   "stop_conditions": [
@@ -87,6 +91,7 @@
     "unknown_required_to_select_repair_unresolved",
     "architecture_mutation_veto_triggered",
     "meaningful_content_must_be_hidden_to_fit",
+    "builder_context_package_missing_confirmation_request",
     "builder_reports_unexpected_desktop_regression"
   ],
   "forbidden_claims": [
