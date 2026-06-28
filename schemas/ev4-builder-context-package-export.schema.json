@@ -1,0 +1,72 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ev4-responsive-architect.local/schemas/ev4-builder-context-package-export.schema.json",
+  "title": "EV4 Builder Context Package Export",
+  "description": "Architect-side schema subset for Builder Assistant intake packages. New exports must use structured confirmation_request and must not rely on legacy confirmation_sentence.",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "schema",
+    "source_stage",
+    "source_handoff_stage",
+    "package_status",
+    "selected_candidate_id",
+    "selected_candidate_locked",
+    "production_ready_allowed",
+    "approved_structure_tree",
+    "class_creation_application_map",
+    "forbidden_work",
+    "first_builder_batch",
+    "confirmation_request"
+  ],
+  "properties": {
+    "schema": { "const": "ev4-builder-context-package@1.0.0" },
+    "source_stage": { "const": "/builder-feed-export" },
+    "source_handoff_stage": { "const": "/handoff-export" },
+    "package_status": { "enum": ["ready", "ready_with_visible_flags", "blocked"] },
+    "selected_candidate_id": { "type": "string", "minLength": 1 },
+    "selected_candidate_locked": { "const": true },
+    "production_ready_allowed": { "const": false },
+    "approved_structure_tree": { "type": "array", "minItems": 1 },
+    "class_creation_application_map": { "type": "array", "minItems": 1 },
+    "forbidden_work": { "type": "array", "minItems": 1, "items": { "type": "string" } },
+    "first_builder_batch": {
+      "type": "object",
+      "required": ["actions"],
+      "properties": {
+        "actions": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": ["action_id"],
+            "properties": {
+              "action_id": { "type": "string", "minLength": 1 }
+            },
+            "additionalProperties": true
+          }
+        }
+      },
+      "additionalProperties": true
+    },
+    "confirmation_request": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["confirmation_id", "confirmed_action_ids", "expected_user_token", "template_id"],
+      "properties": {
+        "confirmation_id": { "type": "string", "pattern": "^CONFIRM-[A-Z0-9]+(?:-[A-Z0-9]+)*$" },
+        "confirmed_action_ids": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "string", "minLength": 1 } },
+        "expected_user_token": { "type": "string", "minLength": 1 },
+        "template_id": { "const": "standard_batch_confirmation" }
+      }
+    },
+    "confirmation_sentence": {
+      "not": {},
+      "description": "Deprecated: new Architect exports must not emit confirmation_sentence."
+    },
+    "builder_assistant_prompt_seed": {
+      "not": {},
+      "description": "Deprecated: new Architect exports must not emit builder_assistant_prompt_seed."
+    }
+  }
+}
