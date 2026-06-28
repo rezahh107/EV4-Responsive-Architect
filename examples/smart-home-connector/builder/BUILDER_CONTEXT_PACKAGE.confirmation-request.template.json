@@ -1,0 +1,62 @@
+{
+  "schema": "ev4-builder-context-package@1.0.0",
+  "source_stage": "/builder-feed-export",
+  "source_handoff_stage": "/handoff-export",
+  "package_status": "ready_with_visible_flags",
+  "selected_candidate_id": "ARCH-FAM-C",
+  "selected_candidate_locked": true,
+  "production_ready_allowed": false,
+  "source_payload_ledger": [],
+  "approved_structure_tree": [],
+  "class_creation_application_map": [],
+  "widget_mapping_table": [],
+  "editable_content_map": [],
+  "decoration_only_map": [],
+  "asset_replacement_map": [],
+  "scoped_css_need_map": [],
+  "responsive_qa_seed": {
+    "unresolved_breakpoints": ["tablet", "mobile"],
+    "connector_behavior_status": "unresolved_until_evidence",
+    "meaningful_content_visibility_rule": "must_not_hide_meaningful_content"
+  },
+  "forbidden_work": [
+    "do_not_redesign",
+    "do_not_rescore",
+    "do_not_change_selected_candidate",
+    "do_not_add_or_remove_approved_classes",
+    "do_not_claim_production_ready"
+  ],
+  "first_builder_batch": {
+    "max_actions": 3,
+    "actions": [
+      {
+        "action_id": "BATCH-001-A01",
+        "target_element": "Smart Home Section / Root",
+        "instruction": "Create the approved root layout element and apply the approved class.",
+        "expected_result": "Root element exists with approved class."
+      },
+      {
+        "action_id": "BATCH-001-A02",
+        "target_element": "Smart Home Section / Relative Stage",
+        "instruction": "Create the approved relative stage inside the root and apply the approved class.",
+        "expected_result": "Relative Stage exists inside Root with approved class."
+      },
+      {
+        "action_id": "BATCH-001-A03",
+        "target_element": "Smart Home Section / Content Layer",
+        "instruction": "Create the approved content layer inside the relative stage and apply the approved class.",
+        "expected_result": "Content Layer exists inside Relative Stage with approved class."
+      }
+    ]
+  },
+  "confirmation_request": {
+    "confirmation_id": "CONFIRM-BATCH-001",
+    "confirmed_action_ids": [
+      "BATCH-001-A01",
+      "BATCH-001-A02",
+      "BATCH-001-A03"
+    ],
+    "expected_user_token": "تایید BATCH-001",
+    "template_id": "standard_batch_confirmation"
+  }
+}
