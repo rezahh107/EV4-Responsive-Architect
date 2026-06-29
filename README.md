@@ -120,8 +120,8 @@ A screenshot proves only visible assertions it supports. A frontend screenshot d
 ## Current Status
 
 ```yaml
-version: 0.1.0-final-draft
-status: repository_initialization_ready
+version: 0.3.0-responsive-tree-architecture-active
+status: responsive_tree_architecture_active_on_main
 constructability_gate_aligned: planned
 production_ready: false
 prompt_pack_release_ready: false
