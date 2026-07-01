@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/rezahh107/EV4-Responsive-Architect/schemas/ev4-responsive-reference-family.schema.json",
+  "title": "EV4 Responsive Reference Family",
+  "type": "object",
+  "required": [
+    "schema",
+    "golden_reference_id",
+    "golden_reference_version",
+    "golden_reference_scope",
+    "golden_reference_family",
+    "adaptation_type",
+    "per_viewport_reference_authorization",
+    "raw_screenshot_authority"
+  ],
+  "properties": {
+    "schema": { "const": "ev4-responsive-reference-family@1.0.0" },
+    "golden_reference_id": { "type": "string", "minLength": 1 },
+    "golden_reference_version": { "type": "string", "minLength": 1 },
+    "golden_reference_scope": { "enum": ["desktop", "tablet", "mobile", "global"] },
+    "golden_reference_family": { "type": "string", "minLength": 1 },
+    "parent_reference_id": { "type": ["string", "null"] },
+    "adaptation_type": { "enum": ["same_tree_adaptation", "viewport_specific_adaptation", "hybrid_adaptation", "none"] },
+    "per_viewport_reference_authorization": {
+      "type": "object",
+      "required": ["desktop", "tablet", "mobile"],
+      "properties": {
+        "desktop": { "enum": ["authorized", "not_authorized", "not_applicable"] },
+        "tablet": { "enum": ["authorized", "not_authorized", "not_applicable"] },
+        "mobile": { "enum": ["authorized", "not_authorized", "not_applicable"] }
+      },
+      "additionalProperties": false
+    },
+    "reference_supersedes": { "type": ["string", "null"] },
+    "superseded_by": { "type": ["string", "null"] },
+    "raw_screenshot_authority": { "const": false },
+    "desktop_screenshot_proves_mobile_or_tablet": { "const": false }
+  },
+  "additionalProperties": false
+}
