@@ -1,0 +1,14 @@
+{
+  "schema": "ev4-responsive-reference-family@1.0.0",
+  "golden_reference_id": "golden-smart-home-mobile",
+  "golden_reference_version": "1.0.0",
+  "golden_reference_family": "smart-home-connector-reference-family",
+  "adaptation_type": "same_tree_adaptation",
+  "per_viewport_reference_authorization": {
+    "desktop": "authorized",
+    "tablet": "authorized",
+    "mobile": "authorized"
+  },
+  "raw_screenshot_authority": false,
+  "desktop_screenshot_proves_mobile_or_tablet": false
+}
