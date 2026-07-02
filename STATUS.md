@@ -26,6 +26,7 @@ merged_foundation:
   - "PR #81 automation quality gate enforcement audit"
   - "PR #84 second bounded batch queue refresh audit"
   - "PR #94 throughput control-plane hardening"
+  - "PR #96 responsive output fixture coverage expansion"
 pending_control_plane_pr: null
 ```
 
@@ -52,6 +53,7 @@ active_schema:
 active_validation:
   - validation/e2e/run_responsive_tree_architecture_refactor_check.py
   - validation/e2e/run_submitted_packet_eligibility_gate_check.py
+  - validation/e2e/run_submitted_packet_readiness_dry_run.py
   - validation/e2e/run_task_quality_gate_check.py
   - validation/e2e/run_rtaq_ssot_guard_check.py
 controlled_use_docs:
@@ -75,6 +77,7 @@ controlled_use_docs:
 automatic_workflow: .github/workflows/validate.yml
 automatic_check:
   - python validation/e2e/run_responsive_tree_architecture_refactor_check.py
+  - python validation/e2e/run_submitted_packet_readiness_dry_run.py --self-test
 delegated_repository_checks:
   - python validation/e2e/run_rolling_queue_check.py
   - python validation/e2e/run_run_ledger_check.py
@@ -103,24 +106,24 @@ active_queue_reset_task: RTAQ-0001
 active_queue_reset_status: merged
 active_queue_reset_pr: 65
 active_queue_reset_merge_sha: 7dd76a1952466ae723183643b413501b94dbdbc5
-latest_completed_task: RTAQ-0014
-latest_completed_pr: 94
-latest_completed_merge_sha: fc74f2873f349b03a59fee05b7aa674dc804a6b9
+latest_completed_task: RTAQ-0015
+latest_completed_pr: 96
+latest_completed_merge_sha: aba1a12e2532a8d8a400a8fb0d1f6276c0e4e13d
 legacy_rq_lineage_status: archived_non_authoritative_history
 legacy_rq_pending_driver_removed: true
-next_executable_task: RTAQ-0015
+next_executable_task: RTAQ-0016
 rtaq_0010_status: merged
 rtaq_0011_status: superseded
 rtaq_0012_status: superseded
 rtaq_0013_status: superseded
 rtaq_0014_status: merged
+rtaq_0015_status: merged
 pending_tasks:
-  - RTAQ-0015
   - RTAQ-0016
   - RTAQ-0017
   - RTAQ-0018
-pending_depth_exception: null
-reason: "PR #94 is merged. RTAQ-0014 is terminal, throughput hardening is active on main, and RTAQ-0015 is the next executable objective while RTAQ-0018 restores four real actionable tasks without artificial reserve work."
+pending_depth_exception: legitimate_three_task_pool_after_rtaq_0015_merge
+reason: "PR #96 is merged. RTAQ-0015 is terminal, RTAQ-0016 is in progress in a semantic dry-run harness PR, and the queue has three remaining real bounded objectives without artificial reserve work."
 ```
 
 ## Evidence Boundary
