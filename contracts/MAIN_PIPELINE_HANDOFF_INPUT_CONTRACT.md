@@ -1,23 +1,30 @@
 # MAIN_PIPELINE_HANDOFF_INPUT_CONTRACT
 
-Version: 0.1.0
-Status: hardening_candidate
-Owner stage: `/main-pipeline-handoff-ingest`
-Applies to: every EV4 Responsive Architect run
+Version: 0.2.0  
+Status: production_handoff_provenance_required  
+Owner stage: `/main-pipeline-handoff-ingest`  
+Applies to: every production EV4 Responsive Architect run
 
 ---
 
 ## 1. Purpose
 
-Define the exact payload package that may enter `EV4 Responsive Architect` from the completed `EV4 Architect` pipeline.
+Define the exact payload package that may enter `EV4 Responsive Architect` from the completed production EV4 pipeline.
 
-This contract prevents responsive repair from starting with weak, stale, partial, or unselected architecture evidence.
+The production path is:
+
+```text
+Architect → CE → Builder → Responsive
+```
+
+Responsive does not consume raw Architect output directly in production. Architect output reaches Responsive only as inherited baseline/provenance after CE constructability review, Builder execution, and Builder evidence packaging.
 
 Core rule:
 
 ```text
-Responsive repair can only operate on an authorized EV4 baseline.
+Responsive repair can only operate on an authorized Builder handoff with preserved CE/Builder provenance.
 A raw screenshot is evidence; it is not a baseline authority.
+A direct Architect packet is preflight/debug only, never production Responsive intake.
 ```
 
 ---
@@ -29,10 +36,12 @@ This contract does not:
 ```text
 - choose or re-rank architecture candidates;
 - reinterpret the original section screenshot;
+- prove constructability;
+- execute Builder actions;
 - repair responsive failures;
 - validate live frontend rendering;
 - prove production readiness;
-- replace EV4 Architect stage anchors.
+- replace upstream Architect, CE, or Builder contracts.
 ```
 
 ---
@@ -41,16 +50,18 @@ This contract does not:
 
 ```yaml
 required_payloads:
-  - ev4-stage-anchor@1.1.0
-  - Recommendation_Payload
-  - Build_Tree_Payload
-  - Implementation_Payload
-  - Final_Audit_Payload
-  - Handoff_Payload
+  - Builder_Output_Payload
+  - Builder_Build_Evidence
+  - CE_Builder_Executable_Package_Provenance
+  - Builder_Context_Package_Provenance
+  - Golden_Reference_Contract_Provenance
+  - Spatial_Lexicon_Version_Used
+  - Visual_Tolerance_Policy_Ref
+  - Build_Intent_Brief_Ref
   - EV4_DEBUG_TRACE
 ```
 
-The handoff is valid only when the payload set points to the same selected architecture identity.
+Legacy Architect main-pipeline payloads may remain as inherited baseline references, but they are not sufficient to authorize Responsive production intake by themselves.
 
 ---
 
@@ -98,7 +109,50 @@ required_inherited_fields:
 
 ---
 
-## 5. Optional Inputs
+## 5. Required Upstream Provenance
+
+`ev4-responsive-main-input@1.0.0` must include `upstream_provenance`.
+
+```yaml
+upstream_provenance:
+  production_handoff_source: builder_output_and_build_evidence
+
+  builder_provenance:
+    builder_package_schema: ev4-builder-context-package@1.0.0
+    builder_output_ref: string
+    builder_input_authorization_digest: sha256:<64-hex>
+    build_evidence_refs: []
+
+  ce_provenance:
+    ce_package_schema: ev4-builder-executable-package@1.0.0
+    ce_package_ref: string
+    constructability_status: executable_ready
+    builder_decisions_required: 0
+    blocking_dependencies_count: 0
+
+  visual_governance_provenance:
+    golden_reference_contract_id: string
+    golden_reference_contract_hash: sha256:<64-hex>
+    spatial_lexicon_version_used: string
+    visual_tolerance_policy_ref: string
+    build_intent_brief_ref: string
+    reference_paradigm_lock_ref: string
+    paradigm_to_structure_map_ref: string
+
+  builder_validation_claims:
+    builder_runtime_intake_authorized: true
+    visual_reference_prerequisites_present: true
+    build_completed: true|false
+    live_render_validated: true|false
+    export_validated: true|false
+    production_ready_allowed: false
+```
+
+These fields make the Responsive start packet provenance-bearing instead of a direct Architect bypass.
+
+---
+
+## 6. Optional Inputs
 
 ```yaml
 optional_inputs:
@@ -115,15 +169,16 @@ optional_inputs:
   - user_declared_breakpoints
 ```
 
-Optional inputs may improve evidence quality. They do not override locked main-pipeline facts unless they create an explicit contradiction that routes to the owning EV4 stage.
+Optional inputs may improve evidence quality. They do not override locked upstream facts unless they create an explicit contradiction that routes to the owning upstream stage.
 
 ---
 
-## 6. Forbidden as Authoritative Baseline
+## 7. Forbidden as Authoritative Baseline
 
 ```yaml
 forbidden_as_authoritative_baseline:
   - raw_section_screenshot_without_ev4_baseline
+  - direct_architect_packet_without_ce_builder_provenance
   - unselected_architecture_candidate
   - rejected_candidate
   - previous_conversation_memory_without_current_payload
@@ -146,7 +201,7 @@ allowed_as_evidence_only:
 
 ---
 
-## 7. Payload Identity Requirements
+## 8. Payload Identity Requirements
 
 Every input payload must carry or be assigned a payload identity record.
 
@@ -168,15 +223,15 @@ identity_checks:
     required: true
     failure_effect: blocker
 
-  build_tree_to_implementation_consistency:
+  builder_to_responsive_package_consistency:
     required: true
     failure_effect: blocker
 
-  implementation_to_handoff_consistency:
+  ce_to_builder_package_consistency:
     required: true
-    failure_effect: high
+    failure_effect: blocker
 
-  anchor_schema_compatibility:
+  golden_reference_identity_consistency:
     required: true
     failure_effect: blocker
 
@@ -187,15 +242,15 @@ identity_checks:
 
 ---
 
-## 8. Allowed Work
+## 9. Allowed Work
 
 `/main-pipeline-handoff-ingest` may:
 
 ```text
-- normalize the incoming payload package;
+- normalize the incoming Builder handoff package;
 - assign missing local evidence IDs;
 - compute or record payload identity hashes;
-- produce Source Payload Ledger;
+- import CE and Builder provenance without silent rewriting;
 - copy carried unknowns into the responsive unknown register;
 - copy audit flags into the responsive audit flag register;
 - determine whether responsive intake may begin;
@@ -204,11 +259,12 @@ identity_checks:
 
 ---
 
-## 9. Forbidden Work
+## 10. Forbidden Work
 
 `/main-pipeline-handoff-ingest` must not:
 
 ```text
+- accept direct Architect output as production Responsive input;
 - repair any responsive failure;
 - infer mobile behavior;
 - change selected_candidate_id;
@@ -221,51 +277,58 @@ identity_checks:
 
 ---
 
-## 10. Gate Rules
+## 11. Gate Rules
 
 ```yaml
 gates:
   GATE_INPUT_COMPLETE:
-    pass_when: all_required_payloads_present
+    pass_when: all_required_builder_and_provenance_payloads_present
     fail_effect: stop_and_route_to_missing_payload_request
 
-  GATE_ANCHOR_COMPATIBLE:
-    pass_when: ev4-stage-anchor@1.1.0_fields_present_and_not_contradicted
-    fail_effect: stop_and_request_repair_anchor
+  GATE_UPSTREAM_PROVENANCE_PRESENT:
+    pass_when: upstream_provenance exists and production_handoff_source is builder_output_and_build_evidence
+    fail_effect: stop_and_route_to_project_gate_or_builder_handoff_repair
+
+  GATE_CE_EXECUTABLE_READY:
+    pass_when: ce_provenance.constructability_status is executable_ready and builder_decisions_required is 0
+    fail_effect: stop_and_route_to_CE
+
+  GATE_BUILDER_AUTHORIZED:
+    pass_when: builder_runtime_intake_authorized is true and production_ready_allowed is false
+    fail_effect: stop_and_route_to_Builder_or_Project_Gate
+
+  GATE_VISUAL_GOVERNANCE_PRESENT:
+    pass_when: golden_reference_contract, spatial_lexicon_version_used, visual_tolerance_policy, and build_intent_brief provenance are present
+    fail_effect: stop_and_route_to_CE_or_Builder_handoff_repair
 
   GATE_SELECTED_CANDIDATE_LOCK:
-    pass_when: selected_candidate_id_matches_across_payloads
+    pass_when: selected_candidate_id matches across inherited upstream payloads
     fail_effect: stop_and_route_to_EV4_recommend_or_build_tree_owner_stage
-
-  GATE_BUILD_TREE_IDENTITY:
-    pass_when: node_id_map_and_structure_tree_are_present
-    fail_effect: stop_and_route_to_EV4_build_tree
-
-  GATE_CONTENT_CLASSIFICATION:
-    pass_when: content_editability_map_and_overlay_decoration_map_are_present
-    fail_effect: stop_and_route_to_EV4_build_tree_or_final_audit
 
   GATE_UNKNOWN_SURVIVAL:
     pass_when: carried_unknowns_are_imported_without_silent_resolution
     fail_effect: stop_and_repair_ingest_payload
 
   GATE_PRODUCTION_BOUNDARY:
-    pass_when: production_ready_claim_is_false_unless_real_validation_exists
+    pass_when: production_ready_claim_is_false_unless real final validation exists
     fail_effect: stop_and_repair_handoff_claims
 ```
 
 ---
 
-## 11. Stop Conditions
+## 12. Stop Conditions
 
 ```yaml
 stop_conditions:
   - missing_required_payload
+  - missing_upstream_provenance
+  - direct_architect_packet_without_ce_builder_provenance
   - schema_version_unknown_or_incompatible
   - selected_candidate_identity_conflict
-  - Build_Tree_Payload_missing_structure_tree
-  - Implementation_Payload_missing_mapping
-  - Final_Audit_Payload_missing_unresolved_findings_state
+  - missing_builder_build_evidence
+  - missing_golden_reference_contract_provenance
+  - missing_visual_tolerance_policy
+  - missing_build_intent_brief
   - Handoff_Payload_claims_production_ready_without_evidence
   - upstream_payload_hash_changed_after_downstream_handoff
   - user_supplied_only_raw_screenshot_without_EV4_baseline
@@ -273,28 +336,30 @@ stop_conditions:
 
 ---
 
-## 12. Repair Routes
+## 13. Repair Routes
 
 ```yaml
 repair_routes:
-  missing_or_invalid_anchor: request_repair_anchor
+  missing_or_invalid_builder_evidence: EV4_Builder
+  missing_or_invalid_ce_provenance: EV4_CE
+  missing_visual_governance_provenance: EV4_CE_or_Builder_handoff_repair
   selected_candidate_identity_conflict: EV4_Architect_/recommend_or_/build-tree
   missing_build_tree: EV4_Architect_/build-tree
   missing_implementation_mapping: EV4_Architect_/implementation
-  missing_final_audit: EV4_Architect_/final-audit
-  missing_handoff: EV4_Architect_/handoff-export
   visual_role_conflict: EV4_Architect_/decompose_or_/build-tree
   platform_capability_conflict: EV4_Architect_/research
-  production_claim_conflict: EV4_Architect_/final-audit
+  production_claim_conflict: EV4_Builder_or_final_Project_Gate
 ```
 
 ---
 
-## 13. Output Payload
+## 14. Output Payload
 
 ```yaml
 Main_Pipeline_Handoff_Ingest_Payload:
   schema: ev4-responsive-main-input@1.0.0
+  upstream_provenance:
+    production_handoff_source: builder_output_and_build_evidence
   input_authorization_status:
     enum:
       - authorized
@@ -331,14 +396,16 @@ Main_Pipeline_Handoff_Ingest_Payload:
 
 ---
 
-## 14. Self-Audit
+## 15. Self-Audit
 
 ```yaml
 self_audit:
   required_payloads_checked: pass|fail
-  anchor_compatibility_checked: pass|fail
+  upstream_provenance_checked: pass|fail
+  ce_executable_ready_checked: pass|fail
+  builder_authorization_checked: pass|fail
+  visual_governance_checked: pass|fail
   selected_candidate_lock_checked: pass|fail
-  build_tree_identity_checked: pass|fail
   unknowns_preserved: pass|fail
   audit_flags_preserved: pass|fail
   production_boundary_preserved: pass|fail
@@ -348,7 +415,7 @@ self_audit:
 
 ---
 
-## 15. Example Payload
+## 16. Example Payload
 
 ```yaml
 Main_Pipeline_Handoff_Ingest_Payload:
@@ -356,27 +423,35 @@ Main_Pipeline_Handoff_Ingest_Payload:
   input_authorization_status: authorized
   selected_candidate_id: ARCH-FAM-C
   selected_candidate_family: connector_stage_normal_flow_cards
-  payload_identity_hashes:
-    Build_Tree_Payload: sha256:example-build-tree
-    Implementation_Payload: sha256:example-implementation
-    Handoff_Payload: sha256:example-handoff
-  inherited_baseline:
-    structure_tree_ref: payload://Build_Tree_Payload.structure_tree
-    node_id_map_ref: payload://Build_Tree_Payload.node_id_map
-    class_map_ref: payload://Build_Tree_Payload.class_map
-    content_editability_map_ref: payload://Build_Tree_Payload.content_editability_map
-    overlay_decoration_map_ref: payload://Build_Tree_Payload.overlay_decoration_map
-    responsive_structure_contract_ref: payload://Build_Tree_Payload.responsive_structure_contract
-  inherited_unknowns:
-    - mobile_connector_behavior_unknown
-    - exact_breakpoints_not_project_verified
-  inherited_audit_flags:
-    - controlled_builder_handoff_with_visible_medium_flags
-  inherited_repair_routes: []
-  validation_claims_imported:
-    production_ready: false
-    live_render_validated: false
-    export_validated: false
+  upstream_provenance:
+    production_handoff_source: builder_output_and_build_evidence
+    builder_provenance:
+      builder_package_schema: ev4-builder-context-package@1.0.0
+      builder_output_ref: builder-output://BUILD-001
+      builder_input_authorization_digest: sha256:<64-hex>
+      build_evidence_refs:
+        - builder-evidence://checkpoint-001
+    ce_provenance:
+      ce_package_schema: ev4-builder-executable-package@1.0.0
+      ce_package_ref: ce-package://CE-BEP-SMART-HOME-001
+      constructability_status: executable_ready
+      builder_decisions_required: 0
+      blocking_dependencies_count: 0
+    visual_governance_provenance:
+      golden_reference_contract_id: golden-smart-home-desktop
+      golden_reference_contract_hash: sha256:<64-hex>
+      spatial_lexicon_version_used: v1.fa
+      visual_tolerance_policy_ref: ce-package://CE-BEP-SMART-HOME-001.visual_tolerance_policy
+      build_intent_brief_ref: ce-package://CE-BEP-SMART-HOME-001.build_intent_brief
+      reference_paradigm_lock_ref: builder-package://BCTX-001.reference_paradigm_lock
+      paradigm_to_structure_map_ref: builder-package://BCTX-001.paradigm_to_structure_map
+    builder_validation_claims:
+      builder_runtime_intake_authorized: true
+      visual_reference_prerequisites_present: true
+      build_completed: true
+      live_render_validated: false
+      export_validated: false
+      production_ready_allowed: false
   responsive_pipeline_allowed_to_start: true
   stop_reason_if_blocked: null
 ```
