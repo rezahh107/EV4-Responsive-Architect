@@ -18,7 +18,15 @@ CONTROL = ROOT / "planning" / "EV4_QUEUE_CONTROL_PLANE.json"
 CONTROL_SCHEMA = ROOT / "schemas" / "ev4-responsive-queue-control-plane.schema.json"
 TERMINAL_STATUSES = {"completed", "merged", "skipped", "superseded", "cancelled"}
 NON_TERMINAL_STATUSES = {"pending", "in_progress", "blocked", "stale_in_progress"}
-ARTIFICIAL_TERMS = ("pending depth reserve", "keepalive", "status-only", "merge-final sync")
+ARTIFICIAL_TERMS = (
+    "pending depth reserve",
+    "keepalive",
+    "status-only",
+    "merge-final sync",
+    "artificial reserve",
+    "bookkeeping-only",
+    "merge-final-only",
+)
 
 
 def load(path: Path) -> dict[str, Any]:
@@ -193,8 +201,11 @@ def main() -> None:
             fail(f"{task['task_id']} is terminal without completion evidence")
         if status in NON_TERMINAL_STATUSES and completion:
             fail(f"{task['task_id']} is non-terminal but carries completion evidence")
-        if completion and completion.get("status") not in TERMINAL_STATUSES:
-            fail(f"{task['task_id']} completion status must be terminal")
+        if completion:
+            if completion.get("status") not in TERMINAL_STATUSES:
+                fail(f"{task['task_id']} completion status must be terminal")
+            if completion.get("status") != status:
+                fail(f"{task['task_id']} completion status '{completion.get('status')}' must match task status '{status}'")
         if task["task_type"] == "real_evidence_execution" and not task["requires_real_evidence"]:
             fail(f"{task['task_id']} real evidence task must require evidence")
         for dep in task["dependencies"]:
