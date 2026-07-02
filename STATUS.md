@@ -78,5 +78,54 @@ delegated_repository_checks:
   - python validation/e2e/run_rolling_queue_check.py
   - python validation/e2e/run_run_ledger_check.py
   - python validation/e2e/run_task_quality_gate_check.py
-  - python validation/e2e/run_cross_critique_stub_check.py
+  - python validation/e2e/run_submitted_packet_eligibility_gate_check.py
+  - python validation/e2e/run_rtaq_ssot_guard_check.py
+manual_same_head_recovery:
+  workflow: .github/workflows/validate.yml
+  trigger: workflow_dispatch
+  required_inputs:
+    - ref
+    - expected_sha
+  exact_sha_required: true
+  python_matrix:
+    - '3.11'
+    - '3.13'
+ci_success_claim_boundary: repository checks passed only; not responsive correctness evidence
+```
+
+## Queue Boundary
+
+```yaml
+active_queue_file: planning/EV4_ROLLING_QUEUE.json
+active_queue_lineage: RTAQ
+active_queue_reset_task: RTAQ-0001
+active_queue_reset_status: merged
+active_queue_reset_pr: 65
+active_queue_reset_merge_sha: 7dd76a1952466ae723183643b413501b94dbdbc5
+latest_completed_task: RTAQ-0010
+latest_completed_pr: 84
+latest_completed_merge_sha: 83a6487b07853219b39d20a08ef03c062941aa14
+legacy_rq_lineage_status: archived_non_authoritative_history
+legacy_rq_pending_driver_removed: true
+next_executable_task: RTAQ-0014
+rtaq_0010_status: merged
+rtaq_0011_status: superseded
+rtaq_0012_status: superseded
+rtaq_0013_status: superseded
+pending_tasks:
+  - RTAQ-0014
+  - RTAQ-0015
+  - RTAQ-0016
+  - RTAQ-0017
+pending_depth_exception: null
+reason: "RTAQ-0010 PR #84 is merged. Artificial pending-depth reserve placeholders RTAQ-0011 through RTAQ-0013 are superseded, and the next executable task is the real throughput hardening objective RTAQ-0014."
+```
+
+## Evidence Boundary
+
+```yaml
+real_submitted_packet_present: false
+pilot_allowed_to_start: false
+ci_success_claim_boundary: repository checks only
+readiness_claims_upgraded: false
 ```
