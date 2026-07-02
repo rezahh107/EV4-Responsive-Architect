@@ -60,5 +60,8 @@ jobs:
           git rev-parse --short HEAD
           python --version
           test -f validation/e2e/run_responsive_tree_architecture_refactor_check.py
+          test -f validation/e2e/run_submitted_packet_readiness_dry_run.py
       - name: Refactor check
         run: python validation/e2e/run_responsive_tree_architecture_refactor_check.py
+      - name: Submitted packet readiness dry run
+        run: python validation/e2e/run_submitted_packet_readiness_dry_run.py --self-test
