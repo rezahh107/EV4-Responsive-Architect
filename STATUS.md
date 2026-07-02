@@ -24,7 +24,8 @@ merged_foundation:
   - PR #77 validator and command index hardening
   - PR #79 evidence-bound documentation guard
   - PR #81 automation quality gate enforcement audit
-  - "PR #84 second bounded batch queue refresh audit"
+  - PR #84 second bounded batch queue refresh audit
+pending_control_plane_pr: throughput hardening
 ```
 
 ## Current Phase
@@ -32,7 +33,7 @@ merged_foundation:
 ```yaml
 current_phase:
   name: post_merge_refactor_hardening
-  goal: execute larger bounded post-refactor responsive-tree tasks while preserving evidence and pilot boundaries
+  goal: execute bounded primary objectives while preserving evidence and pilot boundaries
 ```
 
 ## Active Refactor Source of Truth
@@ -79,7 +80,16 @@ delegated_repository_checks:
   - python validation/e2e/run_task_quality_gate_check.py
   - python validation/e2e/run_submitted_packet_eligibility_gate_check.py
   - python validation/e2e/run_rtaq_ssot_guard_check.py
-legacy_run_ledger_workflow: manual_only
+manual_same_head_recovery:
+  workflow: .github/workflows/validate.yml
+  trigger: workflow_dispatch
+  required_inputs:
+    - ref
+    - expected_sha
+  exact_sha_required: true
+  python_matrix:
+    - '3.11'
+    - '3.13'
 ci_success_claim_boundary: repository checks passed only; not responsive correctness evidence
 ```
 
@@ -97,32 +107,18 @@ latest_completed_pr: 84
 latest_completed_merge_sha: 83a6487b07853219b39d20a08ef03c062941aa14
 legacy_rq_lineage_status: archived_non_authoritative_history
 legacy_rq_pending_driver_removed: true
-next_executable_task: RTAQ-0011
-rtaq_0002_started: true
-rtaq_0002_status: merged
-rtaq_0003_started: true
-rtaq_0003_status: merged
-rtaq_0004_started: true
-rtaq_0004_status: merged
-rtaq_0005_started: true
-rtaq_0005_status: merged
-rtaq_0006_started: true
-rtaq_0006_status: merged
-rtaq_0007_started: true
-rtaq_0007_status: merged
-rtaq_0008_started: true
-rtaq_0008_status: merged
-rtaq_0009_started: true
-rtaq_0009_status: merged
-rtaq_0010_started: true
+next_executable_task: RTAQ-0014
 rtaq_0010_status: merged
+rtaq_0011_status: superseded
+rtaq_0012_status: superseded
+rtaq_0013_status: superseded
 pending_tasks:
-  - RTAQ-0011
-  - RTAQ-0012
-  - RTAQ-0013
-pending_depth_exception: "RTAQ-0010 audit PR #84 intentionally preserved existing queue IDs and moved replacement proposals to non-authoritative backlog candidates; next bounded task must reconcile pending-depth reserve placeholders before starting evidence or pilot work."
-rq_0023_started: false
-reason: "RTAQ-0010 PR #84 is merge-final synced in STATUS. RTAQ-0011 is next executable and must reconcile queue-depth drift before any new evidence, pilot, readiness, or production work."
+  - RTAQ-0014
+  - RTAQ-0015
+  - RTAQ-0016
+  - RTAQ-0017
+pending_depth_exception: null
+reason: "RTAQ-0010 PR #84 is merged. Artificial pending-depth reserve placeholders RTAQ-0011 through RTAQ-0013 are superseded, and the next executable task is the real throughput hardening objective RTAQ-0014."
 ```
 
 ## Evidence Boundary
