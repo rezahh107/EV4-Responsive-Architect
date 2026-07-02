@@ -29,9 +29,12 @@ from validation.e2e.run_evidence_intake_check import (  # noqa: E402
 
 REQUIRED_SUBMITTED_PACKET_FIELDS = {
     "schema": "ev4-responsive-evidence-intake-packet@1.1.0",
+    "packet_id": "unique identifier for the submitted packet",
     "packet_origin": "real_issue_submission",
     "packet_status": "submitted or validated",
     "issue_reference": "structured Issue #8 submission state",
+    "section_id": "target section identifier",
+    "selected_candidate_id": "selected architecture candidate identifier",
     "main_ev4_handoff": "submitted source ref and payload identity hash",
     "desktop_baseline": "must-not-regress desktop baseline",
     "evidence_items": "desktop, tablet, and mobile evidence items with capability limits",
@@ -102,7 +105,23 @@ def run_self_tests() -> None:
     assert_blocked(placeholder_report, "sample or placeholder")
 
     required = set(REQUIRED_SUBMITTED_PACKET_FIELDS)
-    if {"issue_reference", "evidence_items", "intake_verdict"} - required:
+    complete_required_fields = {
+        "schema",
+        "packet_id",
+        "packet_origin",
+        "packet_status",
+        "issue_reference",
+        "section_id",
+        "selected_candidate_id",
+        "main_ev4_handoff",
+        "desktop_baseline",
+        "evidence_items",
+        "breakpoint_inventory",
+        "privacy_review",
+        "evidence_complete_definition",
+        "intake_verdict",
+    }
+    if complete_required_fields - required:
         raise AssertionError("required submitted packet field explanation is incomplete")
 
 
@@ -120,7 +139,7 @@ def main() -> int:
             run_self_tests()
             print("Submitted packet readiness dry-run self-tests passed: sample/default and placeholder packets are blocked before pilot.")
             return 0
-        packet_path = args.packet if args.packet.is_absolute() else ROOT / args.packet
+        packet_path = args.packet.resolve()
         report = readiness_report(packet_path)
         print(report)
         return 0 if report["status"] == "submitted_packet_machine_check_passed" else 1
