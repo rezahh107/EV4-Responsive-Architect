@@ -1,0 +1,78 @@
+{
+  "schema": "ev4-responsive-output@0.3.0",
+  "source_packet_ref": "ev4-responsive-start-packet.sample.noncanonical-breakpoints",
+  "selected_route": "same_tree_responsive_overrides",
+  "relationship_classification_ref": {
+    "classification": "same_section_adaptation",
+    "confidence": "high",
+    "evidence_refs": [
+      "desktop_tree.sample",
+      "mobile_mockup.sample"
+    ]
+  },
+  "responsive_tree_output": {
+    "mode": "same_tree",
+    "summary": "Breakpoint text is intentionally noncanonical and must be rejected by semantic validation.",
+    "tree_ref": "desktop_tree.sample",
+    "breakpoint_overrides": {
+      "tablet": {
+        "container_direction": "column"
+      },
+      "mobile": {
+        "cards_columns": 1
+      }
+    }
+  },
+  "display_contract": {
+    "breakpoint_scope": {
+      "desktop": ">=1025px",
+      "tablet": "768px to 1024px",
+      "mobile": "<=767px"
+    },
+    "display_rules": [
+      {
+        "node_ref": "section.root",
+        "desktop": "active",
+        "tablet": "active",
+        "mobile": "active",
+        "reason": "Same tree remains active across viewports."
+      }
+    ],
+    "content_policy": "Meaningful content remains present in all viewports.",
+    "sync_policy": "No duplicated content introduced."
+  },
+  "builder_handoff": {
+    "mode": "same_tree_responsive_overrides",
+    "steps": [
+      {
+        "step_id": "BP-001",
+        "target_node": "section.root",
+        "viewport": "tablet",
+        "action": "Set main container direction to column.",
+        "expected_result": "Content stacks without creating a duplicate section."
+      }
+    ]
+  },
+  "validation_plan": {
+    "required_checks": [
+      "Confirm breakpoint scopes use the canonical repository contract labels."
+    ],
+    "evidence_to_collect": [
+      "desktop_after_build_screenshot"
+    ],
+    "claim_boundary": "This invalid fixture must fail before any breakpoint relationship claim is accepted."
+  },
+  "final_review": {
+    "handoff_ready": true,
+    "reason": "This should not be accepted because the tablet breakpoint label is noncanonical."
+  },
+  "unresolved_unknowns": [],
+  "forbidden_claims": [
+    "production_ready",
+    "release_ready",
+    "pixel_perfect",
+    "export_validated",
+    "live_render_validated",
+    "accessibility_passed"
+  ]
+}

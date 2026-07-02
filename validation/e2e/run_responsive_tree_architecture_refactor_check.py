@@ -14,6 +14,7 @@ VALID_FIXTURES = [
     VALID_DIR / 'responsive_output_same_tree.valid.json',
     VALID_DIR / 'responsive_output_viewport_tree.valid.json',
     VALID_DIR / 'responsive_output_hybrid.valid.json',
+    VALID_DIR / 'responsive_output_blocked.valid.json',
 ]
 
 INVALID_FIXTURES = [
@@ -21,6 +22,8 @@ INVALID_FIXTURES = [
     INVALID_DIR / 'responsive_output_empty_steps.invalid.json',
     INVALID_DIR / 'responsive_output_duplicate_step_id.invalid.json',
     INVALID_DIR / 'responsive_output_route_mode_mismatch.invalid.json',
+    INVALID_DIR / 'responsive_output_builder_mode_mismatch.invalid.json',
+    INVALID_DIR / 'responsive_output_noncanonical_breakpoint_scope.invalid.json',
 ]
 
 REQUIRED_FILES = [
@@ -69,6 +72,13 @@ EXPECTED_ROUTES = {
     'same_tree_responsive_overrides',
     'viewport_specific_variant_tree',
     'hybrid_split_architecture',
+    'blocked_pending_input',
+}
+
+EXPECTED_BREAKPOINT_SCOPE = {
+    'desktop': '>=1025px',
+    'tablet': '768px-1024px',
+    'mobile': '<=767px',
 }
 
 QUEUE_CHECKS = [
@@ -98,6 +108,10 @@ def expected_invalid_reason(path):
         return 'Duplicate step_ids'
     if name == 'responsive_output_route_mode_mismatch.invalid.json':
         return 'Route/mode mismatch'
+    if name == 'responsive_output_builder_mode_mismatch.invalid.json':
+        return 'Builder handoff mode mismatch'
+    if name == 'responsive_output_noncanonical_breakpoint_scope.invalid.json':
+        return 'Noncanonical breakpoint scope'
     raise ValueError(f'No expected invalid failure registered for {relative_path(path)}')
 
 
@@ -115,7 +129,7 @@ def assert_required_terms():
 
 
 def assert_step_integrity(payload, path):
-    steps = payload.get('builder_handoff', {}).get('steps', [])
+    steps = (payload.get('builder_handoff') or {}).get('steps', [])
     if not steps:
         raise ValueError(f'builder_handoff.steps cannot be empty: {path}')
 
@@ -144,10 +158,27 @@ def assert_step_integrity(payload, path):
 
 def assert_route_mode(payload, path):
     route = payload.get('selected_route')
-    mode = payload.get('responsive_tree_output', {}).get('mode')
+    mode = (payload.get('responsive_tree_output') or {}).get('mode')
     expected = ROUTE_TO_MODE.get(route)
     if mode != expected:
         raise ValueError(f'Route/mode mismatch in {path}: route={route}, mode={mode}, expected={expected}')
+
+
+def assert_builder_handoff_mode(payload, path):
+    route = payload.get('selected_route')
+    handoff_mode = (payload.get('builder_handoff') or {}).get('mode')
+    if handoff_mode != route:
+        raise ValueError(
+            f'Builder handoff mode mismatch in {path}: route={route}, builder_handoff.mode={handoff_mode}'
+        )
+
+
+def assert_breakpoint_scope(payload, path):
+    scope = (payload.get('display_contract') or {}).get('breakpoint_scope', {})
+    if scope != EXPECTED_BREAKPOINT_SCOPE:
+        raise ValueError(
+            f'Noncanonical breakpoint scope in {path}: expected={EXPECTED_BREAKPOINT_SCOPE}, actual={scope}'
+        )
 
 
 def validate_payload(payload, path, validator):
@@ -159,6 +190,8 @@ def validate_payload(payload, path, validator):
         raise ValueError(f'Schema validation failed for {path}: {details}')
     assert_step_integrity(payload, path)
     assert_route_mode(payload, path)
+    assert_builder_handoff_mode(payload, path)
+    assert_breakpoint_scope(payload, path)
 
 
 def run_queue_checks():
