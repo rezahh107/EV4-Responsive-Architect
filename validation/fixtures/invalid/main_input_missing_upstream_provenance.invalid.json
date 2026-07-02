@@ -1,0 +1,36 @@
+{
+  "schema": "ev4-responsive-main-input@1.0.0",
+  "input_payload_id": "RSP-IN-MISSING-PROVENANCE",
+  "selected_candidate_id": "ARCH-FAM-C",
+  "selected_candidate_family": "connector-centric-normal-flow",
+  "payload_identity_hashes": {
+    "Recommendation_Payload": "not-a-real-content-hash",
+    "Build_Tree_Payload": "not-a-real-content-hash",
+    "Implementation_Payload": "not-a-real-content-hash",
+    "Final_Audit_Payload": "not-a-real-content-hash",
+    "Handoff_Payload": "not-a-real-content-hash"
+  },
+  "required_main_pipeline_inputs": {
+    "Recommendation_Payload": "present",
+    "Build_Tree_Payload": "present",
+    "Implementation_Payload": "present",
+    "Final_Audit_Payload": "present",
+    "Handoff_Payload": "present",
+    "EV4_DEBUG_TRACE": "present"
+  },
+  "inherited_baseline": {
+    "structure_tree_ref": "Build_Tree_Payload.structure_tree",
+    "node_id_map_ref": "Build_Tree_Payload.node_id_map",
+    "class_map_ref": "Build_Tree_Payload.class_map",
+    "content_editability_map_ref": "Build_Tree_Payload.content_editability_map",
+    "overlay_decoration_map_ref": "Build_Tree_Payload.overlay_decoration_map",
+    "responsive_structure_contract_ref": "Build_Tree_Payload.responsive_structure_contract"
+  },
+  "inherited_unknowns": ["mobile_connector_behavior_unknown"],
+  "inherited_audit_flags": ["controlled_builder_handoff_only"],
+  "inherited_repair_routes": ["route_to_build_tree_if_tree_identity_changes"],
+  "validation_claims_imported": ["no_live_elementor_validation", "no_export_json_validation"],
+  "input_authorization_status": "authorized",
+  "responsive_pipeline_allowed_to_start": true,
+  "stop_reason_if_blocked": null
+}
