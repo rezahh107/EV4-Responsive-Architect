@@ -5,11 +5,11 @@
   "selected_candidate_id": "ARCH-FAM-C",
   "selected_candidate_family": "connector-centric-normal-flow",
   "payload_identity_hashes": {
-    "Recommendation_Payload": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-    "Build_Tree_Payload": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
-    "Implementation_Payload": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
-    "Final_Audit_Payload": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
-    "Handoff_Payload": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+    "Recommendation_Payload": "sha256:0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef",
+    "Build_Tree_Payload": "sha256:1123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef",
+    "Implementation_Payload": "sha256:2123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef",
+    "Final_Audit_Payload": "sha256:3123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef",
+    "Handoff_Payload": "sha256:4123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
   },
   "required_main_pipeline_inputs": {
     "Recommendation_Payload": "present",
@@ -18,6 +18,39 @@
     "Final_Audit_Payload": "present",
     "Handoff_Payload": "present",
     "EV4_DEBUG_TRACE": "present"
+  },
+  "upstream_provenance": {
+    "production_handoff_source": "builder_output_and_build_evidence",
+    "builder_provenance": {
+      "builder_package_schema": "ev4-builder-context-package@1.0.0",
+      "builder_output_ref": "builder-output://BUILD-001",
+      "builder_input_authorization_digest": "sha256:5123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef",
+      "build_evidence_refs": ["builder-evidence://checkpoint-001"]
+    },
+    "ce_provenance": {
+      "ce_package_schema": "ev4-builder-executable-package@1.0.0",
+      "ce_package_ref": "ce-package://CE-BEP-SMART-HOME-001",
+      "constructability_status": "executable_ready",
+      "builder_decisions_required": 0,
+      "blocking_dependencies_count": 0
+    },
+    "visual_governance_provenance": {
+      "golden_reference_contract_id": "golden-smart-home-desktop",
+      "golden_reference_contract_hash": "sha256:6123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef",
+      "spatial_lexicon_version_used": "v1.fa",
+      "visual_tolerance_policy_ref": "ce-package://CE-BEP-SMART-HOME-001.visual_tolerance_policy",
+      "build_intent_brief_ref": "ce-package://CE-BEP-SMART-HOME-001.build_intent_brief",
+      "reference_paradigm_lock_ref": "builder-package://BCTX-001.reference_paradigm_lock",
+      "paradigm_to_structure_map_ref": "builder-package://BCTX-001.paradigm_to_structure_map"
+    },
+    "builder_validation_claims": {
+      "builder_runtime_intake_authorized": true,
+      "visual_reference_prerequisites_present": true,
+      "build_completed": true,
+      "live_render_validated": false,
+      "export_validated": false,
+      "production_ready_allowed": false
+    }
   },
   "inherited_baseline": {
     "structure_tree_ref": "Build_Tree_Payload.structure_tree",
