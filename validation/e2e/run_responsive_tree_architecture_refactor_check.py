@@ -129,7 +129,7 @@ def assert_required_terms():
 
 
 def assert_step_integrity(payload, path):
-    steps = payload.get('builder_handoff', {}).get('steps', [])
+    steps = (payload.get('builder_handoff') or {}).get('steps', [])
     if not steps:
         raise ValueError(f'builder_handoff.steps cannot be empty: {path}')
 
@@ -158,7 +158,7 @@ def assert_step_integrity(payload, path):
 
 def assert_route_mode(payload, path):
     route = payload.get('selected_route')
-    mode = payload.get('responsive_tree_output', {}).get('mode')
+    mode = (payload.get('responsive_tree_output') or {}).get('mode')
     expected = ROUTE_TO_MODE.get(route)
     if mode != expected:
         raise ValueError(f'Route/mode mismatch in {path}: route={route}, mode={mode}, expected={expected}')
@@ -166,7 +166,7 @@ def assert_route_mode(payload, path):
 
 def assert_builder_handoff_mode(payload, path):
     route = payload.get('selected_route')
-    handoff_mode = payload.get('builder_handoff', {}).get('mode')
+    handoff_mode = (payload.get('builder_handoff') or {}).get('mode')
     if handoff_mode != route:
         raise ValueError(
             f'Builder handoff mode mismatch in {path}: route={route}, builder_handoff.mode={handoff_mode}'
@@ -174,7 +174,7 @@ def assert_builder_handoff_mode(payload, path):
 
 
 def assert_breakpoint_scope(payload, path):
-    scope = payload.get('display_contract', {}).get('breakpoint_scope', {})
+    scope = (payload.get('display_contract') or {}).get('breakpoint_scope', {})
     if scope != EXPECTED_BREAKPOINT_SCOPE:
         raise ValueError(
             f'Noncanonical breakpoint scope in {path}: expected={EXPECTED_BREAKPOINT_SCOPE}, actual={scope}'
