@@ -25,7 +25,8 @@ merged_foundation:
   - "PR #79 evidence-bound documentation guard"
   - "PR #81 automation quality gate enforcement audit"
   - "PR #84 second bounded batch queue refresh audit"
-pending_control_plane_pr: throughput hardening
+  - "PR #94 throughput control-plane hardening"
+pending_control_plane_pr: null
 ```
 
 ## Current Phase
@@ -102,23 +103,24 @@ active_queue_reset_task: RTAQ-0001
 active_queue_reset_status: merged
 active_queue_reset_pr: 65
 active_queue_reset_merge_sha: 7dd76a1952466ae723183643b413501b94dbdbc5
-latest_completed_task: RTAQ-0010
-latest_completed_pr: 84
-latest_completed_merge_sha: 83a6487b07853219b39d20a08ef03c062941aa14
+latest_completed_task: RTAQ-0014
+latest_completed_pr: 94
+latest_completed_merge_sha: fc74f2873f349b03a59fee05b7aa674dc804a6b9
 legacy_rq_lineage_status: archived_non_authoritative_history
 legacy_rq_pending_driver_removed: true
-next_executable_task: RTAQ-0014
+next_executable_task: RTAQ-0015
 rtaq_0010_status: merged
 rtaq_0011_status: superseded
 rtaq_0012_status: superseded
 rtaq_0013_status: superseded
+rtaq_0014_status: merged
 pending_tasks:
-  - RTAQ-0014
   - RTAQ-0015
   - RTAQ-0016
   - RTAQ-0017
+  - RTAQ-0018
 pending_depth_exception: null
-reason: "RTAQ-0010 PR #84 is merged. Artificial pending-depth reserve placeholders RTAQ-0011 through RTAQ-0013 are superseded, and the next executable task is the real throughput hardening objective RTAQ-0014."
+reason: "PR #94 is merged. RTAQ-0014 is terminal, throughput hardening is active on main, and RTAQ-0015 is the next executable objective while RTAQ-0018 restores four real actionable tasks without artificial reserve work."
 ```
 
 ## Evidence Boundary
