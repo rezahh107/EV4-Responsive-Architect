@@ -4,43 +4,41 @@
   "title": "EV4 Responsive Rolling Queue",
   "type": "object",
   "additionalProperties": false,
-  "required": [
-    "schema",
-    "queue_id",
-    "project",
-    "queue_status",
-    "controller_policy",
-    "active_cycle",
-    "tasks",
-    "forbidden_claims"
-  ],
+  "required": ["schema", "queue_id", "project", "queue_status", "controller_policy", "active_cycle", "tasks", "forbidden_claims"],
   "properties": {
     "schema": { "const": "ev4-responsive-rolling-queue@1.0.0" },
     "queue_id": { "type": "string", "pattern": "^EV4RQ-[0-9]{4}-[A-Z0-9-]+$" },
     "project": { "const": "EV4 Responsive Architect" },
-    "queue_status": {
-      "type": "string",
-      "enum": ["active", "paused", "blocked_waiting_for_real_evidence", "complete"]
-    },
+    "queue_status": { "type": "string", "enum": ["active", "paused", "blocked_waiting_for_real_evidence", "complete"] },
     "controller_policy": {
       "type": "object",
       "additionalProperties": false,
       "required": [
-        "one_task_per_run",
-        "critique_same_task",
+        "run_granularity",
+        "same_scope_completion_allowed",
+        "critique_same_objective",
         "small_in_scope_fixes_allowed",
         "ci_required_for_repo_changes",
-        "minimum_pending_tasks",
-        "refresh_every_nth_task",
+        "minimum_actionable_tasks",
+        "refresh_when_actionable_below",
+        "fixed_ordinal_refresh_forbidden",
+        "artificial_reserve_tasks_forbidden",
+        "status_only_prs_forbidden",
+        "same_head_ci_recovery_required",
         "real_pilot_requires_submitted_packet_and_readiness_pass"
       ],
       "properties": {
-        "one_task_per_run": { "const": true },
-        "critique_same_task": { "const": true },
+        "run_granularity": { "const": "primary_objective" },
+        "same_scope_completion_allowed": { "const": true },
+        "critique_same_objective": { "const": true },
         "small_in_scope_fixes_allowed": { "const": true },
         "ci_required_for_repo_changes": { "const": true },
-        "minimum_pending_tasks": { "const": 4 },
-        "refresh_every_nth_task": { "const": 5 },
+        "minimum_actionable_tasks": { "const": 4 },
+        "refresh_when_actionable_below": { "const": 4 },
+        "fixed_ordinal_refresh_forbidden": { "const": true },
+        "artificial_reserve_tasks_forbidden": { "const": true },
+        "status_only_prs_forbidden": { "const": true },
+        "same_head_ci_recovery_required": { "const": true },
         "real_pilot_requires_submitted_packet_and_readiness_pass": { "const": true }
       }
     },
@@ -53,44 +51,19 @@
         "cycle_status": { "type": "string", "enum": ["planned", "active", "complete", "blocked"] },
         "started_from_status": { "type": "string", "minLength": 1 },
         "goal": { "type": "string", "minLength": 1 },
-        "task_order": {
-          "type": "array",
-          "minItems": 5,
-          "maxItems": 50,
-          "items": { "$ref": "#/$defs/task_id" }
-        }
+        "task_order": { "type": "array", "minItems": 5, "maxItems": 50, "items": { "$ref": "#/$defs/task_id" } }
       }
     },
-    "tasks": {
-      "type": "array",
-      "minItems": 5,
-      "maxItems": 50,
-      "items": { "$ref": "#/$defs/task" }
-    },
+    "tasks": { "type": "array", "minItems": 5, "maxItems": 50, "items": { "$ref": "#/$defs/task" } },
     "forbidden_claims": {
       "type": "array",
       "minItems": 5,
       "uniqueItems": true,
-      "items": {
-        "type": "string",
-        "enum": [
-          "production_ready",
-          "release_ready",
-          "pixel_perfect",
-          "live_render_validated",
-          "export_json_validated",
-          "accessibility_passed",
-          "sample_packet_used_as_real_evidence",
-          "numeric_score_overrides_gate"
-        ]
-      }
+      "items": { "type": "string", "enum": ["production_ready", "release_ready", "pixel_perfect", "live_render_validated", "export_json_validated", "accessibility_passed", "sample_packet_used_as_real_evidence", "numeric_score_overrides_gate"] }
     }
   },
   "$defs": {
-    "task_id": {
-      "type": "string",
-      "pattern": "^(RQ|RTAQ)-[0-9]{4}$"
-    },
+    "task_id": { "type": "string", "pattern": "^(RQ|RTAQ)-[0-9]{4}$" },
     "completion": {
       "type": "object",
       "additionalProperties": false,
@@ -106,51 +79,12 @@
     "task": {
       "type": "object",
       "additionalProperties": false,
-      "required": [
-        "task_id",
-        "cycle_position",
-        "task_type",
-        "status",
-        "title",
-        "objective",
-        "allowed_work",
-        "forbidden_work",
-        "requires_real_evidence",
-        "expected_artifacts",
-        "acceptance_criteria",
-        "critique_required",
-        "dependencies"
-      ],
+      "required": ["task_id", "cycle_position", "task_type", "status", "title", "objective", "allowed_work", "forbidden_work", "requires_real_evidence", "expected_artifacts", "acceptance_criteria", "critique_required", "dependencies"],
       "properties": {
         "task_id": { "$ref": "#/$defs/task_id" },
         "cycle_position": { "type": "integer", "minimum": 1, "maximum": 50 },
-        "task_type": {
-          "type": "string",
-          "enum": [
-            "repo_sync",
-            "evidence_bridge",
-            "validator_hardening",
-            "schema_hardening",
-            "pilot_preparation",
-            "real_evidence_execution",
-            "queue_refresh",
-            "evidence_boundary"
-          ]
-        },
-        "status": {
-          "type": "string",
-          "enum": [
-            "pending",
-            "in_progress",
-            "completed",
-            "merged",
-            "blocked",
-            "skipped",
-            "superseded",
-            "cancelled",
-            "stale_in_progress"
-          ]
-        },
+        "task_type": { "type": "string", "enum": ["repo_sync", "evidence_bridge", "validator_hardening", "schema_hardening", "pilot_preparation", "real_evidence_execution", "queue_refresh", "evidence_boundary"] },
+        "status": { "type": "string", "enum": ["pending", "in_progress", "completed", "merged", "blocked", "skipped", "superseded", "cancelled", "stale_in_progress"] },
         "title": { "type": "string", "minLength": 1 },
         "objective": { "type": "string", "minLength": 1 },
         "allowed_work": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } },
@@ -166,22 +100,9 @@
         "completion": { "$ref": "#/$defs/completion" }
       },
       "allOf": [
-        {
-          "if": { "properties": { "status": { "const": "blocked" } }, "required": ["status"] },
-          "then": { "required": ["blocker_reason"] }
-        },
-        {
-          "if": { "properties": { "cycle_position": { "multipleOf": 5 } }, "required": ["cycle_position"] },
-          "then": { "properties": { "task_type": { "const": "queue_refresh" } } }
-        },
-        {
-          "if": { "properties": { "status": { "enum": ["completed", "merged", "skipped", "superseded", "cancelled"] } }, "required": ["status"] },
-          "then": { "required": ["completion"] }
-        },
-        {
-          "if": { "properties": { "status": { "const": "pending" } }, "required": ["status"] },
-          "then": { "not": { "required": ["completion"] } }
-        }
+        { "if": { "properties": { "status": { "const": "blocked" } }, "required": ["status"] }, "then": { "required": ["blocker_reason"] } },
+        { "if": { "properties": { "status": { "enum": ["completed", "merged", "skipped", "superseded", "cancelled"] } }, "required": ["status"] }, "then": { "required": ["completion"] } },
+        { "if": { "properties": { "status": { "const": "pending" } }, "required": ["status"] }, "then": { "not": { "required": ["completion"] } } }
       ]
     }
   }
