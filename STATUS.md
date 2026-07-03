@@ -28,6 +28,7 @@ merged_foundation:
   - "PR #94 throughput control-plane hardening"
   - "PR #96 responsive output fixture coverage expansion"
   - "PR #97 submitted packet readiness dry-run harness"
+  - "PR #98 pilot preparation artifact index"
 pending_control_plane_pr: null
 ```
 
@@ -71,6 +72,7 @@ controlled_use_docs:
   - docs/25_QUEUE_REFRESH_AUDIT_RTAQ_0010.md
   - docs/26_RTAQ_SSOT_GUARD_V1.md
   - docs/27_PILOT_PREPARATION_ARTIFACT_INDEX_RTAQ_0017.md
+  - docs/28_RESPONSIVE_CONTRACT_INVARIANT_FIXTURE_AUDIT_RTAQ_0018.md
 ```
 
 ## CI Boundary
@@ -108,12 +110,12 @@ active_queue_reset_task: RTAQ-0001
 active_queue_reset_status: merged
 active_queue_reset_pr: 65
 active_queue_reset_merge_sha: 7dd76a1952466ae723183643b413501b94dbdbc5
-latest_completed_task: RTAQ-0016
-latest_completed_pr: 97
-latest_completed_merge_sha: aaec85adb1dc804be7894e0718c81f248cdc3603
+latest_completed_task: RTAQ-0017
+latest_completed_pr: 98
+latest_completed_merge_sha: 3169208e76ea5022f7b12a48a5696336e048ca9b
 legacy_rq_lineage_status: archived_non_authoritative_history
 legacy_rq_pending_driver_removed: true
-next_executable_task: RTAQ-0017
+next_executable_task: RTAQ-0018
 rtaq_0010_status: merged
 rtaq_0011_status: superseded
 rtaq_0012_status: superseded
@@ -121,11 +123,12 @@ rtaq_0013_status: superseded
 rtaq_0014_status: merged
 rtaq_0015_status: merged
 rtaq_0016_status: merged
+rtaq_0017_status: merged
+rtaq_0018_status: pending
 pending_tasks:
-  - RTAQ-0017
   - RTAQ-0018
-pending_depth_exception: legitimate_two_task_pool_after_rtaq_0016_merge
-reason: "PR #97 is merged. RTAQ-0016 is terminal, RTAQ-0017 is in progress in a semantic pilot preparation PR, and the queue has two remaining real bounded objectives without artificial reserve work."
+pending_depth_exception: legitimate_one_task_pool_after_rtaq_0017_merge
+reason: "PR #98 is merged. RTAQ-0017 is terminal, RTAQ-0018 is the remaining real bounded objective, and no artificial reserve task is introduced."
 ```
 
 ## Evidence Boundary
