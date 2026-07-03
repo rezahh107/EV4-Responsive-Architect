@@ -94,6 +94,11 @@ def task_prefix(task_id: str) -> str:
     return task_id.split("-", 1)[0]
 
 
+def is_artificial_task(task: dict[str, Any]) -> bool:
+    title_objective = f"{task['title']} {task['objective']}".lower()
+    return any(term in title_objective for term in ARTIFICIAL_TERMS)
+
+
 def assert_control_plane(control: dict[str, Any], control_schema: dict[str, Any]) -> None:
     assert_schema_valid(control, control_schema, "queue control plane")
     truth = control["truth_boundary"]
@@ -183,15 +188,17 @@ def main() -> None:
     if len([task for task in tasks if task["status"] == "in_progress"]) > 1:
         fail("only one task may be in progress")
     if queue["queue_status"] == "active":
-        actionable = [task for task in tasks if task["status"] in {"pending", "in_progress", "blocked", "stale_in_progress"}]
-        if len(actionable) < policy["minimum_actionable_tasks"]:
-            fail("active queue must keep four actionable bounded objectives")
+        actionable = [task for task in tasks if task["status"] in NON_TERMINAL_STATUSES]
+        artificial_actionable = [task for task in actionable if is_artificial_task(task)]
+        if artificial_actionable:
+            fail(f"{artificial_actionable[0]['task_id']} is an executable artificial bookkeeping task")
+        if not actionable:
+            fail("active queue must keep at least one real actionable objective")
     by_id = {task["task_id"]: task for task in tasks}
     for task in tasks:
         status = task["status"]
         completion = task.get("completion")
-        title_objective = f"{task['title']} {task['objective']}".lower()
-        if status in {"pending", "in_progress", "blocked", "stale_in_progress"} and any(term in title_objective for term in ARTIFICIAL_TERMS):
+        if status in NON_TERMINAL_STATUSES and is_artificial_task(task):
             fail(f"{task['task_id']} is an executable artificial bookkeeping task")
         if task["critique_required"] is not True:
             fail(f"{task['task_id']} must require critique")
