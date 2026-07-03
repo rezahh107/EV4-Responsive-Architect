@@ -83,6 +83,17 @@ controlled_use_docs:
   - docs/30_ISSUE_8_SUBMITTED_PACKET_PREFLIGHT_GUIDE_RTAQ_0022.md
 ```
 
+## Evidence and Pilot Boundary
+
+```yaml
+real_submitted_packet_present: false
+pilot_allowed_to_start: false
+readiness_claims_upgraded: false
+ci_success_claim_boundary: repository checks only
+issue_8_status: draft_evidence_pending
+pilot_execution_scope: not_allowed
+```
+
 ## CI Boundary
 
 ```yaml
@@ -104,7 +115,7 @@ manual_same_head_recovery:
   required_inputs: [ref, expected_sha]
   exact_sha_required: true
   python_matrix: ['3.11', '3.13']
-ci_success_claim_boundary: repository checks passed only; not responsive correctness evidence
+ci_success_claim_boundary: repository checks only; not responsive correctness evidence
 ```
 
 ## Queue Boundary
