@@ -24,6 +24,7 @@ INVALID_FIXTURES = [
     INVALID_DIR / 'responsive_output_route_mode_mismatch.invalid.json',
     INVALID_DIR / 'responsive_output_builder_mode_mismatch.invalid.json',
     INVALID_DIR / 'responsive_output_noncanonical_breakpoint_scope.invalid.json',
+    INVALID_DIR / 'responsive_output_unresolved_ready_mismatch.invalid.json',
 ]
 
 REQUIRED_FILES = [
@@ -112,6 +113,8 @@ def expected_invalid_reason(path):
         return 'Builder handoff mode mismatch'
     if name == 'responsive_output_noncanonical_breakpoint_scope.invalid.json':
         return 'Noncanonical breakpoint scope'
+    if name == 'responsive_output_unresolved_ready_mismatch.invalid.json':
+        return 'Final review readiness mismatch'
     raise ValueError(f'No expected invalid failure registered for {relative_path(path)}')
 
 
@@ -181,6 +184,22 @@ def assert_breakpoint_scope(payload, path):
         )
 
 
+def assert_final_review_consistency(payload, path):
+    final_review = payload.get('final_review') or {}
+    handoff_ready = final_review.get('handoff_ready')
+    unresolved_unknowns = payload.get('unresolved_unknowns') or []
+    classification = (payload.get('relationship_classification_ref') or {}).get('classification')
+    blocked_route = payload.get('selected_route') == 'blocked_pending_input'
+    unresolved_classification = classification == 'unresolved_requires_designer_input'
+
+    if handoff_ready and (blocked_route or unresolved_classification or unresolved_unknowns):
+        raise ValueError(
+            f'Final review readiness mismatch in {path}: handoff_ready=true cannot coexist with '
+            f'blocked_route={blocked_route}, unresolved_classification={unresolved_classification}, '
+            f'unresolved_unknowns={len(unresolved_unknowns)}'
+        )
+
+
 def validate_payload(payload, path, validator):
     errors = list(validator.iter_errors(payload))
     if errors:
@@ -192,6 +211,7 @@ def validate_payload(payload, path, validator):
     assert_route_mode(payload, path)
     assert_builder_handoff_mode(payload, path)
     assert_breakpoint_scope(payload, path)
+    assert_final_review_consistency(payload, path)
 
 
 def run_queue_checks():
