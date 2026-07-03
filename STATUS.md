@@ -32,7 +32,8 @@ merged_foundation:
   - "PR #99 responsive invariant fixture audit"
   - "PR #100 post-audit planning reconciliation"
   - "PR #101 evidence intake fixture matrix hardening"
-pending_control_plane_pr: 102
+  - "PR #102 pilot readiness boundary hardening"
+pending_control_plane_pr: null
 ```
 
 ## Current Phase
@@ -79,6 +80,18 @@ controlled_use_docs:
   - docs/27_PILOT_PREPARATION_ARTIFACT_INDEX_RTAQ_0017.md
   - docs/28_RESPONSIVE_CONTRACT_INVARIANT_FIXTURE_AUDIT_RTAQ_0018.md
   - docs/29_POST_AUDIT_PLANNING_RECONCILIATION_RTAQ_0019.md
+  - docs/30_ISSUE_8_SUBMITTED_PACKET_PREFLIGHT_GUIDE_RTAQ_0022.md
+```
+
+## Evidence and Pilot Boundary
+
+```yaml
+real_submitted_packet_present: false
+pilot_allowed_to_start: false
+readiness_claims_upgraded: false
+ci_success_claim_boundary: repository checks only
+issue_8_status: draft_evidence_pending
+pilot_execution_scope: not_allowed
 ```
 
 ## CI Boundary
@@ -102,7 +115,7 @@ manual_same_head_recovery:
   required_inputs: [ref, expected_sha]
   exact_sha_required: true
   python_matrix: ['3.11', '3.13']
-ci_success_claim_boundary: repository checks passed only; not responsive correctness evidence
+ci_success_claim_boundary: repository checks only; not responsive correctness evidence
 ```
 
 ## Queue Boundary
@@ -114,35 +127,9 @@ active_queue_reset_task: RTAQ-0001
 active_queue_reset_status: merged
 active_queue_reset_pr: 65
 active_queue_reset_merge_sha: 7dd76a1952466ae723183643b413501b94dbdbc5
-latest_completed_task: RTAQ-0020
-latest_completed_pr: 101
-latest_completed_merge_sha: b9c967a8886f0723b8624ed6fbfbee0df6574b86
+latest_completed_task: RTAQ-0021
+latest_completed_pr: 102
+latest_completed_merge_sha: 4398acb9098d2a701807baa3f0969f93b79ae4cd
+next_pending_task: RTAQ-0022
 legacy_rq_lineage_status: archived_non_authoritative_history
-legacy_rq_pending_driver_removed: true
-next_executable_task: RTAQ-0021
-rtaq_0010_status: merged
-rtaq_0011_status: superseded
-rtaq_0012_status: superseded
-rtaq_0013_status: superseded
-rtaq_0014_status: merged
-rtaq_0015_status: merged
-rtaq_0016_status: merged
-rtaq_0017_status: merged
-rtaq_0018_status: merged
-rtaq_0019_status: merged
-rtaq_0020_status: merged
-rtaq_0021_status: pending
-rtaq_0022_status: pending
-pending_tasks:
-  - RTAQ-0021
-  - RTAQ-0022
-```
-
-## Evidence Boundary
-
-```yaml
-real_submitted_packet_present: false
-pilot_allowed_to_start: false
-ci_success_claim_boundary: repository checks only
-readiness_claims_upgraded: false
 ```
