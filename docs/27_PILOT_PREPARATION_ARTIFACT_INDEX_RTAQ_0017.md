@@ -27,6 +27,10 @@ The only allowed use of this artifact is to identify which repository-owned reco
 | `STATUS.md` | Human-readable operating status and boundary summary | Confirm that repository status still says no submitted packet and pilot is blocked | None |
 | `planning/EV4_ROLLING_QUEUE.json` | Execution intent and bounded task plan | Confirm RTAQ task sequencing and pending preparation scope | None |
 | `planning/EV4_RUN_LEDGER.json` | Historical run and merge record | Confirm prior terminal queue history without upgrading evidence | None |
+| `validation/e2e/run_rolling_queue_check.py` | Rolling queue policy and task-shape guard | Run only as repository validation | None |
+| `validation/e2e/run_run_ledger_check.py` | Run ledger structure and boundary guard | Run only as repository validation | None |
+| `validation/e2e/run_task_quality_gate_check.py` | Task quality and artificial-work guard | Run only as repository validation | None |
+| `validation/e2e/run_rtaq_ssot_guard_check.py` | RTAQ single-source-of-truth guard | Run only as repository validation | None |
 | `validation/e2e/run_submitted_packet_eligibility_gate_check.py` | Submitted-packet eligibility guard | Run only as repository validation | None |
 | `validation/e2e/run_submitted_packet_readiness_dry_run.py` | Dry-run explanation and placeholder/sample rejection | Explain missing readiness fields and reject non-real packets | None |
 | `validation/e2e/run_responsive_tree_architecture_refactor_check.py` | Repository refactor invariant check | Confirm repository contract consistency | None |
@@ -66,4 +70,5 @@ This artifact does not:
 
 - Root gap addressed: operators now have a single non-executing index for what must be inspected before any later pilot path.
 - Enforcement boundary: this document is intentionally not a validator and does not grant readiness. Existing gates remain authoritative.
+- Completeness correction: the index includes queue, ledger, task-quality, RTAQ SSOT, submitted-packet, readiness dry-run, and refactor validators so operators do not skip repository-owned guards.
 - Truth boundary: all pilot, readiness, production, release, live-render, export, accessibility, and pixel claims remain false unless separate submitted evidence and gates later prove otherwise.
