@@ -81,16 +81,22 @@ controlled_use_docs:
 
 ```yaml
 automatic_workflow: .github/workflows/validate.yml
+automatic_check:
+  - python validation/e2e/run_responsive_tree_architecture_refactor_check.py
+  - python validation/e2e/run_submitted_packet_readiness_dry_run.py --self-test
+delegated_repository_checks:
+  - python validation/e2e/run_rolling_queue_check.py
+  - python validation/e2e/run_run_ledger_check.py
+  - python validation/e2e/run_task_quality_gate_check.py
+  - python validation/e2e/run_submitted_packet_eligibility_gate_check.py
+  - python validation/e2e/run_rtaq_ssot_guard_check.py
 manual_same_head_recovery:
   workflow: .github/workflows/validate.yml
   trigger: workflow_dispatch
   required_inputs: [ref, expected_sha]
   exact_sha_required: true
   python_matrix: ['3.11', '3.13']
-real_submitted_packet_present: false
-pilot_allowed_to_start: false
-ci_success_claim_boundary: repository checks only
-readiness_claims_upgraded: false
+ci_success_claim_boundary: repository checks passed only; not responsive correctness evidence
 ```
 
 ## Queue Boundary
@@ -110,4 +116,29 @@ legacy_rq_pending_driver_removed: true
 next_executable_task: RTAQ-0019
 rtaq_0010_status: merged
 rtaq_0011_status: superseded
+rtaq_0012_status: superseded
+rtaq_0013_status: superseded
+rtaq_0014_status: merged
+rtaq_0015_status: merged
+rtaq_0016_status: merged
+rtaq_0017_status: merged
+rtaq_0018_status: merged
+rtaq_0019_status: pending
+rtaq_0020_status: pending
+rtaq_0021_status: pending
+rtaq_0022_status: pending
+pending_tasks:
+  - RTAQ-0019
+  - RTAQ-0020
+  - RTAQ-0021
+  - RTAQ-0022
+```
+
+## Evidence Boundary
+
+```yaml
+real_submitted_packet_present: false
+pilot_allowed_to_start: false
+ci_success_claim_boundary: repository checks only
+readiness_claims_upgraded: false
 ```
