@@ -8,7 +8,6 @@ or authorize a real pilot.
 from __future__ import annotations
 
 import importlib.util
-import json
 import sys
 from pathlib import Path
 from typing import Any
@@ -41,15 +40,6 @@ def _load_intake_module() -> Any:
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
     return module
-
-
-def load_json(path: Path) -> dict[str, Any]:
-    with path.open("r", encoding="utf-8") as handle:
-        payload = json.load(handle)
-    if not isinstance(payload, dict):
-        raise AssertionError(f"{path} must contain a JSON object")
-    payload.pop("$schema_file", None)
-    return payload
 
 
 def _has_marker(value: Any, markers: tuple[str, ...]) -> bool:
@@ -95,7 +85,12 @@ def validate_fixture_matrix(packet: dict[str, Any]) -> None:
         raise AssertionError(f"evidence attachment file_name values must be unique: {duplicates}")
 
     missing_viewports = sorted(REQUIRED_VIEWPORTS - set(viewport_to_files))
-    if packet.get("evidence_complete_definition", {}).get("all_required_evidence_ids_present") is True and missing_viewports:
+    complete_definition = packet.get("evidence_complete_definition")
+    if (
+        isinstance(complete_definition, dict)
+        and complete_definition.get("all_required_evidence_ids_present") is True
+        and missing_viewports
+    ):
         raise AssertionError(f"complete evidence packet is missing attachment inventory for viewports: {missing_viewports}")
 
     if packet.get("packet_origin") == "real_issue_submission":
