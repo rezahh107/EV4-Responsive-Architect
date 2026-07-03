@@ -14,11 +14,11 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parents[2]
 VALID_PACKET = ROOT / "validation" / "fixtures" / "valid" / "evidence_intake_packet.valid.json"
-INVALID_FIXTURES = [
-    ROOT / "validation" / "fixtures" / "invalid" / "evidence_intake_missing_attachment.invalid.json",
-    ROOT / "validation" / "fixtures" / "invalid" / "evidence_intake_duplicate_attachment.invalid.json",
-    ROOT / "validation" / "fixtures" / "invalid" / "evidence_intake_real_generated_artifact.invalid.json",
-]
+MATRIX_INVALID_FIXTURE_EXPECTATIONS = {
+    ROOT / "validation" / "fixtures" / "invalid" / "evidence_intake_missing_attachment.invalid.json": "non-empty file_name",
+    ROOT / "validation" / "fixtures" / "invalid" / "evidence_intake_duplicate_attachment.invalid.json": "must be unique",
+    ROOT / "validation" / "fixtures" / "invalid" / "evidence_intake_real_generated_artifact.invalid.json": "generated/report/bookkeeping",
+}
 REQUIRED_VIEWPORTS = {"desktop", "tablet", "mobile"}
 SAMPLE_MARKERS = ("SAMPLE", "sample", ".sample", "placeholder")
 GENERATED_OR_BOOKKEEPING_MARKERS = (
@@ -103,11 +103,18 @@ def validate_fixture_matrix(packet: dict[str, Any]) -> None:
                 raise AssertionError(f"{field} must reference submitted evidence, not generated/report/bookkeeping artifact: {ref}")
 
 
-def expect_invalid(path: Path, intake_module: Any) -> None:
+def expect_matrix_invalid(path: Path, intake_module: Any, expected_fragment: str) -> None:
+    # Matrix-negative fixtures must prove the matrix rule directly. Do not call
+    # the broader intake semantic validator first, because that can reject some
+    # packets before this gate exercises its own invariant.
+    packet = intake_module.load_json(path)
     try:
-        packet = intake_module.validate_packet(path, run_full_schema_validator=False)
         validate_fixture_matrix(packet)
-    except AssertionError:
+    except AssertionError as exc:
+        if expected_fragment not in str(exc):
+            raise AssertionError(
+                f"expected {path.name} to fail a matrix rule containing {expected_fragment!r}, got: {exc}"
+            ) from exc
         return
     raise AssertionError(f"expected invalid fixture to fail matrix validation: {path}")
 
@@ -115,12 +122,15 @@ def expect_invalid(path: Path, intake_module: Any) -> None:
 def main() -> int:
     intake_module = _load_intake_module()
     try:
-        valid_packet = intake_module.validate_packet(VALID_PACKET, run_full_schema_validator=True)
+        # The full schema suite owns generic valid/invalid fixture validation.
+        # This gate owns matrix-specific semantic fixtures, so it avoids letting
+        # the global schema runner decide negative fixture outcomes for this test.
+        valid_packet = intake_module.validate_packet(VALID_PACKET, run_full_schema_validator=False)
         validate_fixture_matrix(valid_packet)
-        for fixture in INVALID_FIXTURES:
+        for fixture, expected_fragment in MATRIX_INVALID_FIXTURE_EXPECTATIONS.items():
             if not fixture.exists():
                 raise AssertionError(f"missing invalid fixture: {fixture}")
-            expect_invalid(fixture, intake_module)
+            expect_matrix_invalid(fixture, intake_module, expected_fragment)
     except AssertionError as exc:
         print(f"evidence intake fixture matrix check failed: {exc}", file=sys.stderr)
         return 1
