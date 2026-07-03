@@ -87,7 +87,10 @@ manual_same_head_recovery:
   required_inputs: [ref, expected_sha]
   exact_sha_required: true
   python_matrix: ['3.11', '3.13']
-ci_success_claim_boundary: repository checks passed only; not responsive correctness evidence
+real_submitted_packet_present: false
+pilot_allowed_to_start: false
+ci_success_claim_boundary: repository checks only
+readiness_claims_upgraded: false
 ```
 
 ## Queue Boundary
