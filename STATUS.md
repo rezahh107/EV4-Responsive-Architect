@@ -29,6 +29,7 @@ merged_foundation:
   - "PR #96 responsive output fixture coverage expansion"
   - "PR #97 submitted packet readiness dry-run harness"
   - "PR #98 pilot preparation artifact index"
+  - "PR #99 responsive invariant fixture audit"
 pending_control_plane_pr: null
 ```
 
@@ -73,6 +74,7 @@ controlled_use_docs:
   - docs/26_RTAQ_SSOT_GUARD_V1.md
   - docs/27_PILOT_PREPARATION_ARTIFACT_INDEX_RTAQ_0017.md
   - docs/28_RESPONSIVE_CONTRACT_INVARIANT_FIXTURE_AUDIT_RTAQ_0018.md
+  - docs/29_POST_AUDIT_PLANNING_RECONCILIATION_RTAQ_0019.md
 ```
 
 ## CI Boundary
@@ -91,13 +93,9 @@ delegated_repository_checks:
 manual_same_head_recovery:
   workflow: .github/workflows/validate.yml
   trigger: workflow_dispatch
-  required_inputs:
-    - ref
-    - expected_sha
+  required_inputs: [ref, expected_sha]
   exact_sha_required: true
-  python_matrix:
-    - '3.11'
-    - '3.13'
+  python_matrix: ['3.11', '3.13']
 ci_success_claim_boundary: repository checks passed only; not responsive correctness evidence
 ```
 
@@ -110,12 +108,12 @@ active_queue_reset_task: RTAQ-0001
 active_queue_reset_status: merged
 active_queue_reset_pr: 65
 active_queue_reset_merge_sha: 7dd76a1952466ae723183643b413501b94dbdbc5
-latest_completed_task: RTAQ-0017
-latest_completed_pr: 98
-latest_completed_merge_sha: 3169208e76ea5022f7b12a48a5696336e048ca9b
+latest_completed_task: RTAQ-0018
+latest_completed_pr: 99
+latest_completed_merge_sha: e5a0c16331a4ae0f1aaf35e386e9014e0b4cc6c3
 legacy_rq_lineage_status: archived_non_authoritative_history
 legacy_rq_pending_driver_removed: true
-next_executable_task: RTAQ-0018
+next_executable_task: RTAQ-0019
 rtaq_0010_status: merged
 rtaq_0011_status: superseded
 rtaq_0012_status: superseded
@@ -124,11 +122,16 @@ rtaq_0014_status: merged
 rtaq_0015_status: merged
 rtaq_0016_status: merged
 rtaq_0017_status: merged
-rtaq_0018_status: pending
+rtaq_0018_status: merged
+rtaq_0019_status: pending
+rtaq_0020_status: pending
+rtaq_0021_status: pending
+rtaq_0022_status: pending
 pending_tasks:
-  - RTAQ-0018
-pending_depth_exception: legitimate_one_task_pool_after_rtaq_0017_merge
-reason: "PR #98 is merged. RTAQ-0017 is terminal, RTAQ-0018 is the remaining real bounded objective, and no artificial reserve task is introduced."
+  - RTAQ-0019
+  - RTAQ-0020
+  - RTAQ-0021
+  - RTAQ-0022
 ```
 
 ## Evidence Boundary
