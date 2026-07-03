@@ -31,7 +31,8 @@ merged_foundation:
   - "PR #98 pilot preparation artifact index"
   - "PR #99 responsive invariant fixture audit"
   - "PR #100 post-audit planning reconciliation"
-pending_control_plane_pr: null
+  - "PR #101 evidence intake fixture matrix hardening"
+pending_control_plane_pr: 102
 ```
 
 ## Current Phase
@@ -59,6 +60,7 @@ active_validation:
   - validation/e2e/run_submitted_packet_eligibility_gate_check.py
   - validation/e2e/run_submitted_packet_readiness_dry_run.py
   - validation/e2e/run_evidence_intake_fixture_matrix_check.py
+  - validation/e2e/run_pilot_readiness_boundary_check.py
   - validation/e2e/run_task_quality_gate_check.py
   - validation/e2e/run_rtaq_ssot_guard_check.py
 controlled_use_docs:
@@ -87,6 +89,7 @@ automatic_check:
   - python validation/e2e/run_responsive_tree_architecture_refactor_check.py
   - python validation/e2e/run_submitted_packet_readiness_dry_run.py --self-test
   - python validation/e2e/run_evidence_intake_fixture_matrix_check.py
+  - python validation/e2e/run_pilot_readiness_boundary_check.py
 delegated_repository_checks:
   - python validation/e2e/run_rolling_queue_check.py
   - python validation/e2e/run_run_ledger_check.py
@@ -111,12 +114,12 @@ active_queue_reset_task: RTAQ-0001
 active_queue_reset_status: merged
 active_queue_reset_pr: 65
 active_queue_reset_merge_sha: 7dd76a1952466ae723183643b413501b94dbdbc5
-latest_completed_task: RTAQ-0019
-latest_completed_pr: 100
-latest_completed_merge_sha: 5d9613cb90aaa784dbfb3e743a21eba6a1b96280
+latest_completed_task: RTAQ-0020
+latest_completed_pr: 101
+latest_completed_merge_sha: b9c967a8886f0723b8624ed6fbfbee0df6574b86
 legacy_rq_lineage_status: archived_non_authoritative_history
 legacy_rq_pending_driver_removed: true
-next_executable_task: RTAQ-0020
+next_executable_task: RTAQ-0021
 rtaq_0010_status: merged
 rtaq_0011_status: superseded
 rtaq_0012_status: superseded
@@ -127,11 +130,10 @@ rtaq_0016_status: merged
 rtaq_0017_status: merged
 rtaq_0018_status: merged
 rtaq_0019_status: merged
-rtaq_0020_status: pending
+rtaq_0020_status: merged
 rtaq_0021_status: pending
 rtaq_0022_status: pending
 pending_tasks:
-  - RTAQ-0020
   - RTAQ-0021
   - RTAQ-0022
 ```
