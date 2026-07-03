@@ -124,11 +124,11 @@ rtaq_0014_status: merged
 rtaq_0015_status: merged
 rtaq_0016_status: merged
 rtaq_0017_status: merged
-rtaq_0018_status: in_progress
+rtaq_0018_status: pending
 pending_tasks:
   - RTAQ-0018
 pending_depth_exception: legitimate_one_task_pool_after_rtaq_0017_merge
-reason: "PR #98 is merged. RTAQ-0017 is terminal, RTAQ-0018 is in progress in a semantic invariant hardening PR, and the queue has one remaining real bounded objective without artificial reserve work."
+reason: "PR #98 is merged. RTAQ-0017 is terminal, RTAQ-0018 is the remaining real bounded objective, and no artificial reserve task is introduced."
 ```
 
 ## Evidence Boundary
