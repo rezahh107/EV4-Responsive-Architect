@@ -1,0 +1,74 @@
+{
+  "schema": "ev4-responsive-output@0.3.0",
+  "source_packet_ref": "ev4-responsive-start-packet.sample.blocked",
+  "selected_route": "blocked_pending_input",
+  "relationship_classification_ref": {
+    "classification": "unresolved_requires_designer_input",
+    "confidence": "unknown",
+    "evidence_refs": [
+      "desktop_tree.sample",
+      "missing_mobile_mockup.sample"
+    ]
+  },
+  "responsive_tree_output": {
+    "mode": "blocked",
+    "summary": "Responsive handoff is blocked until the missing viewport source is supplied.",
+    "tree_ref": null
+  },
+  "display_contract": {
+    "breakpoint_scope": {
+      "desktop": ">=1025px",
+      "tablet": "768px-1024px",
+      "mobile": "<=767px"
+    },
+    "display_rules": [
+      {
+        "node_ref": "section.root",
+        "desktop": "unknown",
+        "tablet": "unknown",
+        "mobile": "unknown",
+        "reason": "Viewport behavior cannot be finalized until missing source input is resolved."
+      }
+    ],
+    "content_policy": "Do not infer or remove content while required viewport input is missing.",
+    "sync_policy": "No responsive build or sync policy may be finalized from placeholder input."
+  },
+  "builder_handoff": {
+    "mode": "blocked_pending_input",
+    "steps": [
+      {
+        "step_id": "BL-001",
+        "target_node": "n/a",
+        "viewport": "n/a",
+        "action": "Block builder handoff and request the missing responsive source input.",
+        "expected_result": "No responsive implementation is authorized from incomplete evidence."
+      }
+    ]
+  },
+  "validation_plan": {
+    "required_checks": [
+      "Confirm the missing viewport source is recorded as unresolved.",
+      "Confirm no builder handoff claims are made from placeholder input."
+    ],
+    "evidence_to_collect": [
+      "submitted_packet_with_required_viewport_sources"
+    ],
+    "claim_boundary": "This is a blocked handoff plan, not responsive correctness or readiness evidence."
+  },
+  "final_review": {
+    "handoff_ready": true,
+    "reason": "Invalid fixture: unresolved and blocked handoff cannot be marked ready."
+  },
+  "unresolved_unknowns": [
+    "Mobile mockup source is missing.",
+    "Tablet behavior cannot be classified from the submitted inputs."
+  ],
+  "forbidden_claims": [
+    "production_ready",
+    "release_ready",
+    "pixel_perfect",
+    "export_validated",
+    "live_render_validated",
+    "accessibility_passed"
+  ]
+}
