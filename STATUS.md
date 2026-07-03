@@ -33,6 +33,7 @@ merged_foundation:
   - "PR #100 post-audit planning reconciliation"
   - "PR #101 evidence intake fixture matrix hardening"
   - "PR #102 pilot readiness boundary hardening"
+  - "PR #103 Issue 8 submitted-packet preflight guide"
 pending_control_plane_pr: null
 ```
 
@@ -81,6 +82,7 @@ controlled_use_docs:
   - docs/28_RESPONSIVE_CONTRACT_INVARIANT_FIXTURE_AUDIT_RTAQ_0018.md
   - docs/29_POST_AUDIT_PLANNING_RECONCILIATION_RTAQ_0019.md
   - docs/30_ISSUE_8_SUBMITTED_PACKET_PREFLIGHT_GUIDE_RTAQ_0022.md
+  - docs/31_BACKLOG_BOUNDARY_REFRESH_RTAQ_0023.md
 ```
 
 ## Evidence and Pilot Boundary
@@ -127,9 +129,9 @@ active_queue_reset_task: RTAQ-0001
 active_queue_reset_status: merged
 active_queue_reset_pr: 65
 active_queue_reset_merge_sha: 7dd76a1952466ae723183643b413501b94dbdbc5
-latest_completed_task: RTAQ-0021
-latest_completed_pr: 102
-latest_completed_merge_sha: 4398acb9098d2a701807baa3f0969f93b79ae4cd
-next_pending_task: RTAQ-0022
+latest_completed_task: RTAQ-0022
+latest_completed_pr: 103
+latest_completed_merge_sha: 503ab858839064c4d91c91f7761aa294db4ba6cf
+next_pending_task: RTAQ-0023
 legacy_rq_lineage_status: archived_non_authoritative_history
 ```
