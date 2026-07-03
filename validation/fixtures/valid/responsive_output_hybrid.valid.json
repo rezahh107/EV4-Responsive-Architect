@@ -90,8 +90,8 @@
     "claim_boundary": "This is a hybrid handoff plan, not live render validation."
   },
   "final_review": {
-    "handoff_ready": true,
-    "reason": "Hybrid route includes shared, desktop-only, and responsive-specific ownership."
+    "handoff_ready": false,
+    "reason": "Hybrid route includes shared, desktop-only, and responsive-specific ownership, but tablet connector simplification remains unresolved."
   },
   "unresolved_unknowns": [
     "Confirm whether decorative connector lines should be hidden or simplified on tablet."
