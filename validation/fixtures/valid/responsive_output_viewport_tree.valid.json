@@ -73,8 +73,8 @@
     "claim_boundary": "This is a viewport tree handoff plan, not export or accessibility validation."
   },
   "final_review": {
-    "handoff_ready": true,
-    "reason": "Viewport tree route includes display and sync policies."
+    "handoff_ready": false,
+    "reason": "Viewport tree route remains not handoff-ready until the tablet/mobile tree split unknown is resolved."
   },
   "unresolved_unknowns": [
     "Confirm whether tablet should share the mobile variant or receive its own tree."
