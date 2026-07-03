@@ -68,7 +68,7 @@ A future submitted packet must include real evidence items for every required cl
 | Breakpoint inventory or declaration | Breakpoint data is attached or the absence of custom breakpoints is explicitly declared. |
 | Evidence quality fields | Every evidence item declares quality, completeness, and any known limitation. |
 | Closed-enum support values | Only repository-supported enum values such as `can_support` and `cannot_support` are used. |
-| Privacy review acknowledgement | The submitter confirms no private or unsafe content is being introduced. |
+| Privacy review acknowledgement | The submitter confirms the privacy review is complete. |
 
 Expected file naming remains:
 
@@ -88,15 +88,15 @@ EVIDENCE_INTAKE_PACKET.submitted.json
 3. Verify no sample marker or placeholder hash remains.
 4. Verify required screenshot widths and visible symptoms are concrete.
 5. Verify closed enums are valid and no free-form unsupported readiness values are present.
-6. Run evidence intake validation on the packet.
-7. Only after intake passes, generate the pilot readiness report.
+6. Run evidence intake validation on the packet in submitted mode.
+7. Only after intake passes, generate the pilot readiness report in submitted mode.
 8. Start no pilot unless the readiness report explicitly allows shadow-mode pilot start under the repository contracts.
 
 Validation commands:
 
 ```bash
-python validation/e2e/run_evidence_intake_check.py --packet examples/smart-home-connector/intake/EVIDENCE_INTAKE_PACKET.submitted.json
-python validation/e2e/run_pilot_readiness_check.py --packet examples/smart-home-connector/intake/EVIDENCE_INTAKE_PACKET.submitted.json --out examples/smart-home-connector/readiness/PILOT_READINESS_REPORT.generated.json --skip-schema-suite
+python validation/e2e/run_evidence_intake_check.py --packet examples/smart-home-connector/intake/EVIDENCE_INTAKE_PACKET.submitted.json --submitted-mode
+python validation/e2e/run_pilot_readiness_check.py --packet examples/smart-home-connector/intake/EVIDENCE_INTAKE_PACKET.submitted.json --out examples/smart-home-connector/readiness/PILOT_READINESS_REPORT.generated.json --skip-schema-suite --submitted-mode
 ```
 
 ## Stop conditions
