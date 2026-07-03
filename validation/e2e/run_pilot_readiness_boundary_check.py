@@ -11,6 +11,8 @@ import sys
 from pathlib import Path
 from typing import Any
 
+import jsonschema
+
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 
@@ -23,13 +25,21 @@ OVERRIDE_FIELDS = {
     "merged_pr": 101,
 }
 
+EXPECTED_BOUNDARY_ASSERTIONS = {
+    "live_elementor_render_validated": "no_live_render_evidence",
+    "export_json_validated": "no_export_json_supplied",
+    "playwright_visual_regression_validated": "no_playwright_visual_regression_run",
+    "accessibility_pass_claimed": "accessibility_gate_not_executed_on_real_dom",
+    "production_ready_claimed": "release_gate_evidence_missing",
+}
+
 
 def _assert_schema_rejects_override(base_report: dict[str, Any], field: str, value: Any) -> None:
     mutated = copy.deepcopy(base_report)
     mutated[field] = value
     try:
         readiness.validate_readiness_schema(mutated)
-    except Exception:
+    except jsonschema.exceptions.ValidationError:
         return
     raise AssertionError(f"pilot readiness schema accepted override-only field: {field}")
 
@@ -40,6 +50,8 @@ def _assert_not_authorized(report: dict[str, Any], label: str) -> None:
         raise AssertionError(f"{label} must remain unauthorized")
     if authorization["authorization_scope"] != "not_authorized":
         raise AssertionError(f"{label} must remain not_authorized")
+    if authorization["required_carry_forward_flags"] != []:
+        raise AssertionError(f"{label} must not carry pilot flags while blocked")
     if not report["readiness_status"].startswith("blocked_"):
         raise AssertionError(f"{label} must remain blocked, got {report['readiness_status']}")
     if not report["blocking_reasons"]:
@@ -53,9 +65,14 @@ def _assert_forbidden_claims(report: dict[str, Any]) -> None:
     missing = sorted(required - actual)
     if missing:
         raise AssertionError(f"readiness report lost forbidden claims: {missing}")
-    for boundary_name, boundary in report["validation_boundary"].items():
+    if set(report["validation_boundary"]) != set(EXPECTED_BOUNDARY_ASSERTIONS):
+        raise AssertionError("readiness report validation_boundary keys drifted")
+    for boundary_name, expected_reason in EXPECTED_BOUNDARY_ASSERTIONS.items():
+        boundary = report["validation_boundary"][boundary_name]
         if boundary["value"] is not False:
             raise AssertionError(f"validation boundary unexpectedly true: {boundary_name}")
+        if boundary["reason"] != expected_reason:
+            raise AssertionError(f"validation boundary reason drifted for {boundary_name}")
 
 
 def main() -> int:
