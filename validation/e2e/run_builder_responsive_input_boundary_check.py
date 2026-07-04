@@ -52,9 +52,14 @@ def _assert_valid_fixture(data: dict[str, object], path: Path) -> None:
     claims = data.get("forbidden_claims")
     if not isinstance(claims, list):
         raise AssertionError(f"{path.relative_to(ROOT)} missing forbidden_claims list")
-    missing = REQUIRED_FORBIDDEN_CLAIMS.difference(claims)
-    if missing:
-        raise AssertionError(f"{path.relative_to(ROOT)} missing forbidden claims: {sorted(missing)}")
+    if len(claims) != len(set(claims)):
+        raise AssertionError(f"{path.relative_to(ROOT)} contains duplicate forbidden claims")
+    if set(claims) != REQUIRED_FORBIDDEN_CLAIMS:
+        missing = REQUIRED_FORBIDDEN_CLAIMS.difference(claims)
+        extra = set(claims).difference(REQUIRED_FORBIDDEN_CLAIMS)
+        raise AssertionError(
+            f"{path.relative_to(ROOT)} forbidden claims mismatch. Missing: {sorted(missing)}, Extra: {sorted(extra)}"
+        )
 
 
 def main() -> int:
@@ -77,7 +82,7 @@ def main() -> int:
             except jsonschema.exceptions.ValidationError:
                 continue
             raise AssertionError(f"invalid fixture unexpectedly passed schema validation: {fixture.relative_to(ROOT)}")
-    except (AssertionError, OSError, json.JSONDecodeError, jsonschema.exceptions.SchemaError) as exc:
+    except (AssertionError, OSError, json.JSONDecodeError, jsonschema.exceptions.SchemaError, jsonschema.exceptions.ValidationError) as exc:
         print(f"Builder responsive input boundary check failed: {exc}", file=sys.stderr)
         return 1
 
