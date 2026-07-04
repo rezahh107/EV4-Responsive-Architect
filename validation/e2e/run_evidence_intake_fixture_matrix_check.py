@@ -18,6 +18,7 @@ MATRIX_INVALID_FIXTURE_EXPECTATIONS = {
     ROOT / "validation" / "fixtures" / "invalid" / "evidence_intake_missing_attachment.invalid.json": "non-empty file_name",
     ROOT / "validation" / "fixtures" / "invalid" / "evidence_intake_duplicate_attachment.invalid.json": "must be unique",
     ROOT / "validation" / "fixtures" / "invalid" / "evidence_intake_real_generated_artifact.invalid.json": "generated/report/bookkeeping",
+    ROOT / "validation" / "fixtures" / "invalid" / "evidence_intake_real_example_artifact.invalid.json": "submitted Issue #8 attachments",
 }
 REQUIRED_VIEWPORTS = {"desktop", "tablet", "mobile"}
 SAMPLE_MARKERS = ("SAMPLE", "sample", ".sample", "placeholder")
@@ -29,6 +30,12 @@ GENERATED_OR_BOOKKEEPING_MARKERS = (
     "ev4_run_ledger",
     "ev4_rolling_queue",
     "pilot_readiness_report",
+)
+EXAMPLE_OR_TEMPLATE_MARKERS = (
+    "examples/",
+    "/examples/",
+    "template/",
+    "/template/",
 )
 
 
@@ -99,6 +106,10 @@ def validate_fixture_matrix(packet: dict[str, Any]) -> None:
             raise AssertionError("real_issue_submission fixture matrix is locked to Issue #8")
         for field, ref in _artifact_refs(packet):
             lowered = ref.lower()
+            if any(marker in lowered for marker in EXAMPLE_OR_TEMPLATE_MARKERS):
+                raise AssertionError(
+                    f"{field} must reference submitted Issue #8 attachments, not repository examples/templates: {ref}"
+                )
             if any(marker in lowered for marker in GENERATED_OR_BOOKKEEPING_MARKERS):
                 raise AssertionError(f"{field} must reference submitted evidence, not generated/report/bookkeeping artifact: {ref}")
 
