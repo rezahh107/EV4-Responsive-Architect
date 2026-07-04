@@ -81,6 +81,8 @@ active_validation:
   - validation/e2e/run_rtaq_ssot_guard_check.py
   - validation/e2e/run_status_merged_foundation_guard_check.py
   - validation/e2e/run_automation_control_state_check.py
+  - validation/e2e/run_rolling_queue_check.py
+  - validation/e2e/run_run_ledger_check.py
 controlled_use_docs:
   - docs/15_CONTROLLED_USE_READINESS_SNAPSHOT.md
   - docs/16_CONTROLLED_MANUAL_FIRST_RUN_GUIDE.md
@@ -106,6 +108,7 @@ controlled_use_docs:
   - docs/36_FOUNDATION_CHECKPOINT_GUARD_RTAQ_0030.md
   - docs/37_EVIDENCE_INTAKE_ISSUE8_LOCK_RTAQ_0031.md
   - docs/38_ROLLING_QUEUE_DRIVER_RETIREMENT_RTAQ_0032.md
+  - docs/39_PRIMARY_VALIDATION_CHAIN_RTAQ_0033.md
 ```
 
 ## Automation Control State
@@ -150,6 +153,8 @@ pilot_execution_scope: not_allowed
 ```yaml
 automatic_workflow: .github/workflows/validate.yml
 automatic_check:
+  - python validation/e2e/run_rolling_queue_check.py
+  - python validation/e2e/run_run_ledger_check.py
   - python validation/e2e/run_responsive_tree_architecture_refactor_check.py
   - python validation/e2e/run_submitted_packet_readiness_dry_run.py --self-test
   - python validation/e2e/run_evidence_intake_check.py --self-test
@@ -160,11 +165,7 @@ automatic_check:
   - python validation/e2e/run_rtaq_ssot_guard_check.py
   - python validation/e2e/run_status_merged_foundation_guard_check.py
   - python validation/e2e/run_automation_control_state_check.py
-delegated_repository_checks:
-  - python validation/e2e/run_rolling_queue_check.py
-  - python validation/e2e/run_run_ledger_check.py
-  - python validation/e2e/run_task_quality_gate_check.py
-  - python validation/e2e/run_submitted_packet_eligibility_gate_check.py
+delegated_repository_checks: []
 manual_same_head_recovery:
   workflow: .github/workflows/validate.yml
   trigger: workflow_dispatch
