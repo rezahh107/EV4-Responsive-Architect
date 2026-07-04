@@ -15,6 +15,45 @@
     "responsive_intake_decision",
     "forbidden_claims"
   ],
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "responsive_intake_decision": {
+            "properties": {"intake_allowed": {"const": true}},
+            "required": ["intake_allowed"]
+          }
+        },
+        "required": ["responsive_intake_decision"]
+      },
+      "then": {
+        "properties": {
+          "project_gate_ref": {
+            "properties": {"gate_status": {"const": "verified"}},
+            "required": ["gate_status"]
+          },
+          "viewport_evidence": {
+            "properties": {
+              "desktop": {
+                "properties": {"evidence_status": {"const": "provided"}},
+                "required": ["evidence_status"]
+              },
+              "tablet": {
+                "properties": {"evidence_status": {"const": "provided"}},
+                "required": ["evidence_status"]
+              },
+              "mobile": {
+                "properties": {"evidence_status": {"const": "provided"}},
+                "required": ["evidence_status"]
+              }
+            },
+            "required": ["desktop", "tablet", "mobile"]
+          }
+        },
+        "required": ["project_gate_ref", "viewport_evidence"]
+      }
+    }
+  ],
   "properties": {
     "schema": {"const": "ev4-builder-responsive-input@0.1.0"},
     "source_packet_ref": {"type": "string", "minLength": 1},
@@ -72,7 +111,10 @@
     },
     "forbidden_claims": {
       "type": "array",
-      "minItems": 1,
+      "$comment": "Completeness is intentionally coupled to minItems/maxItems and the enum below. When adding or removing a forbidden claim, update both size constraints and REQUIRED_FORBIDDEN_CLAIMS in validation/e2e/run_builder_responsive_input_boundary_check.py.",
+      "minItems": 8,
+      "maxItems": 8,
+      "uniqueItems": true,
       "items": {
         "enum": [
           "production_ready",
