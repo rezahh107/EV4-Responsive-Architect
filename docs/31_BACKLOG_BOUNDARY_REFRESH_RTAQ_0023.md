@@ -15,10 +15,11 @@ Refresh the executable planning horizon after PR #103 without treating operation
 
 The next executable work should be bounded around real enforcement or preparation gaps, not bookkeeping:
 
-1. Reconcile RTAQ-0019 through RTAQ-0022 in queue and ledger only as part of material state reconciliation.
-2. Add a real packet-attached artifact inventory validator if Issue #8 receives a submitted packet.
-3. Add a readiness-report fixture for blocked `draft` state when new report fields appear.
-4. Keep pilot execution blocked until the submitted packet validates and readiness gates permit shadow-mode start.
+1. Preserve queue and ledger as the authoritative execution lineage until a material reconciliation safely updates them together.
+2. Keep `STATUS.md` queue-boundary fields aligned to the current queue and ledger rather than advancing them alone.
+3. Add a real packet-attached artifact inventory validator if Issue #8 receives a submitted packet.
+4. Add a readiness-report fixture for blocked `draft` state when new report fields appear.
+5. Keep pilot execution blocked until the submitted packet validates and readiness gates permit shadow-mode start.
 
 ## Non-upgrade boundary
 
