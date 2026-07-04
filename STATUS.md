@@ -67,6 +67,7 @@ active_contracts:
 active_schema:
   - schemas/ev4-responsive-output.schema.json
   - schemas/ev4-builder-responsive-input.schema.json
+  - schemas/ev4-automation-control-state.schema.json
 active_validation:
   - validation/e2e/run_responsive_tree_architecture_refactor_check.py
   - validation/e2e/run_submitted_packet_eligibility_gate_check.py
@@ -104,14 +105,17 @@ controlled_use_docs:
   - docs/35_RESPONSIVE_INTAKE_DECISION_GUARD_RTAQ_0029.md
   - docs/36_FOUNDATION_CHECKPOINT_GUARD_RTAQ_0030.md
   - docs/37_EVIDENCE_INTAKE_ISSUE8_LOCK_RTAQ_0031.md
+  - docs/38_ROLLING_QUEUE_DRIVER_RETIREMENT_RTAQ_0032.md
 ```
 
 ## Automation Control State
 
 ```yaml
 automation_control_state: planning/EV4_AUTOMATION_CONTROL_STATE.json
+execution_state_source_of_truth: planning/EV4_AUTOMATION_CONTROL_STATE.json
 current_execution_driver: bounded_material_checkpoint_guard
 rolling_queue_authority: historical_non_authoritative_until_reconciled
+rolling_queue_execution_status: retired_as_execution_driver
 rolling_queue_reconciliation_required: true
 checkpoint_only_loop_policy: bounded checkpoints only; not append every merged PR
 next_action_policy: material objectives only; checkpoint refresh only when material checkpoint changes
