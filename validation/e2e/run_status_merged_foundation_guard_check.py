@@ -7,9 +7,9 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 STATUS = ROOT / "STATUS.md"
 
-# This list is a bounded foundation checkpoint, not a requirement to append every
-# future merged PR. It prevents verified foundation drift while avoiding
-# status-only merge-final loops.
+# Bounded foundation checkpoint, not an append-every-merge rule. This locks the
+# latest material Builder -> Responsive intake guard while avoiding status-only
+# merge-final loops for every repository merge.
 REQUIRED_MERGED_FOUNDATION = {
     'PR #101 evidence intake fixture matrix hardening',
     'PR #102 pilot readiness boundary hardening',
@@ -19,6 +19,7 @@ REQUIRED_MERGED_FOUNDATION = {
     'PR #106 RTAQ-0024 preflight boundary status reconciliation',
     'PR #107 RTAQ-0025 active STATUS guard validation',
     'PR #108 RTAQ-0026 STATUS foundation guard refresh',
+    'PR #112 RTAQ-0029 responsive intake decision guard',
 }
 
 REQUIRED_BOUNDARIES = {
@@ -73,29 +74,21 @@ def parse_yaml_claim_occurrences(status_text: str) -> list[tuple[str, str]]:
 
     for raw_line in status_text.splitlines():
         line = raw_line.strip()
-
         if line.startswith('```yaml'):
             inside_block = True
             continue
-
         if inside_block and line.startswith('```'):
             inside_block = False
             continue
-
-        if not inside_block or ':' not in line or line.startswith('-'):
+        if not inside_block or ':' not in line or line.startswith('-') or line.startswith('#'):
             continue
-
         key, value = line.split(':', 1)
-        key = key.strip()
-        value = normalize_claim_value(value)
-        claims.append((key, value))
-
+        claims.append((key.strip(), normalize_claim_value(value)))
     return claims
 
 
 def validate_status_text(status_text: str) -> None:
     merged_foundation = extract_merged_foundation(status_text)
-
     missing_foundation = sorted(REQUIRED_MERGED_FOUNDATION - merged_foundation)
     if missing_foundation:
         raise AssertionError('STATUS.md missing merged_foundation entries: ' + ', '.join(missing_foundation))
@@ -114,14 +107,9 @@ def validate_status_text(status_text: str) -> None:
     for key, value in claim_occurrences:
         expected = REQUIRED_BOUNDARIES.get(key)
         if expected is not None and value != expected:
-            conflicting_boundaries.append(
-                f'{key}: {value} (expected {key}: {expected})'
-            )
+            conflicting_boundaries.append(f'{key}: {value} (expected {key}: {expected})')
     if conflicting_boundaries:
-        raise AssertionError(
-            'STATUS.md contains conflicting boundary entries; expected only: '
-            + ', '.join(sorted(set(conflicting_boundaries)))
-        )
+        raise AssertionError('STATUS.md contains conflicting boundary entries; expected only: ' + ', '.join(sorted(set(conflicting_boundaries))))
 
     present_forbidden_claims = []
     for key, value in claim_occurrences:
@@ -131,11 +119,13 @@ def validate_status_text(status_text: str) -> None:
         raise AssertionError('STATUS.md upgrades forbidden claims: ' + ', '.join(present_forbidden_claims))
 
 
-def self_test_status_text(extra_yaml_blocks: str = '') -> str:
-    foundation_entries = '\n'.join(
-        f'  - "{entry}"'
-        for entry in sorted(REQUIRED_MERGED_FOUNDATION)
-    )
+def self_test_status_text(
+    extra_yaml_blocks: str = '',
+    foundation_set: set[str] | None = None,
+) -> str:
+    if foundation_set is None:
+        foundation_set = REQUIRED_MERGED_FOUNDATION
+    foundation_entries = '\n'.join(f'  - "{entry}"' for entry in sorted(foundation_set))
     return f'''# STATUS
 
 ```yaml
@@ -172,26 +162,22 @@ def assert_status_invalid(status_text: str, expected_fragment: str) -> None:
 
 def run_self_tests() -> None:
     validate_status_text(self_test_status_text())
-
+    assert_status_invalid(
+        self_test_status_text(
+            foundation_set=REQUIRED_MERGED_FOUNDATION - {'PR #112 RTAQ-0029 responsive intake decision guard'},
+        ),
+        'PR #112 RTAQ-0029 responsive intake decision guard',
+    )
     validate_status_text(self_test_status_text('''```yaml
 production_ready: "false"
 pilot_allowed_to_start:   false
 ```'''))
-
-    assert_status_invalid(
-        self_test_status_text('''```yaml
+    assert_status_invalid(self_test_status_text('''```yaml
 production_ready: pending
-```'''),
-        'production_ready: pending',
-    )
-
-    assert_status_invalid(
-        self_test_status_text('''```yaml
+```'''), 'production_ready: pending')
+    assert_status_invalid(self_test_status_text('''```yaml
 production_ready: true
-```'''),
-        'production_ready: true',
-    )
-
+```'''), 'production_ready: true')
     assert_status_invalid(
         self_test_status_text().replace(
             'foundation_checkpoint_policy: bounded checkpoints only; not append every merged PR',
@@ -199,48 +185,28 @@ production_ready: true
         ),
         'foundation_checkpoint_policy: bounded checkpoints only; not append every merged PR',
     )
-
-    assert_status_invalid(
-        self_test_status_text('''```yaml
+    assert_status_invalid(self_test_status_text('''```yaml
 pilot_allowed_to_start: true
 ```
 
 ```yaml
 pilot_allowed_to_start: false
-```'''),
-        'pilot_allowed_to_start: true',
-    )
-
-    assert_status_invalid(
-        self_test_status_text('''```yaml
+```'''), 'pilot_allowed_to_start: true')
+    assert_status_invalid(self_test_status_text('''```yaml
 pilot_allowed_to_start: "true"
-```'''),
-        'pilot_allowed_to_start: true',
-    )
-
-    assert_status_invalid(
-        self_test_status_text('''```yaml
-pilot_allowed_to_start:  true
-```'''),
-        'pilot_allowed_to_start: true',
-    )
-
-    assert_status_invalid(
-        self_test_status_text('''```yaml
+```'''), 'pilot_allowed_to_start: true')
+    assert_status_invalid(self_test_status_text('''```yaml
 pilot_execution_scope: allowed
 ```
 
 ```yaml
 pilot_execution_scope: not_allowed
-```'''),
-        'pilot_execution_scope: allowed',
-    )
+```'''), 'pilot_execution_scope: allowed')
 
 
 def main() -> int:
     run_self_tests()
-    status_text = STATUS.read_text(encoding='utf-8')
-    validate_status_text(status_text)
+    validate_status_text(STATUS.read_text(encoding='utf-8'))
     print('STATUS merged-foundation guard passed')
     return 0
 
