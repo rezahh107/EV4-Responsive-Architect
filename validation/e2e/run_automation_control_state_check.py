@@ -87,7 +87,11 @@ def load_json(path: Path) -> dict[str, Any]:
 
 def schema_errors(payload: dict[str, Any], schema: dict[str, Any]) -> list[str]:
     validator = Draft202012Validator(schema)
-    return [error.message for error in sorted(validator.iter_errors(payload), key=lambda error: [str(part) for part in error.path])]
+    messages: list[str] = []
+    for error in sorted(validator.iter_errors(payload), key=lambda item: [str(part) for part in item.path]):
+        path = ".".join(str(part) for part in error.path) or "<root>"
+        messages.append(f"{path}: {error.message}")
+    return messages
 
 
 def assert_schema_valid(payload: dict[str, Any], schema: dict[str, Any], label: str) -> None:
