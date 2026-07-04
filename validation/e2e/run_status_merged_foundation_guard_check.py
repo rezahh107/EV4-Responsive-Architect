@@ -7,6 +7,9 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 STATUS = ROOT / "STATUS.md"
 
+# This list is a bounded foundation checkpoint, not a requirement to append every
+# future merged PR. It prevents verified foundation drift while avoiding
+# status-only merge-final loops.
 REQUIRED_MERGED_FOUNDATION = {
     'PR #101 evidence intake fixture matrix hardening',
     'PR #102 pilot readiness boundary hardening',
@@ -15,11 +18,13 @@ REQUIRED_MERGED_FOUNDATION = {
     'PR #105 Issue 8 preflight boundary validation',
     'PR #106 RTAQ-0024 preflight boundary status reconciliation',
     'PR #107 RTAQ-0025 active STATUS guard validation',
+    'PR #108 RTAQ-0026 STATUS foundation guard refresh',
 }
 
 REQUIRED_BOUNDARIES = {
     'production_ready': 'false',
     'prompt_pack_release_ready': 'false',
+    'foundation_checkpoint_policy': 'bounded checkpoints only; not append every merged PR',
     'real_submitted_packet_present': 'false',
     'pilot_allowed_to_start': 'false',
     'readiness_claims_upgraded': 'false',
@@ -105,6 +110,19 @@ def validate_status_text(status_text: str) -> None:
     if missing_boundaries:
         raise AssertionError('STATUS.md missing or incorrect boundary entries: ' + ', '.join(missing_boundaries))
 
+    conflicting_boundaries = []
+    for key, value in claim_occurrences:
+        expected = REQUIRED_BOUNDARIES.get(key)
+        if expected is not None and value != expected:
+            conflicting_boundaries.append(
+                f'{key}: {value} (expected {key}: {expected})'
+            )
+    if conflicting_boundaries:
+        raise AssertionError(
+            'STATUS.md contains conflicting boundary entries; expected only: '
+            + ', '.join(sorted(set(conflicting_boundaries)))
+        )
+
     present_forbidden_claims = []
     for key, value in claim_occurrences:
         if FORBIDDEN_CLAIMS.get(key) == value:
@@ -124,6 +142,7 @@ def self_test_status_text(extra_yaml_blocks: str = '') -> str:
 project: EV4 Responsive Architect
 production_ready: false
 prompt_pack_release_ready: false
+foundation_checkpoint_policy: bounded checkpoints only; not append every merged PR
 merged_foundation:
 {foundation_entries}
 pending_control_plane_pr: null
@@ -154,11 +173,31 @@ def assert_status_invalid(status_text: str, expected_fragment: str) -> None:
 def run_self_tests() -> None:
     validate_status_text(self_test_status_text())
 
+    validate_status_text(self_test_status_text('''```yaml
+production_ready: "false"
+pilot_allowed_to_start:   false
+```'''))
+
+    assert_status_invalid(
+        self_test_status_text('''```yaml
+production_ready: pending
+```'''),
+        'production_ready: pending',
+    )
+
     assert_status_invalid(
         self_test_status_text('''```yaml
 production_ready: true
 ```'''),
         'production_ready: true',
+    )
+
+    assert_status_invalid(
+        self_test_status_text().replace(
+            'foundation_checkpoint_policy: bounded checkpoints only; not append every merged PR',
+            'foundation_checkpoint_policy: append every merged PR',
+        ),
+        'foundation_checkpoint_policy: bounded checkpoints only; not append every merged PR',
     )
 
     assert_status_invalid(
