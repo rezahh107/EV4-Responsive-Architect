@@ -114,7 +114,9 @@ def validate_status_text(status_text: str) -> None:
     for key, value in claim_occurrences:
         expected = REQUIRED_BOUNDARIES.get(key)
         if expected is not None and value != expected:
-            conflicting_boundaries.append(f'{key}: {expected}')
+            conflicting_boundaries.append(
+                f'{key}: {value} (expected {key}: {expected})'
+            )
     if conflicting_boundaries:
         raise AssertionError(
             'STATUS.md contains conflicting boundary entries; expected only: '
