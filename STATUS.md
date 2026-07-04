@@ -65,6 +65,7 @@ active_contracts:
   - contracts/EV4_RESPONSIVE_HANDOFF_EXPORT_CONTRACT.md
 active_schema:
   - schemas/ev4-responsive-output.schema.json
+  - schemas/ev4-builder-responsive-input.schema.json
 active_validation:
   - validation/e2e/run_responsive_tree_architecture_refactor_check.py
   - validation/e2e/run_submitted_packet_eligibility_gate_check.py
@@ -72,6 +73,7 @@ active_validation:
   - validation/e2e/run_evidence_intake_fixture_matrix_check.py
   - validation/e2e/run_pilot_readiness_boundary_check.py
   - validation/e2e/run_issue_8_preflight_boundary_check.py
+  - validation/e2e/run_builder_responsive_input_boundary_check.py
   - validation/e2e/run_task_quality_gate_check.py
   - validation/e2e/run_rtaq_ssot_guard_check.py
   - validation/e2e/run_status_merged_foundation_guard_check.py
@@ -95,15 +97,17 @@ controlled_use_docs:
   - docs/31_BACKLOG_BOUNDARY_REFRESH_RTAQ_0023.md
   - docs/32_ISSUE_8_PREFLIGHT_BOUNDARY_VALIDATION_RTAQ_0024.md
   - docs/33_FOUNDATION_CHECKPOINT_GUARD_RTAQ_0027.md
+  - docs/34_BUILDER_RESPONSIVE_INPUT_BOUNDARY_RTAQ_0028.md
 ```
 
 ## Builder → Responsive Boundary
 
 ```yaml
-builder_to_responsive_input_boundary: documented_not_implemented
+builder_to_responsive_input_boundary: schema_bound_non_executing
 builder_to_responsive_input_contract_note: contracts/BUILDER_TO_RESPONSIVE_INPUT_BOUNDARY.md
-builder_to_responsive_input_schema: not_implemented
-builder_to_responsive_input_validator: not_implemented
+builder_to_responsive_input_schema: schemas/ev4-builder-responsive-input.schema.json
+builder_to_responsive_input_validator: validation/e2e/run_builder_responsive_input_boundary_check.py
+builder_to_responsive_claim_boundary: input eligibility only; not responsive correctness evidence
 raw_screenshot_authority: false
 project_gate_builder_to_responsive_transition: not_implemented
 ```
@@ -129,6 +133,7 @@ automatic_check:
   - python validation/e2e/run_evidence_intake_fixture_matrix_check.py
   - python validation/e2e/run_pilot_readiness_boundary_check.py
   - python validation/e2e/run_issue_8_preflight_boundary_check.py
+  - python validation/e2e/run_builder_responsive_input_boundary_check.py
   - python validation/e2e/run_rtaq_ssot_guard_check.py
   - python validation/e2e/run_status_merged_foundation_guard_check.py
 delegated_repository_checks:

@@ -64,6 +64,7 @@ jobs:
           test -f validation/e2e/run_evidence_intake_fixture_matrix_check.py
           test -f validation/e2e/run_pilot_readiness_boundary_check.py
           test -f validation/e2e/run_issue_8_preflight_boundary_check.py
+          test -f validation/e2e/run_builder_responsive_input_boundary_check.py
           test -f validation/e2e/run_rtaq_ssot_guard_check.py
           test -f validation/e2e/run_status_merged_foundation_guard_check.py
       - name: Refactor check
@@ -76,6 +77,8 @@ jobs:
         run: python validation/e2e/run_pilot_readiness_boundary_check.py
       - name: Issue 8 preflight boundary
         run: python validation/e2e/run_issue_8_preflight_boundary_check.py
+      - name: Builder responsive input boundary
+        run: python validation/e2e/run_builder_responsive_input_boundary_check.py
       - name: RTAQ SSOT guard
         run: python validation/e2e/run_rtaq_ssot_guard_check.py
       - name: STATUS merged-foundation guard
