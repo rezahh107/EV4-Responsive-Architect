@@ -13,6 +13,7 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[2]
 VALIDATOR = ROOT / "validation" / "schema_validator" / "validate_schemas.py"
 DEFAULT_PACKET = ROOT / "validation" / "fixtures" / "valid" / "evidence_intake_packet.valid.json"
+ISSUE_8_NUMBER = 8
 MINIMUM_DESKTOP_MUST_NOT_REGRESS = {"meaningful_text_visibility", "feature_card_group_integrity", "visual_core_presence", "connector_layer_containment", "no_horizontal_overflow"}
 REQUIRED_VIEWPORT_EVIDENCE = {"desktop", "tablet", "mobile"}
 SAMPLE_MARKERS = ("SAMPLE", "sample", ".sample", "placeholder")
@@ -215,7 +216,7 @@ def validate_submitted_packet_source_kind_lock(packet: dict[str, Any]) -> None:
         raise AssertionError("real shadow-mode eligibility requires structured issue_reference")
     if issue_reference.get("evidence_submission_status") not in REAL_ELIGIBLE_STATUSES:
         raise AssertionError("real shadow-mode eligibility requires issue_reference.evidence_submission_status=submitted or validated")
-    if issue_reference.get("issue_number") != 8:
+    if issue_reference.get("issue_number") != ISSUE_8_NUMBER:
         raise AssertionError("real shadow-mode eligibility is locked to Issue #8 evidence submission")
     if verdict.get("real_pilot_allowed_to_start") is not True:
         raise AssertionError("real shadow-mode eligibility requires real_pilot_allowed_to_start=true")
@@ -242,6 +243,8 @@ def validate_packet_origin(packet: dict[str, Any], packet_path: Path) -> None:
     if origin == "real_issue_submission":
         if not isinstance(issue_reference, dict):
             raise AssertionError("real_issue_submission requires structured issue_reference")
+        if issue_reference.get("issue_number") != ISSUE_8_NUMBER:
+            raise AssertionError("real_issue_submission is locked to Issue #8 evidence submission")
         indicators = sample_indicators(packet, packet_path)
         if indicators:
             raise AssertionError(f"real_issue_submission must not carry sample markers: {indicators}")
@@ -338,17 +341,57 @@ def validate_packet(packet_path: Path, *, run_full_schema_validator: bool = True
     return packet
 
 
+def _real_issue_submission_probe(issue_number: int) -> dict[str, Any]:
+    packet = load_json(DEFAULT_PACKET)
+    packet["packet_id"] = "issue-8-submission-probe"
+    packet["packet_status"] = "blocked"
+    packet["packet_origin"] = "real_issue_submission"
+    packet["issue_reference"] = {
+        "issue_number": issue_number,
+        "issue_url_or_ref": f"https://github.com/rezahh107/EV4-Responsive-Architect/issues/{issue_number}",
+        "evidence_submission_status": "blocked",
+    }
+    packet["main_ev4_handoff"]["source_ref"] = f"issue-{issue_number}/main-ev4-handoff.md"
+    packet["intake_verdict"] = {
+        "status": "blocked",
+        "missing_required_items": ["real submitted packet not validated in self-test"],
+        "blocker_conflicts": [],
+        "evidence_quality_summary": "Self-test probe only; not submitted evidence.",
+        "pilot_allowed_to_start": False,
+        "sample_dry_run_allowed": False,
+        "real_pilot_allowed_to_start": False,
+        "allowed_scope": "not_allowed",
+    }
+    return packet
+
+
+def run_self_test() -> None:
+    validate_packet_origin(_real_issue_submission_probe(ISSUE_8_NUMBER), Path("issue-8/evidence_intake_packet.submitted.json"))
+    try:
+        validate_packet_origin(_real_issue_submission_probe(9), Path("issue-9/evidence_intake_packet.submitted.json"))
+    except AssertionError as exc:
+        if "Issue #8" not in str(exc):
+            raise AssertionError(f"wrong issue rejection must cite Issue #8 boundary, got: {exc}") from exc
+    else:
+        raise AssertionError("real_issue_submission with issue_number != 8 must be rejected")
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Validate an EV4 responsive evidence intake packet.")
     parser.add_argument("--packet", type=Path, default=DEFAULT_PACKET, help="Path to the evidence intake packet JSON. Defaults to the valid fixture.")
     parser.add_argument("--skip-schema-suite", action="store_true", help="Skip the full schema/fixture suite and validate only the submitted packet semantics.")
     parser.add_argument("--submitted-mode", action="store_true", help="Require an explicit real_issue_submission packet and reject sample, fixture, template, and placeholder evidence.")
+    parser.add_argument("--self-test", action="store_true", help="Run evidence-intake semantic boundary self-tests without treating probes as submitted evidence.")
     return parser.parse_args()
 
 
 def main() -> int:
     args = parse_args()
     try:
+        if args.self_test:
+            run_self_test()
+            print("Evidence intake self-tests passed")
+            return 0
         packet_path = args.packet if args.packet.is_absolute() else ROOT / args.packet
         validate_packet(packet_path, run_full_schema_validator=not args.skip_schema_suite, submitted_mode=args.submitted_mode)
     except AssertionError as exc:
