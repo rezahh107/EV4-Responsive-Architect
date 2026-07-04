@@ -34,6 +34,8 @@ merged_foundation:
   - "PR #101 evidence intake fixture matrix hardening"
   - "PR #102 pilot readiness boundary hardening"
   - "PR #103 Issue 8 submitted-packet preflight guide"
+  - "PR #104 backlog boundary refresh after preflight guide"
+  - "PR #105 Issue 8 preflight boundary validation"
 pending_control_plane_pr: null
 ```
 
@@ -84,6 +86,7 @@ controlled_use_docs:
   - docs/29_POST_AUDIT_PLANNING_RECONCILIATION_RTAQ_0019.md
   - docs/30_ISSUE_8_SUBMITTED_PACKET_PREFLIGHT_GUIDE_RTAQ_0022.md
   - docs/31_BACKLOG_BOUNDARY_REFRESH_RTAQ_0023.md
+  - docs/32_ISSUE_8_PREFLIGHT_BOUNDARY_VALIDATION_RTAQ_0024.md
 ```
 
 ## Evidence and Pilot Boundary
@@ -118,22 +121,4 @@ manual_same_head_recovery:
   trigger: workflow_dispatch
   required_inputs: [ref, expected_sha]
   exact_sha_required: true
-  python_matrix: ['3.11', '3.13']
-ci_success_claim_boundary: repository checks only; not responsive correctness evidence
-```
-
-## Queue Boundary
-
-```yaml
-active_queue_file: planning/EV4_ROLLING_QUEUE.json
-active_queue_lineage: RTAQ
-active_queue_reset_task: RTAQ-0001
-active_queue_reset_status: merged
-active_queue_reset_pr: 65
-active_queue_reset_merge_sha: 7dd76a1952466ae723183643b413501b94dbdbc5
-latest_completed_task: RTAQ-0018
-latest_completed_pr: 99
-latest_completed_merge_sha: e5a0c16331a4ae0f1aaf35e386e9014e0b4cc6c3
-next_pending_task: RTAQ-0019
-legacy_rq_lineage_status: archived_non_authoritative_history
 ```
