@@ -111,6 +111,7 @@
     },
     "forbidden_claims": {
       "type": "array",
+      "$comment": "Completeness is intentionally coupled to minItems/maxItems and the enum below. When adding or removing a forbidden claim, update both size constraints and REQUIRED_FORBIDDEN_CLAIMS in validation/e2e/run_builder_responsive_input_boundary_check.py.",
       "minItems": 8,
       "maxItems": 8,
       "uniqueItems": true,
