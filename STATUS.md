@@ -36,6 +36,7 @@ merged_foundation:
   - "PR #103 Issue 8 submitted-packet preflight guide"
   - "PR #104 backlog boundary refresh after preflight guide"
   - "PR #105 Issue 8 preflight boundary validation"
+  - "PR #106 RTAQ-0024 preflight boundary status reconciliation"
 pending_control_plane_pr: null
 ```
 
@@ -68,6 +69,7 @@ active_validation:
   - validation/e2e/run_issue_8_preflight_boundary_check.py
   - validation/e2e/run_task_quality_gate_check.py
   - validation/e2e/run_rtaq_ssot_guard_check.py
+  - validation/e2e/run_status_merged_foundation_guard_check.py
 controlled_use_docs:
   - docs/15_CONTROLLED_USE_READINESS_SNAPSHOT.md
   - docs/16_CONTROLLED_MANUAL_FIRST_RUN_GUIDE.md
@@ -110,12 +112,13 @@ automatic_check:
   - python validation/e2e/run_evidence_intake_fixture_matrix_check.py
   - python validation/e2e/run_pilot_readiness_boundary_check.py
   - python validation/e2e/run_issue_8_preflight_boundary_check.py
+  - python validation/e2e/run_rtaq_ssot_guard_check.py
+  - python validation/e2e/run_status_merged_foundation_guard_check.py
 delegated_repository_checks:
   - python validation/e2e/run_rolling_queue_check.py
   - python validation/e2e/run_run_ledger_check.py
   - python validation/e2e/run_task_quality_gate_check.py
   - python validation/e2e/run_submitted_packet_eligibility_gate_check.py
-  - python validation/e2e/run_rtaq_ssot_guard_check.py
 manual_same_head_recovery:
   workflow: .github/workflows/validate.yml
   trigger: workflow_dispatch
