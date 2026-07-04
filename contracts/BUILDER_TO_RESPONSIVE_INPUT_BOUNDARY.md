@@ -1,7 +1,7 @@
 # Builder → Responsive Input Boundary
 
-Status: documented boundary only  
-Version: 0.1.0  
+Status: schema-bound input eligibility package implemented  
+Version: 0.2.0  
 Runtime behavior changed: no  
 Responsive repair behavior changed: no
 
@@ -12,10 +12,10 @@ This contract note clarifies what Responsive may accept from a future Project Ga
 ```text
 Builder output and build evidence
 → future Project Gate verification
-→ Responsive intake
+→ Responsive intake eligibility package
 ```
 
-This document does not implement the Project Gate transition, does not start a pilot, and does not upgrade any readiness claim.
+This document and its schema implement only a repository-controlled Responsive intake eligibility boundary. They do not implement Project Gate, do not start a pilot, and do not upgrade any readiness, production, release, live-render, export, accessibility, pixel, or responsive-correctness claim.
 
 ## Current Responsive intake state
 
@@ -31,6 +31,13 @@ submitted_packet_readiness:
   validator: validation/e2e/run_submitted_packet_readiness_dry_run.py
   command: python validation/e2e/run_submitted_packet_readiness_dry_run.py --self-test
   status: pre-pilot dry run only
+
+builder_to_responsive_input:
+  schema: ev4-builder-responsive-input@0.1.0
+  schema_file: schemas/ev4-builder-responsive-input.schema.json
+  validator: validation/e2e/run_builder_responsive_input_boundary_check.py
+  command: python validation/e2e/run_builder_responsive_input_boundary_check.py
+  status: input eligibility only; not responsive correctness evidence
 
 responsive_output:
   schema: ev4-responsive-output@0.3.0
@@ -57,21 +64,26 @@ responsive_handoff_export:
 
 ## Builder-specific input status
 
-A formal Builder-specific Responsive input package is not yet implemented in this repository.
+A Builder-specific Responsive input package is now schema-bound for repository validation, but remains non-executing until a future Project Gate route provides real verified Builder evidence.
 
 ```yaml
 builder_to_responsive_input_package:
-  status: not_implemented
-  schema_file: null
-  validator: null
-  fixture_suite: null
+  status: schema_bound_non_executing
+  schema_file: schemas/ev4-builder-responsive-input.schema.json
+  validator: validation/e2e/run_builder_responsive_input_boundary_check.py
+  fixture_suite:
+    valid:
+      - validation/fixtures/valid/builder_responsive_input.valid.json
+    invalid:
+      - validation/fixtures/invalid/builder_responsive_input_missing_mobile_evidence.invalid.json
+  claim_boundary: input eligibility only; not responsive correctness evidence
 ```
 
-Until that package exists, Responsive intake remains fail-closed for Builder→Responsive automation. A future Project Gate transition may verify and transport Builder-owned artifacts, but Responsive must not treat that transport package as a local Responsive schema unless a dedicated Responsive contract is added later.
+Until Project Gate exists, Responsive intake remains fail-closed for Builder→Responsive automation. A future Project Gate transition may verify and transport Builder-owned artifacts, but Responsive must not treat transport alone as proof of viewport correctness.
 
-## Required future Builder evidence classes
+## Required Builder evidence classes
 
-A future Builder→Responsive intake route should require explicit evidence references for:
+A Builder→Responsive intake package requires explicit evidence references for:
 
 ```yaml
 required_builder_evidence_classes:
