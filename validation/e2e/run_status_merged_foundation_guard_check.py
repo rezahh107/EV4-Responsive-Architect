@@ -179,9 +179,10 @@ production_ready: true
     )
 
     assert_status_invalid(
-        self_test_status_text('''```yaml
-foundation_checkpoint_policy: append every merged PR
-```'''),
+        self_test_status_text().replace(
+            'foundation_checkpoint_policy: bounded checkpoints only; not append every merged PR',
+            'foundation_checkpoint_policy: append every merged PR',
+        ),
         'foundation_checkpoint_policy: bounded checkpoints only; not append every merged PR',
     )
 
