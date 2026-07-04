@@ -7,6 +7,7 @@ or authorize pilot execution.
 """
 from __future__ import annotations
 
+import re
 import sys
 from pathlib import Path
 
@@ -56,14 +57,19 @@ def _read(path: Path) -> str:
     return path.read_text(encoding="utf-8")
 
 
+def _contains_distinct_snippet(text: str, snippet: str) -> bool:
+    pattern = r"(?<![A-Za-z0-9_])" + re.escape(snippet)
+    return re.search(pattern, text) is not None
+
+
 def _assert_all_present(text: str, snippets: tuple[str, ...], label: str) -> None:
-    missing = [snippet for snippet in snippets if snippet not in text]
+    missing = [snippet for snippet in snippets if not _contains_distinct_snippet(text, snippet)]
     if missing:
         raise AssertionError(f"{label} is missing required blocked-boundary snippets: {missing}")
 
 
 def _assert_all_absent(text: str, snippets: tuple[str, ...], label: str) -> None:
-    present = [snippet for snippet in snippets if snippet in text]
+    present = [snippet for snippet in snippets if _contains_distinct_snippet(text, snippet)]
     if present:
         raise AssertionError(f"{label} contains forbidden readiness-upgrade snippets: {present}")
 
@@ -75,7 +81,7 @@ def main() -> int:
         _assert_all_present(preflight, REQUIRED_PREFLIGHT_SNIPPETS, "Issue #8 preflight guide")
         _assert_all_absent(preflight, FORBIDDEN_PREFLIGHT_SNIPPETS, "Issue #8 preflight guide")
         _assert_all_present(status, REQUIRED_STATUS_SNIPPETS, "STATUS.md evidence boundary")
-    except AssertionError as exc:
+    except (AssertionError, OSError) as exc:
         print(f"Issue #8 preflight boundary check failed: {exc}", file=sys.stderr)
         return 1
     print("Issue #8 preflight boundary check passed: draft evidence remains non-executing and pilot-blocked")
