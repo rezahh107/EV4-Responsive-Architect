@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import argparse
-import copy
 import json
 import subprocess
 import sys
@@ -343,7 +342,7 @@ def validate_packet(packet_path: Path, *, run_full_schema_validator: bool = True
 
 
 def _real_issue_submission_probe(issue_number: int) -> dict[str, Any]:
-    packet = copy.deepcopy(load_json(DEFAULT_PACKET))
+    packet = load_json(DEFAULT_PACKET)
     packet["packet_id"] = "issue-8-submission-probe"
     packet["packet_status"] = "blocked"
     packet["packet_origin"] = "real_issue_submission"
@@ -391,6 +390,8 @@ def main() -> int:
     try:
         if args.self_test:
             run_self_test()
+            print("Evidence intake self-tests passed")
+            return 0
         packet_path = args.packet if args.packet.is_absolute() else ROOT / args.packet
         validate_packet(packet_path, run_full_schema_validator=not args.skip_schema_suite, submitted_mode=args.submitted_mode)
     except AssertionError as exc:
