@@ -40,6 +40,7 @@ merged_foundation:
   - "PR #106 RTAQ-0024 preflight boundary status reconciliation"
   - "PR #107 RTAQ-0025 active STATUS guard validation"
   - "PR #108 RTAQ-0026 STATUS foundation guard refresh"
+  - "PR #112 RTAQ-0029 responsive intake decision guard"
 pending_control_plane_pr: null
 ```
 
@@ -99,6 +100,7 @@ controlled_use_docs:
   - docs/33_FOUNDATION_CHECKPOINT_GUARD_RTAQ_0027.md
   - docs/34_BUILDER_RESPONSIVE_INPUT_BOUNDARY_RTAQ_0028.md
   - docs/35_RESPONSIVE_INTAKE_DECISION_GUARD_RTAQ_0029.md
+  - docs/36_FOUNDATION_CHECKPOINT_GUARD_RTAQ_0030.md
 ```
 
 ## Builder → Responsive Boundary
