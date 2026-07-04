@@ -23,6 +23,21 @@ INVALID_FIXTURES = (
     / "fixtures"
     / "invalid"
     / "builder_responsive_input_missing_mobile_evidence.invalid.json",
+    ROOT
+    / "validation"
+    / "fixtures"
+    / "invalid"
+    / "builder_responsive_input_blocked_project_gate_allows_intake.invalid.json",
+    ROOT
+    / "validation"
+    / "fixtures"
+    / "invalid"
+    / "builder_responsive_input_blocked_viewport_allows_intake.invalid.json",
+    ROOT
+    / "validation"
+    / "fixtures"
+    / "invalid"
+    / "builder_responsive_input_forbidden_claim_subset.invalid.json",
 )
 REQUIRED_FORBIDDEN_CLAIMS = {
     "production_ready",
@@ -49,6 +64,21 @@ def _assert_valid_fixture(data: dict[str, object], path: Path) -> None:
         raise AssertionError(f"{path.relative_to(ROOT)} missing responsive_intake_decision object")
     if decision.get("claim_boundary") != CANONICAL_BOUNDARY:
         raise AssertionError(f"{path.relative_to(ROOT)} has non-canonical claim boundary")
+    if decision.get("intake_allowed") is not True:
+        raise AssertionError(f"{path.relative_to(ROOT)} valid fixture must exercise allowed intake")
+
+    project_gate = data.get("project_gate_ref")
+    if not isinstance(project_gate, dict) or project_gate.get("gate_status") != "verified":
+        raise AssertionError(f"{path.relative_to(ROOT)} allowed intake must use a verified project gate")
+
+    viewport_evidence = data.get("viewport_evidence")
+    if not isinstance(viewport_evidence, dict):
+        raise AssertionError(f"{path.relative_to(ROOT)} missing viewport_evidence object")
+    for viewport in ("desktop", "tablet", "mobile"):
+        evidence = viewport_evidence.get(viewport)
+        if not isinstance(evidence, dict) or evidence.get("evidence_status") != "provided":
+            raise AssertionError(f"{path.relative_to(ROOT)} allowed intake must provide {viewport} evidence")
+
     claims = data.get("forbidden_claims")
     if not isinstance(claims, list):
         raise AssertionError(f"{path.relative_to(ROOT)} missing forbidden_claims list")
