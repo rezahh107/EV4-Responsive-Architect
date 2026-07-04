@@ -129,9 +129,9 @@ active_queue_reset_task: RTAQ-0001
 active_queue_reset_status: merged
 active_queue_reset_pr: 65
 active_queue_reset_merge_sha: 7dd76a1952466ae723183643b413501b94dbdbc5
-latest_completed_task: RTAQ-0022
-latest_completed_pr: 103
-latest_completed_merge_sha: 503ab858839064c4d91c91f7761aa294db4ba6cf
-next_pending_task: RTAQ-0023
+latest_completed_task: RTAQ-0018
+latest_completed_pr: 99
+latest_completed_merge_sha: e5a0c16331a4ae0f1aaf35e386e9014e0b4cc6c3
+next_pending_task: RTAQ-0019
 legacy_rq_lineage_status: archived_non_authoritative_history
 ```
