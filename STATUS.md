@@ -78,6 +78,7 @@ active_validation:
   - validation/e2e/run_task_quality_gate_check.py
   - validation/e2e/run_rtaq_ssot_guard_check.py
   - validation/e2e/run_status_merged_foundation_guard_check.py
+  - validation/e2e/run_automation_control_state_check.py
 controlled_use_docs:
   - docs/15_CONTROLLED_USE_READINESS_SNAPSHOT.md
   - docs/16_CONTROLLED_MANUAL_FIRST_RUN_GUIDE.md
@@ -101,6 +102,18 @@ controlled_use_docs:
   - docs/34_BUILDER_RESPONSIVE_INPUT_BOUNDARY_RTAQ_0028.md
   - docs/35_RESPONSIVE_INTAKE_DECISION_GUARD_RTAQ_0029.md
   - docs/36_FOUNDATION_CHECKPOINT_GUARD_RTAQ_0030.md
+```
+
+## Automation Control State
+
+```yaml
+automation_control_state: planning/EV4_AUTOMATION_CONTROL_STATE.json
+current_execution_driver: bounded_material_checkpoint_guard
+rolling_queue_authority: historical_non_authoritative_until_reconciled
+rolling_queue_reconciliation_required: true
+checkpoint_only_loop_policy: bounded checkpoints only; not append every merged PR
+next_action_policy: material objectives only; checkpoint refresh only when material checkpoint changes
+automation_control_validator: validation/e2e/run_automation_control_state_check.py
 ```
 
 ## Builder → Responsive Boundary
@@ -139,6 +152,7 @@ automatic_check:
   - python validation/e2e/run_builder_responsive_input_boundary_check.py
   - python validation/e2e/run_rtaq_ssot_guard_check.py
   - python validation/e2e/run_status_merged_foundation_guard_check.py
+  - python validation/e2e/run_automation_control_state_check.py
 delegated_repository_checks:
   - python validation/e2e/run_rolling_queue_check.py
   - python validation/e2e/run_run_ledger_check.py

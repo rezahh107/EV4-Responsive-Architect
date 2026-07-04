@@ -1,0 +1,28 @@
+{
+  "schema": "ev4-automation-control-state@1.0.0",
+  "project": "EV4 Responsive Architect",
+  "current_execution_driver": "bounded_material_checkpoint_guard",
+  "rolling_queue_authority": "historical_non_authoritative_until_reconciled",
+  "rolling_queue_path": "planning/EV4_ROLLING_QUEUE.json",
+  "status_path": "STATUS.md",
+  "latest_material_checkpoint": "PR #112 RTAQ-0029 responsive intake decision guard",
+  "latest_checkpoint_guard": "PR #113 RTAQ-0030 bounded foundation checkpoint guard",
+  "queue_drift_acknowledged": true,
+  "queue_reconciliation_required_before_queue_driver": true,
+  "checkpoint_only_loop_policy": "bounded_checkpoints_only_not_append_every_merge",
+  "next_action_policy": "material_objective_only",
+  "forbidden_next_actions": [
+    "create_checkpoint_only_pr_for_every_merge",
+    "treat_stale_rolling_queue_as_current_driver",
+    "invent_rtaq_task_without_planning_contract",
+    "upgrade_evidence_pilot_readiness_or_release_claims"
+  ],
+  "boundary_claims": {
+    "real_submitted_packet_present": false,
+    "pilot_allowed_to_start": false,
+    "readiness_claims_upgraded": false,
+    "production_ready": false,
+    "release_ready": false,
+    "responsive_correctness_claim_upgraded": false
+  }
+}
