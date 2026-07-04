@@ -56,6 +56,8 @@ current_phase:
 ```yaml
 active_refactor_doc: docs/RESPONSIVE_TREE_ARCHITECTURE_REFACTOR_v0.3.0.md
 active_contracts:
+  - contracts/MAIN_PIPELINE_HANDOFF_INPUT_CONTRACT.md
+  - contracts/BUILDER_TO_RESPONSIVE_INPUT_BOUNDARY.md
   - contracts/EV4_RESPONSIVE_TREE_ARCHITECTURE_CONTRACT.md
   - contracts/EV4_VIEWPORT_RELATIONSHIP_CLASSIFICATION_CONTRACT.md
   - contracts/EV4_RESPONSIVE_STRATEGY_ROUTING_CONTRACT.md
@@ -93,6 +95,17 @@ controlled_use_docs:
   - docs/31_BACKLOG_BOUNDARY_REFRESH_RTAQ_0023.md
   - docs/32_ISSUE_8_PREFLIGHT_BOUNDARY_VALIDATION_RTAQ_0024.md
   - docs/33_FOUNDATION_CHECKPOINT_GUARD_RTAQ_0027.md
+```
+
+## Builder → Responsive Boundary
+
+```yaml
+builder_to_responsive_input_boundary: documented_not_implemented
+builder_to_responsive_input_contract_note: contracts/BUILDER_TO_RESPONSIVE_INPUT_BOUNDARY.md
+builder_to_responsive_input_schema: not_implemented
+builder_to_responsive_input_validator: not_implemented
+raw_screenshot_authority: false
+project_gate_builder_to_responsive_transition: not_implemented
 ```
 
 ## Evidence and Pilot Boundary

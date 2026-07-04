@@ -1,5 +1,21 @@
 # CHANGELOG
 
+## Unreleased — Builder→Responsive boundary
+
+### Added
+
+- Added `contracts/BUILDER_TO_RESPONSIVE_INPUT_BOUNDARY.md` to document the current Builder→Responsive input boundary without implementing new Responsive repair behavior.
+- Updated `STATUS.md` to record that Builder→Responsive input schema and validator are not implemented yet and that raw screenshots are not authoritative baseline.
+
+### Boundary
+
+- No submitted packet was created.
+- No real pilot was started.
+- No frontend, export, accessibility, pixel, responsive-correctness, release, or production-readiness claim was upgraded.
+- Project Gate Builder→Responsive transition remains not implemented.
+
+---
+
 ## 0.1.0-final-draft — Repository Bootstrap
 
 Initial repository-backed EV4 Responsive Architect specification.
