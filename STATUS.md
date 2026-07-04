@@ -37,6 +37,7 @@ merged_foundation:
   - "PR #104 backlog boundary refresh after preflight guide"
   - "PR #105 Issue 8 preflight boundary validation"
   - "PR #106 RTAQ-0024 preflight boundary status reconciliation"
+  - "PR #107 RTAQ-0025 active STATUS guard validation"
 pending_control_plane_pr: null
 ```
 
