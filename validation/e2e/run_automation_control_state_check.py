@@ -31,12 +31,12 @@ EXPECTED_CONTROL = {
     "next_action_policy": "material_objective_only",
 }
 
-REQUIRED_FORBIDDEN_NEXT_ACTIONS = {
+REQUIRED_FORBIDDEN_NEXT_ACTIONS = [
     "create_checkpoint_only_pr_for_every_merge",
     "treat_stale_rolling_queue_as_current_driver",
     "invent_rtaq_task_without_planning_contract",
     "upgrade_evidence_pilot_readiness_or_release_claims",
-}
+]
 
 REQUIRED_BOUNDARY_CLAIMS = {
     "real_submitted_packet_present": False,
@@ -137,8 +137,8 @@ def assert_control_state(control: dict[str, Any], control_schema: dict[str, Any]
             fail(f"automation control state mismatch for {key}: {control.get(key)!r} != {expected!r}")
 
     forbidden = control.get("forbidden_next_actions")
-    if set(forbidden) != REQUIRED_FORBIDDEN_NEXT_ACTIONS:
-        fail("forbidden_next_actions must exactly match the required execution guard set")
+    if forbidden != REQUIRED_FORBIDDEN_NEXT_ACTIONS:
+        fail("forbidden_next_actions must exactly match the required execution guard list and order")
 
     boundary_claims = control.get("boundary_claims")
     if boundary_claims != REQUIRED_BOUNDARY_CLAIMS:
@@ -151,7 +151,9 @@ def assert_control_state(control: dict[str, Any], control_schema: dict[str, Any]
     if control["rolling_queue_execution_status"] != "retired_as_execution_driver":
         fail("rolling queue execution status must remain retired_as_execution_driver")
 
-    if queue.get("queue_status") == "active" or queue.get("active_cycle", {}).get("cycle_status") == "active":
+    active_cycle = queue.get("active_cycle")
+    active_cycle_status = active_cycle.get("cycle_status") if isinstance(active_cycle, dict) else None
+    if queue.get("queue_status") == "active" or active_cycle_status == "active":
         if control["rolling_queue_execution_status"] != "retired_as_execution_driver":
             fail("historical active queue snapshot requires retired_as_execution_driver control state")
         if control["rolling_queue_authority"] != "historical_non_authoritative_until_reconciled":
@@ -230,7 +232,7 @@ def status_fixture(extra_claims: list[str] | None = None) -> str:
 
 def valid_control() -> dict[str, Any]:
     control = dict(EXPECTED_CONTROL)
-    control["forbidden_next_actions"] = sorted(REQUIRED_FORBIDDEN_NEXT_ACTIONS)
+    control["forbidden_next_actions"] = list(REQUIRED_FORBIDDEN_NEXT_ACTIONS)
     control["boundary_claims"] = dict(REQUIRED_BOUNDARY_CLAIMS)
     return control
 
@@ -265,6 +267,9 @@ def run_self_tests() -> None:
 
     control = valid_control()
     assert_control_state(control, schema, queue_with_drift)
+    queue_with_null_cycle = dict(queue_with_drift)
+    queue_with_null_cycle["active_cycle"] = None
+    assert_control_state(control, schema, queue_with_null_cycle)
 
     missing_required = dict(control)
     missing_required.pop("execution_state_source_of_truth")
@@ -290,10 +295,19 @@ def run_self_tests() -> None:
     bad_forbidden["forbidden_next_actions"] = [
         "create_checkpoint_only_pr_for_every_merge",
         "treat_stale_rolling_queue_as_current_driver",
+        "upgrade_evidence_pilot_readiness_or_release_claims",
+        "invent_rtaq_task_without_planning_contract",
+    ]
+    assert_invalid_control(bad_forbidden, schema, queue_with_drift, "forbidden_next_actions")
+
+    duplicate_forbidden = dict(control)
+    duplicate_forbidden["forbidden_next_actions"] = [
+        "create_checkpoint_only_pr_for_every_merge",
+        "treat_stale_rolling_queue_as_current_driver",
         "invent_rtaq_task_without_planning_contract",
         "create_checkpoint_only_pr_for_every_merge",
     ]
-    assert_schema_invalid(bad_forbidden, schema, "duplicate forbidden_next_actions")
+    assert_schema_invalid(duplicate_forbidden, schema, "duplicate forbidden_next_actions")
 
     valid_status = status_fixture()
     assert_status_text(valid_status)
