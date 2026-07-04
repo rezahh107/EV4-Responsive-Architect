@@ -1,8 +1,10 @@
 {
   "schema": "ev4-automation-control-state@1.0.0",
   "project": "EV4 Responsive Architect",
+  "execution_state_source_of_truth": "planning/EV4_AUTOMATION_CONTROL_STATE.json",
   "current_execution_driver": "bounded_material_checkpoint_guard",
   "rolling_queue_authority": "historical_non_authoritative_until_reconciled",
+  "rolling_queue_execution_status": "retired_as_execution_driver",
   "rolling_queue_path": "planning/EV4_ROLLING_QUEUE.json",
   "status_path": "STATUS.md",
   "latest_material_checkpoint": "PR #112 RTAQ-0029 responsive intake decision guard",
