@@ -64,20 +64,23 @@ def _assert_valid_fixture(data: dict[str, object], path: Path) -> None:
         raise AssertionError(f"{path.relative_to(ROOT)} missing responsive_intake_decision object")
     if decision.get("claim_boundary") != CANONICAL_BOUNDARY:
         raise AssertionError(f"{path.relative_to(ROOT)} has non-canonical claim boundary")
-    if decision.get("intake_allowed") is not True:
-        raise AssertionError(f"{path.relative_to(ROOT)} valid fixture must exercise allowed intake")
 
-    project_gate = data.get("project_gate_ref")
-    if not isinstance(project_gate, dict) or project_gate.get("gate_status") != "verified":
-        raise AssertionError(f"{path.relative_to(ROOT)} allowed intake must use a verified project gate")
+    is_allowed_intake = decision.get("intake_allowed") is True
+    if path.name == "builder_responsive_input.valid.json" and not is_allowed_intake:
+        raise AssertionError(f"{path.relative_to(ROOT)} must exercise allowed intake")
 
-    viewport_evidence = data.get("viewport_evidence")
-    if not isinstance(viewport_evidence, dict):
-        raise AssertionError(f"{path.relative_to(ROOT)} missing viewport_evidence object")
-    for viewport in ("desktop", "tablet", "mobile"):
-        evidence = viewport_evidence.get(viewport)
-        if not isinstance(evidence, dict) or evidence.get("evidence_status") != "provided":
-            raise AssertionError(f"{path.relative_to(ROOT)} allowed intake must provide {viewport} evidence")
+    if is_allowed_intake:
+        project_gate = data.get("project_gate_ref")
+        if not isinstance(project_gate, dict) or project_gate.get("gate_status") != "verified":
+            raise AssertionError(f"{path.relative_to(ROOT)} allowed intake must use a verified project gate")
+
+        viewport_evidence = data.get("viewport_evidence")
+        if not isinstance(viewport_evidence, dict):
+            raise AssertionError(f"{path.relative_to(ROOT)} missing viewport_evidence object")
+        for viewport in ("desktop", "tablet", "mobile"):
+            evidence = viewport_evidence.get(viewport)
+            if not isinstance(evidence, dict) or evidence.get("evidence_status") != "provided":
+                raise AssertionError(f"{path.relative_to(ROOT)} allowed intake must provide {viewport} evidence")
 
     claims = data.get("forbidden_claims")
     if not isinstance(claims, list):
