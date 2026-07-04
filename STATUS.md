@@ -9,6 +9,7 @@ prompt_pack_release_ready: false
 current_branch: main
 primary_mode: design_to_responsive_tree
 secondary_mode: responsive_repair
+foundation_checkpoint_policy: bounded checkpoints only; not append every merged PR
 merged_foundation:
   - "PR #59 bookkeeping sync"
   - "PR #60 responsive tree architecture refactor"
@@ -38,6 +39,7 @@ merged_foundation:
   - "PR #105 Issue 8 preflight boundary validation"
   - "PR #106 RTAQ-0024 preflight boundary status reconciliation"
   - "PR #107 RTAQ-0025 active STATUS guard validation"
+  - "PR #108 RTAQ-0026 STATUS foundation guard refresh"
 pending_control_plane_pr: null
 ```
 
@@ -90,6 +92,7 @@ controlled_use_docs:
   - docs/30_ISSUE_8_SUBMITTED_PACKET_PREFLIGHT_GUIDE_RTAQ_0022.md
   - docs/31_BACKLOG_BOUNDARY_REFRESH_RTAQ_0023.md
   - docs/32_ISSUE_8_PREFLIGHT_BOUNDARY_VALIDATION_RTAQ_0024.md
+  - docs/33_FOUNDATION_CHECKPOINT_GUARD_RTAQ_0027.md
 ```
 
 ## Evidence and Pilot Boundary
