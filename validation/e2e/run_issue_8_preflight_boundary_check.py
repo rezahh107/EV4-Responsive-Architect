@@ -1,0 +1,92 @@
+#!/usr/bin/env python3
+"""Ensure Issue #8 preflight remains blocked and non-executing.
+
+This gate validates repository-controlled preflight/status text only. It does
+not fetch or mutate Issue #8, create submitted evidence, generate readiness,
+or authorize pilot execution.
+"""
+from __future__ import annotations
+
+import re
+import sys
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[2]
+PREFLIGHT_GUIDE = ROOT / "docs" / "30_ISSUE_8_SUBMITTED_PACKET_PREFLIGHT_GUIDE_RTAQ_0022.md"
+STATUS = ROOT / "STATUS.md"
+
+REQUIRED_PREFLIGHT_SNIPPETS = (
+    "issue_number: 8",
+    "packet_status: draft",
+    "validation_result: pending",
+    "pilot_allowed_to_start: false",
+    "real_pilot_allowed_to_start: false",
+    "allowed_scope: not_allowed",
+    "does not create or submit an evidence packet",
+    "does not run the real pilot",
+    "python validation/e2e/run_evidence_intake_check.py --packet examples/smart-home-connector/intake/EVIDENCE_INTAKE_PACKET.submitted.json --submitted-mode",
+    "python validation/e2e/run_pilot_readiness_check.py --packet examples/smart-home-connector/intake/EVIDENCE_INTAKE_PACKET.submitted.json --out examples/smart-home-connector/readiness/PILOT_READINESS_REPORT.generated.json --skip-schema-suite --submitted-mode",
+    "Stop before readiness generation",
+    "Stop before pilot execution",
+    "Issue #8 has not received a real submitted packet",
+)
+
+REQUIRED_STATUS_SNIPPETS = (
+    "real_submitted_packet_present: false",
+    "pilot_allowed_to_start: false",
+    "readiness_claims_upgraded: false",
+    "issue_8_status: draft_evidence_pending",
+    "pilot_execution_scope: not_allowed",
+    "ci_success_claim_boundary: repository checks only; not responsive correctness evidence",
+)
+
+FORBIDDEN_PREFLIGHT_SNIPPETS = (
+    "pilot_allowed_to_start: true",
+    "real_pilot_allowed_to_start: true",
+    "allowed_scope: real_shadow_mode_only",
+    "packet_status: submitted",
+    "packet_status: validated",
+    "production_ready: true",
+    "release_ready: true",
+)
+
+
+def _read(path: Path) -> str:
+    if not path.exists():
+        raise AssertionError(f"missing required file: {path.relative_to(ROOT)}")
+    return path.read_text(encoding="utf-8")
+
+
+def _contains_distinct_snippet(text: str, snippet: str) -> bool:
+    pattern = r"(?<![A-Za-z0-9_])" + re.escape(snippet)
+    return re.search(pattern, text) is not None
+
+
+def _assert_all_present(text: str, snippets: tuple[str, ...], label: str) -> None:
+    missing = [snippet for snippet in snippets if not _contains_distinct_snippet(text, snippet)]
+    if missing:
+        raise AssertionError(f"{label} is missing required blocked-boundary snippets: {missing}")
+
+
+def _assert_all_absent(text: str, snippets: tuple[str, ...], label: str) -> None:
+    present = [snippet for snippet in snippets if _contains_distinct_snippet(text, snippet)]
+    if present:
+        raise AssertionError(f"{label} contains forbidden readiness-upgrade snippets: {present}")
+
+
+def main() -> int:
+    try:
+        preflight = _read(PREFLIGHT_GUIDE)
+        status = _read(STATUS)
+        _assert_all_present(preflight, REQUIRED_PREFLIGHT_SNIPPETS, "Issue #8 preflight guide")
+        _assert_all_absent(preflight, FORBIDDEN_PREFLIGHT_SNIPPETS, "Issue #8 preflight guide")
+        _assert_all_present(status, REQUIRED_STATUS_SNIPPETS, "STATUS.md evidence boundary")
+    except (AssertionError, OSError) as exc:
+        print(f"Issue #8 preflight boundary check failed: {exc}", file=sys.stderr)
+        return 1
+    print("Issue #8 preflight boundary check passed: draft evidence remains non-executing and pilot-blocked")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

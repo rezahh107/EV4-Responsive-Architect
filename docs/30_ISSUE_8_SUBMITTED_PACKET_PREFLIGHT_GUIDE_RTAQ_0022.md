@@ -21,10 +21,10 @@ This document is preparation only.
 
 It does not:
 
-- create or submit an evidence packet;
+- does not create or submit an evidence packet;
 - attach files to Issue #8;
 - edit Issue #8;
-- run the real pilot;
+- does not run the real pilot;
 - authorize shadow-mode pilot execution;
 - prove responsive correctness;
 - prove live-render, export, accessibility, pixel, production, release, or prompt-pack readiness.

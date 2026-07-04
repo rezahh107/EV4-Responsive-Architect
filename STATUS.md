@@ -63,6 +63,7 @@ active_validation:
   - validation/e2e/run_submitted_packet_readiness_dry_run.py
   - validation/e2e/run_evidence_intake_fixture_matrix_check.py
   - validation/e2e/run_pilot_readiness_boundary_check.py
+  - validation/e2e/run_issue_8_preflight_boundary_check.py
   - validation/e2e/run_task_quality_gate_check.py
   - validation/e2e/run_rtaq_ssot_guard_check.py
 controlled_use_docs:
@@ -105,6 +106,7 @@ automatic_check:
   - python validation/e2e/run_submitted_packet_readiness_dry_run.py --self-test
   - python validation/e2e/run_evidence_intake_fixture_matrix_check.py
   - python validation/e2e/run_pilot_readiness_boundary_check.py
+  - python validation/e2e/run_issue_8_preflight_boundary_check.py
 delegated_repository_checks:
   - python validation/e2e/run_rolling_queue_check.py
   - python validation/e2e/run_run_ledger_check.py
