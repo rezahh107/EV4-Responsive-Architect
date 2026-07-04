@@ -95,7 +95,7 @@ controlled_use_docs:
 real_submitted_packet_present: false
 pilot_allowed_to_start: false
 readiness_claims_upgraded: false
-ci_success_claim_boundary: repository checks only
+ci_success_claim_boundary: repository checks only; not responsive correctness evidence
 issue_8_status: draft_evidence_pending
 pilot_execution_scope: not_allowed
 ```
