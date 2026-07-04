@@ -14,6 +14,7 @@ REQUIRED_MERGED_FOUNDATION = {
     'PR #104 backlog boundary refresh after preflight guide',
     'PR #105 Issue 8 preflight boundary validation',
     'PR #106 RTAQ-0024 preflight boundary status reconciliation',
+    'PR #107 RTAQ-0025 active STATUS guard validation',
 }
 
 REQUIRED_BOUNDARIES = {
