@@ -110,6 +110,17 @@ def validate_status_text(status_text: str) -> None:
     if missing_boundaries:
         raise AssertionError('STATUS.md missing or incorrect boundary entries: ' + ', '.join(missing_boundaries))
 
+    conflicting_boundaries = []
+    for key, value in claim_occurrences:
+        expected = REQUIRED_BOUNDARIES.get(key)
+        if expected is not None and value != expected:
+            conflicting_boundaries.append(f'{key}: {expected}')
+    if conflicting_boundaries:
+        raise AssertionError(
+            'STATUS.md contains conflicting boundary entries; expected only: '
+            + ', '.join(sorted(set(conflicting_boundaries)))
+        )
+
     present_forbidden_claims = []
     for key, value in claim_occurrences:
         if FORBIDDEN_CLAIMS.get(key) == value:
