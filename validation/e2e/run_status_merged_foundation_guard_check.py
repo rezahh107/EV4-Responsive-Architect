@@ -80,7 +80,7 @@ def parse_yaml_claim_occurrences(status_text: str) -> list[tuple[str, str]]:
         if inside_block and line.startswith('```'):
             inside_block = False
             continue
-        if not inside_block or ':' not in line or line.startswith('-'):
+        if not inside_block or ':' not in line or line.startswith('-') or line.startswith('#'):
             continue
         key, value = line.split(':', 1)
         claims.append((key.strip(), normalize_claim_value(value)))
@@ -119,8 +119,13 @@ def validate_status_text(status_text: str) -> None:
         raise AssertionError('STATUS.md upgrades forbidden claims: ' + ', '.join(present_forbidden_claims))
 
 
-def self_test_status_text(extra_yaml_blocks: str = '') -> str:
-    foundation_entries = '\n'.join(f'  - "{entry}"' for entry in sorted(REQUIRED_MERGED_FOUNDATION))
+def self_test_status_text(
+    extra_yaml_blocks: str = '',
+    foundation_set: set[str] | None = None,
+) -> str:
+    if foundation_set is None:
+        foundation_set = REQUIRED_MERGED_FOUNDATION
+    foundation_entries = '\n'.join(f'  - "{entry}"' for entry in sorted(foundation_set))
     return f'''# STATUS
 
 ```yaml
@@ -158,7 +163,9 @@ def assert_status_invalid(status_text: str, expected_fragment: str) -> None:
 def run_self_tests() -> None:
     validate_status_text(self_test_status_text())
     assert_status_invalid(
-        self_test_status_text().replace('  - "PR #112 RTAQ-0029 responsive intake decision guard"\n', ''),
+        self_test_status_text(
+            foundation_set=REQUIRED_MERGED_FOUNDATION - {'PR #112 RTAQ-0029 responsive intake decision guard'},
+        ),
         'PR #112 RTAQ-0029 responsive intake decision guard',
     )
     validate_status_text(self_test_status_text('''```yaml
