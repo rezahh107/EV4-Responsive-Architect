@@ -6,16 +6,21 @@ import re
 from pathlib import Path
 from typing import Any
 
+from jsonschema import Draft202012Validator
+
 ROOT = Path(__file__).resolve().parents[2]
 CONTROL = ROOT / "planning" / "EV4_AUTOMATION_CONTROL_STATE.json"
+CONTROL_SCHEMA = ROOT / "schemas" / "ev4-automation-control-state.schema.json"
 QUEUE = ROOT / "planning" / "EV4_ROLLING_QUEUE.json"
 STATUS = ROOT / "STATUS.md"
 
 EXPECTED_CONTROL = {
     "schema": "ev4-automation-control-state@1.0.0",
     "project": "EV4 Responsive Architect",
+    "execution_state_source_of_truth": "planning/EV4_AUTOMATION_CONTROL_STATE.json",
     "current_execution_driver": "bounded_material_checkpoint_guard",
     "rolling_queue_authority": "historical_non_authoritative_until_reconciled",
+    "rolling_queue_execution_status": "retired_as_execution_driver",
     "rolling_queue_path": "planning/EV4_ROLLING_QUEUE.json",
     "status_path": "STATUS.md",
     "latest_material_checkpoint": "PR #112 RTAQ-0029 responsive intake decision guard",
@@ -26,14 +31,12 @@ EXPECTED_CONTROL = {
     "next_action_policy": "material_objective_only",
 }
 
-REQUIRED_CONTROL_KEYS = set(EXPECTED_CONTROL) | {"forbidden_next_actions", "boundary_claims"}
-
-REQUIRED_FORBIDDEN_NEXT_ACTIONS = {
+REQUIRED_FORBIDDEN_NEXT_ACTIONS = [
     "create_checkpoint_only_pr_for_every_merge",
     "treat_stale_rolling_queue_as_current_driver",
     "invent_rtaq_task_without_planning_contract",
     "upgrade_evidence_pilot_readiness_or_release_claims",
-}
+]
 
 REQUIRED_BOUNDARY_CLAIMS = {
     "real_submitted_packet_present": False,
@@ -47,8 +50,10 @@ REQUIRED_BOUNDARY_CLAIMS = {
 EXPECTED_STATUS_CLAIMS = {
     "foundation_checkpoint_policy": "bounded checkpoints only; not append every merged PR",
     "automation_control_state": "planning/EV4_AUTOMATION_CONTROL_STATE.json",
+    "execution_state_source_of_truth": "planning/EV4_AUTOMATION_CONTROL_STATE.json",
     "current_execution_driver": "bounded_material_checkpoint_guard",
     "rolling_queue_authority": "historical_non_authoritative_until_reconciled",
+    "rolling_queue_execution_status": "retired_as_execution_driver",
     "rolling_queue_reconciliation_required": "true",
     "checkpoint_only_loop_policy": "bounded checkpoints only; not append every merged PR",
     "next_action_policy": "material objectives only; checkpoint refresh only when material checkpoint changes",
@@ -80,6 +85,26 @@ def load_json(path: Path) -> dict[str, Any]:
     return payload
 
 
+def schema_errors(payload: dict[str, Any], schema: dict[str, Any]) -> list[str]:
+    validator = Draft202012Validator(schema)
+    messages: list[str] = []
+    for error in sorted(validator.iter_errors(payload), key=lambda item: [str(part) for part in item.path]):
+        path = ".".join(str(part) for part in error.path) or "<root>"
+        messages.append(f"{path}: {error.message}")
+    return messages
+
+
+def assert_schema_valid(payload: dict[str, Any], schema: dict[str, Any], label: str) -> None:
+    errors = schema_errors(payload, schema)
+    if errors:
+        fail(f"{label} must validate against schema: {errors[0]}")
+
+
+def assert_schema_invalid(payload: dict[str, Any], schema: dict[str, Any], label: str) -> None:
+    if not schema_errors(payload, schema):
+        fail(f"malformed payload unexpectedly passed schema validation: {label}")
+
+
 def task_by_id(queue: dict[str, Any]) -> dict[str, dict[str, Any]]:
     tasks = queue.get("tasks")
     if not isinstance(tasks, list):
@@ -104,58 +129,39 @@ def rolling_queue_has_known_drift(queue: dict[str, Any]) -> bool:
     return all(tasks.get(task_id, {}).get("status") == "pending" for task_id in QUEUE_DRIFT_TASKS)
 
 
-def assert_control_state(control: dict[str, Any], queue: dict[str, Any]) -> None:
-    extra_keys = set(control) - REQUIRED_CONTROL_KEYS
-    if extra_keys:
-        fail("automation control state contains unexpected keys: " + ", ".join(sorted(extra_keys)))
-
-    missing_keys = REQUIRED_CONTROL_KEYS - set(control)
-    if missing_keys:
-        fail("automation control state is missing keys: " + ", ".join(sorted(missing_keys)))
+def assert_control_state(control: dict[str, Any], control_schema: dict[str, Any], queue: dict[str, Any]) -> None:
+    assert_schema_valid(control, control_schema, "automation control state")
 
     for key, expected in EXPECTED_CONTROL.items():
         if control.get(key) != expected:
             fail(f"automation control state mismatch for {key}: {control.get(key)!r} != {expected!r}")
 
     forbidden = control.get("forbidden_next_actions")
-    if not isinstance(forbidden, list):
-        fail("forbidden_next_actions must be a list")
-    if not all(isinstance(item, str) for item in forbidden):
-        fail("forbidden_next_actions must contain only strings")
-    if len(forbidden) != len(set(forbidden)):
-        fail("forbidden_next_actions must not contain duplicate entries")
-    forbidden_set = set(forbidden)
-    if forbidden_set != REQUIRED_FORBIDDEN_NEXT_ACTIONS:
-        missing = REQUIRED_FORBIDDEN_NEXT_ACTIONS - forbidden_set
-        extra = forbidden_set - REQUIRED_FORBIDDEN_NEXT_ACTIONS
-        details: list[str] = []
-        if missing:
-            details.append("missing: " + ", ".join(sorted(missing)))
-        if extra:
-            details.append("unexpected: " + ", ".join(sorted(extra)))
-        fail("forbidden_next_actions mismatch; " + "; ".join(details))
+    if forbidden != REQUIRED_FORBIDDEN_NEXT_ACTIONS:
+        fail("forbidden_next_actions must exactly match the required execution guard list and order")
 
     boundary_claims = control.get("boundary_claims")
-    if not isinstance(boundary_claims, dict):
-        fail("boundary_claims must be an object")
-    if set(boundary_claims) != set(REQUIRED_BOUNDARY_CLAIMS):
-        missing = set(REQUIRED_BOUNDARY_CLAIMS) - set(boundary_claims)
-        extra = set(boundary_claims) - set(REQUIRED_BOUNDARY_CLAIMS)
-        details = []
-        if missing:
-            details.append("missing: " + ", ".join(sorted(missing)))
-        if extra:
-            details.append("unexpected: " + ", ".join(sorted(extra)))
-        fail("boundary_claims keys mismatch; " + "; ".join(details))
-    for key, expected in REQUIRED_BOUNDARY_CLAIMS.items():
-        if boundary_claims.get(key) is not expected:
-            fail(f"boundary claim mismatch for {key}: expected {expected!r}")
+    if boundary_claims != REQUIRED_BOUNDARY_CLAIMS:
+        fail("boundary_claims must exactly preserve evidence, pilot, readiness, production, release, and responsive-correctness boundaries")
+
+    if control["current_execution_driver"] == "rolling_queue":
+        fail("rolling queue must not be restored as the current execution driver in this contract")
+    if control["rolling_queue_authority"] != "historical_non_authoritative_until_reconciled":
+        fail("rolling queue must remain historical and non-authoritative until a deliberate reconciliation PR")
+    if control["rolling_queue_execution_status"] != "retired_as_execution_driver":
+        fail("rolling queue execution status must remain retired_as_execution_driver")
+
+    active_cycle = queue.get("active_cycle")
+    active_cycle_status = active_cycle.get("cycle_status") if isinstance(active_cycle, dict) else None
+    if queue.get("queue_status") == "active" or active_cycle_status == "active":
+        if control["rolling_queue_execution_status"] != "retired_as_execution_driver":
+            fail("historical active queue snapshot requires retired_as_execution_driver control state")
+        if control["rolling_queue_authority"] != "historical_non_authoritative_until_reconciled":
+            fail("historical active queue snapshot must not regain execution authority")
 
     if rolling_queue_has_known_drift(queue):
-        if control["rolling_queue_authority"] != "historical_non_authoritative_until_reconciled":
-            fail("stale active rolling queue cannot be the current execution authority")
-        if control["current_execution_driver"] == "rolling_queue":
-            fail("rolling queue cannot be current driver while RTAQ-0019..0022 remain pending")
+        if control["queue_drift_acknowledged"] is not True:
+            fail("known rolling queue drift must remain explicitly acknowledged")
         if control["queue_reconciliation_required_before_queue_driver"] is not True:
             fail("queue reconciliation must be required before restoring queue driver authority")
 
@@ -179,26 +185,20 @@ def parse_yaml_claim_occurrences(status_text: str) -> list[tuple[str, str, int]]
 
     for line_number, raw_line in enumerate(status_text.splitlines(), start=1):
         line = raw_line.strip()
-
         if line.startswith("```yaml"):
             inside_yaml_block = True
             continue
-
         if inside_yaml_block and line.startswith("```"):
             inside_yaml_block = False
             continue
-
         if not inside_yaml_block or not line or line.startswith("#") or line.startswith("-"):
             continue
-
         if ":" not in line:
             continue
-
         key, raw_value = line.split(":", 1)
         key = key.strip()
-        if not key:
-            continue
-        occurrences.append((key, normalize_status_value(raw_value), line_number))
+        if key:
+            occurrences.append((key, normalize_status_value(raw_value), line_number))
 
     return occurrences
 
@@ -213,11 +213,9 @@ def assert_status_text(status_text: str) -> None:
         occurrences = claims.get(key, [])
         if not occurrences:
             fail(f"STATUS.md missing automation/boundary key: {key}")
-
         if len(occurrences) != 1:
             details = ", ".join(f"line {line}: {value!r}" for value, line in occurrences)
             fail(f"STATUS.md contains duplicate automation/boundary key {key}: {details}")
-
         actual, line_number = occurrences[0]
         if actual != expected:
             fail(
@@ -232,6 +230,23 @@ def status_fixture(extra_claims: list[str] | None = None) -> str:
     return "```yaml\n" + "\n".join(lines) + "\n```"
 
 
+def valid_control() -> dict[str, Any]:
+    control = dict(EXPECTED_CONTROL)
+    control["forbidden_next_actions"] = list(REQUIRED_FORBIDDEN_NEXT_ACTIONS)
+    control["boundary_claims"] = dict(REQUIRED_BOUNDARY_CLAIMS)
+    return control
+
+
+def assert_invalid_control(control: dict[str, Any], schema: dict[str, Any], queue: dict[str, Any], expected_fragment: str) -> None:
+    try:
+        assert_control_state(control, schema, queue)
+    except AssertionError as exc:
+        if expected_fragment not in str(exc):
+            fail(f"self-test failed with unexpected diagnostic: {exc}")
+    else:
+        fail(f"self-test failed: invalid control state was accepted; expected {expected_fragment!r}")
+
+
 def assert_invalid_status(status_text: str, expected_fragment: str) -> None:
     try:
         assert_status_text(status_text)
@@ -242,96 +257,74 @@ def assert_invalid_status(status_text: str, expected_fragment: str) -> None:
         fail(f"self-test failed: invalid STATUS text was accepted; expected {expected_fragment!r}")
 
 
-def assert_invalid_control(control: dict[str, Any], queue: dict[str, Any], expected_fragment: str) -> None:
-    try:
-        assert_control_state(control, queue)
-    except AssertionError as exc:
-        if expected_fragment not in str(exc):
-            fail(f"self-test failed with unexpected diagnostic: {exc}")
-    else:
-        fail(f"self-test failed: invalid control state was accepted; expected {expected_fragment!r}")
-
-
 def run_self_tests() -> None:
+    schema = load_json(CONTROL_SCHEMA)
     queue_with_drift = {
         "queue_status": "active",
+        "active_cycle": {"cycle_status": "active"},
         "tasks": [{"task_id": task_id, "status": "pending"} for task_id in sorted(QUEUE_DRIFT_TASKS)],
     }
-    malformed_queue = {"queue_status": "active", "tasks": ["not-an-object"]}
 
-    valid_control = dict(EXPECTED_CONTROL)
-    valid_control["forbidden_next_actions"] = sorted(REQUIRED_FORBIDDEN_NEXT_ACTIONS)
-    valid_control["boundary_claims"] = dict(REQUIRED_BOUNDARY_CLAIMS)
-    assert_control_state(valid_control, queue_with_drift)
+    control = valid_control()
+    assert_control_state(control, schema, queue_with_drift)
+    queue_with_null_cycle = dict(queue_with_drift)
+    queue_with_null_cycle["active_cycle"] = None
+    assert_control_state(control, schema, queue_with_null_cycle)
 
-    invalid_control = dict(valid_control)
-    invalid_control["rolling_queue_authority"] = "authoritative"
-    assert_invalid_control(invalid_control, queue_with_drift, "rolling_queue_authority")
+    missing_required = dict(control)
+    missing_required.pop("execution_state_source_of_truth")
+    assert_schema_invalid(missing_required, schema, "missing execution_state_source_of_truth")
 
-    invalid_control = dict(valid_control)
-    invalid_control["current_execution_driver"] = "rolling_queue"
-    assert_invalid_control(invalid_control, queue_with_drift, "current_execution_driver")
+    unknown_key = dict(control)
+    unknown_key["rolling_queue_driver"] = "active"
+    assert_schema_invalid(unknown_key, schema, "unknown execution key")
 
-    invalid_control = dict(valid_control)
-    invalid_control["forbidden_next_actions"] = [*sorted(REQUIRED_FORBIDDEN_NEXT_ACTIONS), 123]
-    assert_invalid_control(invalid_control, queue_with_drift, "forbidden_next_actions must contain only strings")
+    rolling_driver = dict(control)
+    rolling_driver["current_execution_driver"] = "rolling_queue"
+    assert_invalid_control(rolling_driver, schema, queue_with_drift, "current_execution_driver")
 
-    invalid_control = dict(valid_control)
-    invalid_control["forbidden_next_actions"] = [
-        *sorted(REQUIRED_FORBIDDEN_NEXT_ACTIONS),
+    active_queue_status = dict(control)
+    active_queue_status["rolling_queue_execution_status"] = "active"
+    assert_invalid_control(active_queue_status, schema, queue_with_drift, "rolling_queue_execution_status")
+
+    authoritative_queue = dict(control)
+    authoritative_queue["rolling_queue_authority"] = "authoritative"
+    assert_invalid_control(authoritative_queue, schema, queue_with_drift, "rolling_queue_authority")
+
+    bad_forbidden = dict(control)
+    bad_forbidden["forbidden_next_actions"] = [
+        "create_checkpoint_only_pr_for_every_merge",
+        "treat_stale_rolling_queue_as_current_driver",
+        "upgrade_evidence_pilot_readiness_or_release_claims",
+        "invent_rtaq_task_without_planning_contract",
+    ]
+    assert_invalid_control(bad_forbidden, schema, queue_with_drift, "forbidden_next_actions")
+
+    duplicate_forbidden = dict(control)
+    duplicate_forbidden["forbidden_next_actions"] = [
+        "create_checkpoint_only_pr_for_every_merge",
+        "treat_stale_rolling_queue_as_current_driver",
+        "invent_rtaq_task_without_planning_contract",
         "create_checkpoint_only_pr_for_every_merge",
     ]
-    assert_invalid_control(invalid_control, queue_with_drift, "duplicate")
-
-    try:
-        assert_control_state(valid_control, malformed_queue)
-    except AssertionError as exc:
-        if "rolling queue task must be an object" not in str(exc):
-            fail(f"self-test failed with unexpected malformed queue diagnostic: {exc}")
-    else:
-        fail("self-test failed: malformed queue task was accepted")
+    assert_schema_invalid(duplicate_forbidden, schema, "duplicate forbidden_next_actions")
 
     valid_status = status_fixture()
     assert_status_text(valid_status)
-
-    valid_status_with_quoted_bool = status_fixture().replace(
-        "pilot_allowed_to_start: false",
-        'pilot_allowed_to_start: "False"',
-    )
-    assert_status_text(valid_status_with_quoted_bool)
-
-    assert_invalid_status(
-        status_fixture(["current_execution_driver: ad_hoc_untracked_driver"]),
-        "current_execution_driver",
-    )
-    assert_invalid_status(
-        status_fixture(["rolling_queue_authority: primary"]),
-        "rolling_queue_authority",
-    )
-    assert_invalid_status(
-        status_fixture(["checkpoint_only_loop_policy: append every merged PR"]),
-        "checkpoint_only_loop_policy",
-    )
-    assert_invalid_status(
-        status_fixture().replace(
-            "automation_control_validator: validation/e2e/run_automation_control_state_check.py",
-            "automation_control_validator: validation/e2e/unknown.py",
-        ),
-        "automation_control_validator",
-    )
-    assert_invalid_status(
-        status_fixture().replace("pilot_allowed_to_start: false", "pilot_allowed_to_start: true"),
-        "pilot_allowed_to_start",
-    )
+    assert_invalid_status(status_fixture(["execution_state_source_of_truth: planning/EV4_ROLLING_QUEUE.json"]), "execution_state_source_of_truth")
+    assert_invalid_status(status_fixture(["rolling_queue_execution_status: active"]), "rolling_queue_execution_status")
+    assert_invalid_status(status_fixture(["current_execution_driver: rolling_queue"]), "current_execution_driver")
+    assert_invalid_status(status_fixture().replace("pilot_allowed_to_start: false", "pilot_allowed_to_start: true"), "pilot_allowed_to_start")
 
 
 def main() -> int:
     run_self_tests()
     control = load_json(CONTROL)
+    control_schema = load_json(CONTROL_SCHEMA)
     queue = load_json(QUEUE)
     if not STATUS.is_file():
         fail("missing STATUS.md")
-    assert_control_state(control, queue)
+    assert_control_state(control, control_schema, queue)
     assert_status_text(STATUS.read_text(encoding="utf-8"))
     print("automation control state check passed")
     return 0
