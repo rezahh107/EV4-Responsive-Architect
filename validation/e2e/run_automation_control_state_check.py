@@ -226,8 +226,10 @@ def assert_status_text(status_text: str) -> None:
             )
 
 
-def expected_status_text() -> str:
-    return "\n".join(f"{key}: {value}" for key, value in EXPECTED_STATUS_CLAIMS.items())
+def status_fixture(extra_claims: list[str] | None = None) -> str:
+    lines = [f"{key}: {value}" for key, value in EXPECTED_STATUS_CLAIMS.items()]
+    lines.extend(extra_claims or [])
+    return "```yaml\n" + "\n".join(lines) + "\n```"
 
 
 def assert_invalid_status(status_text: str, expected_fragment: str) -> None:
@@ -289,36 +291,36 @@ def run_self_tests() -> None:
     else:
         fail("self-test failed: malformed queue task was accepted")
 
-    valid_status = expected_status_text()
+    valid_status = status_fixture()
     assert_status_text(valid_status)
 
-    valid_status_with_quoted_bool = valid_status.replace(
+    valid_status_with_quoted_bool = status_fixture().replace(
         "pilot_allowed_to_start: false",
         'pilot_allowed_to_start: "False"',
     )
     assert_status_text(valid_status_with_quoted_bool)
 
     assert_invalid_status(
-        valid_status + "\ncurrent_execution_driver: ad_hoc_untracked_driver\n",
+        status_fixture(["current_execution_driver: ad_hoc_untracked_driver"]),
         "current_execution_driver",
     )
     assert_invalid_status(
-        valid_status + "\nrolling_queue_authority: primary\n",
+        status_fixture(["rolling_queue_authority: primary"]),
         "rolling_queue_authority",
     )
     assert_invalid_status(
-        valid_status + "\ncheckpoint_only_loop_policy: append every merged PR\n",
+        status_fixture(["checkpoint_only_loop_policy: append every merged PR"]),
         "checkpoint_only_loop_policy",
     )
     assert_invalid_status(
-        valid_status.replace(
+        status_fixture().replace(
             "automation_control_validator: validation/e2e/run_automation_control_state_check.py",
             "automation_control_validator: validation/e2e/unknown.py",
         ),
         "automation_control_validator",
     )
     assert_invalid_status(
-        valid_status.replace("pilot_allowed_to_start: false", "pilot_allowed_to_start: true"),
+        status_fixture().replace("pilot_allowed_to_start: false", "pilot_allowed_to_start: true"),
         "pilot_allowed_to_start",
     )
 
