@@ -173,6 +173,18 @@ def assert_status_invalid(status_text: str, expected_fragment: str) -> None:
 def run_self_tests() -> None:
     validate_status_text(self_test_status_text())
 
+    validate_status_text(self_test_status_text('''```yaml
+production_ready: "false"
+pilot_allowed_to_start:   false
+```'''))
+
+    assert_status_invalid(
+        self_test_status_text('''```yaml
+production_ready: pending
+```'''),
+        'production_ready: pending',
+    )
+
     assert_status_invalid(
         self_test_status_text('''```yaml
 production_ready: true
