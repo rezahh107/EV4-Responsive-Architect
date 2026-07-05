@@ -101,7 +101,7 @@ def main() -> int:
         _assert_rejected(
             "sample marker",
             lambda p: p.update({"packet_id": "SAMPLE-issue-8-submitted-mode-path-probe"}),
-            "sample markers",
+            "sample or placeholder markers",
         )
     except AssertionError as exc:
         print(f"Evidence intake submitted-mode path check failed: {exc}")
