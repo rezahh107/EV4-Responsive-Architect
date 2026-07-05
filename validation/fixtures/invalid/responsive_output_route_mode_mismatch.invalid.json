@@ -1,5 +1,4 @@
 {
-  "$schema_file": "ev4-responsive-output.schema.json",
   "schema": "ev4-responsive-output@0.3.0",
   "source_packet_ref": "ev4-responsive-start-packet.sample.invalid-route-mismatch",
   "selected_route": "viewport_specific_variant_tree",
@@ -40,9 +39,13 @@
     ]
   },
   "validation_plan": {
-    "required_checks": ["Check route/mode consistency."],
-    "evidence_to_collect": ["mobile_after_build_screenshot"],
-    "claim_boundary": "No validation claim."
+    "required_checks": [
+      "Check route/mode consistency."
+    ],
+    "evidence_to_collect": [
+      "mobile_after_build_screenshot"
+    ],
+    "claim_boundary": "Fixture remains negative."
   },
   "final_review": {
     "handoff_ready": false,
