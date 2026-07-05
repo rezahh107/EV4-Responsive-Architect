@@ -46,6 +46,8 @@ issue_reference:
   evidence_submission_status: submitted
 ```
 
+The `issue_reference.issue_url_or_ref` field must point to Issue #8, either as `"#8"` or the canonical repository URL for Issue #8. Any other issue number or issue URL is a stop condition before readiness generation.
+
 Reject the packet before pilot readiness if any of these sample or placeholder markers appear in identity, hashes, payload names, or attachment descriptors:
 
 ```text
@@ -104,6 +106,7 @@ python validation/e2e/run_pilot_readiness_check.py --packet examples/smart-home-
 Stop before readiness generation if any of the following is true:
 
 - packet status is still `draft`;
+- Issue reference URL or shorthand does not point to #8;
 - evidence files are missing;
 - screenshot widths are absent;
 - symptoms are generic placeholders;
