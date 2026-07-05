@@ -14,9 +14,18 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 PREFLIGHT_GUIDE = ROOT / "docs" / "30_ISSUE_8_SUBMITTED_PACKET_PREFLIGHT_GUIDE_RTAQ_0022.md"
 STATUS = ROOT / "STATUS.md"
+ISSUE_8_REFERENCE_PATTERNS = (
+    r'issue_url_or_ref:\s*["\']#8["\']',
+    r'issue_url_or_ref:\s*["\']https://github\.com/rezahh107/EV4-Responsive-Architect/issues/8["\']',
+)
+FORBIDDEN_ISSUE_REFERENCE_PATTERNS = (
+    r'issue_url_or_ref:\s*["\']#(?!8\b)\d+["\']',
+    r'issue_url_or_ref:\s*["\']https://github\.com/rezahh107/EV4-Responsive-Architect/issues/(?!8\b)\d+["\']',
+)
 
 REQUIRED_PREFLIGHT_SNIPPETS = (
     "issue_number: 8",
+    "issue_url_or_ref: \"#8\"",
     "packet_status: draft",
     "validation_result: pending",
     "pilot_allowed_to_start: false",
@@ -29,6 +38,7 @@ REQUIRED_PREFLIGHT_SNIPPETS = (
     "Stop before readiness generation",
     "Stop before pilot execution",
     "Issue #8 has not received a real submitted packet",
+    "Issue reference URL or shorthand does not point to #8",
 )
 
 REQUIRED_STATUS_SNIPPETS = (
@@ -74,12 +84,21 @@ def _assert_all_absent(text: str, snippets: tuple[str, ...], label: str) -> None
         raise AssertionError(f"{label} contains forbidden readiness-upgrade snippets: {present}")
 
 
+def _assert_issue_8_reference_locked(text: str) -> None:
+    if not any(re.search(pattern, text) for pattern in ISSUE_8_REFERENCE_PATTERNS):
+        raise AssertionError("Issue #8 preflight guide must include an explicit issue_url_or_ref for #8")
+    conflicts = [pattern for pattern in FORBIDDEN_ISSUE_REFERENCE_PATTERNS if re.search(pattern, text)]
+    if conflicts:
+        raise AssertionError(f"Issue #8 preflight guide contains conflicting issue_url_or_ref patterns: {conflicts}")
+
+
 def main() -> int:
     try:
         preflight = _read(PREFLIGHT_GUIDE)
         status = _read(STATUS)
         _assert_all_present(preflight, REQUIRED_PREFLIGHT_SNIPPETS, "Issue #8 preflight guide")
         _assert_all_absent(preflight, FORBIDDEN_PREFLIGHT_SNIPPETS, "Issue #8 preflight guide")
+        _assert_issue_8_reference_locked(preflight)
         _assert_all_present(status, REQUIRED_STATUS_SNIPPETS, "STATUS.md evidence boundary")
     except (AssertionError, OSError) as exc:
         print(f"Issue #8 preflight boundary check failed: {exc}", file=sys.stderr)
