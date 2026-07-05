@@ -389,7 +389,7 @@ def _mark_probe_real_shadow_requested(packet: dict[str, Any]) -> None:
 
 
 def run_self_test() -> None:
-    issue_8_path = Path("issue-8/evidence_intake_packet.submitted.json")
+    issue_8_path = ROOT / "issue-8/evidence_intake_packet.submitted.json"
     valid_issue_8_probe = _real_issue_submission_probe(ISSUE_8_NUMBER)
     validate_packet_origin(valid_issue_8_probe, issue_8_path)
     validate_submitted_packet_source_kind_lock(valid_issue_8_probe)
@@ -397,7 +397,7 @@ def run_self_test() -> None:
 
     assert_rejected(
         "wrong issue boundary",
-        lambda: validate_packet_origin(_real_issue_submission_probe(9), Path("issue-9/evidence_intake_packet.submitted.json")),
+        lambda: validate_packet_origin(_real_issue_submission_probe(9), ROOT / "issue-9/evidence_intake_packet.submitted.json"),
         "Issue #8",
     )
 
