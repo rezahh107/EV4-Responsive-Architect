@@ -74,6 +74,7 @@ active_validation:
   - validation/e2e/run_submitted_packet_eligibility_gate_check.py
   - validation/e2e/run_submitted_packet_readiness_dry_run.py
   - validation/e2e/run_evidence_intake_check.py
+  - validation/e2e/run_evidence_intake_submitted_mode_path_check.py
   - validation/e2e/run_evidence_intake_fixture_matrix_check.py
   - validation/e2e/run_pilot_readiness_check.py
   - validation/e2e/run_pilot_readiness_boundary_check.py
@@ -166,6 +167,7 @@ automatic_check:
   - python validation/e2e/run_responsive_tree_architecture_refactor_check.py
   - python validation/e2e/run_submitted_packet_readiness_dry_run.py --self-test
   - python validation/e2e/run_evidence_intake_check.py --self-test
+  - python validation/e2e/run_evidence_intake_submitted_mode_path_check.py
   - python validation/e2e/run_evidence_intake_fixture_matrix_check.py
   - python validation/e2e/run_pilot_readiness_check.py
   - python validation/e2e/run_pilot_readiness_boundary_check.py
