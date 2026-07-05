@@ -60,11 +60,20 @@ def _submitted_probe() -> dict[str, Any]:
 
 def _validate(packet: dict[str, Any]) -> None:
     issue_parent = ROOT / "issue-8"
-    issue_parent.mkdir(exist_ok=True)
-    with tempfile.TemporaryDirectory(prefix="submitted-mode-probe-", dir=issue_parent) as temp_dir:
-        path = Path(temp_dir) / "evidence_intake_packet.submitted.json"
-        path.write_text(json.dumps(packet, indent=2, sort_keys=True), encoding="utf-8")
-        CHECK.validate_packet(path, run_full_schema_validator=False, submitted_mode=True)
+    created_issue_parent = not issue_parent.exists()
+    if created_issue_parent:
+        issue_parent.mkdir()
+    try:
+        with tempfile.TemporaryDirectory(prefix="submitted-mode-probe-", dir=issue_parent) as temp_dir:
+            path = Path(temp_dir) / "evidence_intake_packet.submitted.json"
+            path.write_text(json.dumps(packet, indent=2, sort_keys=True), encoding="utf-8")
+            CHECK.validate_packet(path, run_full_schema_validator=False, submitted_mode=True)
+    finally:
+        if created_issue_parent:
+            try:
+                issue_parent.rmdir()
+            except OSError:
+                pass
 
 
 def _assert_rejected(label: str, mutate: Callable[[dict[str, Any]], None], expected_fragment: str) -> None:
