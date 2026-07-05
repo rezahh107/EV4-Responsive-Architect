@@ -56,8 +56,12 @@ def assert_schema_invalid(payload: dict[str, Any], schema: dict[str, Any], label
 
 def assert_schema_negative_paths(queue: dict[str, Any], schema: dict[str, Any]) -> None:
     pending_with_completion = copy.deepcopy(queue)
-    pending_task = next(task for task in pending_with_completion["tasks"] if task["status"] == "pending")
-    pending_task["completion"] = {
+    source_task = next(
+        (task for task in pending_with_completion["tasks"] if task["status"] == "pending"),
+        pending_with_completion["tasks"][0],
+    )
+    source_task["status"] = "pending"
+    source_task["completion"] = {
         "run_id": "negative-test",
         "status": "completed",
         "artifacts": ["invalid"],
