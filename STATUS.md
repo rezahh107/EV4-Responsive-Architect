@@ -115,6 +115,7 @@ controlled_use_docs:
   - docs/41_ISSUE8_ARTIFACT_SCOPE_GUARD_RTAQ_0035.md
   - docs/42_PILOT_READINESS_VALIDATE_CHAIN_RTAQ_0036.md
   - docs/43_CONTROL_CHECKPOINT_RECONCILIATION_RTAQ_0037.md
+  - docs/44_CONTROL_STATE_POST_QUEUE_RECONCILIATION_RTAQ_0039.md
 ```
 
 ## Automation Control State
@@ -123,10 +124,10 @@ controlled_use_docs:
 automation_control_state: planning/EV4_AUTOMATION_CONTROL_STATE.json
 execution_state_source_of_truth: planning/EV4_AUTOMATION_CONTROL_STATE.json
 current_execution_driver: bounded_material_checkpoint_guard
-rolling_queue_authority: historical_non_authoritative_until_reconciled
+rolling_queue_authority: historical_reconciled_archive
 rolling_queue_execution_status: retired_as_execution_driver
-rolling_queue_reconciliation_required: true
-latest_material_checkpoint: PR #120 RTAQ-0036 pilot readiness Validate chain closure
+rolling_queue_reconciliation_required: false
+latest_material_checkpoint: PR #122 RTAQ-0038 rolling queue archive reconciliation
 checkpoint_only_loop_policy: bounded checkpoints only; not append every merged PR
 next_action_policy: material objectives only; checkpoint refresh only when material checkpoint changes
 automation_control_validator: validation/e2e/run_automation_control_state_check.py
