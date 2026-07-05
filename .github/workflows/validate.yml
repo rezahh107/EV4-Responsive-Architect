@@ -60,6 +60,7 @@ jobs:
           git rev-parse --short HEAD
           python --version
           test -f validation/e2e/run_responsive_tree_architecture_refactor_check.py
+          test -f validation/e2e/run_submitted_packet_eligibility_gate_check.py
           test -f validation/e2e/run_submitted_packet_readiness_dry_run.py
           test -f validation/e2e/run_evidence_intake_check.py
           test -f validation/e2e/run_evidence_intake_submitted_mode_path_check.py
@@ -68,6 +69,7 @@ jobs:
           test -f validation/e2e/run_pilot_readiness_boundary_check.py
           test -f validation/e2e/run_issue_8_preflight_boundary_check.py
           test -f validation/e2e/run_builder_responsive_input_boundary_check.py
+          test -f validation/e2e/run_task_quality_gate_check.py
           test -f validation/e2e/run_rtaq_ssot_guard_check.py
           test -f validation/e2e/run_status_merged_foundation_guard_check.py
           test -f validation/e2e/run_automation_control_state_check.py
@@ -77,6 +79,10 @@ jobs:
         run: python validation/e2e/run_rolling_queue_check.py
       - name: Run ledger guard
         run: python validation/e2e/run_run_ledger_check.py
+      - name: Task quality gate
+        run: python validation/e2e/run_task_quality_gate_check.py
+      - name: Submitted packet eligibility gate
+        run: python validation/e2e/run_submitted_packet_eligibility_gate_check.py
       - name: Refactor check
         run: python validation/e2e/run_responsive_tree_architecture_refactor_check.py
       - name: Submitted packet readiness dry run
