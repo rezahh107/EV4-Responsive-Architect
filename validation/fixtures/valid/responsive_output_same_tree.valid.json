@@ -1,5 +1,4 @@
 {
-  "$schema_file": "ev4-responsive-output.schema.json",
   "schema": "ev4-responsive-output@0.3.0",
   "source_packet_ref": "ev4-responsive-start-packet.sample.same-tree",
   "selected_route": "same_tree_responsive_overrides",
