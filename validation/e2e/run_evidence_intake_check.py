@@ -365,15 +365,65 @@ def _real_issue_submission_probe(issue_number: int) -> dict[str, Any]:
     return packet
 
 
-def run_self_test() -> None:
-    validate_packet_origin(_real_issue_submission_probe(ISSUE_8_NUMBER), Path("issue-8/evidence_intake_packet.submitted.json"))
+def assert_rejected(label: str, callback: Any, expected_fragment: str) -> None:
     try:
-        validate_packet_origin(_real_issue_submission_probe(9), Path("issue-9/evidence_intake_packet.submitted.json"))
+        callback()
     except AssertionError as exc:
-        if "Issue #8" not in str(exc):
-            raise AssertionError(f"wrong issue rejection must cite Issue #8 boundary, got: {exc}") from exc
+        if expected_fragment not in str(exc):
+            raise AssertionError(f"{label} rejection must cite {expected_fragment!r}, got: {exc}") from exc
     else:
-        raise AssertionError("real_issue_submission with issue_number != 8 must be rejected")
+        raise AssertionError(f"{label} must be rejected")
+
+
+def _mark_probe_real_shadow_requested(packet: dict[str, Any]) -> None:
+    packet["intake_verdict"] = {
+        "status": "allowed",
+        "missing_required_items": [],
+        "blocker_conflicts": [],
+        "evidence_quality_summary": "Self-test probe only; not submitted evidence.",
+        "pilot_allowed_to_start": True,
+        "sample_dry_run_allowed": False,
+        "real_pilot_allowed_to_start": True,
+        "allowed_scope": REAL_SHADOW_SCOPE,
+    }
+
+
+def run_self_test() -> None:
+    issue_8_path = Path("issue-8/evidence_intake_packet.submitted.json")
+    valid_issue_8_probe = _real_issue_submission_probe(ISSUE_8_NUMBER)
+    validate_packet_origin(valid_issue_8_probe, issue_8_path)
+    validate_submitted_packet_source_kind_lock(valid_issue_8_probe)
+    validate_submitted_packet_artifact_path_allowlist(valid_issue_8_probe, issue_8_path)
+
+    assert_rejected(
+        "wrong issue boundary",
+        lambda: validate_packet_origin(_real_issue_submission_probe(9), Path("issue-9/evidence_intake_packet.submitted.json")),
+        "Issue #8",
+    )
+
+    draft_real_shadow_probe = _real_issue_submission_probe(ISSUE_8_NUMBER)
+    _mark_probe_real_shadow_requested(draft_real_shadow_probe)
+    assert_rejected(
+        "unsubmitted real shadow probe",
+        lambda: validate_submitted_packet_source_kind_lock(draft_real_shadow_probe),
+        "packet_status=submitted or validated",
+    )
+
+    generated_artifact_probe = _real_issue_submission_probe(ISSUE_8_NUMBER)
+    generated_artifact_probe["main_ev4_handoff"]["source_ref"] = "examples/smart-home-connector/readiness/PILOT_READINESS_REPORT.generated.json"
+    assert_rejected(
+        "generated artifact source",
+        lambda: validate_submitted_packet_artifact_path_allowlist(generated_artifact_probe, issue_8_path),
+        "generated/report/bookkeeping artifact path",
+    )
+
+    disallowed_artifact_probe = _real_issue_submission_probe(ISSUE_8_NUMBER)
+    disallowed_artifact_probe["evidence_items"][0]["file_name"] = "exports/mobile-390.png"
+    assert_rejected(
+        "disallowed artifact source",
+        lambda: validate_submitted_packet_artifact_path_allowlist(disallowed_artifact_probe, issue_8_path),
+        "outside the submitted evidence artifact allowlist",
+    )
 
 
 def parse_args() -> argparse.Namespace:
