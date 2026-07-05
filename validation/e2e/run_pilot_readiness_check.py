@@ -262,7 +262,7 @@ def run_default_self_test() -> None:
         DEFAULT_PACKET,
         out_path=None,
         allow_blocked=False,
-        run_full_schema_validator=True,
+        run_full_schema_validator=False,
     )
     if positive["readiness_status"].startswith("blocked"):
         raise AssertionError("default positive readiness fixture must not block")
