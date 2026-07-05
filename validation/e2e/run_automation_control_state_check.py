@@ -146,8 +146,7 @@ def assert_control_state(control: dict[str, Any], schema: dict[str, Any], queue:
 
 def normalize_status_value(raw_value: str) -> str:
     value = raw_value.strip()
-    if " #" in value:
-        value = value.split(" #", 1)[0].strip()
+    value = re.split(r"\s+#\s+", value, maxsplit=1)[0].strip()
     if len(value) >= 2 and value[0] == value[-1] and value[0] in {'\"', "'"}:
         value = value[1:-1].strip()
     value = re.sub(r"\s+", " ", value)
@@ -252,6 +251,7 @@ def run_self_tests() -> None:
     assert_invalid_status(status_fixture(["current_execution_driver: rolling_queue"]), "current_execution_driver")
     assert_invalid_status(status_fixture().replace("rolling_queue_reconciliation_required: false", "rolling_queue_reconciliation_required: true"), "rolling_queue_reconciliation_required")
     assert_invalid_status(status_fixture().replace("pilot_allowed_to_start: false", "pilot_allowed_to_start: true"), "pilot_allowed_to_start")
+    assert_status_text(status_fixture(["ignored_comment_example: value # operator note"]))
 
 
 def main() -> int:
