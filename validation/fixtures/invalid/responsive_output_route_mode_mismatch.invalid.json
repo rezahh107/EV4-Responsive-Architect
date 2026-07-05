@@ -39,9 +39,13 @@
     ]
   },
   "validation_plan": {
-    "required_checks": ["Check route/mode consistency."],
-    "evidence_to_collect": ["mobile_after_build_screenshot"],
-    "claim_boundary": "No validation claim."
+    "required_checks": [
+      "Check route/mode consistency."
+    ],
+    "evidence_to_collect": [
+      "mobile_after_build_screenshot"
+    ],
+    "claim_boundary": "Fixture remains negative."
   },
   "final_review": {
     "handoff_ready": false,

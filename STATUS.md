@@ -74,6 +74,7 @@ active_validation:
   - validation/e2e/run_submitted_packet_readiness_dry_run.py
   - validation/e2e/run_evidence_intake_check.py
   - validation/e2e/run_evidence_intake_fixture_matrix_check.py
+  - validation/e2e/run_pilot_readiness_check.py
   - validation/e2e/run_pilot_readiness_boundary_check.py
   - validation/e2e/run_issue_8_preflight_boundary_check.py
   - validation/e2e/run_builder_responsive_input_boundary_check.py
@@ -111,6 +112,7 @@ controlled_use_docs:
   - docs/39_PRIMARY_VALIDATION_CHAIN_RTAQ_0033.md
   - docs/40_ISSUE8_SUBMITTED_PATH_GUARD_RTAQ_0034.md
   - docs/41_ISSUE8_ARTIFACT_SCOPE_GUARD_RTAQ_0035.md
+  - docs/42_PILOT_READINESS_VALIDATE_CHAIN_RTAQ_0036.md
 ```
 
 ## Automation Control State
@@ -161,6 +163,7 @@ automatic_check:
   - python validation/e2e/run_submitted_packet_readiness_dry_run.py --self-test
   - python validation/e2e/run_evidence_intake_check.py --self-test
   - python validation/e2e/run_evidence_intake_fixture_matrix_check.py
+  - python validation/e2e/run_pilot_readiness_check.py
   - python validation/e2e/run_pilot_readiness_boundary_check.py
   - python validation/e2e/run_issue_8_preflight_boundary_check.py
   - python validation/e2e/run_builder_responsive_input_boundary_check.py
