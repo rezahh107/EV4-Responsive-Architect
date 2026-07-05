@@ -19,6 +19,7 @@ MATRIX_INVALID_FIXTURE_EXPECTATIONS = {
     ROOT / "validation" / "fixtures" / "invalid" / "evidence_intake_duplicate_attachment.invalid.json": "must be unique",
     ROOT / "validation" / "fixtures" / "invalid" / "evidence_intake_real_generated_artifact.invalid.json": "generated/report/bookkeeping",
     ROOT / "validation" / "fixtures" / "invalid" / "evidence_intake_real_example_artifact.invalid.json": "submitted Issue #8 attachments",
+    ROOT / "validation" / "fixtures" / "invalid" / "evidence_intake_real_wrong_issue_artifact.invalid.json": "Issue #8-scoped attachment",
 }
 REQUIRED_VIEWPORTS = {"desktop", "tablet", "mobile"}
 SAMPLE_MARKERS = ("SAMPLE", "sample", ".sample", "placeholder")
@@ -36,6 +37,12 @@ EXAMPLE_OR_TEMPLATE_MARKERS = (
     "/examples/",
     "template/",
     "/template/",
+)
+ISSUE8_ATTACHMENT_MARKERS = (
+    "issues/8/",
+    "/issues/8/",
+    "issue-8",
+    "issue_8",
 )
 
 
@@ -112,6 +119,8 @@ def validate_fixture_matrix(packet: dict[str, Any]) -> None:
                 )
             if any(marker in lowered for marker in GENERATED_OR_BOOKKEEPING_MARKERS):
                 raise AssertionError(f"{field} must reference submitted evidence, not generated/report/bookkeeping artifact: {ref}")
+            if not any(marker in lowered for marker in ISSUE8_ATTACHMENT_MARKERS):
+                raise AssertionError(f"{field} must reference an Issue #8-scoped attachment: {ref}")
 
 
 def expect_matrix_invalid(path: Path, intake_module: Any, expected_fragment: str) -> None:
