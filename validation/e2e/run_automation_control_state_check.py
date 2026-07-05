@@ -76,7 +76,12 @@ def fail(message: str) -> None:
 
 
 def load_json(path: Path) -> dict[str, Any]:
-    payload = json.loads(path.read_text(encoding="utf-8"))
+    if not path.is_file():
+        fail(f"missing required JSON file: {path.relative_to(ROOT)}")
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError as exc:
+        fail(f"invalid JSON in {path.relative_to(ROOT)}: {exc}")
     if not isinstance(payload, dict):
         fail(f"{path.relative_to(ROOT)} must contain a JSON object")
     return payload
@@ -84,7 +89,8 @@ def load_json(path: Path) -> dict[str, Any]:
 
 def schema_error_messages(payload: dict[str, Any], schema: dict[str, Any]) -> list[str]:
     validator = Draft202012Validator(schema)
-    return [f"{'.'.join(str(p) for p in error.path) or '<root>'}: {error.message}" for error in validator.iter_errors(payload)]
+    errors = sorted(validator.iter_errors(payload), key=lambda item: [str(part) for part in item.path])
+    return [f"{'.'.join(str(p) for p in error.path) or '<root>'}: {error.message}" for error in errors]
 
 
 def assert_schema_valid(payload: dict[str, Any], schema: dict[str, Any], label: str) -> None:
@@ -248,7 +254,7 @@ def run_self_tests() -> None:
     incomplete_queue = {"queue_status": "complete", "active_cycle": {"cycle_status": "complete"}, "tasks": [{"task_id": "RTAQ-0001", "status": "pending"}]}
     assert_invalid_control(control, schema, incomplete_queue, "complete terminal rolling queue history")
     assert_status_text(status_fixture())
-    assert_invalid_status(status_fixture(["current_execution_driver: rolling_queue"]), "current_execution_driver")
+    assert_invalid_status(status_fixture().replace("current_execution_driver: bounded_material_checkpoint_guard", "current_execution_driver: rolling_queue"), "current_execution_driver")
     assert_invalid_status(status_fixture().replace("rolling_queue_reconciliation_required: false", "rolling_queue_reconciliation_required: true"), "rolling_queue_reconciliation_required")
     assert_invalid_status(status_fixture().replace("pilot_allowed_to_start: false", "pilot_allowed_to_start: true"), "pilot_allowed_to_start")
     assert_status_text(status_fixture(["ignored_comment_example: value # operator note"]))
