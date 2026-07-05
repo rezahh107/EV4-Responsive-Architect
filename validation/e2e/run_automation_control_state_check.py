@@ -23,7 +23,7 @@ EXPECTED_CONTROL = {
     "rolling_queue_execution_status": "retired_as_execution_driver",
     "rolling_queue_path": "planning/EV4_ROLLING_QUEUE.json",
     "status_path": "STATUS.md",
-    "latest_material_checkpoint": "PR #112 RTAQ-0029 responsive intake decision guard",
+    "latest_material_checkpoint": "PR #120 RTAQ-0036 pilot readiness Validate chain closure",
     "latest_checkpoint_guard": "PR #113 RTAQ-0030 bounded foundation checkpoint guard",
     "queue_drift_acknowledged": True,
     "queue_reconciliation_required_before_queue_driver": True,
