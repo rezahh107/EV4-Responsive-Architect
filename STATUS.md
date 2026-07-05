@@ -41,6 +41,7 @@ merged_foundation:
   - "PR #107 RTAQ-0025 active STATUS guard validation"
   - "PR #108 RTAQ-0026 STATUS foundation guard refresh"
   - "PR #112 RTAQ-0029 responsive intake decision guard"
+  - "PR #120 RTAQ-0036 pilot readiness Validate chain closure"
 pending_control_plane_pr: null
 ```
 
@@ -113,6 +114,7 @@ controlled_use_docs:
   - docs/40_ISSUE8_SUBMITTED_PATH_GUARD_RTAQ_0034.md
   - docs/41_ISSUE8_ARTIFACT_SCOPE_GUARD_RTAQ_0035.md
   - docs/42_PILOT_READINESS_VALIDATE_CHAIN_RTAQ_0036.md
+  - docs/43_CONTROL_CHECKPOINT_RECONCILIATION_RTAQ_0037.md
 ```
 
 ## Automation Control State
@@ -124,6 +126,7 @@ current_execution_driver: bounded_material_checkpoint_guard
 rolling_queue_authority: historical_non_authoritative_until_reconciled
 rolling_queue_execution_status: retired_as_execution_driver
 rolling_queue_reconciliation_required: true
+latest_material_checkpoint: PR #120 RTAQ-0036 pilot readiness Validate chain closure
 checkpoint_only_loop_policy: bounded checkpoints only; not append every merged PR
 next_action_policy: material objectives only; checkpoint refresh only when material checkpoint changes
 automation_control_validator: validation/e2e/run_automation_control_state_check.py
