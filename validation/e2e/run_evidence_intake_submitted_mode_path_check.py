@@ -6,7 +6,6 @@ submit, validate, or upgrade real Issue #8 evidence.
 """
 from __future__ import annotations
 
-import copy
 import importlib.util
 import json
 import tempfile
@@ -59,25 +58,13 @@ def _submitted_probe() -> dict[str, Any]:
     return packet
 
 
-def _write_probe(packet: dict[str, Any]) -> Path:
+def _validate(packet: dict[str, Any]) -> None:
     issue_parent = ROOT / "issue-8"
     issue_parent.mkdir(exist_ok=True)
-    temp_dir = tempfile.TemporaryDirectory(prefix="submitted-mode-probe-", dir=issue_parent)
-    path = Path(temp_dir.name) / "evidence_intake_packet.submitted.json"
-    path.write_text(json.dumps(packet, indent=2, sort_keys=True), encoding="utf-8")
-    # Keep the TemporaryDirectory alive for the caller by attaching it to the Path object holder.
-    path._ev4_temp_dir = temp_dir  # type: ignore[attr-defined]
-    return path
-
-
-def _validate(packet: dict[str, Any]) -> None:
-    path = _write_probe(packet)
-    try:
+    with tempfile.TemporaryDirectory(prefix="submitted-mode-probe-", dir=issue_parent) as temp_dir:
+        path = Path(temp_dir) / "evidence_intake_packet.submitted.json"
+        path.write_text(json.dumps(packet, indent=2, sort_keys=True), encoding="utf-8")
         CHECK.validate_packet(path, run_full_schema_validator=False, submitted_mode=True)
-    finally:
-        temp_dir = getattr(path, "_ev4_temp_dir", None)
-        if temp_dir is not None:
-            temp_dir.cleanup()
 
 
 def _assert_rejected(label: str, mutate: Callable[[dict[str, Any]], None], expected_fragment: str) -> None:
