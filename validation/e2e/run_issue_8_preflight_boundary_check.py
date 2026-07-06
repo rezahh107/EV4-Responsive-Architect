@@ -14,6 +14,9 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 PREFLIGHT_GUIDE = ROOT / "docs" / "30_ISSUE_8_SUBMITTED_PACKET_PREFLIGHT_GUIDE_RTAQ_0022.md"
 STATUS = ROOT / "STATUS.md"
+COMMAND_INDEX = ROOT / "docs" / "17_VALIDATION_COMMAND_INDEX.md"
+ISSUE_8_SUBMITTED_PACKET_PATH = "issue-8/evidence_intake_packet.submitted.json"
+ISSUE_8_READINESS_REPORT_PATH = "issue-8/pilot_readiness_report.generated.json"
 ISSUE_8_REFERENCE_PATTERNS = (
     r'issue_url_or_ref:\s*["\']?#8["\']?',
     r'issue_url_or_ref:\s*["\']?https://github\.com/rezahh107/EV4-Responsive-Architect/issues/8["\']?',
@@ -21,6 +24,10 @@ ISSUE_8_REFERENCE_PATTERNS = (
 FORBIDDEN_ISSUE_REFERENCE_PATTERNS = (
     r'issue_url_or_ref:\s*["\']?#(?!8\b)\d+["\']?',
     r'issue_url_or_ref:\s*["\']?https://github\.com/rezahh107/EV4-Responsive-Architect/issues/(?!8\b)\d+["\']?',
+)
+FORBIDDEN_SUBMITTED_COMMAND_PATH_SNIPPETS = (
+    "examples/smart-home-connector/intake/EVIDENCE_INTAKE_PACKET.submitted.json",
+    "examples/smart-home-connector/intake/evidence_intake_packet.submitted.json",
 )
 
 REQUIRED_PREFLIGHT_SNIPPETS = (
@@ -33,12 +40,17 @@ REQUIRED_PREFLIGHT_SNIPPETS = (
     "allowed_scope: not_allowed",
     "does not create or submit an evidence packet",
     "does not run the real pilot",
-    "python validation/e2e/run_evidence_intake_check.py --packet examples/smart-home-connector/intake/EVIDENCE_INTAKE_PACKET.submitted.json --submitted-mode",
-    "python validation/e2e/run_pilot_readiness_check.py --packet examples/smart-home-connector/intake/EVIDENCE_INTAKE_PACKET.submitted.json --out examples/smart-home-connector/readiness/PILOT_READINESS_REPORT.generated.json --skip-schema-suite --submitted-mode",
+    f"python validation/e2e/run_evidence_intake_check.py --packet {ISSUE_8_SUBMITTED_PACKET_PATH} --submitted-mode",
+    f"python validation/e2e/run_pilot_readiness_check.py --packet {ISSUE_8_SUBMITTED_PACKET_PATH} --out {ISSUE_8_READINESS_REPORT_PATH} --skip-schema-suite --submitted-mode",
     "Stop before readiness generation",
     "Stop before pilot execution",
     "Issue #8 has not received a real submitted packet",
     "Issue reference URL or shorthand does not point to #8",
+)
+
+REQUIRED_COMMAND_INDEX_SNIPPETS = (
+    f"python validation/e2e/run_evidence_intake_check.py --packet {ISSUE_8_SUBMITTED_PACKET_PATH} --submitted-mode",
+    "Use submitted mode only for an explicit non-default Issue #8 real-submission packet path.",
 )
 
 REQUIRED_STATUS_SNIPPETS = (
@@ -96,13 +108,25 @@ def _assert_issue_8_reference_locked(text: str) -> None:
         raise AssertionError(f"Issue #8 preflight guide contains conflicting issue_url_or_ref values: {conflicts}")
 
 
+def _assert_submitted_command_paths_are_issue_8_only(preflight: str, command_index: str) -> None:
+    combined = preflight + "\n" + command_index
+    _assert_all_absent(
+        combined,
+        FORBIDDEN_SUBMITTED_COMMAND_PATH_SNIPPETS,
+        "submitted-mode documentation",
+    )
+
+
 def main() -> int:
     try:
         preflight = _read(PREFLIGHT_GUIDE)
         status = _read(STATUS)
+        command_index = _read(COMMAND_INDEX)
         _assert_all_present(preflight, REQUIRED_PREFLIGHT_SNIPPETS, "Issue #8 preflight guide")
         _assert_all_absent(preflight, FORBIDDEN_PREFLIGHT_SNIPPETS, "Issue #8 preflight guide")
         _assert_issue_8_reference_locked(preflight)
+        _assert_submitted_command_paths_are_issue_8_only(preflight, command_index)
+        _assert_all_present(command_index, REQUIRED_COMMAND_INDEX_SNIPPETS, "Validation command index")
         _assert_all_present(status, REQUIRED_STATUS_SNIPPETS, "STATUS.md evidence boundary")
     except (AssertionError, OSError) as exc:
         print(f"Issue #8 preflight boundary check failed: {exc}", file=sys.stderr)
