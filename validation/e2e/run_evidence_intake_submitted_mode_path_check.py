@@ -108,9 +108,29 @@ def main() -> int:
             "issue_url_or_ref",
         )
         _assert_rejected(
+            "malformed issue reference url",
+            lambda p: p["issue_reference"].update({"issue_url_or_ref": ["https://github.com/rezahh107/EV4-Responsive-Architect/issues/8"]}),
+            "issue_url_or_ref",
+        )
+        _assert_rejected(
             "generated artifact source",
             lambda p: p["main_ev4_handoff"].update({"source_ref": "examples/smart-home-connector/readiness/PILOT_READINESS_REPORT.generated.json"}),
             "generated/report/bookkeeping artifact path",
+        )
+        _assert_rejected(
+            "disallowed evidence source directory",
+            lambda p: p["evidence_items"][2].update({"file_name": "exports/mobile-390.png"}),
+            "outside the submitted evidence artifact allowlist",
+        )
+        _assert_rejected(
+            "traversal handoff source",
+            lambda p: p["main_ev4_handoff"].update({"source_ref": "../issue-8/main-ev4-handoff.md"}),
+            "outside the submitted evidence artifact allowlist",
+        )
+        _assert_rejected(
+            "absolute evidence source",
+            lambda p: p["evidence_items"][2].update({"file_name": "/issue-8/mobile-390.png"}),
+            "outside the submitted evidence artifact allowlist",
         )
         _assert_rejected(
             "sample marker",
