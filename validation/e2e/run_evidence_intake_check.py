@@ -200,7 +200,8 @@ def validate_issue_8_reference_lock(issue_reference: Any, label: str) -> None:
         raise AssertionError(f"{label} requires structured issue_reference")
     if issue_reference.get("issue_number") != ISSUE_8_NUMBER:
         raise AssertionError(f"{label} is locked to Issue #8 evidence submission")
-    if issue_reference.get("issue_url_or_ref") not in ISSUE_8_ALLOWED_REFS:
+    ref = issue_reference.get("issue_url_or_ref")
+    if not isinstance(ref, str) or ref not in ISSUE_8_ALLOWED_REFS:
         raise AssertionError(f"{label} issue_url_or_ref must point to Issue #8")
 
 
@@ -413,6 +414,14 @@ def run_self_test() -> None:
     assert_rejected(
         "wrong issue reference url",
         lambda: validate_packet_origin(conflicting_ref_probe, issue_8_path),
+        "issue_url_or_ref",
+    )
+
+    malformed_ref_probe = _real_issue_submission_probe(ISSUE_8_NUMBER)
+    malformed_ref_probe["issue_reference"]["issue_url_or_ref"] = [ISSUE_8_REF_URL]
+    assert_rejected(
+        "malformed issue reference url",
+        lambda: validate_packet_origin(malformed_ref_probe, issue_8_path),
         "issue_url_or_ref",
     )
 
