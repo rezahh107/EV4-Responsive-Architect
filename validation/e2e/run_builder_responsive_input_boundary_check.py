@@ -102,7 +102,17 @@ def _assert_quality_debt_register() -> None:
     debts = register.get("quality_debts")
     if not isinstance(debts, list):
         raise AssertionError("quality debt register must list quality_debts")
-    debt_by_id = {debt.get("id"): debt for debt in debts if isinstance(debt, dict)}
+    
+    debt_by_id = {}
+    for debt in debts:
+        if not isinstance(debt, dict):
+            raise AssertionError("each quality debt item must be a JSON object")
+        debt_id = debt.get("id")
+        if not isinstance(debt_id, str):
+            raise AssertionError("quality debt item id must be a string")
+        if debt_id in debt_by_id:
+            raise AssertionError(f"duplicate quality debt id found: {debt_id}")
+        debt_by_id[debt_id] = debt
     if set(debt_by_id) != REQUIRED_QUALITY_DEBTS:
         raise AssertionError(f"quality debt register must contain exactly {sorted(REQUIRED_QUALITY_DEBTS)}")
     unresolved = [
