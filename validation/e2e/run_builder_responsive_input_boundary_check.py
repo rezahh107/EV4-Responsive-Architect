@@ -11,6 +11,7 @@ import jsonschema
 
 ROOT = Path(__file__).resolve().parents[2]
 SCHEMA_PATH = ROOT / "schemas" / "ev4-builder-responsive-input.schema.json"
+QUALITY_DEBT_REGISTER = ROOT / "planning" / "EV4_POST_MERGE_QUALITY_DEBT_REGISTER.json"
 VALID_FIXTURES = (ROOT / "validation" / "fixtures" / "valid" / "builder_responsive_input.valid.json",)
 INVALID_DIR = ROOT / "validation" / "fixtures" / "invalid"
 INVALID_FIXTURE_GLOB = "builder_responsive_input_*.invalid.json"
@@ -34,6 +35,17 @@ DENIED_INTAKE_REASON_MARKERS = (
     "non-verified project gate",
     "must not allow responsive intake",
 )
+REQUIRED_QUALITY_DEBTS = {"QD-001", "QD-002", "QD-003", "QD-004"}
+RESOLVED_QUALITY_DEBT_STATUSES = {"resolved", "bounded_historical_debt"}
+REQUIRED_REGISTER_BOUNDARY_FALSE = {
+    "submitted_evidence_created",
+    "issue_8_mutated",
+    "pilot_executed_or_authorized",
+    "readiness_claim_upgraded",
+    "production_or_release_claim_upgraded",
+    "live_render_export_accessibility_pixel_or_responsive_correctness_claim_upgraded",
+    "ci_success_treated_as_responsive_correctness_evidence",
+}
 
 
 def _load_json(path: Path) -> object:
@@ -83,6 +95,31 @@ def _reason_requires_denied_intake(reason: object) -> bool:
     return any(marker in normalized for marker in DENIED_INTAKE_REASON_MARKERS)
 
 
+def _assert_quality_debt_register() -> None:
+    register = _load_json(QUALITY_DEBT_REGISTER)
+    if not isinstance(register, dict):
+        raise AssertionError("quality debt register must be a JSON object")
+    debts = register.get("quality_debts")
+    if not isinstance(debts, list):
+        raise AssertionError("quality debt register must list quality_debts")
+    debt_by_id = {debt.get("id"): debt for debt in debts if isinstance(debt, dict)}
+    if set(debt_by_id) != REQUIRED_QUALITY_DEBTS:
+        raise AssertionError(f"quality debt register must contain exactly {sorted(REQUIRED_QUALITY_DEBTS)}")
+    unresolved = [
+        debt_id
+        for debt_id, debt in debt_by_id.items()
+        if debt.get("severity") in {"P0", "P1"} and debt.get("status") not in RESOLVED_QUALITY_DEBT_STATUSES
+    ]
+    if unresolved:
+        raise AssertionError("unresolved P0/P1 quality debt items: " + ", ".join(sorted(unresolved)))
+    boundaries = register.get("boundary_assertions")
+    if not isinstance(boundaries, dict):
+        raise AssertionError("quality debt register boundary assertions are missing")
+    not_false = [name for name in REQUIRED_REGISTER_BOUNDARY_FALSE if boundaries.get(name) is not False]
+    if not_false:
+        raise AssertionError("quality debt register has upgraded forbidden boundary claims: " + ", ".join(sorted(not_false)))
+
+
 def _assert_valid_fixture(data: dict[str, object], path: Path) -> None:
     decision = _decision(data, path)
 
@@ -113,10 +150,8 @@ def _assert_invalid_fixture_semantics(data: dict[str, object], path: Path) -> No
 
     if path.name == "builder_responsive_input_malformed_hash.invalid.json" and intake_allowed is not False:
         raise AssertionError(f"{path.relative_to(ROOT)} malformed-hash fixture must keep intake_allowed=false")
-
     if _has_malformed_digest(data) and intake_allowed is True:
         raise AssertionError(f"{path.relative_to(ROOT)} malformed digest cannot use intake_allowed=true")
-
     if _reason_requires_denied_intake(reason) and intake_allowed is True:
         raise AssertionError(f"{path.relative_to(ROOT)} denied-intake reason contradicts intake_allowed=true")
 
@@ -133,6 +168,8 @@ def main() -> int:
             if not isinstance(data, dict):
                 raise AssertionError(f"{fixture.relative_to(ROOT)} must be a JSON object")
             _assert_valid_fixture(data, fixture)
+
+        _assert_quality_debt_register()
 
         invalid_fixtures = tuple(sorted(INVALID_DIR.glob(INVALID_FIXTURE_GLOB)))
         if not invalid_fixtures:
