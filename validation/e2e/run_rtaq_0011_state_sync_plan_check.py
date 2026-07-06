@@ -73,7 +73,8 @@ def build_plan(queue: dict[str, Any], control_state: dict[str, Any], status_text
         raise PlanError(f"{NEXT_TASK} not found in queue")
     if queue.get("queue_status") != "complete":
         raise PlanError("rolling queue must remain complete in retired archive state")
-    if queue.get("active_cycle", {}).get("cycle_status") != "complete":
+    active_cycle = queue.get("active_cycle")
+    if not isinstance(active_cycle, dict) or active_cycle.get("cycle_status") != "complete":
         raise PlanError("active cycle must remain complete in retired archive state")
     if target.get("status") != "merged" or target.get("completed_pr") != TARGET_PR:
         raise PlanError(f"{TARGET_TASK} must remain merged with completed_pr {TARGET_PR}")
