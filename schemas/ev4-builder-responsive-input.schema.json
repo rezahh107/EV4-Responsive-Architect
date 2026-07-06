@@ -64,7 +64,7 @@
       "properties": {
         "gate_id": {"type": "string", "minLength": 1},
         "gate_status": {"enum": ["verified", "blocked"]},
-        "gate_hash": {"type": "string", "minLength": 1}
+        "gate_hash": {"$ref": "#/$defs/sha256Digest"}
       }
     },
     "selected_candidate_id": {"type": "string", "minLength": 1},
@@ -75,7 +75,7 @@
       "properties": {
         "output_id": {"type": "string", "minLength": 1},
         "artifact_ref": {"type": "string", "minLength": 1},
-        "artifact_hash": {"type": "string", "minLength": 1}
+        "artifact_hash": {"$ref": "#/$defs/sha256Digest"}
       }
     },
     "builder_evidence": {
@@ -130,6 +130,10 @@
     }
   },
   "$defs": {
+    "sha256Digest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
     "viewportEvidence": {
       "type": "object",
       "additionalProperties": false,

@@ -38,6 +38,11 @@ INVALID_FIXTURES = (
     / "fixtures"
     / "invalid"
     / "builder_responsive_input_forbidden_claim_subset.invalid.json",
+    ROOT
+    / "validation"
+    / "fixtures"
+    / "invalid"
+    / "builder_responsive_input_malformed_hash.invalid.json",
 )
 REQUIRED_FORBIDDEN_CLAIMS = {
     "production_ready",

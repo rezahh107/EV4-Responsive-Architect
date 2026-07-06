@@ -76,6 +76,13 @@ builder_to_responsive_input_package:
       - validation/fixtures/valid/builder_responsive_input.valid.json
     invalid:
       - validation/fixtures/invalid/builder_responsive_input_missing_mobile_evidence.invalid.json
+      - validation/fixtures/invalid/builder_responsive_input_blocked_project_gate_allows_intake.invalid.json
+      - validation/fixtures/invalid/builder_responsive_input_blocked_viewport_allows_intake.invalid.json
+      - validation/fixtures/invalid/builder_responsive_input_forbidden_claim_subset.invalid.json
+      - validation/fixtures/invalid/builder_responsive_input_malformed_hash.invalid.json
+  required_digest_format:
+    gate_hash: sha256:<64 lowercase hexadecimal characters>
+    artifact_hash: sha256:<64 lowercase hexadecimal characters>
   claim_boundary: input eligibility only; not responsive correctness evidence
 ```
 
@@ -94,7 +101,7 @@ required_builder_evidence_classes:
   - viewport-specific evidence items when responsive claims are evaluated
 ```
 
-Missing or contradictory evidence blocks Responsive intake.
+Missing or contradictory evidence blocks Responsive intake. Malformed Project Gate or Builder artifact digests also block intake; repository validators only accept explicit `sha256:` digests with 64 lowercase hexadecimal characters for `gate_hash` and `artifact_hash`.
 
 ## Baseline authority
 

@@ -4,7 +4,7 @@
   "project_gate_ref": {
     "gate_id": "pg-001",
     "gate_status": "verified",
-    "gate_hash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    "gate_hash": "sha256:not-a-real-digest"
   },
   "selected_candidate_id": "candidate-a",
   "builder_output_ref": {
@@ -25,7 +25,7 @@
   },
   "responsive_intake_decision": {
     "intake_allowed": true,
-    "reason": "All required Builder and viewport evidence references are present for Responsive intake eligibility.",
+    "reason": "Malformed Project Gate digest must block Builder to Responsive intake eligibility.",
     "claim_boundary": "input eligibility only; not responsive correctness evidence"
   },
   "forbidden_claims": [
