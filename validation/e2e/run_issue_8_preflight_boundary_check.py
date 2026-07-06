@@ -15,12 +15,12 @@ ROOT = Path(__file__).resolve().parents[2]
 PREFLIGHT_GUIDE = ROOT / "docs" / "30_ISSUE_8_SUBMITTED_PACKET_PREFLIGHT_GUIDE_RTAQ_0022.md"
 STATUS = ROOT / "STATUS.md"
 ISSUE_8_REFERENCE_PATTERNS = (
-    r'issue_url_or_ref:\s*["\']#8["\']',
-    r'issue_url_or_ref:\s*["\']https://github\.com/rezahh107/EV4-Responsive-Architect/issues/8["\']',
+    r'issue_url_or_ref:\s*["\']?#8["\']?',
+    r'issue_url_or_ref:\s*["\']?https://github\.com/rezahh107/EV4-Responsive-Architect/issues/8["\']?',
 )
 FORBIDDEN_ISSUE_REFERENCE_PATTERNS = (
-    r'issue_url_or_ref:\s*["\']#(?!8\b)\d+["\']',
-    r'issue_url_or_ref:\s*["\']https://github\.com/rezahh107/EV4-Responsive-Architect/issues/(?!8\b)\d+["\']',
+    r'issue_url_or_ref:\s*["\']?#(?!8\b)\d+["\']?',
+    r'issue_url_or_ref:\s*["\']?https://github\.com/rezahh107/EV4-Responsive-Architect/issues/(?!8\b)\d+["\']?',
 )
 
 REQUIRED_PREFLIGHT_SNIPPETS = (
@@ -87,9 +87,13 @@ def _assert_all_absent(text: str, snippets: tuple[str, ...], label: str) -> None
 def _assert_issue_8_reference_locked(text: str) -> None:
     if not any(re.search(pattern, text) for pattern in ISSUE_8_REFERENCE_PATTERNS):
         raise AssertionError("Issue #8 preflight guide must include an explicit issue_url_or_ref for #8")
-    conflicts = [pattern for pattern in FORBIDDEN_ISSUE_REFERENCE_PATTERNS if re.search(pattern, text)]
+    conflicts = []
+    for pattern in FORBIDDEN_ISSUE_REFERENCE_PATTERNS:
+        match = re.search(pattern, text)
+        if match:
+            conflicts.append(match.group(0))
     if conflicts:
-        raise AssertionError(f"Issue #8 preflight guide contains conflicting issue_url_or_ref patterns: {conflicts}")
+        raise AssertionError(f"Issue #8 preflight guide contains conflicting issue_url_or_ref values: {conflicts}")
 
 
 def main() -> int:
