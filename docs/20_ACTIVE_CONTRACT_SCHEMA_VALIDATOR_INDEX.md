@@ -1,9 +1,9 @@
 # Active Contract / Schema / Validator Index
 
-Task: `RTAQ-0004`
-Updated by: `RTAQ-0009`
+Task: `RTAQ-0047`
+Updated by: `RTAQ-0047`
 
-This index records the active repository surfaces needed for controlled manual use and queue-safe handoff. It is an index only; it does not validate a real submitted packet or authorize pilot execution.
+This index records the active repository surfaces needed for controlled manual use and queue-safe handoff. It is an index only; it does not validate a real submitted packet, mutate Issue #8, authorize pilot execution, or upgrade readiness.
 
 ## Source-of-truth hierarchy
 
@@ -12,7 +12,9 @@ primary_status:
   - STATUS.md
 master_spec:
   - PROJECT_MASTER_SPEC.md
-active_queue:
+automation_control_state:
+  - planning/EV4_AUTOMATION_CONTROL_STATE.json
+archived_queue:
   - planning/EV4_ROLLING_QUEUE.json
 run_ledger:
   - planning/EV4_RUN_LEDGER.json
@@ -26,6 +28,12 @@ quality_gate:
 
 ```yaml
 contracts:
+  main_pipeline_handoff_input:
+    path: contracts/MAIN_PIPELINE_HANDOFF_INPUT_CONTRACT.md
+    role: upstream handoff input boundary
+  builder_to_responsive_input_boundary:
+    path: contracts/BUILDER_TO_RESPONSIVE_INPUT_BOUNDARY.md
+    role: Builder -> Responsive intake decision boundary
   responsive_tree_architecture:
     path: contracts/EV4_RESPONSIVE_TREE_ARCHITECTURE_CONTRACT.md
     role: output shape and primary route boundary
@@ -50,12 +58,18 @@ schemas:
   responsive_output:
     path: schemas/ev4-responsive-output.schema.json
     role: responsive output package schema
+  builder_responsive_input:
+    path: schemas/ev4-builder-responsive-input.schema.json
+    role: builder-to-responsive input schema
+  automation_control_state:
+    path: schemas/ev4-automation-control-state.schema.json
+    role: post-queue automation control-state schema
   rolling_queue:
     path: schemas/ev4-responsive-rolling-queue.schema.json
-    role: active RTAQ queue schema
+    role: archived RTAQ queue schema
   run_ledger:
     path: schemas/ev4-responsive-run-ledger.schema.json
-    role: active RTAQ ledger schema
+    role: RTAQ ledger schema
   automation_quality_gate:
     path: schemas/ev4-responsive-automation-quality-gate.schema.json
     role: automation quality-gate policy schema
@@ -64,36 +78,73 @@ schemas:
     role: deterministic task quality review schema
 ```
 
-## Active validators
+## Primary Validate chain
 
 ```yaml
-validators:
-  responsive_tree_refactor:
-    path: validation/e2e/run_responsive_tree_architecture_refactor_check.py
-    role: responsive-tree repository contract/schema/fixture checks and delegated RTAQ checks
-    ci_path: automatic
-  submitted_packet_eligibility:
-    path: validation/e2e/run_submitted_packet_eligibility_gate_check.py
-    role: negative eligibility checks for submitted-packet gate failure modes
-    ci_path: delegated through responsive-tree checker
-  rolling_queue:
-    path: validation/e2e/run_rolling_queue_check.py
-    role: active queue shape and policy checks
-    ci_path: delegated through responsive-tree checker
-  run_ledger:
-    path: validation/e2e/run_run_ledger_check.py
-    role: ledger shape and record-policy checks
-    ci_path: delegated through responsive-tree checker
-  task_quality_gate:
-    path: validation/e2e/run_task_quality_gate_check.py
-    role: task quality gate policy, PR reconciliation, delayed-review, and task-quality review checks
-    ci_path: delegated through responsive-tree checker
+primary_validate_workflow:
+  path: .github/workflows/validate.yml
+  triggers:
+    - pull_request
+    - push to main
+    - workflow_dispatch with exact ref and expected_sha
+  python_matrix:
+    - "3.11"
+    - "3.13"
+  validators:
+    rolling_queue:
+      path: validation/e2e/run_rolling_queue_check.py
+      role: archived queue shape and throughput policy checks
+    run_ledger:
+      path: validation/e2e/run_run_ledger_check.py
+      role: ledger shape and record-policy checks
+    task_quality_gate:
+      path: validation/e2e/run_task_quality_gate_check.py
+      role: task quality gate policy, PR reconciliation, delayed-review, and task-quality review checks
+    submitted_packet_eligibility:
+      path: validation/e2e/run_submitted_packet_eligibility_gate_check.py
+      role: submitted-packet eligibility failure-mode guard
+    responsive_tree_refactor:
+      path: validation/e2e/run_responsive_tree_architecture_refactor_check.py
+      role: responsive-tree repository contract/schema/fixture checks and delegated RTAQ checks
+    submitted_packet_readiness_dry_run:
+      path: validation/e2e/run_submitted_packet_readiness_dry_run.py
+      role: dry-run harness for readiness packet behavior; self-test mode only in CI
+    evidence_intake_semantic_guard:
+      path: validation/e2e/run_evidence_intake_check.py
+      role: evidence intake semantic guard; self-test mode only in CI
+    evidence_intake_submitted_mode_path_guard:
+      path: validation/e2e/run_evidence_intake_submitted_mode_path_check.py
+      role: submitted-mode path, Issue #8 ref, and artifact allowlist guard
+    evidence_intake_fixture_matrix:
+      path: validation/e2e/run_evidence_intake_fixture_matrix_check.py
+      role: submitted evidence fixture matrix consistency guard
+    pilot_readiness_generator:
+      path: validation/e2e/run_pilot_readiness_check.py
+      role: pilot readiness generation checks without real pilot authorization
+    pilot_readiness_boundary:
+      path: validation/e2e/run_pilot_readiness_boundary_check.py
+      role: pilot readiness boundary checks
+    issue_8_preflight_boundary:
+      path: validation/e2e/run_issue_8_preflight_boundary_check.py
+      role: Issue #8 preflight reference and boundary checks
+    builder_responsive_input_boundary:
+      path: validation/e2e/run_builder_responsive_input_boundary_check.py
+      role: Builder -> Responsive input boundary checks
+    rtaq_ssot_guard:
+      path: validation/e2e/run_rtaq_ssot_guard_check.py
+      role: queue, ledger, status, and SSOT policy preservation guard
+    status_merged_foundation_guard:
+      path: validation/e2e/run_status_merged_foundation_guard_check.py
+      role: bounded foundation checkpoint and readiness-boundary guard
+    automation_control_state:
+      path: validation/e2e/run_automation_control_state_check.py
+      role: post-queue automation control-state guard
 ```
 
-## Manual evidence-bound guard validators
+## Manual or legacy evidence-bound guard validators
 
 ```yaml
-manual_guard_validators:
+manual_or_legacy_guard_validators:
   submitted_packet_source_kind_lock:
     path: validation/e2e/run_submitted_packet_source_kind_lock_check.py
     role: submitted source-kind lock guard for evidence-bound paths
@@ -140,18 +191,45 @@ controlled_use_docs:
   active_contract_schema_validator_index:
     path: docs/20_ACTIVE_CONTRACT_SCHEMA_VALIDATOR_INDEX.md
     role: active contract, schema, and validator index
-  queue_refresh_audit:
-    path: docs/21_QUEUE_REFRESH_AUDIT_RTAQ_0005.md
-    role: fifth-cycle queue refresh audit and next bounded task plan
-  master_status_drift_closure:
-    path: docs/22_MASTER_STATUS_DRIFT_CLOSURE_RTAQ_0006.md
-    role: RTAQ-0006 closure of remaining master-spec/status/index drift
-  evidence_bound_documentation_guard:
-    path: docs/23_EVIDENCE_BOUND_DOCUMENTATION_GUARD_RTAQ_0008.md
-    role: RTAQ-0008 evidence, Issue #8, and pilot blocker documentation guard
-  automation_quality_gate_enforcement_audit:
-    path: docs/24_AUTOMATION_QUALITY_GATE_ENFORCEMENT_AUDIT_RTAQ_0009.md
-    role: RTAQ-0009 queue, control-plane, and quality-gate enforcement audit
+  issue_8_submitted_packet_preflight_guide:
+    path: docs/30_ISSUE_8_SUBMITTED_PACKET_PREFLIGHT_GUIDE_RTAQ_0022.md
+    role: Issue #8 submitted-packet preflight guide
+  backlog_boundary_refresh:
+    path: docs/31_BACKLOG_BOUNDARY_REFRESH_RTAQ_0023.md
+    role: post-preflight backlog boundary refresh
+  issue_8_preflight_boundary_validation:
+    path: docs/32_ISSUE_8_PREFLIGHT_BOUNDARY_VALIDATION_RTAQ_0024.md
+    role: Issue #8 preflight boundary validation
+  builder_responsive_input_boundary:
+    path: docs/34_BUILDER_RESPONSIVE_INPUT_BOUNDARY_RTAQ_0028.md
+    role: Builder -> Responsive input boundary reference
+  responsive_intake_decision_guard:
+    path: docs/35_RESPONSIVE_INTAKE_DECISION_GUARD_RTAQ_0029.md
+    role: responsive intake decision guard
+  evidence_intake_issue8_lock:
+    path: docs/37_EVIDENCE_INTAKE_ISSUE8_LOCK_RTAQ_0031.md
+    role: Issue #8 evidence-intake lock
+  rolling_queue_driver_retirement:
+    path: docs/38_ROLLING_QUEUE_DRIVER_RETIREMENT_RTAQ_0032.md
+    role: retired rolling-queue driver boundary
+  primary_validation_chain:
+    path: docs/39_PRIMARY_VALIDATION_CHAIN_RTAQ_0033.md
+    role: primary validation chain reference
+  issue8_submitted_path_guard:
+    path: docs/40_ISSUE8_SUBMITTED_PATH_GUARD_RTAQ_0034.md
+    role: Issue #8 submitted path guard
+  issue8_artifact_scope_guard:
+    path: docs/41_ISSUE8_ARTIFACT_SCOPE_GUARD_RTAQ_0035.md
+    role: Issue #8 artifact scope guard
+  pilot_readiness_validate_chain:
+    path: docs/42_PILOT_READINESS_VALIDATE_CHAIN_RTAQ_0036.md
+    role: pilot readiness Validate-chain reference
+  control_checkpoint_reconciliation:
+    path: docs/43_CONTROL_CHECKPOINT_RECONCILIATION_RTAQ_0037.md
+    role: bounded control checkpoint reconciliation
+  control_state_post_queue_reconciliation:
+    path: docs/44_CONTROL_STATE_POST_QUEUE_RECONCILIATION_RTAQ_0039.md
+    role: post-queue control-state reconciliation
 ```
 
 ## CI interpretation
