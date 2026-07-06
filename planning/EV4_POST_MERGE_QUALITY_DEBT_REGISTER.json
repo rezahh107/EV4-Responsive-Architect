@@ -1,0 +1,89 @@
+{
+  "schema": "ev4-post-merge-quality-debt-register@1.0.0",
+  "status": "active",
+  "scope": "post-merge quality debt accumulated through PR #135",
+  "created_by": "RTAQ post-merge quality debt reconciliation",
+  "quality_debts": [
+    {
+      "id": "QD-001",
+      "severity": "P1",
+      "status": "resolved",
+      "summary": "Malformed-hash invalid Builder to Responsive fixture contradicted its fail-closed intake reason.",
+      "source_prs": [134],
+      "resolution": "Set responsive_intake_decision.intake_allowed to false and hardened invalid fixture semantic checks so malformed digests and denied-intake reasons cannot allow intake.",
+      "resolution_paths": [
+        "validation/fixtures/invalid/builder_responsive_input_malformed_hash.invalid.json",
+        "validation/e2e/run_builder_responsive_input_boundary_check.py"
+      ]
+    },
+    {
+      "id": "QD-002",
+      "severity": "P1",
+      "status": "resolved",
+      "summary": "Three merged post-queue hardening slices shared the visible RTAQ-0049 ordinal.",
+      "source_prs": [133, 134, 135],
+      "resolution": "Record bounded traceability: PR #133 was real submitted example artifact guard, PR #134 was builder digest boundary hardening, and PR #135 was submitted payload hash format guard; none authorizes pilot, evidence, or readiness upgrade.",
+      "resolution_paths": [
+        "docs/RTAQ_POST_MERGE_QUALITY_DEBT_RECONCILIATION.md",
+        "planning/EV4_POST_MERGE_QUALITY_DEBT_REGISTER.json"
+      ]
+    },
+    {
+      "id": "QD-003",
+      "severity": "P1",
+      "status": "resolved",
+      "summary": "RTAQ-0011 state-sync tooling still reported stale pending/write-sync paths after rolling queue execution was retired.",
+      "source_prs": [84, 122],
+      "resolution": "Accept the current archive/retired/superseded control-state model without fabricating LEDGER-0021, and make the applier no-op cleanly in that state.",
+      "resolution_paths": [
+        "validation/e2e/run_rtaq_0011_state_sync_plan_check.py",
+        "tools/rtaq_0011_state_sync_applier.py"
+      ]
+    },
+    {
+      "id": "QD-004",
+      "severity": "P1",
+      "status": "resolved",
+      "summary": "Delayed review-window policy was not enough to prevent post-merge actionable review debt on PR #134.",
+      "source_prs": [134],
+      "resolution": "Record the fast-merge/review-window incident as historical, resolve the actionable PR #134 fixture issue through QD-001, and validate this P1 quality-debt register in the existing Builder boundary check.",
+      "resolution_paths": [
+        "docs/RTAQ_POST_MERGE_QUALITY_DEBT_RECONCILIATION.md",
+        "planning/EV4_POST_MERGE_QUALITY_DEBT_REGISTER.json",
+        "validation/e2e/run_builder_responsive_input_boundary_check.py"
+      ]
+    }
+  ],
+  "duplicate_rtaq_0049_traceability": [
+    {
+      "pr_number": 133,
+      "visible_ordinal": "RTAQ-0049",
+      "slice": "real submitted example artifact guard",
+      "queue_task_authorized": false,
+      "pilot_or_evidence_or_readiness_authorized": false
+    },
+    {
+      "pr_number": 134,
+      "visible_ordinal": "RTAQ-0049",
+      "slice": "builder digest boundary hardening",
+      "queue_task_authorized": false,
+      "pilot_or_evidence_or_readiness_authorized": false
+    },
+    {
+      "pr_number": 135,
+      "visible_ordinal": "RTAQ-0049",
+      "slice": "submitted payload hash format guard",
+      "queue_task_authorized": false,
+      "pilot_or_evidence_or_readiness_authorized": false
+    }
+  ],
+  "boundary_assertions": {
+    "submitted_evidence_created": false,
+    "issue_8_mutated": false,
+    "pilot_executed_or_authorized": false,
+    "readiness_claim_upgraded": false,
+    "production_or_release_claim_upgraded": false,
+    "live_render_export_accessibility_pixel_or_responsive_correctness_claim_upgraded": false,
+    "ci_success_treated_as_responsive_correctness_evidence": false
+  }
+}

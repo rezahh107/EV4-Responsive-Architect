@@ -24,7 +24,7 @@
     "mobile": {"evidence_ref": "evidence/viewport/mobile.json", "evidence_status": "provided"}
   },
   "responsive_intake_decision": {
-    "intake_allowed": true,
+    "intake_allowed": false,
     "reason": "Malformed Project Gate digest must block Builder to Responsive intake eligibility.",
     "claim_boundary": "input eligibility only; not responsive correctness evidence"
   },

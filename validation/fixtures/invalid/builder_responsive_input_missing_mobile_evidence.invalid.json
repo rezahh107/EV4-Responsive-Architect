@@ -23,8 +23,8 @@
     "tablet": {"evidence_ref": "evidence/viewport/tablet.json", "evidence_status": "provided"}
   },
   "responsive_intake_decision": {
-    "intake_allowed": true,
-    "reason": "Mobile evidence is missing but this invalid fixture attempts intake anyway.",
+    "intake_allowed": false,
+    "reason": "Mobile evidence is missing, so Builder to Responsive intake remains blocked.",
     "claim_boundary": "input eligibility only; not responsive correctness evidence"
   },
   "forbidden_claims": ["production_ready"]

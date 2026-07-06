@@ -24,8 +24,8 @@
     "mobile": {"evidence_ref": "evidence/viewport/mobile.json", "evidence_status": "provided"}
   },
   "responsive_intake_decision": {
-    "intake_allowed": true,
-    "reason": "A blocked Project Gate must not allow Responsive intake.",
+    "intake_allowed": false,
+    "reason": "A non-verified Project Gate keeps Responsive intake disabled.",
     "claim_boundary": "input eligibility only; not responsive correctness evidence"
   },
   "forbidden_claims": [
