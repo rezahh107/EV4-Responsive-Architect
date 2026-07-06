@@ -105,6 +105,8 @@ def extract_yaml_string_list(status_text: str, key: str) -> list[str]:
             if raw_line.startswith('  - '):
                 entries.append(normalize_claim_value(raw_line.split('-', 1)[1]))
                 continue
+            if line.startswith('#'):
+                continue
             if line:
                 break
     return entries
@@ -186,6 +188,7 @@ def self_test_status_text(
     extra_yaml_blocks: str = '',
     foundation_set: set[str] | None = None,
     automatic_checks: list[str] | None = None,
+    automatic_check_comment: str = '',
 ) -> str:
     if foundation_set is None:
         foundation_set = REQUIRED_MERGED_FOUNDATION
@@ -218,7 +221,7 @@ pilot_execution_scope: not_allowed
 ```yaml
 automatic_workflow: .github/workflows/validate.yml
 automatic_check:
-{automatic_check_entries}
+{automatic_check_comment}{automatic_check_entries}
 ```
 '''
 
@@ -275,6 +278,11 @@ pilot_execution_scope: allowed
 ```yaml
 pilot_execution_scope: not_allowed
 ```'''), 'pilot_execution_scope: allowed')
+    validate_status_text(
+        self_test_status_text(
+            automatic_check_comment='  # comment between key and list must not truncate parsing\n',
+        )
+    )
     assert_status_invalid(
         self_test_status_text(
             automatic_checks=[check for check in REQUIRED_AUTOMATIC_CHECKS if 'run_task_quality_gate_check.py' not in check],
