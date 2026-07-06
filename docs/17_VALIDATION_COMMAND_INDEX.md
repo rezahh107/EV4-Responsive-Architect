@@ -1,7 +1,7 @@
 # Validation Command Index
 
 Task: `RTAQ-0003`
-Updated by: `RTAQ-0046`
+Updated by: `RTAQ-0050`
 
 This index lists repository validation commands for controlled manual use. Command success is repository-check evidence only; it is not responsive correctness evidence and does not authorize production, release, real pilot, export, live-render, accessibility, or pixel-validation claims.
 
@@ -40,7 +40,7 @@ Use submitted mode only for an explicit non-default Issue #8 real-submission pac
 
 ```bash
 python validation/e2e/run_evidence_intake_check.py --self-test
-python validation/e2e/run_evidence_intake_check.py --packet examples/smart-home-connector/intake/evidence_intake_packet.submitted.json --submitted-mode
+python validation/e2e/run_evidence_intake_check.py --packet issue-8/evidence_intake_packet.submitted.json --submitted-mode
 python validation/e2e/run_evidence_intake_submitted_mode_path_check.py
 python validation/e2e/run_evidence_intake_fixture_matrix_check.py
 ```
