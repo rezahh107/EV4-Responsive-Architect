@@ -26,8 +26,8 @@ FORBIDDEN_ISSUE_REFERENCE_PATTERNS = (
     r'issue_url_or_ref:\s*["\']?https://github\.com/rezahh107/EV4-Responsive-Architect/issues/(?!8\b)\d+["\']?',
 )
 FORBIDDEN_SUBMITTED_COMMAND_PATH_SNIPPETS = (
-    "examples/smart-home-connector/intake/EVIDENCE_INTAKE_PACKET.submitted.json --submitted-mode",
-    "examples/smart-home-connector/intake/evidence_intake_packet.submitted.json --submitted-mode",
+    "examples/smart-home-connector/intake/EVIDENCE_INTAKE_PACKET.submitted.json",
+    "examples/smart-home-connector/intake/evidence_intake_packet.submitted.json",
 )
 
 REQUIRED_PREFLIGHT_SNIPPETS = (
