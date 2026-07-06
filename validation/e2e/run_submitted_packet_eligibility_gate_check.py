@@ -10,6 +10,7 @@ issue reference, non-stale state, and no sample/placeholder markers.
 from __future__ import annotations
 
 import copy
+import re
 import sys
 import traceback
 from pathlib import Path
@@ -61,6 +62,7 @@ PLACEHOLDER_HASH_VALUES = {
     "sha256-fixture-main-handoff",
     "sha256-real-issue8-main-handoff",
 }
+PAYLOAD_IDENTITY_HASH_PATTERN = re.compile(r"^sha256:[0-9a-f]{64}$")
 
 
 def real_eligible_packet() -> dict[str, Any]:
@@ -75,7 +77,7 @@ def real_eligible_packet() -> dict[str, Any]:
         "evidence_submission_status": "submitted",
     }
     packet["main_ev4_handoff"]["source_ref"] = "issues/8/main-ev4-handoff.md"
-    packet["main_ev4_handoff"]["payload_identity_hash"] = "sha256-issue8-main-handoff-real-20260625"
+    packet["main_ev4_handoff"]["payload_identity_hash"] = "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
     packet["intake_verdict"]["sample_dry_run_allowed"] = False
     packet["intake_verdict"]["real_pilot_allowed_to_start"] = True
     packet["intake_verdict"]["allowed_scope"] = REAL_SHADOW_SCOPE
@@ -156,6 +158,8 @@ def validate_submitted_packet_eligibility_gate(packet: dict[str, Any]) -> None:
     lowered_hash = identity_hash.lower()
     if lowered_hash in PLACEHOLDER_HASH_VALUES or "placeholder" in lowered_hash or "sample" in lowered_hash or "fixture" in lowered_hash:
         raise AssertionError("real eligibility rejects placeholder identity hash")
+    if PAYLOAD_IDENTITY_HASH_PATTERN.fullmatch(identity_hash) is None:
+        raise AssertionError("real eligibility requires payload_identity_hash=sha256:<64 lowercase hex>")
 
     indicators = sample_indicators(packet)
     if indicators:
@@ -195,6 +199,14 @@ def run_self_test() -> None:
     invalid_identity_hash = copy.deepcopy(real_eligible_packet())
     invalid_identity_hash["main_ev4_handoff"]["payload_identity_hash"] = {"not": "a string"}
     assert_rejects(invalid_identity_hash, "payload identity hash")
+
+    malformed_identity_hash = copy.deepcopy(real_eligible_packet())
+    malformed_identity_hash["main_ev4_handoff"]["payload_identity_hash"] = "sha256-issue8-main-handoff-real-20260625"
+    assert_rejects(malformed_identity_hash, "sha256:<64 lowercase hex>")
+
+    uppercase_identity_hash = copy.deepcopy(real_eligible_packet())
+    uppercase_identity_hash["main_ev4_handoff"]["payload_identity_hash"] = "sha256:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+    assert_rejects(uppercase_identity_hash, "sha256:<64 lowercase hex>")
 
 
 def main() -> int:
