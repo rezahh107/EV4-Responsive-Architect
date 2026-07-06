@@ -103,6 +103,11 @@ def main() -> int:
             "Issue #8",
         )
         _assert_rejected(
+            "wrong issue reference url",
+            lambda p: p["issue_reference"].update({"issue_url_or_ref": "https://github.com/rezahh107/EV4-Responsive-Architect/issues/9"}),
+            "issue_url_or_ref",
+        )
+        _assert_rejected(
             "generated artifact source",
             lambda p: p["main_ev4_handoff"].update({"source_ref": "examples/smart-home-connector/readiness/PILOT_READINESS_REPORT.generated.json"}),
             "generated/report/bookkeeping artifact path",
