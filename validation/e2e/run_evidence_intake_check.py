@@ -14,6 +14,9 @@ ROOT = Path(__file__).resolve().parents[2]
 VALIDATOR = ROOT / "validation" / "schema_validator" / "validate_schemas.py"
 DEFAULT_PACKET = ROOT / "validation" / "fixtures" / "valid" / "evidence_intake_packet.valid.json"
 ISSUE_8_NUMBER = 8
+ISSUE_8_REF_SHORTHAND = "#8"
+ISSUE_8_REF_URL = "https://github.com/rezahh107/EV4-Responsive-Architect/issues/8"
+ISSUE_8_ALLOWED_REFS = {ISSUE_8_REF_SHORTHAND, ISSUE_8_REF_URL}
 MINIMUM_DESKTOP_MUST_NOT_REGRESS = {"meaningful_text_visibility", "feature_card_group_integrity", "visual_core_presence", "connector_layer_containment", "no_horizontal_overflow"}
 REQUIRED_VIEWPORT_EVIDENCE = {"desktop", "tablet", "mobile"}
 SAMPLE_MARKERS = ("SAMPLE", "sample", ".sample", "placeholder")
@@ -191,6 +194,16 @@ def validate_submitted_mode(packet: dict[str, Any], packet_path: Path) -> None:
         raise AssertionError(f"submitted mode rejects sample or placeholder markers: {indicators}")
 
 
+def validate_issue_8_reference_lock(issue_reference: Any, label: str) -> None:
+    """Require Issue #8 identity to be consistent by number and URL/ref."""
+    if not isinstance(issue_reference, dict):
+        raise AssertionError(f"{label} requires structured issue_reference")
+    if issue_reference.get("issue_number") != ISSUE_8_NUMBER:
+        raise AssertionError(f"{label} is locked to Issue #8 evidence submission")
+    if issue_reference.get("issue_url_or_ref") not in ISSUE_8_ALLOWED_REFS:
+        raise AssertionError(f"{label} issue_url_or_ref must point to Issue #8")
+
+
 def validate_submitted_packet_source_kind_lock(packet: dict[str, Any]) -> None:
     """Require real shadow-mode eligibility to come from an actual submitted issue packet."""
     origin = packet.get("packet_origin")
@@ -212,12 +225,9 @@ def validate_submitted_packet_source_kind_lock(packet: dict[str, Any]) -> None:
         raise AssertionError("real shadow-mode eligibility requires packet_origin=real_issue_submission")
     if packet_status not in REAL_ELIGIBLE_STATUSES:
         raise AssertionError("real shadow-mode eligibility requires packet_status=submitted or validated")
-    if not isinstance(issue_reference, dict):
-        raise AssertionError("real shadow-mode eligibility requires structured issue_reference")
+    validate_issue_8_reference_lock(issue_reference, "real shadow-mode eligibility")
     if issue_reference.get("evidence_submission_status") not in REAL_ELIGIBLE_STATUSES:
         raise AssertionError("real shadow-mode eligibility requires issue_reference.evidence_submission_status=submitted or validated")
-    if issue_reference.get("issue_number") != ISSUE_8_NUMBER:
-        raise AssertionError("real shadow-mode eligibility is locked to Issue #8 evidence submission")
     if verdict.get("real_pilot_allowed_to_start") is not True:
         raise AssertionError("real shadow-mode eligibility requires real_pilot_allowed_to_start=true")
 
@@ -241,10 +251,7 @@ def validate_packet_origin(packet: dict[str, Any], packet_path: Path) -> None:
         if verdict.get("allowed_scope") not in {"contract_fixture_only", "not_allowed"}:
             raise AssertionError("contract fixtures must use contract_fixture_only or not_allowed scope")
     if origin == "real_issue_submission":
-        if not isinstance(issue_reference, dict):
-            raise AssertionError("real_issue_submission requires structured issue_reference")
-        if issue_reference.get("issue_number") != ISSUE_8_NUMBER:
-            raise AssertionError("real_issue_submission is locked to Issue #8 evidence submission")
+        validate_issue_8_reference_lock(issue_reference, "real_issue_submission")
         indicators = sample_indicators(packet, packet_path)
         if indicators:
             raise AssertionError(f"real_issue_submission must not carry sample markers: {indicators}")
@@ -399,6 +406,14 @@ def run_self_test() -> None:
         "wrong issue boundary",
         lambda: validate_packet_origin(_real_issue_submission_probe(9), ROOT / "issue-9/evidence_intake_packet.submitted.json"),
         "Issue #8",
+    )
+
+    conflicting_ref_probe = _real_issue_submission_probe(ISSUE_8_NUMBER)
+    conflicting_ref_probe["issue_reference"]["issue_url_or_ref"] = "https://github.com/rezahh107/EV4-Responsive-Architect/issues/9"
+    assert_rejected(
+        "wrong issue reference url",
+        lambda: validate_packet_origin(conflicting_ref_probe, issue_8_path),
+        "issue_url_or_ref",
     )
 
     draft_real_shadow_probe = _real_issue_submission_probe(ISSUE_8_NUMBER)
