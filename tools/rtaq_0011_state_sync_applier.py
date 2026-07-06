@@ -8,7 +8,6 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
 QUEUE_PATH = ROOT / "planning" / "EV4_ROLLING_QUEUE.json"
-LEDGER_PATH = ROOT / "planning" / "EV4_RUN_LEDGER.json"
 STATUS_PATH = ROOT / "STATUS.md"
 CONTROL_STATE_PATH = ROOT / "planning" / "EV4_AUTOMATION_CONTROL_STATE.json"
 PLAN_CHECK = ROOT / "validation" / "e2e" / "run_rtaq_0011_state_sync_plan_check.py"
