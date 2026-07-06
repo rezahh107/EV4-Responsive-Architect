@@ -118,6 +118,11 @@ def main() -> int:
             "generated/report/bookkeeping artifact path",
         )
         _assert_rejected(
+            "repository example artifact source",
+            lambda p: p["main_ev4_handoff"].update({"source_ref": "examples/smart-home-connector/evidence/main-ev4-handoff.md"}),
+            "repository examples/templates",
+        )
+        _assert_rejected(
             "disallowed evidence source directory",
             lambda p: p["evidence_items"][2].update({"file_name": "exports/mobile-390.png"}),
             "outside the submitted evidence artifact allowlist",

@@ -43,12 +43,16 @@ GENERATED_ARTIFACT_MARKERS = (
     "ev4_rolling_queue",
     "status.md",
 )
+REPOSITORY_EXAMPLE_OR_TEMPLATE_MARKERS = (
+    "examples/",
+    "/examples/",
+    "template/",
+    "/template/",
+)
 SUBMITTED_ARTIFACT_ALLOWED_PREFIXES = (
     "issues/8/",
     "issue-8/",
     "evidence/issue-8/",
-    "examples/smart-home-connector/intake/",
-    "examples/smart-home-connector/evidence/",
 )
 SUBMITTED_ARTIFACT_ALLOWED_BASENAMES = {
     "main-ev4-handoff.md",
@@ -104,6 +108,11 @@ def _has_generated_artifact_marker(path_ref: str) -> bool:
     return any(marker in lowered for marker in GENERATED_ARTIFACT_MARKERS)
 
 
+def _has_repository_example_or_template_marker(path_ref: str) -> bool:
+    lowered = path_ref.lower()
+    return any(marker in lowered for marker in REPOSITORY_EXAMPLE_OR_TEMPLATE_MARKERS)
+
+
 def _submitted_artifact_basename_allowed(basename: str) -> bool:
     lowered = basename.lower()
     if lowered in SUBMITTED_ARTIFACT_ALLOWED_BASENAMES:
@@ -156,6 +165,9 @@ def validate_submitted_packet_artifact_path_allowlist(packet: dict[str, Any], pa
     for field, path_ref in submitted_source_artifact_refs(packet, packet_path):
         if _has_generated_artifact_marker(path_ref):
             rejected.append(f"{field}={path_ref} uses generated/report/bookkeeping artifact path")
+            continue
+        if _has_repository_example_or_template_marker(path_ref):
+            rejected.append(f"{field}={path_ref} uses repository examples/templates instead of submitted Issue #8 attachments")
             continue
         if not _is_allowed_submitted_artifact_path(path_ref):
             rejected.append(f"{field}={path_ref} is outside the submitted evidence artifact allowlist")
@@ -439,6 +451,14 @@ def run_self_test() -> None:
         "generated artifact source",
         lambda: validate_submitted_packet_artifact_path_allowlist(generated_artifact_probe, issue_8_path),
         "generated/report/bookkeeping artifact path",
+    )
+
+    example_artifact_probe = _real_issue_submission_probe(ISSUE_8_NUMBER)
+    example_artifact_probe["main_ev4_handoff"]["source_ref"] = "examples/smart-home-connector/evidence/main-ev4-handoff.md"
+    assert_rejected(
+        "repository example artifact source",
+        lambda: validate_submitted_packet_artifact_path_allowlist(example_artifact_probe, issue_8_path),
+        "repository examples/templates",
     )
 
     disallowed_artifact_probe = _real_issue_submission_probe(ISSUE_8_NUMBER)
