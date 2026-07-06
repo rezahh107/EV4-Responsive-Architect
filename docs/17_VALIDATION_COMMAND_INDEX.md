@@ -40,7 +40,7 @@ Use submitted mode only for an explicit non-default Issue #8 real-submission pac
 
 ```bash
 python validation/e2e/run_evidence_intake_check.py --self-test
-python validation/e2e/run_evidence_intake_check.py --packet examples/smart-home-connector/intake/EVIDENCE_INTAKE_PACKET.submitted.json --submitted-mode
+python validation/e2e/run_evidence_intake_check.py --packet examples/smart-home-connector/intake/evidence_intake_packet.submitted.json --submitted-mode
 python validation/e2e/run_evidence_intake_submitted_mode_path_check.py
 python validation/e2e/run_evidence_intake_fixture_matrix_check.py
 ```
