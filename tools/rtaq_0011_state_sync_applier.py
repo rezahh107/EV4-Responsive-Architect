@@ -34,7 +34,7 @@ def tasks_by_id(queue: dict[str, Any]) -> dict[str, dict[str, Any]]:
     tasks = queue.get("tasks", [])
     if not isinstance(tasks, list):
         raise ApplyError("planning/EV4_ROLLING_QUEUE.json tasks must be a list")
-    return {task.get("task_id"): task for task in tasks if isinstance(task, dict)}
+    return {task["task_id"]: task for task in tasks if isinstance(task, dict) and isinstance(task.get("task_id"), str)}
 
 
 def is_retired_archive_control_state(control_state: dict[str, Any]) -> bool:
@@ -80,15 +80,11 @@ def main() -> int:
     status_text = STATUS_PATH.read_text(encoding="utf-8")
 
     if is_retired_archive_state(queue, control_state, status_text):
-        print(
-            "RTAQ-0011 state sync already reconciled: rolling queue execution is retired, "
-            "RTAQ-0010 is merged, and RTAQ-0011 is superseded. No --write changes are required."
-        )
+        print("RTAQ-0011 state sync is already retired as an execution driver; no mutation needed.")
         return 0
 
     raise ApplyError(
-        "RTAQ-0011 state sync applier found a non-retired or inconsistent state. "
-        "Run validation/e2e/run_rtaq_0011_state_sync_plan_check.py and reconcile the current control model before writing state."
+        "RTAQ-0011 no-op retirement guard failed; run the plan check and reconcile queue/control-state/STATUS drift manually."
     )
 
 
