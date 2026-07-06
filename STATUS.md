@@ -41,7 +41,6 @@ merged_foundation:
   - "PR #107 RTAQ-0025 active STATUS guard validation"
   - "PR #108 RTAQ-0026 STATUS foundation guard refresh"
   - "PR #112 RTAQ-0029 responsive intake decision guard"
-  - "PR #120 RTAQ-0036 pilot readiness Validate chain closure"
 pending_control_plane_pr: null
 ```
 
@@ -164,6 +163,8 @@ automatic_workflow: .github/workflows/validate.yml
 automatic_check:
   - python validation/e2e/run_rolling_queue_check.py
   - python validation/e2e/run_run_ledger_check.py
+  - python validation/e2e/run_task_quality_gate_check.py
+  - python validation/e2e/run_submitted_packet_eligibility_gate_check.py
   - python validation/e2e/run_responsive_tree_architecture_refactor_check.py
   - python validation/e2e/run_submitted_packet_readiness_dry_run.py --self-test
   - python validation/e2e/run_evidence_intake_check.py --self-test

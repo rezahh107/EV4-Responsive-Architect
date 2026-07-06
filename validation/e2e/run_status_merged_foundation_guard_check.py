@@ -33,6 +33,25 @@ REQUIRED_BOUNDARIES = {
     'pilot_execution_scope': 'not_allowed',
 }
 
+REQUIRED_AUTOMATIC_CHECKS = [
+    'python validation/e2e/run_rolling_queue_check.py',
+    'python validation/e2e/run_run_ledger_check.py',
+    'python validation/e2e/run_task_quality_gate_check.py',
+    'python validation/e2e/run_submitted_packet_eligibility_gate_check.py',
+    'python validation/e2e/run_responsive_tree_architecture_refactor_check.py',
+    'python validation/e2e/run_submitted_packet_readiness_dry_run.py --self-test',
+    'python validation/e2e/run_evidence_intake_check.py --self-test',
+    'python validation/e2e/run_evidence_intake_submitted_mode_path_check.py',
+    'python validation/e2e/run_evidence_intake_fixture_matrix_check.py',
+    'python validation/e2e/run_pilot_readiness_check.py',
+    'python validation/e2e/run_pilot_readiness_boundary_check.py',
+    'python validation/e2e/run_issue_8_preflight_boundary_check.py',
+    'python validation/e2e/run_builder_responsive_input_boundary_check.py',
+    'python validation/e2e/run_rtaq_ssot_guard_check.py',
+    'python validation/e2e/run_status_merged_foundation_guard_check.py',
+    'python validation/e2e/run_automation_control_state_check.py',
+]
+
 FORBIDDEN_CLAIMS = {
     'production_ready': 'true',
     'prompt_pack_release_ready': 'true',
@@ -58,6 +77,38 @@ def extract_merged_foundation(status_text: str) -> set[str]:
             continue
         if inside and line and not line.startswith('  - '):
             break
+    return entries
+
+
+def extract_yaml_string_list(status_text: str, key: str) -> list[str]:
+    entries: list[str] = []
+    inside_yaml = False
+    inside_list = False
+    target_prefix = f'{key}:'
+
+    for raw_line in status_text.splitlines():
+        line = raw_line.strip()
+        if line.startswith('```yaml'):
+            inside_yaml = True
+            inside_list = False
+            continue
+        if inside_yaml and line.startswith('```'):
+            inside_yaml = False
+            inside_list = False
+            continue
+        if not inside_yaml:
+            continue
+        if line == target_prefix:
+            inside_list = True
+            continue
+        if inside_list:
+            if raw_line.startswith('  - '):
+                entries.append(normalize_claim_value(raw_line.split('-', 1)[1]))
+                continue
+            if line.startswith('#'):
+                continue
+            if line:
+                break
     return entries
 
 
@@ -118,14 +169,33 @@ def validate_status_text(status_text: str) -> None:
     if present_forbidden_claims:
         raise AssertionError('STATUS.md upgrades forbidden claims: ' + ', '.join(present_forbidden_claims))
 
+    automatic_checks = extract_yaml_string_list(status_text, 'automatic_check')
+    if automatic_checks != REQUIRED_AUTOMATIC_CHECKS:
+        missing_checks = [check for check in REQUIRED_AUTOMATIC_CHECKS if check not in automatic_checks]
+        extra_checks = [check for check in automatic_checks if check not in REQUIRED_AUTOMATIC_CHECKS]
+        order_mismatch = not missing_checks and not extra_checks
+        details = []
+        if missing_checks:
+            details.append('missing: ' + ', '.join(missing_checks))
+        if extra_checks:
+            details.append('extra: ' + ', '.join(extra_checks))
+        if order_mismatch:
+            details.append('order differs from Validate workflow')
+        raise AssertionError('STATUS.md automatic_check must mirror the primary Validate chain; ' + '; '.join(details))
+
 
 def self_test_status_text(
     extra_yaml_blocks: str = '',
     foundation_set: set[str] | None = None,
+    automatic_checks: list[str] | None = None,
+    automatic_check_comment: str = '',
 ) -> str:
     if foundation_set is None:
         foundation_set = REQUIRED_MERGED_FOUNDATION
+    if automatic_checks is None:
+        automatic_checks = REQUIRED_AUTOMATIC_CHECKS
     foundation_entries = '\n'.join(f'  - "{entry}"' for entry in sorted(foundation_set))
+    automatic_check_entries = '\n'.join(f'  - {entry}' for entry in automatic_checks)
     return f'''# STATUS
 
 ```yaml
@@ -146,6 +216,12 @@ pilot_allowed_to_start: false
 readiness_claims_upgraded: false
 ci_success_claim_boundary: repository checks only; not responsive correctness evidence
 pilot_execution_scope: not_allowed
+```
+
+```yaml
+automatic_workflow: .github/workflows/validate.yml
+automatic_check:
+{automatic_check_comment}{automatic_check_entries}
 ```
 '''
 
@@ -202,6 +278,23 @@ pilot_execution_scope: allowed
 ```yaml
 pilot_execution_scope: not_allowed
 ```'''), 'pilot_execution_scope: allowed')
+    validate_status_text(
+        self_test_status_text(
+            automatic_check_comment='  # comment between key and list must not truncate parsing\n',
+        )
+    )
+    assert_status_invalid(
+        self_test_status_text(
+            automatic_checks=[check for check in REQUIRED_AUTOMATIC_CHECKS if 'run_task_quality_gate_check.py' not in check],
+        ),
+        'run_task_quality_gate_check.py',
+    )
+    assert_status_invalid(
+        self_test_status_text(
+            automatic_checks=list(reversed(REQUIRED_AUTOMATIC_CHECKS)),
+        ),
+        'order differs from Validate workflow',
+    )
 
 
 def main() -> int:
