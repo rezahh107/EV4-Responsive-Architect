@@ -80,7 +80,7 @@ desktop-baseline-[width].png
 tablet-[width].png
 mobile-[width].png
 breakpoint-inventory.json
-EVIDENCE_INTAKE_PACKET.submitted.json
+evidence_intake_packet.submitted.json
 ```
 
 ## Preflight sequence
@@ -97,8 +97,8 @@ EVIDENCE_INTAKE_PACKET.submitted.json
 Validation commands:
 
 ```bash
-python validation/e2e/run_evidence_intake_check.py --packet examples/smart-home-connector/intake/EVIDENCE_INTAKE_PACKET.submitted.json --submitted-mode
-python validation/e2e/run_pilot_readiness_check.py --packet examples/smart-home-connector/intake/EVIDENCE_INTAKE_PACKET.submitted.json --out examples/smart-home-connector/readiness/PILOT_READINESS_REPORT.generated.json --skip-schema-suite --submitted-mode
+python validation/e2e/run_evidence_intake_check.py --packet issue-8/evidence_intake_packet.submitted.json --submitted-mode
+python validation/e2e/run_pilot_readiness_check.py --packet issue-8/evidence_intake_packet.submitted.json --out issue-8/pilot_readiness_report.generated.json --skip-schema-suite --submitted-mode
 ```
 
 ## Stop conditions
