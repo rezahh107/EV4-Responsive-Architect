@@ -158,12 +158,13 @@ def validate_submitted_packet_eligibility_gate(packet: dict[str, Any]) -> None:
     lowered_hash = identity_hash.lower()
     if lowered_hash in PLACEHOLDER_HASH_VALUES or "placeholder" in lowered_hash or "sample" in lowered_hash or "fixture" in lowered_hash:
         raise AssertionError("real eligibility rejects placeholder identity hash")
-    if PAYLOAD_IDENTITY_HASH_PATTERN.fullmatch(identity_hash) is None:
-        raise AssertionError("real eligibility requires payload_identity_hash=sha256:<64 lowercase hex>")
 
     indicators = sample_indicators(packet)
     if indicators:
         raise AssertionError(f"real eligibility rejects sample or placeholder markers: {indicators}")
+
+    if PAYLOAD_IDENTITY_HASH_PATTERN.fullmatch(identity_hash) is None:
+        raise AssertionError("real eligibility requires payload_identity_hash=sha256:<64 lowercase hex>")
 
 
 def assert_accepts(packet: dict[str, Any]) -> None:
