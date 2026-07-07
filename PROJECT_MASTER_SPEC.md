@@ -32,6 +32,8 @@ Automation objective selection is controlled by the Work Package Catalog, not by
 active_refactor_doc:
   - docs/RESPONSIVE_TREE_ARCHITECTURE_REFACTOR_v0.3.0.md
 active_contracts:
+  - contracts/MAIN_PIPELINE_HANDOFF_INPUT_CONTRACT.md
+  - contracts/BUILDER_TO_RESPONSIVE_INPUT_BOUNDARY.md
   - contracts/EV4_RESPONSIVE_TREE_ARCHITECTURE_CONTRACT.md
   - contracts/EV4_VIEWPORT_RELATIONSHIP_CLASSIFICATION_CONTRACT.md
   - contracts/EV4_RESPONSIVE_STRATEGY_ROUTING_CONTRACT.md
@@ -39,14 +41,29 @@ active_contracts:
   - contracts/EV4_RESPONSIVE_HANDOFF_EXPORT_CONTRACT.md
 active_schema:
   - schemas/ev4-responsive-output.schema.json
+  - schemas/ev4-builder-responsive-input.schema.json
   - schemas/ev4-automation-control-state.schema.json
   - schemas/ev4-automation-work-package-catalog.schema.json
 active_validation:
   - validation/e2e/run_responsive_tree_architecture_refactor_check.py
   - validation/e2e/run_submitted_packet_eligibility_gate_check.py
+  - validation/e2e/run_submitted_packet_readiness_dry_run.py
+  - validation/e2e/run_evidence_intake_check.py
+  - validation/e2e/run_evidence_intake_submitted_mode_path_check.py
+  - validation/e2e/run_evidence_intake_submitted_payload_hash_check.py
+  - validation/e2e/run_evidence_intake_fixture_matrix_check.py
+  - validation/e2e/run_pilot_readiness_check.py
+  - validation/e2e/run_pilot_readiness_boundary_check.py
+  - validation/e2e/run_issue_8_preflight_boundary_check.py
+  - validation/e2e/run_issue_to_packet_bridge_check.py
+  - validation/e2e/run_builder_responsive_input_boundary_check.py
   - validation/e2e/run_task_quality_gate_check.py
+  - validation/e2e/run_rtaq_ssot_guard_check.py
+  - validation/e2e/run_status_merged_foundation_guard_check.py
   - validation/e2e/run_automation_control_state_check.py
   - validation/e2e/run_automation_work_package_catalog_check.py
+  - validation/e2e/run_rolling_queue_check.py
+  - validation/e2e/run_run_ledger_check.py
 automation_control_state:
   - planning/EV4_AUTOMATION_CONTROL_STATE.json
 work_package_catalog:
@@ -55,6 +72,10 @@ historical_rolling_queue_archive:
   - planning/EV4_ROLLING_QUEUE.json
 active_run_ledger:
   - planning/EV4_RUN_LEDGER.json
+primary_validate_chain_index:
+  - docs/17_VALIDATION_COMMAND_INDEX.md
+active_contract_schema_validator_index:
+  - docs/20_ACTIVE_CONTRACT_SCHEMA_VALIDATOR_INDEX.md
 ```
 
 ---
@@ -151,6 +172,7 @@ The automatic workflow installs validation dependencies and runs the primary Val
 
 ```text
 docs/17_VALIDATION_COMMAND_INDEX.md
+docs/20_ACTIVE_CONTRACT_SCHEMA_VALIDATOR_INDEX.md
 ```
 
 The checker coverage includes:
@@ -162,13 +184,17 @@ ev4-responsive-output@0.3.0 schema validity
 valid route fixture acceptance
 invalid fixture rejection
 builder handoff step integrity
-route/mode consistency
+Builder/Project Gate to Responsive intake boundary checks
+submitted-packet eligibility failure modes
+submitted packet dry-run readiness behavior
+submitted-mode path, payload-hash, fixture-matrix, and Issue #8 bridge guards
+pilot readiness and pilot boundary guards
 catalog-backed Work Package selection discipline
 retired rolling-queue archive discipline
-run-ledger, task-quality, and submitted-packet eligibility checks
+run-ledger, task-quality, RTAQ SSOT, STATUS, and automation-control checks
 ```
 
-All active validators harden repository contracts, submitted-packet eligibility, task quality-gate structure, catalog-selection discipline, queue archive discipline, and ledger discipline. They do not prove live render correctness, export validation, accessibility pass, pixel accuracy, production readiness, or release readiness.
+All active validators harden repository contracts, submitted-packet eligibility, task quality-gate structure, catalog-selection discipline, queue archive discipline, ledger discipline, boundary docs, and STATUS/workflow parity. They do not prove live render correctness, export validation, accessibility pass, pixel accuracy, production readiness, or release readiness.
 
 The legacy run-ledger workflow is manual-only during this refactor path.
 

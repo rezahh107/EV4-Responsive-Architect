@@ -1,9 +1,9 @@
 # Active Contract / Schema / Validator Index
 
-Task: `RTAQ-0047`
-Updated by: `RTAQ-0052`
+Task: `WP-RESP-003/PR-A`
+Updated by: `automation/wp-resp-003-pr-a-validator-parity`
 
-This index records the active repository surfaces needed for controlled manual use and queue-safe handoff. It is an index only; it does not validate a real submitted packet, mutate Issue #8, authorize pilot execution, or upgrade readiness.
+This index records the active repository surfaces needed for controlled manual use and catalog-backed handoff. It is an index only; it does not validate a real submitted packet, mutate Issue #8, authorize pilot execution, or upgrade readiness.
 
 ## Source-of-truth hierarchy
 
@@ -14,6 +14,8 @@ master_spec:
   - PROJECT_MASTER_SPEC.md
 automation_control_state:
   - planning/EV4_AUTOMATION_CONTROL_STATE.json
+work_package_catalog:
+  - planning/EV4_AUTOMATION_WORK_PACKAGE_CATALOG.json
 archived_queue:
   - planning/EV4_ROLLING_QUEUE.json
 run_ledger:
@@ -64,6 +66,9 @@ schemas:
   automation_control_state:
     path: schemas/ev4-automation-control-state.schema.json
     role: post-queue automation control-state schema
+  automation_work_package_catalog:
+    path: schemas/ev4-automation-work-package-catalog.schema.json
+    role: catalog-backed Work Package selection schema
   rolling_queue:
     path: schemas/ev4-responsive-rolling-queue.schema.json
     role: archived RTAQ queue schema
@@ -145,6 +150,23 @@ primary_validate_workflow:
     automation_control_state:
       path: validation/e2e/run_automation_control_state_check.py
       role: post-queue automation control-state guard
+    automation_work_package_catalog:
+      path: validation/e2e/run_automation_work_package_catalog_check.py
+      role: catalog-backed Work Package selection and replenishment governance guard
+```
+
+## Primary Validate parity rule
+
+```yaml
+parity_owner: .github/workflows/validate.yml
+status_parity_reference: STATUS.md automatic_check
+manual_command_index_reference: docs/17_VALIDATION_COMMAND_INDEX.md
+active_index_reference: docs/20_ACTIVE_CONTRACT_SCHEMA_VALIDATOR_INDEX.md
+required_behavior:
+  - every primary Validate validator must be discoverable in STATUS.md
+  - every primary Validate validator must be documented in docs/17_VALIDATION_COMMAND_INDEX.md
+  - every primary Validate validator must be represented in this active index
+boundary: repository-check parity only; not responsive correctness evidence
 ```
 
 ## Manual or legacy evidence-bound guard validators
