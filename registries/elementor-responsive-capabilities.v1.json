@@ -1,0 +1,16 @@
+{
+  "capabilities": [
+    {
+      "evidence_required": "control_export_or_frontend_viewport_evidence",
+      "id": "responsive_controls",
+      "may_infer_hidden_values_from_screenshot": false
+    },
+    {
+      "desktop_proves_tablet_or_mobile": false,
+      "evidence_required": "matching viewport render evidence",
+      "id": "display_conditions"
+    }
+  ],
+  "registry_id": "elementor-responsive-capability-registry",
+  "schema": "ev4-elementor-responsive-capabilities@1.0.0"
+}

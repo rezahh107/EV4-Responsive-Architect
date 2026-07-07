@@ -1,0 +1,237 @@
+{
+  "$id": "https://ev4.local/contracts/common/producer-gate-export.v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "acquisition_mode": {
+      "additionalProperties": false,
+      "properties": {
+        "mode": {
+          "const": "producer_emitted_gate_artifact"
+        },
+        "silent_fallback_allowed": {
+          "const": false
+        }
+      },
+      "required": [
+        "mode",
+        "silent_fallback_allowed"
+      ],
+      "type": "object"
+    },
+    "export_id": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "final_stage_bundle": {
+      "type": "object"
+    },
+    "handoff": {
+      "additionalProperties": false,
+      "properties": {
+        "allowed": {
+          "type": "boolean"
+        },
+        "blocking_diagnostics": {
+          "items": {
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "failure_reasons": {
+          "items": {
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "status": {
+          "enum": [
+            "successful",
+            "successful_with_flags",
+            "blocked",
+            "insufficient_evidence",
+            "invalid_artifact"
+          ]
+        },
+        "target": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "unresolved_evidence": {
+          "items": {
+            "type": "object"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "target",
+        "status",
+        "allowed",
+        "failure_reasons",
+        "blocking_diagnostics",
+        "unresolved_evidence"
+      ],
+      "type": "object"
+    },
+    "pipeline_id": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "producer": {
+      "additionalProperties": false,
+      "properties": {
+        "commit_sha": {
+          "pattern": "^[a-f0-9]{40}$",
+          "type": "string"
+        },
+        "ref": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "repository": {
+          "const": "rezahh107/EV4-Responsive-Architect"
+        },
+        "stage": {
+          "const": "responsive"
+        }
+      },
+      "required": [
+        "stage",
+        "repository",
+        "ref",
+        "commit_sha"
+      ],
+      "type": "object"
+    },
+    "run_id": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "producer-gate-export.v1"
+    },
+    "stage_manifest": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "blockers": {
+            "items": {
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "mandatory": {
+            "type": "boolean"
+          },
+          "ordinal": {
+            "minimum": 1,
+            "type": "integer"
+          },
+          "output": {
+            "additionalProperties": false,
+            "properties": {
+              "artifact_hash": {
+                "type": "object"
+              },
+              "artifact_ref": {
+                "minLength": 1,
+                "type": "string"
+              },
+              "present": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "present"
+            ],
+            "type": "object"
+          },
+          "stage_id": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "stage_version": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "complete",
+              "blocked",
+              "insufficient_evidence",
+              "not_run",
+              "invalid"
+            ]
+          },
+          "unknowns": {
+            "items": {
+              "type": "object"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "stage_id",
+          "stage_version",
+          "ordinal",
+          "mandatory",
+          "status",
+          "output",
+          "blockers",
+          "unknowns"
+        ],
+        "type": "object"
+      },
+      "minItems": 1,
+      "type": "array"
+    },
+    "validation": {
+      "additionalProperties": false,
+      "properties": {
+        "diagnostics": {
+          "items": {
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "schema_valid": {
+          "type": "boolean"
+        },
+        "semantic_valid": {
+          "type": "boolean"
+        },
+        "validator_id": {
+          "const": "ev4-producer-gate-export-validator"
+        },
+        "validator_version": {
+          "const": "1.0.0"
+        }
+      },
+      "required": [
+        "schema_valid",
+        "semantic_valid",
+        "validator_id",
+        "validator_version",
+        "diagnostics"
+      ],
+      "type": "object"
+    }
+  },
+  "required": [
+    "schema_version",
+    "export_id",
+    "producer",
+    "pipeline_id",
+    "run_id",
+    "stage_manifest",
+    "final_stage_bundle",
+    "handoff",
+    "validation",
+    "acquisition_mode"
+  ],
+  "title": "EV4 Producer Gate Export v1",
+  "type": "object",
+  "x-ev4-contract-id": "producer-gate-export.v1",
+  "x-ev4-contract-version": "1.0.0"
+}

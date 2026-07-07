@@ -1,0 +1,30 @@
+{
+  "$id": "https://ev4.local/contracts/common/common-contract-lock.v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "locked_contracts": {
+      "minItems": 1,
+      "type": "array"
+    },
+    "schema_version": {
+      "const": "project-gate-common-contract-lock.v1"
+    },
+    "source_commit_sha": {
+      "const": "ea19c22c32458068e167b267da8b819e9263cdf7"
+    },
+    "source_repository": {
+      "const": "rezahh107/EV4-Project-Gate"
+    }
+  },
+  "required": [
+    "schema_version",
+    "source_repository",
+    "source_commit_sha",
+    "locked_contracts"
+  ],
+  "title": "EV4 Project Gate Common Contract Lock v1",
+  "type": "object",
+  "x-ev4-contract-id": "project-gate-common-contract-lock.v1",
+  "x-ev4-contract-version": "1.0.0"
+}

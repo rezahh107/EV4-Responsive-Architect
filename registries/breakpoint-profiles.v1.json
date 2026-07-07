@@ -1,0 +1,22 @@
+{
+  "profiles": [
+    {
+      "allows_responsive_correctness_claim": false,
+      "breakpoints": {
+        "desktop": ">=1025px",
+        "mobile": "<=767px",
+        "tablet": "768px-1024px"
+      },
+      "id": "elementor_v4_default_unverified",
+      "source": "Elementor default profile; verify per project before correctness claims"
+    },
+    {
+      "allows_responsive_correctness_claim": false,
+      "breakpoints": {},
+      "id": "project_declared_verified",
+      "source": "project-specific verified control values required"
+    }
+  ],
+  "registry_id": "ev4-responsive-breakpoint-profile-registry",
+  "schema": "ev4-responsive-breakpoint-profiles@1.0.0"
+}

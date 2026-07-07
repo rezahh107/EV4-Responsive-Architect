@@ -123,3 +123,11 @@ Stop and do not upgrade claims if:
 ## Boundary
 
 This command index is documentation only. It does not create evidence, mutate Issue #8, run the pilot, or change readiness state.
+
+## Project Gate Prompt 04 Responsive Producer Adoption
+
+```bash
+python validation/project_gate/validate_responsive_producer_adoption.py
+```
+
+Validates the Responsive pipeline manifest, Responsive Stage Payload fixtures, viewport evidence isolation, breakpoint registry boundary, Producer Gate Export fixtures, vendored common-contract lock metadata, and pinned reusable workflow caller. This is repository evidence only; it is not live responsive correctness evidence.

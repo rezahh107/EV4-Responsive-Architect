@@ -1,0 +1,55 @@
+{
+  "$id": "https://ev4-responsive.local/schemas/ev4-responsive-viewport-source-ledger.v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "entries": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "evidence_ref": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "evidence_status": {
+            "enum": [
+              "provided",
+              "insufficient_evidence"
+            ]
+          },
+          "proves_only_viewport": {
+            "const": true
+          },
+          "viewport": {
+            "enum": [
+              "desktop",
+              "tablet",
+              "mobile"
+            ]
+          }
+        },
+        "required": [
+          "viewport",
+          "evidence_ref",
+          "evidence_status",
+          "proves_only_viewport"
+        ],
+        "type": "object"
+      },
+      "minItems": 1,
+      "type": "array"
+    },
+    "ledger_id": {
+      "type": "string"
+    },
+    "schema": {
+      "const": "ev4-responsive-viewport-source-ledger@1.0.0"
+    }
+  },
+  "required": [
+    "schema",
+    "ledger_id",
+    "entries"
+  ],
+  "type": "object"
+}

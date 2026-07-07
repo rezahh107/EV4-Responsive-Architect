@@ -1,0 +1,39 @@
+{
+  "architecture_identity": {
+    "mutation_veto_applied": true,
+    "preserved": true,
+    "source_refs": [
+      "architect-baseline-001"
+    ]
+  },
+  "breakpoint_profile": "elementor_v4_default_unverified",
+  "classification": {
+    "relationship": "same_section_adaptation"
+  },
+  "evidence_boundary": {
+    "ci_success_is_responsive_correctness": false
+  },
+  "human_review": {
+    "required": true
+  },
+  "mode": "design_to_responsive_tree",
+  "outputs": [
+    {
+      "artifact_ref": "responsive_output_same_tree.valid.json",
+      "kind": "override_plan"
+    }
+  ],
+  "payload_id": "rsp-invalid-cross-viewport",
+  "routing": {
+    "route": "same_tree_responsive_overrides"
+  },
+  "schema": "ev4-responsive-stage-payload@1.0.0",
+  "viewport_source_ledger": [
+    {
+      "evidence_ref": "desktop-shot",
+      "evidence_status": "provided",
+      "proves_only_viewport": false,
+      "viewport": "desktop"
+    }
+  ]
+}
