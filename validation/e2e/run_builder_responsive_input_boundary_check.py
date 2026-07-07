@@ -27,6 +27,10 @@ REQUIRED_QUALITY_DEBT_INVALID_FIXTURE_NAMES = {
     "quality_debt_register_boundary_upgrade.invalid.json",
     "quality_debt_register_unresolved_p1.invalid.json",
 }
+QUALITY_DEBT_NEGATIVE_FAILURE_MARKERS = {
+    "quality_debt_register_boundary_upgrade.invalid.json": "has upgraded forbidden boundary claims",
+    "quality_debt_register_unresolved_p1.invalid.json": "unresolved P0/P1 quality debt items",
+}
 SCHEMA_VALID_NEGATIVE_FIXTURE_NAMES = {
     "builder_responsive_input_blocked_project_gate_allows_intake.invalid.json",
     "builder_responsive_input_blocked_viewport_allows_intake.invalid.json",
@@ -222,9 +226,14 @@ def _assert_quality_debt_negative_fixtures() -> None:
     fixtures = tuple(sorted(INVALID_DIR.glob(QUALITY_DEBT_INVALID_FIXTURE_GLOB)))
     _assert_required_quality_debt_invalid_fixture_set(fixtures)
     for fixture in fixtures:
+        expected_marker = QUALITY_DEBT_NEGATIVE_FAILURE_MARKERS[fixture.name]
         try:
             _assert_quality_debt_register_payload(_load_json(fixture), str(fixture.relative_to(ROOT)))
-        except AssertionError:
+        except AssertionError as err:
+            if expected_marker not in str(err):
+                raise AssertionError(
+                    f"{fixture.relative_to(ROOT)} failed for unexpected reason: {err}"
+                ) from err
             continue
         raise AssertionError(f"{fixture.relative_to(ROOT)} unexpectedly satisfied quality-debt register guard")
 
