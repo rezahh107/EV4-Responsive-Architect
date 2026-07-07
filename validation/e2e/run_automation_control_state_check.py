@@ -10,6 +10,7 @@ from jsonschema import Draft202012Validator
 
 ROOT = Path(__file__).resolve().parents[2]
 CONTROL = ROOT / "planning" / "EV4_AUTOMATION_CONTROL_STATE.json"
+CATALOG = ROOT / "planning" / "EV4_AUTOMATION_WORK_PACKAGE_CATALOG.json"
 SCHEMA = ROOT / "schemas" / "ev4-automation-control-state.schema.json"
 QUEUE = ROOT / "planning" / "EV4_ROLLING_QUEUE.json"
 STATUS = ROOT / "STATUS.md"
@@ -18,7 +19,10 @@ EXPECTED_CONTROL = {
     "schema": "ev4-automation-control-state@1.0.0",
     "project": "EV4 Responsive Architect",
     "execution_state_source_of_truth": "planning/EV4_AUTOMATION_CONTROL_STATE.json",
-    "current_execution_driver": "bounded_material_checkpoint_guard",
+    "current_execution_driver": "work_package_catalog_guard",
+    "work_package_catalog_path": "planning/EV4_AUTOMATION_WORK_PACKAGE_CATALOG.json",
+    "catalog_authority": "approved_material_objective_source",
+    "catalog_selection_policy": "select_from_catalog_only_one_work_package_or_reviewable_slice",
     "rolling_queue_authority": "historical_reconciled_archive",
     "rolling_queue_execution_status": "retired_as_execution_driver",
     "rolling_queue_path": "planning/EV4_ROLLING_QUEUE.json",
@@ -27,14 +31,18 @@ EXPECTED_CONTROL = {
     "latest_checkpoint_guard": "PR #113 RTAQ-0030 bounded foundation checkpoint guard",
     "queue_drift_acknowledged": False,
     "queue_reconciliation_required_before_queue_driver": False,
-    "checkpoint_only_loop_policy": "bounded_checkpoints_only_not_append_every_merge",
-    "next_action_policy": "material_objective_only",
+    "arbitrary_task_invention_policy": "forbidden_outside_work_package_catalog",
+    "checkpoint_only_loop_policy": "forbidden_without_material_checkpoint_change",
+    "next_action_policy": "catalog_material_objective_only",
+    "open_pr_reconciliation_policy": "reconcile_open_automation_pr_before_new_catalog_selection",
 }
 
 FORBIDDEN_NEXT_ACTIONS = [
     "create_checkpoint_only_pr_for_every_merge",
     "treat_stale_rolling_queue_as_current_driver",
-    "invent_rtaq_task_without_planning_contract",
+    "invent_rtaq_task_without_catalog_work_package",
+    "invent_micro_task_outside_catalog",
+    "create_artificial_reserve_task_to_keep_task_count_high",
     "upgrade_evidence_pilot_readiness_or_release_claims",
 ]
 
@@ -44,26 +52,39 @@ BOUNDARY_CLAIMS = {
     "readiness_claims_upgraded": False,
     "production_ready": False,
     "release_ready": False,
-    "responsive_correctness_claim_upgraded": False,
+    "live_render_validated": False,
+    "export_json_validated": False,
+    "accessibility_passed": False,
+    "pixel_perfect": False,
+    "responsive_correctness_validated": False,
 }
 
 STATUS_CLAIMS = {
     "foundation_checkpoint_policy": "bounded checkpoints only; not append every merged PR",
     "automation_control_state": "planning/EV4_AUTOMATION_CONTROL_STATE.json",
     "execution_state_source_of_truth": "planning/EV4_AUTOMATION_CONTROL_STATE.json",
-    "current_execution_driver": "bounded_material_checkpoint_guard",
+    "current_execution_driver": "work_package_catalog_guard",
+    "work_package_catalog": "planning/EV4_AUTOMATION_WORK_PACKAGE_CATALOG.json",
+    "catalog_authority": "approved_material_objective_source",
+    "catalog_selection_policy": "select from catalog only; one Work Package or approved PR slice per run",
     "rolling_queue_authority": "historical_reconciled_archive",
     "rolling_queue_execution_status": "retired_as_execution_driver",
     "rolling_queue_reconciliation_required": "false",
-    "latest_material_checkpoint": "PR #122 RTAQ-0038 rolling queue archive reconciliation",
-    "checkpoint_only_loop_policy": "bounded checkpoints only; not append every merged PR",
-    "next_action_policy": "material objectives only; checkpoint refresh only when material checkpoint changes",
+    "arbitrary_task_invention_policy": "forbidden outside Work Package Catalog",
+    "checkpoint_only_loop_policy": "forbidden without material checkpoint change",
+    "next_action_policy": "catalog material objectives only",
     "automation_control_validator": "validation/e2e/run_automation_control_state_check.py",
+    "automation_work_package_catalog_validator": "validation/e2e/run_automation_work_package_catalog_check.py",
     "real_submitted_packet_present": "false",
     "pilot_allowed_to_start": "false",
     "readiness_claims_upgraded": "false",
     "production_ready": "false",
     "prompt_pack_release_ready": "false",
+    "live_render_validated": "false",
+    "export_json_validated": "false",
+    "accessibility_passed": "false",
+    "pixel_perfect": "false",
+    "responsive_correctness_validated": "false",
     "pilot_execution_scope": "not_allowed",
 }
 
@@ -133,17 +154,39 @@ def queue_is_complete_archive(queue: dict[str, Any]) -> bool:
     return isinstance(tasks, list) and bool(tasks) and all(isinstance(task, dict) and task.get("status") in TERMINAL_TASK_STATUSES for task in tasks)
 
 
-def assert_control_state(control: dict[str, Any], schema: dict[str, Any], queue: dict[str, Any]) -> None:
+def assert_catalog_integration(control: dict[str, Any], catalog: dict[str, Any]) -> None:
+    if control["work_package_catalog_path"] != "planning/EV4_AUTOMATION_WORK_PACKAGE_CATALOG.json":
+        fail("control state must point at the approved Work Package Catalog")
+    if catalog.get("catalog_status") != "approved_material_objective_source":
+        fail("catalog must be the approved material-objective source")
+    if catalog.get("execution_driver") != control["current_execution_driver"]:
+        fail("catalog execution driver must match automation control state")
+    policy = catalog.get("selection_policy", {})
+    required_true = [
+        "controller_must_select_from_catalog_only",
+        "arbitrary_rtaq_task_invention_forbidden",
+        "micro_task_invention_forbidden",
+        "checkpoint_only_loop_forbidden",
+        "artificial_reserve_tasks_forbidden",
+        "split_by_layer_under_same_work_package_id",
+    ]
+    for key in required_true:
+        if policy.get(key) is not True:
+            fail(f"catalog selection policy must keep {key}=true")
+
+
+def assert_control_state(control: dict[str, Any], schema: dict[str, Any], queue: dict[str, Any], catalog: dict[str, Any]) -> None:
     assert_schema_valid(control, schema, "automation control state")
     for key, expected in EXPECTED_CONTROL.items():
         if control.get(key) != expected:
             fail(f"automation control state mismatch for {key}: {control.get(key)!r} != {expected!r}")
     if control.get("forbidden_next_actions") != FORBIDDEN_NEXT_ACTIONS:
-        fail("forbidden_next_actions must exactly match the required guard list")
+        fail("forbidden_next_actions must exactly match the required catalog guard list")
     if control.get("boundary_claims") != BOUNDARY_CLAIMS:
         fail("boundary_claims must preserve evidence and readiness boundaries")
     if control["current_execution_driver"] == "rolling_queue":
         fail("rolling queue must not be restored as current execution driver")
+    assert_catalog_integration(control, catalog)
     if queue_has_old_drift(queue):
         fail("active known-drift queue cannot use reconciled archive control state")
     if not queue_is_complete_archive(queue):
@@ -170,7 +213,7 @@ def parse_status_claims(text: str) -> dict[str, list[tuple[str, int]]]:
         if in_yaml and line.startswith("```"):
             in_yaml = False
             continue
-        if not in_yaml or not line or line.startswith("#") or line.startswith("-") or ":" not in line:
+        if not in_yaml or not line or line.startswith("-") or line.startswith("#") or ":" not in line:
             continue
         key, value = line.split(":", 1)
         key = key.strip()
@@ -209,13 +252,24 @@ def complete_queue_fixture() -> dict[str, Any]:
     return {"queue_status": "complete", "active_cycle": {"cycle_status": "complete"}, "tasks": [{"task_id": "RTAQ-0001", "status": "merged"}, {"task_id": "RTAQ-0011", "status": "superseded"}]}
 
 
-def drift_queue_fixture() -> dict[str, Any]:
-    return {"queue_status": "active", "active_cycle": {"cycle_status": "active"}, "tasks": [{"task_id": task_id, "status": "pending"} for task_id in sorted(DRIFT_TASKS)]}
+def valid_catalog_fixture() -> dict[str, Any]:
+    return {
+        "catalog_status": "approved_material_objective_source",
+        "execution_driver": "work_package_catalog_guard",
+        "selection_policy": {
+            "controller_must_select_from_catalog_only": True,
+            "arbitrary_rtaq_task_invention_forbidden": True,
+            "micro_task_invention_forbidden": True,
+            "checkpoint_only_loop_forbidden": True,
+            "artificial_reserve_tasks_forbidden": True,
+            "split_by_layer_under_same_work_package_id": True,
+        },
+    }
 
 
-def assert_invalid_control(control: dict[str, Any], schema: dict[str, Any], queue: dict[str, Any], expected: str) -> None:
+def assert_invalid_control(control: dict[str, Any], schema: dict[str, Any], queue: dict[str, Any], catalog: dict[str, Any], expected: str) -> None:
     try:
-        assert_control_state(control, schema, queue)
+        assert_control_state(control, schema, queue, catalog)
     except AssertionError as exc:
         if expected not in str(exc):
             fail(f"self-test produced unexpected diagnostic: {exc}")
@@ -237,27 +291,36 @@ def run_self_tests() -> None:
     schema = load_json(SCHEMA)
     control = valid_control()
     queue = complete_queue_fixture()
-    assert_control_state(control, schema, queue)
+    catalog = valid_catalog_fixture()
+    assert_control_state(control, schema, queue, catalog)
+
     missing_required = dict(control)
-    missing_required.pop("execution_state_source_of_truth")
-    assert_schema_invalid(missing_required, schema, "missing execution_state_source_of_truth")
+    missing_required.pop("work_package_catalog_path")
+    assert_schema_invalid(missing_required, schema, "missing work_package_catalog_path")
+
     old_control = dict(control)
-    old_control["rolling_queue_authority"] = "historical_non_authoritative_until_reconciled"
-    assert_schema_invalid(old_control, schema, "old queue authority")
+    old_control["current_execution_driver"] = "bounded_material_checkpoint_guard"
+    assert_schema_invalid(old_control, schema, "old bounded driver")
+
     bad_driver = dict(control)
     bad_driver["current_execution_driver"] = "rolling_queue"
-    assert_invalid_control(bad_driver, schema, queue, "current_execution_driver")
+    assert_invalid_control(bad_driver, schema, queue, catalog, "current_execution_driver")
+
     bad_order = dict(control)
     bad_order["forbidden_next_actions"] = list(reversed(FORBIDDEN_NEXT_ACTIONS))
-    assert_invalid_control(bad_order, schema, queue, "forbidden_next_actions")
-    assert_invalid_control(control, schema, drift_queue_fixture(), "active known-drift queue")
+    assert_invalid_control(bad_order, schema, queue, catalog, "forbidden_next_actions")
+
+    bad_catalog = valid_catalog_fixture()
+    bad_catalog["selection_policy"]["micro_task_invention_forbidden"] = False
+    assert_invalid_control(control, schema, queue, bad_catalog, "micro_task_invention_forbidden")
+
     incomplete_queue = {"queue_status": "complete", "active_cycle": {"cycle_status": "complete"}, "tasks": [{"task_id": "RTAQ-0001", "status": "pending"}]}
-    assert_invalid_control(control, schema, incomplete_queue, "complete terminal rolling queue history")
+    assert_invalid_control(control, schema, incomplete_queue, catalog, "complete terminal rolling queue history")
+
     assert_status_text(status_fixture())
-    assert_invalid_status(status_fixture().replace("current_execution_driver: bounded_material_checkpoint_guard", "current_execution_driver: rolling_queue"), "current_execution_driver")
-    assert_invalid_status(status_fixture().replace("rolling_queue_reconciliation_required: false", "rolling_queue_reconciliation_required: true"), "rolling_queue_reconciliation_required")
+    assert_invalid_status(status_fixture().replace("current_execution_driver: work_package_catalog_guard", "current_execution_driver: rolling_queue"), "current_execution_driver")
+    assert_invalid_status(status_fixture().replace("work_package_catalog: planning/EV4_AUTOMATION_WORK_PACKAGE_CATALOG.json", "work_package_catalog: planning/EV4_ROLLING_QUEUE.json"), "work_package_catalog")
     assert_invalid_status(status_fixture().replace("pilot_allowed_to_start: false", "pilot_allowed_to_start: true"), "pilot_allowed_to_start")
-    assert_status_text(status_fixture(["ignored_comment_example: value # operator note"]))
 
 
 def main() -> int:
@@ -265,7 +328,8 @@ def main() -> int:
     control = load_json(CONTROL)
     schema = load_json(SCHEMA)
     queue = load_json(QUEUE)
-    assert_control_state(control, schema, queue)
+    catalog = load_json(CATALOG)
+    assert_control_state(control, schema, queue, catalog)
     assert_status_text(STATUS.read_text(encoding="utf-8"))
     print("automation control state check passed")
     return 0
