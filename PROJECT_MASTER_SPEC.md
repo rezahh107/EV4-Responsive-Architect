@@ -62,6 +62,8 @@ active_validation:
   - validation/e2e/run_status_merged_foundation_guard_check.py
   - validation/e2e/run_automation_control_state_check.py
   - validation/e2e/run_automation_work_package_catalog_check.py
+  - validation/e2e/run_rolling_queue_check.py
+  - validation/e2e/run_run_ledger_check.py
 automation_control_state:
   - planning/EV4_AUTOMATION_CONTROL_STATE.json
 work_package_catalog:
