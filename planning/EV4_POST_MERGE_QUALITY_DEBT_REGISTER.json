@@ -1,7 +1,7 @@
 {
   "schema": "ev4-post-merge-quality-debt-register@1.0.0",
   "status": "active",
-  "scope": "post-merge quality debt accumulated through PR #135",
+  "scope": "post-merge quality debt accumulated through PR #135 plus WP-RESP-003 fixture coverage closure",
   "created_by": "RTAQ post-merge quality debt reconciliation",
   "quality_debts": [
     {
@@ -51,6 +51,20 @@
         "docs/RTAQ_POST_MERGE_QUALITY_DEBT_RECONCILIATION.md",
         "planning/EV4_POST_MERGE_QUALITY_DEBT_REGISTER.json",
         "validation/e2e/run_builder_responsive_input_boundary_check.py"
+      ]
+    },
+    {
+      "id": "QD-005",
+      "severity": "P1",
+      "status": "resolved",
+      "summary": "Quality-debt register validation lacked explicit negative fixtures for unresolved P1 debt and forbidden boundary-claim upgrades.",
+      "source_prs": [149],
+      "resolution": "Add named invalid quality-debt register fixtures and require the Builder boundary validator to reject unresolved P1 debt and boundary assertion upgrades.",
+      "resolution_paths": [
+        "validation/fixtures/invalid/quality_debt_register_unresolved_p1.invalid.json",
+        "validation/fixtures/invalid/quality_debt_register_boundary_upgrade.invalid.json",
+        "validation/e2e/run_builder_responsive_input_boundary_check.py",
+        "planning/EV4_POST_MERGE_QUALITY_DEBT_REGISTER.json"
       ]
     }
   ],

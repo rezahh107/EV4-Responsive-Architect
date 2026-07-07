@@ -1,0 +1,62 @@
+{
+  "schema": "ev4-post-merge-quality-debt-register@1.0.0",
+  "status": "active",
+  "scope": "negative fixture: unresolved P1 debt must fail validation",
+  "created_by": "WP-RESP-003/PR-B negative fixture",
+  "quality_debts": [
+    {
+      "id": "QD-001",
+      "severity": "P1",
+      "status": "open",
+      "summary": "Negative fixture: unresolved P1 quality debt must be rejected.",
+      "source_prs": [134],
+      "resolution": "This fixture intentionally leaves P1 debt unresolved and must not validate.",
+      "resolution_paths": []
+    },
+    {
+      "id": "QD-002",
+      "severity": "P1",
+      "status": "resolved",
+      "summary": "Traceability fixture filler.",
+      "source_prs": [133, 134, 135],
+      "resolution": "Resolved fixture filler.",
+      "resolution_paths": ["docs/RTAQ_POST_MERGE_QUALITY_DEBT_RECONCILIATION.md"]
+    },
+    {
+      "id": "QD-003",
+      "severity": "P1",
+      "status": "resolved",
+      "summary": "State-sync fixture filler.",
+      "source_prs": [84, 122],
+      "resolution": "Resolved fixture filler.",
+      "resolution_paths": ["validation/e2e/run_rtaq_0011_state_sync_plan_check.py"]
+    },
+    {
+      "id": "QD-004",
+      "severity": "P1",
+      "status": "resolved",
+      "summary": "Review-window fixture filler.",
+      "source_prs": [134],
+      "resolution": "Resolved fixture filler.",
+      "resolution_paths": ["planning/EV4_POST_MERGE_QUALITY_DEBT_REGISTER.json"]
+    },
+    {
+      "id": "QD-005",
+      "severity": "P1",
+      "status": "resolved",
+      "summary": "Negative fixture coverage debt fixture filler.",
+      "source_prs": [149],
+      "resolution": "Resolved fixture filler.",
+      "resolution_paths": ["validation/e2e/run_builder_responsive_input_boundary_check.py"]
+    }
+  ],
+  "boundary_assertions": {
+    "submitted_evidence_created": false,
+    "issue_8_mutated": false,
+    "pilot_executed_or_authorized": false,
+    "readiness_claim_upgraded": false,
+    "production_or_release_claim_upgraded": false,
+    "live_render_export_accessibility_pixel_or_responsive_correctness_claim_upgraded": false,
+    "ci_success_treated_as_responsive_correctness_evidence": false
+  }
+}
