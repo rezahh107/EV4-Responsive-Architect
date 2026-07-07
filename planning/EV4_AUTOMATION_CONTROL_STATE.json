@@ -2,7 +2,10 @@
   "schema": "ev4-automation-control-state@1.0.0",
   "project": "EV4 Responsive Architect",
   "execution_state_source_of_truth": "planning/EV4_AUTOMATION_CONTROL_STATE.json",
-  "current_execution_driver": "bounded_material_checkpoint_guard",
+  "current_execution_driver": "work_package_catalog_guard",
+  "work_package_catalog_path": "planning/EV4_AUTOMATION_WORK_PACKAGE_CATALOG.json",
+  "catalog_authority": "approved_material_objective_source",
+  "catalog_selection_policy": "select_from_catalog_only_one_work_package_or_reviewable_slice",
   "rolling_queue_authority": "historical_reconciled_archive",
   "rolling_queue_execution_status": "retired_as_execution_driver",
   "rolling_queue_path": "planning/EV4_ROLLING_QUEUE.json",
@@ -11,12 +14,16 @@
   "latest_checkpoint_guard": "PR #113 RTAQ-0030 bounded foundation checkpoint guard",
   "queue_drift_acknowledged": false,
   "queue_reconciliation_required_before_queue_driver": false,
-  "checkpoint_only_loop_policy": "bounded_checkpoints_only_not_append_every_merge",
-  "next_action_policy": "material_objective_only",
+  "arbitrary_task_invention_policy": "forbidden_outside_work_package_catalog",
+  "checkpoint_only_loop_policy": "forbidden_without_material_checkpoint_change",
+  "next_action_policy": "catalog_material_objective_only",
+  "open_pr_reconciliation_policy": "reconcile_open_automation_pr_before_new_catalog_selection",
   "forbidden_next_actions": [
     "create_checkpoint_only_pr_for_every_merge",
     "treat_stale_rolling_queue_as_current_driver",
-    "invent_rtaq_task_without_planning_contract",
+    "invent_rtaq_task_without_catalog_work_package",
+    "invent_micro_task_outside_catalog",
+    "create_artificial_reserve_task_to_keep_task_count_high",
     "upgrade_evidence_pilot_readiness_or_release_claims"
   ],
   "boundary_claims": {
@@ -25,6 +32,10 @@
     "readiness_claims_upgraded": false,
     "production_ready": false,
     "release_ready": false,
-    "responsive_correctness_claim_upgraded": false
+    "live_render_validated": false,
+    "export_json_validated": false,
+    "accessibility_passed": false,
+    "pixel_perfect": false,
+    "responsive_correctness_validated": false
   }
 }
