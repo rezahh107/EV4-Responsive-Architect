@@ -12,9 +12,19 @@ INVALID_TEXT_PROOF = ROOT / "validation" / "fixtures" / "invalid" / "issue_to_pa
 REQUIRED_BLOCKED_STATES = {
     "MISSING_ATTACHMENT",
     "MISSING_HASH",
+    "MALFORMED_HASH",
     "PRIVACY_NOT_ACKED",
     "CONFLICTING_SOURCE",
     "SAMPLE_MARKER_PRESENT",
+}
+
+EXPECTED_BLOCKED_STATE_ACTIONS = {
+    "MISSING_ATTACHMENT": "request_missing_evidence",
+    "MISSING_HASH": "request_hashes",
+    "MALFORMED_HASH": "request_hashes",
+    "PRIVACY_NOT_ACKED": "request_privacy_review",
+    "CONFLICTING_SOURCE": "resolve_conflict",
+    "SAMPLE_MARKER_PRESENT": "reject_sample_marker",
 }
 
 
@@ -50,14 +60,34 @@ def assert_blocked_bridge_is_safe(payload: dict[str, Any]) -> None:
     if policy["requires_privacy_acknowledgement"] is not True:
         fail("bridge must require privacy acknowledgement")
 
+    hash_mappings = [
+        mapping
+        for mapping in payload["field_mappings"]
+        if mapping["packet_field"] == "main_ev4_handoff.payload_identity_hash"
+    ]
+    if len(hash_mappings) != 1:
+        fail("bridge must carry exactly one payload identity hash mapping")
+    if hash_mappings[0]["evidence_kind"] != "hash":
+        fail("payload identity mapping must be hash evidence")
+    if "sha256:<64 lowercase hex>" not in hash_mappings[0]["source_requirement"]:
+        fail("payload identity mapping must require sha256:<64 lowercase hex> format")
+
     blocked_state_ids = {state["state_id"] for state in payload["blocked_states"]}
     missing = REQUIRED_BLOCKED_STATES - blocked_state_ids
     if missing:
         fail(f"bridge missing required blocked states: {sorted(missing)}")
 
+    unexpected = blocked_state_ids - REQUIRED_BLOCKED_STATES
+    if unexpected:
+        fail(f"bridge contains unexpected blocked states: {sorted(unexpected)}")
+
     for state in payload["blocked_states"]:
+        state_id = state["state_id"]
         if state["pilot_allowed_to_start"] is not False:
-            fail(f"blocked state {state['state_id']} must keep pilot_allowed_to_start=false")
+            fail(f"blocked state {state_id} must keep pilot_allowed_to_start=false")
+        expected_action = EXPECTED_BLOCKED_STATE_ACTIONS[state_id]
+        if state["required_action"] != expected_action:
+            fail(f"blocked state {state_id} must require action {expected_action}")
 
     verdict = payload["bridge_verdict"]
     if verdict["status"] != "blocked_missing_evidence":
