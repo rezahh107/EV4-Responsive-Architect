@@ -15,12 +15,17 @@ QUALITY_DEBT_REGISTER = ROOT / "planning" / "EV4_POST_MERGE_QUALITY_DEBT_REGISTE
 VALID_FIXTURES = (ROOT / "validation" / "fixtures" / "valid" / "builder_responsive_input.valid.json",)
 INVALID_DIR = ROOT / "validation" / "fixtures" / "invalid"
 INVALID_FIXTURE_GLOB = "builder_responsive_input_*.invalid.json"
+QUALITY_DEBT_INVALID_FIXTURE_GLOB = "quality_debt_register_*.invalid.json"
 REQUIRED_INVALID_FIXTURE_NAMES = {
     "builder_responsive_input_blocked_project_gate_allows_intake.invalid.json",
     "builder_responsive_input_blocked_viewport_allows_intake.invalid.json",
     "builder_responsive_input_forbidden_claim_subset.invalid.json",
     "builder_responsive_input_malformed_hash.invalid.json",
     "builder_responsive_input_missing_mobile_evidence.invalid.json",
+}
+REQUIRED_QUALITY_DEBT_INVALID_FIXTURE_NAMES = {
+    "quality_debt_register_boundary_upgrade.invalid.json",
+    "quality_debt_register_unresolved_p1.invalid.json",
 }
 SCHEMA_VALID_NEGATIVE_FIXTURE_NAMES = {
     "builder_responsive_input_blocked_project_gate_allows_intake.invalid.json",
@@ -46,7 +51,7 @@ DENIED_INTAKE_REASON_MARKERS = (
     "non-verified project gate",
     "must not allow responsive intake",
 )
-REQUIRED_QUALITY_DEBTS = {"QD-001", "QD-002", "QD-003", "QD-004"}
+REQUIRED_QUALITY_DEBTS = {"QD-001", "QD-002", "QD-003", "QD-004", "QD-005"}
 RESOLVED_QUALITY_DEBT_STATUSES = {"resolved", "bounded_historical_debt"}
 REQUIRED_REGISTER_BOUNDARY_FALSE = {
     "submitted_evidence_created",
@@ -113,6 +118,16 @@ def _assert_required_invalid_fixture_set(paths: tuple[Path, ...]) -> None:
         raise AssertionError("missing required Builder to Responsive invalid fixtures: " + ", ".join(sorted(missing)))
 
 
+def _assert_required_quality_debt_invalid_fixture_set(paths: tuple[Path, ...]) -> None:
+    observed = {path.name for path in paths}
+    missing = REQUIRED_QUALITY_DEBT_INVALID_FIXTURE_NAMES - observed
+    if missing:
+        raise AssertionError("missing required quality-debt register invalid fixtures: " + ", ".join(sorted(missing)))
+    extra = observed - REQUIRED_QUALITY_DEBT_INVALID_FIXTURE_NAMES
+    if extra:
+        raise AssertionError("unexpected quality-debt register invalid fixtures: " + ", ".join(sorted(extra)))
+
+
 def _assert_blocked_project_gate_fixture(data: dict[str, object], path: Path) -> None:
     if path.name != "builder_responsive_input_blocked_project_gate_allows_intake.invalid.json":
         return
@@ -162,39 +177,56 @@ def _assert_forbidden_claim_subset_fixture(data: dict[str, object], path: Path) 
         raise AssertionError(f"{path.relative_to(ROOT)} incomplete forbidden-claim list must deny intake")
 
 
-def _assert_quality_debt_register() -> None:
-    register = _load_json(QUALITY_DEBT_REGISTER)
+def _assert_quality_debt_register_payload(register: object, source: str) -> None:
     if not isinstance(register, dict):
-        raise AssertionError("quality debt register must be a JSON object")
+        raise AssertionError(f"{source} must be a JSON object")
     debts = register.get("quality_debts")
     if not isinstance(debts, list):
-        raise AssertionError("quality debt register must list quality_debts")
+        raise AssertionError(f"{source} must list quality_debts")
 
     debt_by_id = {}
     for debt in debts:
         if not isinstance(debt, dict):
-            raise AssertionError("each quality debt item must be a JSON object")
+            raise AssertionError(f"{source} quality debt item must be a JSON object")
         debt_id = debt.get("id")
         if not isinstance(debt_id, str):
-            raise AssertionError("quality debt item id must be a string")
+            raise AssertionError(f"{source} quality debt item id must be a string")
         if debt_id in debt_by_id:
-            raise AssertionError(f"duplicate quality debt id found: {debt_id}")
+            raise AssertionError(f"{source} duplicate quality debt id found: {debt_id}")
         debt_by_id[debt_id] = debt
     if set(debt_by_id) != REQUIRED_QUALITY_DEBTS:
-        raise AssertionError(f"quality debt register must contain exactly {sorted(REQUIRED_QUALITY_DEBTS)}")
+        raise AssertionError(f"{source} must contain exactly {sorted(REQUIRED_QUALITY_DEBTS)}")
     unresolved = [
         debt_id
         for debt_id, debt in debt_by_id.items()
         if debt.get("severity") in {"P0", "P1"} and debt.get("status") not in RESOLVED_QUALITY_DEBT_STATUSES
     ]
     if unresolved:
-        raise AssertionError("unresolved P0/P1 quality debt items: " + ", ".join(sorted(unresolved)))
+        raise AssertionError(f"{source} unresolved P0/P1 quality debt items: " + ", ".join(sorted(unresolved)))
     boundaries = register.get("boundary_assertions")
     if not isinstance(boundaries, dict):
-        raise AssertionError("quality debt register boundary assertions are missing")
+        raise AssertionError(f"{source} boundary assertions are missing")
     not_false = [name for name in REQUIRED_REGISTER_BOUNDARY_FALSE if boundaries.get(name) is not False]
     if not_false:
-        raise AssertionError("quality debt register has upgraded forbidden boundary claims: " + ", ".join(sorted(not_false)))
+        raise AssertionError(f"{source} has upgraded forbidden boundary claims: " + ", ".join(sorted(not_false)))
+
+
+def _assert_quality_debt_register() -> None:
+    _assert_quality_debt_register_payload(
+        _load_json(QUALITY_DEBT_REGISTER),
+        str(QUALITY_DEBT_REGISTER.relative_to(ROOT)),
+    )
+
+
+def _assert_quality_debt_negative_fixtures() -> None:
+    fixtures = tuple(sorted(INVALID_DIR.glob(QUALITY_DEBT_INVALID_FIXTURE_GLOB)))
+    _assert_required_quality_debt_invalid_fixture_set(fixtures)
+    for fixture in fixtures:
+        try:
+            _assert_quality_debt_register_payload(_load_json(fixture), str(fixture.relative_to(ROOT)))
+        except AssertionError:
+            continue
+        raise AssertionError(f"{fixture.relative_to(ROOT)} unexpectedly satisfied quality-debt register guard")
 
 
 def _assert_valid_fixture(data: dict[str, object], path: Path) -> None:
@@ -254,6 +286,7 @@ def main() -> int:
             _assert_valid_fixture(data, fixture)
 
         _assert_quality_debt_register()
+        _assert_quality_debt_negative_fixtures()
 
         invalid_fixtures = tuple(sorted(INVALID_DIR.glob(INVALID_FIXTURE_GLOB)))
         if not invalid_fixtures:
