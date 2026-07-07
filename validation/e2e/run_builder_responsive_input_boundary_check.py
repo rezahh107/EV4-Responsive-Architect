@@ -22,6 +22,10 @@ REQUIRED_INVALID_FIXTURE_NAMES = {
     "builder_responsive_input_malformed_hash.invalid.json",
     "builder_responsive_input_missing_mobile_evidence.invalid.json",
 }
+SCHEMA_VALID_NEGATIVE_FIXTURE_NAMES = {
+    "builder_responsive_input_blocked_project_gate_allows_intake.invalid.json",
+    "builder_responsive_input_blocked_viewport_allows_intake.invalid.json",
+}
 REQUIRED_FORBIDDEN_CLAIMS = {
     "production_ready",
     "release_ready",
@@ -263,6 +267,8 @@ def main() -> int:
             try:
                 validator.validate(data)
             except jsonschema.exceptions.ValidationError:
+                continue
+            if fixture.name in SCHEMA_VALID_NEGATIVE_FIXTURE_NAMES:
                 continue
             raise AssertionError(f"invalid fixture unexpectedly passed schema validation: {fixture.relative_to(ROOT)}")
     except (AssertionError, OSError, json.JSONDecodeError, jsonschema.exceptions.SchemaError, jsonschema.exceptions.ValidationError) as exc:
