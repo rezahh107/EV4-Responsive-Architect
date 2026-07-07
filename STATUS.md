@@ -152,7 +152,10 @@ builder_to_responsive_input_schema: schemas/ev4-builder-responsive-input.schema.
 builder_to_responsive_input_validator: validation/e2e/run_builder_responsive_input_boundary_check.py
 builder_to_responsive_claim_boundary: input eligibility only; not responsive correctness evidence
 raw_screenshot_authority: false
-project_gate_builder_to_responsive_transition: not_implemented
+project_gate_builder_to_responsive_transition: future_verified_transport_required
+project_gate_builder_to_responsive_transition_owner: Project Gate verifies and transports Builder-owned artifacts when that future route exists
+responsive_transition_role: validate local intake eligibility only; non-executing until verified Project Gate transport exists
+builder_responsive_work_package_trace: WP-RESP-002
 ```
 
 ## Evidence and Pilot Boundary
