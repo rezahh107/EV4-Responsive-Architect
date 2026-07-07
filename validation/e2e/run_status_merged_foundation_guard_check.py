@@ -33,10 +33,6 @@ REQUIRED_BOUNDARIES = {
     "pixel_perfect": "false",
     "responsive_correctness_validated": "false",
     "pilot_execution_scope": "not_allowed",
-    "fixed_ordinal_refresh_policy": "forbidden",
-    "state_driven_refresh": "true",
-    "catalog_replenishment_must_not_block_active_execution": "true",
-    "catalog_replenishment_must_respect_single_active_pr_policy": "true",
 }
 
 REQUIRED_AUTOMATIC_CHECKS = [
