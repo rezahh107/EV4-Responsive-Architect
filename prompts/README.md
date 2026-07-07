@@ -11,6 +11,13 @@ Prompt files should only orchestrate stage execution and must not override:
 - production boundary
 - payload identity hashing
 - state-as-code policy
+- Work Package Catalog selection policy
+```
+
+Available files:
+
+```text
+EV4_CATALOG_BACKED_AUTOMATION_CONTROLLER_PROMPT.md
 ```
 
 Planned files:

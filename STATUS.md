@@ -48,8 +48,8 @@ pending_control_plane_pr: null
 
 ```yaml
 current_phase:
-  name: post_merge_refactor_hardening
-  goal: execute bounded primary objectives while preserving evidence and pilot boundaries
+  name: catalog_backed_material_work_package_control
+  goal: select material capability objectives from the approved Work Package Catalog while preserving evidence and pilot boundaries
 ```
 
 ## Active Refactor Source of Truth
@@ -68,6 +68,7 @@ active_schema:
   - schemas/ev4-responsive-output.schema.json
   - schemas/ev4-builder-responsive-input.schema.json
   - schemas/ev4-automation-control-state.schema.json
+  - schemas/ev4-automation-work-package-catalog.schema.json
 active_validation:
   - validation/e2e/run_responsive_tree_architecture_refactor_check.py
   - validation/e2e/run_submitted_packet_eligibility_gate_check.py
@@ -85,6 +86,7 @@ active_validation:
   - validation/e2e/run_rtaq_ssot_guard_check.py
   - validation/e2e/run_status_merged_foundation_guard_check.py
   - validation/e2e/run_automation_control_state_check.py
+  - validation/e2e/run_automation_work_package_catalog_check.py
   - validation/e2e/run_rolling_queue_check.py
   - validation/e2e/run_run_ledger_check.py
 controlled_use_docs:
@@ -118,6 +120,7 @@ controlled_use_docs:
   - docs/42_PILOT_READINESS_VALIDATE_CHAIN_RTAQ_0036.md
   - docs/43_CONTROL_CHECKPOINT_RECONCILIATION_RTAQ_0037.md
   - docs/44_CONTROL_STATE_POST_QUEUE_RECONCILIATION_RTAQ_0039.md
+  - docs/AUTOMATION_WORK_PACKAGE_CATALOG.md
 ```
 
 ## Automation Control State
@@ -125,14 +128,19 @@ controlled_use_docs:
 ```yaml
 automation_control_state: planning/EV4_AUTOMATION_CONTROL_STATE.json
 execution_state_source_of_truth: planning/EV4_AUTOMATION_CONTROL_STATE.json
-current_execution_driver: bounded_material_checkpoint_guard
+current_execution_driver: work_package_catalog_guard
+work_package_catalog: planning/EV4_AUTOMATION_WORK_PACKAGE_CATALOG.json
+catalog_authority: approved_material_objective_source
+catalog_selection_policy: select from catalog only; one Work Package or approved PR slice per run
+arbitrary_task_invention_policy: forbidden outside Work Package Catalog
 rolling_queue_authority: historical_reconciled_archive
 rolling_queue_execution_status: retired_as_execution_driver
 rolling_queue_reconciliation_required: false
 latest_material_checkpoint: PR #122 RTAQ-0038 rolling queue archive reconciliation
-checkpoint_only_loop_policy: bounded checkpoints only; not append every merged PR
-next_action_policy: material objectives only; checkpoint refresh only when material checkpoint changes
+checkpoint_only_loop_policy: forbidden without material checkpoint change
+next_action_policy: catalog material objectives only
 automation_control_validator: validation/e2e/run_automation_control_state_check.py
+automation_work_package_catalog_validator: validation/e2e/run_automation_work_package_catalog_check.py
 ```
 
 ## Builder → Responsive Boundary
@@ -156,6 +164,11 @@ readiness_claims_upgraded: false
 ci_success_claim_boundary: repository checks only; not responsive correctness evidence
 issue_8_status: draft_evidence_pending
 pilot_execution_scope: not_allowed
+live_render_validated: false
+export_json_validated: false
+accessibility_passed: false
+pixel_perfect: false
+responsive_correctness_validated: false
 ```
 
 ## CI Boundary
@@ -181,6 +194,7 @@ automatic_check:
   - python validation/e2e/run_rtaq_ssot_guard_check.py
   - python validation/e2e/run_status_merged_foundation_guard_check.py
   - python validation/e2e/run_automation_control_state_check.py
+  - python validation/e2e/run_automation_work_package_catalog_check.py
 delegated_repository_checks: []
 manual_same_head_recovery:
   workflow: .github/workflows/validate.yml
