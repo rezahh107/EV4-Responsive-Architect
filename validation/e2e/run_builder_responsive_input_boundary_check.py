@@ -15,6 +15,13 @@ QUALITY_DEBT_REGISTER = ROOT / "planning" / "EV4_POST_MERGE_QUALITY_DEBT_REGISTE
 VALID_FIXTURES = (ROOT / "validation" / "fixtures" / "valid" / "builder_responsive_input.valid.json",)
 INVALID_DIR = ROOT / "validation" / "fixtures" / "invalid"
 INVALID_FIXTURE_GLOB = "builder_responsive_input_*.invalid.json"
+REQUIRED_INVALID_FIXTURE_NAMES = {
+    "builder_responsive_input_blocked_project_gate_allows_intake.invalid.json",
+    "builder_responsive_input_blocked_viewport_allows_intake.invalid.json",
+    "builder_responsive_input_forbidden_claim_subset.invalid.json",
+    "builder_responsive_input_malformed_hash.invalid.json",
+    "builder_responsive_input_missing_mobile_evidence.invalid.json",
+}
 REQUIRED_FORBIDDEN_CLAIMS = {
     "production_ready",
     "release_ready",
@@ -95,6 +102,62 @@ def _reason_requires_denied_intake(reason: object) -> bool:
     return any(marker in normalized for marker in DENIED_INTAKE_REASON_MARKERS)
 
 
+def _assert_required_invalid_fixture_set(paths: tuple[Path, ...]) -> None:
+    observed = {path.name for path in paths}
+    missing = REQUIRED_INVALID_FIXTURE_NAMES - observed
+    if missing:
+        raise AssertionError("missing required Builder to Responsive invalid fixtures: " + ", ".join(sorted(missing)))
+
+
+def _assert_blocked_project_gate_fixture(data: dict[str, object], path: Path) -> None:
+    if path.name != "builder_responsive_input_blocked_project_gate_allows_intake.invalid.json":
+        return
+    project_gate = data.get("project_gate_ref")
+    if not isinstance(project_gate, dict) or project_gate.get("gate_status") != "blocked":
+        raise AssertionError(f"{path.relative_to(ROOT)} must exercise blocked Project Gate state")
+    if _decision(data, path).get("intake_allowed") is not False:
+        raise AssertionError(f"{path.relative_to(ROOT)} blocked Project Gate must deny intake")
+
+
+def _assert_blocked_viewport_fixture(data: dict[str, object], path: Path) -> None:
+    if path.name != "builder_responsive_input_blocked_viewport_allows_intake.invalid.json":
+        return
+    viewport_evidence = data.get("viewport_evidence")
+    if not isinstance(viewport_evidence, dict):
+        raise AssertionError(f"{path.relative_to(ROOT)} missing viewport_evidence object")
+    blocked = []
+    for viewport in ("desktop", "tablet", "mobile"):
+        evidence = viewport_evidence.get(viewport)
+        if isinstance(evidence, dict) and evidence.get("evidence_status") != "provided":
+            blocked.append(viewport)
+    if not blocked:
+        raise AssertionError(f"{path.relative_to(ROOT)} must exercise at least one non-provided viewport")
+    if _decision(data, path).get("intake_allowed") is not False:
+        raise AssertionError(f"{path.relative_to(ROOT)} blocked viewport evidence must deny intake")
+
+
+def _assert_missing_mobile_fixture(data: dict[str, object], path: Path) -> None:
+    if path.name != "builder_responsive_input_missing_mobile_evidence.invalid.json":
+        return
+    viewport_evidence = data.get("viewport_evidence")
+    if not isinstance(viewport_evidence, dict) or "mobile" in viewport_evidence:
+        raise AssertionError(f"{path.relative_to(ROOT)} must exercise a missing mobile viewport evidence slot")
+    if _decision(data, path).get("intake_allowed") is not False:
+        raise AssertionError(f"{path.relative_to(ROOT)} missing mobile evidence must deny intake")
+
+
+def _assert_forbidden_claim_subset_fixture(data: dict[str, object], path: Path) -> None:
+    if path.name != "builder_responsive_input_forbidden_claim_subset.invalid.json":
+        return
+    claims = data.get("forbidden_claims")
+    if not isinstance(claims, list):
+        raise AssertionError(f"{path.relative_to(ROOT)} missing forbidden_claims list")
+    if set(claims) == REQUIRED_FORBIDDEN_CLAIMS:
+        raise AssertionError(f"{path.relative_to(ROOT)} must exercise an incomplete forbidden-claim list")
+    if _decision(data, path).get("intake_allowed") is not False:
+        raise AssertionError(f"{path.relative_to(ROOT)} incomplete forbidden-claim list must deny intake")
+
+
 def _assert_quality_debt_register() -> None:
     register = _load_json(QUALITY_DEBT_REGISTER)
     if not isinstance(register, dict):
@@ -167,6 +230,11 @@ def _assert_invalid_fixture_semantics(data: dict[str, object], path: Path) -> No
     if _reason_requires_denied_intake(reason) and intake_allowed is True:
         raise AssertionError(f"{path.relative_to(ROOT)} denied-intake reason contradicts intake_allowed=true")
 
+    _assert_blocked_project_gate_fixture(data, path)
+    _assert_blocked_viewport_fixture(data, path)
+    _assert_missing_mobile_fixture(data, path)
+    _assert_forbidden_claim_subset_fixture(data, path)
+
 
 def main() -> int:
     try:
@@ -186,6 +254,7 @@ def main() -> int:
         invalid_fixtures = tuple(sorted(INVALID_DIR.glob(INVALID_FIXTURE_GLOB)))
         if not invalid_fixtures:
             raise AssertionError("missing Builder to Responsive invalid fixture coverage")
+        _assert_required_invalid_fixture_set(invalid_fixtures)
         for fixture in invalid_fixtures:
             data = _load_json(fixture)
             if not isinstance(data, dict):
@@ -200,7 +269,7 @@ def main() -> int:
         print(f"Builder responsive input boundary check failed: {exc}", file=sys.stderr)
         return 1
 
-    print("Builder responsive input boundary check passed: intake eligibility is schema-bound and evidence-safe")
+    print("Builder responsive input boundary check passed: intake eligibility is schema-bound, fixture-backed, and evidence-safe")
     return 0
 
 
