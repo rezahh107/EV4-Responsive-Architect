@@ -246,3 +246,19 @@ real_submitted_packet_required_for_pilot: true
 readiness_claim_upgrade_allowed_by_index: false
 production_or_release_claim_upgrade_allowed_by_index: false
 ```
+
+## Blockers before stronger claims
+
+```yaml
+required_before_stronger_claims:
+  - real submitted packet with non-placeholder payload identity
+  - Issue #8 evidence reference consistency
+  - submitted-packet eligibility gate pass on real evidence
+  - explicit pilot-readiness approval
+  - real pilot execution evidence
+  - separate validation evidence for live render, export, accessibility, and pixel behavior if those claims are requested
+```
+
+## Boundary statement
+
+This index is documentation only. It does not create submitted evidence, mutate Issue #8, execute a pilot, or upgrade readiness/release/production state.
