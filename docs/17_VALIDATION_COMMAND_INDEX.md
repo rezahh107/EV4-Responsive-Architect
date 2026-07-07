@@ -1,7 +1,7 @@
 # Validation Command Index
 
-Task: `RTAQ-0003`
-Updated by: `RTAQ-0052`
+Task: `catalog-backed-work-package-architecture`
+Updated by: `automation/work-package-catalog-architecture`
 
 This index lists repository validation commands for controlled manual use. Command success is repository-check evidence only; it is not responsive correctness evidence and does not authorize production, release, real pilot, export, live-render, accessibility, or pixel-validation claims.
 
@@ -34,6 +34,7 @@ python validation/e2e/run_builder_responsive_input_boundary_check.py
 python validation/e2e/run_rtaq_ssot_guard_check.py
 python validation/e2e/run_status_merged_foundation_guard_check.py
 python validation/e2e/run_automation_control_state_check.py
+python validation/e2e/run_automation_work_package_catalog_check.py
 ```
 
 ## Manual evidence-intake commands
@@ -64,9 +65,9 @@ python validation/e2e/run_issue_to_packet_bridge_check.py
 python validation/e2e/run_builder_responsive_input_boundary_check.py
 ```
 
-## Control-plane and archive commands
+## Control-plane, catalog, and archive commands
 
-These commands preserve repository execution discipline and historical queue/ledger boundaries:
+These commands preserve repository execution discipline, catalog-backed objective selection, and historical queue/ledger boundaries:
 
 ```bash
 python validation/e2e/run_rolling_queue_check.py
@@ -75,11 +76,12 @@ python validation/e2e/run_task_quality_gate_check.py
 python validation/e2e/run_rtaq_ssot_guard_check.py
 python validation/e2e/run_status_merged_foundation_guard_check.py
 python validation/e2e/run_automation_control_state_check.py
+python validation/e2e/run_automation_work_package_catalog_check.py
 ```
 
 ## Legacy/manual guard commands
 
-The repository may still contain older guard validators for inspecting historical submitted-evidence guard behavior. They are not the primary Validate chain and must not be used to bypass current submitted-mode, Issue #8, or readiness gates:
+The repository may still contain older guard validators for inspecting historical submitted-evidence guard behavior. They are not the primary Validate chain and must not be used to bypass current submitted-mode, Issue #8, catalog-selection, or readiness gates:
 
 ```bash
 python validation/e2e/run_submitted_packet_source_kind_lock_check.py
@@ -105,7 +107,7 @@ The commands can be used to inspect deterministic repository behavior:
 - submitted evidence source-kind, completeness, readiness-status, artifact-path, submitted-mode, payload-hash, Issue #8 identity, issue-to-packet bridge, and privacy guard behavior
 - pilot readiness report generation boundaries
 - task quality-gate policy shape and required boundary assertions
-- queue, ledger, control-state, and STATUS checkpoint discipline
+- queue, ledger, control-state, Work Package Catalog, and STATUS checkpoint discipline
 - boundary text preservation
 
 They must not be used to bypass the real submitted-packet gate or pilot-readiness gate.
@@ -118,6 +120,8 @@ Stop and do not upgrade claims if:
 - Issue #8 remains evidence-pending
 - the run would treat fixture or sample behavior as real evidence
 - the run would rely on CI success as responsive validation
+- the run would invent micro-tasks outside the Work Package Catalog
+- the run would restore `rolling_queue` as current driver without deliberate schema/control/validator/CI change
 - any required validation command fails or is not run
 
 ## Boundary
