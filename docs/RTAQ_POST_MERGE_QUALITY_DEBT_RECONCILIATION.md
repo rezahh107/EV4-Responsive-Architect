@@ -1,7 +1,7 @@
 # RTAQ post-merge quality debt reconciliation
 
 Status: active reconciliation record  
-Scope: known automation-quality debt accumulated through PR #135  
+Scope: known automation-quality debt accumulated through PR #135 plus WP-RESP-003 fixture coverage closure  
 Runtime behavior changed: no  
 Responsive-correctness claim changed: no
 
@@ -63,6 +63,20 @@ Resolution in this reconciliation:
 - The existing Builder boundary validator now validates that all P1 quality-debt register items are resolved or explicitly bounded, so known post-merge actionable review debt cannot remain silent in repository checks.
 
 This does not pretend that local CI can enforce GitHub elapsed merge time without network state.
+
+## QD-005 — quality-debt register negative fixture coverage
+
+Status: resolved.
+
+The quality-debt register was checked by the Builder boundary validator, but the validator did not require named negative fixtures proving that unresolved P1 debt or forbidden boundary-claim upgrades fail closed.
+
+Resolution in this reconciliation:
+
+- `validation/fixtures/invalid/quality_debt_register_unresolved_p1.invalid.json` proves unresolved P1 quality debt is rejected.
+- `validation/fixtures/invalid/quality_debt_register_boundary_upgrade.invalid.json` proves forbidden boundary upgrades are rejected.
+- `validation/e2e/run_builder_responsive_input_boundary_check.py` now requires exactly those quality-debt negative fixtures and asserts they cannot satisfy the live register guard.
+
+This remains repository quality-gate evidence only. It does not create submitted evidence, mutate Issue #8, authorize pilot execution, or upgrade readiness or responsive-correctness claims.
 
 ## Boundary
 
