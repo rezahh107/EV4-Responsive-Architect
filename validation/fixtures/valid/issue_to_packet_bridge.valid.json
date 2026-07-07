@@ -44,7 +44,7 @@
     },
     {
       "packet_field": "main_ev4_handoff.payload_identity_hash",
-      "source_requirement": "Stable hash for the submitted Main EV4 handoff payload bundle.",
+      "source_requirement": "Stable sha256:<64 lowercase hex> hash for the submitted Main EV4 handoff payload bundle.",
       "evidence_kind": "hash",
       "missing_state": "block_packet_creation",
       "conflict_state": "block_downstream"
@@ -81,6 +81,12 @@
     {
       "state_id": "MISSING_HASH",
       "trigger": "Payload identity hash is absent for Main EV4 handoff payloads.",
+      "required_action": "request_hashes",
+      "pilot_allowed_to_start": false
+    },
+    {
+      "state_id": "MALFORMED_HASH",
+      "trigger": "Payload identity hash is not formatted as sha256:<64 lowercase hex>.",
       "required_action": "request_hashes",
       "pilot_allowed_to_start": false
     },
