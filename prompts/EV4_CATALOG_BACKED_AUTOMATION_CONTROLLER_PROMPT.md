@@ -49,7 +49,7 @@ Forbidden:
 ```text
 unrelated RTAQ task invention
 checkpoint-only work after every merge
-airficial reserve tasks
+artificial reserve tasks
 queue-refresh loops
 ```
 
