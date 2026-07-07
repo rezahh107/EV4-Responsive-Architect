@@ -1,13 +1,13 @@
 # Builder → Responsive Input Boundary
 
 Status: schema-bound input eligibility package implemented  
-Version: 0.2.0  
+Version: 0.2.1  
 Runtime behavior changed: no  
 Responsive repair behavior changed: no
 
 ## Purpose
 
-This contract note clarifies what Responsive may accept from a future Project Gate Builder → Responsive route.
+This contract note clarifies what Responsive may accept from a future Builder → Project Gate → Responsive route.
 
 ```text
 Builder output and build evidence
@@ -62,6 +62,30 @@ responsive_handoff_export:
   schema_family: ev4-responsive-handoff-export@0.3.0
 ```
 
+## Operational Builder → Project Gate → Responsive transition boundary
+
+This boundary is intentionally non-executing until Project Gate supplies a verified Builder transition packet. Responsive may validate the shape of a Builder→Responsive package, but it must not infer that Project Gate exists, that Builder execution was real, or that viewport behavior is correct.
+
+```yaml
+builder_project_gate_responsive_transition:
+  status: future_verified_transport_required
+  responsive_role: validate intake eligibility only
+  builder_role: produce Builder-owned output and evidence artifacts
+  project_gate_role: verify and transport Builder-owned artifacts
+  allowed_responsive_action:
+    - accept schema-valid Builder package only after Project Gate status is verified
+    - preserve artifact references and sha256 digests for traceability
+    - classify missing, blocked, malformed, or contradictory evidence as intake-blocking
+  forbidden_responsive_action:
+    - implement Project Gate verification semantics
+    - copy Project Gate or Builder schemas as Responsive canonical truth
+    - repair upstream Builder, Architect, CE, or Project Gate defects
+    - fabricate missing Builder output, viewport evidence, or submitted evidence
+    - treat transport, CI, fixture success, or merged PRs as responsive correctness evidence
+```
+
+The transition is operationally clear but still evidence-bound: Responsive can say whether the package is eligible for intake under the local schema and validators; Responsive cannot claim frontend correctness, export validity, accessibility, pixel accuracy, release readiness, production readiness, or pilot readiness from that intake decision.
+
 ## Builder-specific input status
 
 A Builder-specific Responsive input package is now schema-bound for repository validation, but remains non-executing until a future Project Gate route provides real verified Builder evidence.
@@ -103,6 +127,33 @@ required_builder_evidence_classes:
 
 Missing or contradictory evidence blocks Responsive intake. Malformed Project Gate or Builder artifact digests also block intake; repository validators only accept explicit `sha256:` digests with 64 lowercase hexadecimal characters for `gate_hash` and `artifact_hash`.
 
+## Eligibility decision matrix
+
+```yaml
+allow_intake_only_when:
+  project_gate_ref.gate_status: verified
+  project_gate_ref.gate_hash: sha256:<64 lowercase hexadecimal characters>
+  builder_output_ref.artifact_hash: sha256:<64 lowercase hexadecimal characters>
+  builder_evidence:
+    action_batch_ref: present
+    execution_evidence_ref: present
+    layout_check_ref: present
+    completion_gate_ref: present
+  viewport_evidence.desktop.evidence_status: provided
+  viewport_evidence.tablet.evidence_status: provided
+  viewport_evidence.mobile.evidence_status: provided
+  responsive_intake_decision.claim_boundary: input eligibility only; not responsive correctness evidence
+
+block_intake_when:
+  - Project Gate is blocked, missing, non-verified, malformed, or ambiguous
+  - Builder output artifact hash is malformed or absent
+  - Builder execution, layout, completion, or action-batch evidence is absent
+  - any required viewport evidence is missing or blocked
+  - forbidden claims are incomplete, duplicated, expanded into readiness claims, or contradicted by the intake decision
+```
+
+An allowed intake decision is only a local eligibility result. It does not authorize Responsive repair, does not imply live-render/export/accessibility/pixel validation, and does not bypass submitted-packet or pilot gates.
+
 ## Baseline authority
 
 ```yaml
@@ -136,3 +187,13 @@ Responsive must not:
 ## Project Gate note
 
 Project Gate may later pin and hash this contract note, Responsive output schema, validators, and fixtures. Project Gate must not copy Responsive schemas into itself as canonical contracts, implement Responsive repair semantics, or invent missing viewport evidence.
+
+## Work Package trace
+
+```yaml
+work_package_id: WP-RESP-002
+pr_slice_id: WP-RESP-002/PR-A
+slice_title: contract and schema boundary
+catalog_source: planning/EV4_AUTOMATION_WORK_PACKAGE_CATALOG.json
+boundary_result: operational handoff path clarified; no execution, evidence creation, Issue #8 mutation, pilot authorization, readiness upgrade, release claim, production claim, or responsive-correctness claim
+```
