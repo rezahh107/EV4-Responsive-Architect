@@ -1,7 +1,7 @@
 # Active Contract / Schema / Validator Index
 
 Task: `RTAQ-0047`
-Updated by: `RTAQ-0051`
+Updated by: `RTAQ-0052`
 
 This index records the active repository surfaces needed for controlled manual use and queue-safe handoff. It is an index only; it does not validate a real submitted packet, mutate Issue #8, authorize pilot execution, or upgrade readiness.
 
@@ -130,6 +130,9 @@ primary_validate_workflow:
     issue_8_preflight_boundary:
       path: validation/e2e/run_issue_8_preflight_boundary_check.py
       role: Issue #8 preflight reference and boundary checks
+    issue_to_packet_bridge:
+      path: validation/e2e/run_issue_to_packet_bridge_check.py
+      role: Issue #8-to-submitted-packet bridge guard without packet creation or pilot authorization
     builder_responsive_input_boundary:
       path: validation/e2e/run_builder_responsive_input_boundary_check.py
       role: Builder -> Responsive input boundary checks
@@ -238,15 +241,10 @@ controlled_use_docs:
 ## CI interpretation
 
 ```yaml
-ci_success_means:
-  - configured repository checks passed
-ci_success_does_not_mean:
-  - responsive correctness validated
-  - real submitted packet exists
-  - Issue #8 evidence is satisfied
-  - real pilot may start
-  - production or release readiness is achieved
-  - export, accessibility, live-render, or pixel validation passed
+success_boundary: repository checks only, not responsive correctness evidence
+real_submitted_packet_required_for_pilot: true
+readiness_claim_upgrade_allowed_by_index: false
+production_or_release_claim_upgrade_allowed_by_index: false
 ```
 
 ## Blockers before stronger claims

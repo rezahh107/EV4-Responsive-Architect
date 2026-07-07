@@ -47,6 +47,7 @@ REQUIRED_AUTOMATIC_CHECKS = [
     'python validation/e2e/run_pilot_readiness_check.py',
     'python validation/e2e/run_pilot_readiness_boundary_check.py',
     'python validation/e2e/run_issue_8_preflight_boundary_check.py',
+    'python validation/e2e/run_issue_to_packet_bridge_check.py',
     'python validation/e2e/run_builder_responsive_input_boundary_check.py',
     'python validation/e2e/run_rtaq_ssot_guard_check.py',
     'python validation/e2e/run_status_merged_foundation_guard_check.py',

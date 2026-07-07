@@ -1,7 +1,7 @@
 # Validation Command Index
 
 Task: `RTAQ-0003`
-Updated by: `RTAQ-0051`
+Updated by: `RTAQ-0052`
 
 This index lists repository validation commands for controlled manual use. Command success is repository-check evidence only; it is not responsive correctness evidence and does not authorize production, release, real pilot, export, live-render, accessibility, or pixel-validation claims.
 
@@ -29,6 +29,7 @@ python validation/e2e/run_evidence_intake_fixture_matrix_check.py
 python validation/e2e/run_pilot_readiness_check.py
 python validation/e2e/run_pilot_readiness_boundary_check.py
 python validation/e2e/run_issue_8_preflight_boundary_check.py
+python validation/e2e/run_issue_to_packet_bridge_check.py
 python validation/e2e/run_builder_responsive_input_boundary_check.py
 python validation/e2e/run_rtaq_ssot_guard_check.py
 python validation/e2e/run_status_merged_foundation_guard_check.py
@@ -59,6 +60,7 @@ python validation/e2e/run_submitted_packet_readiness_dry_run.py --self-test
 python validation/e2e/run_pilot_readiness_check.py
 python validation/e2e/run_pilot_readiness_boundary_check.py
 python validation/e2e/run_issue_8_preflight_boundary_check.py
+python validation/e2e/run_issue_to_packet_bridge_check.py
 python validation/e2e/run_builder_responsive_input_boundary_check.py
 ```
 
@@ -100,7 +102,7 @@ The commands can be used to inspect deterministic repository behavior:
 - responsive-tree architecture contracts, schema, and route fixtures
 - invalid fixture rejection
 - submitted-packet eligibility failure modes
-- submitted evidence source-kind, completeness, readiness-status, artifact-path, submitted-mode, payload-hash, Issue #8 identity, and privacy guard behavior
+- submitted evidence source-kind, completeness, readiness-status, artifact-path, submitted-mode, payload-hash, Issue #8 identity, issue-to-packet bridge, and privacy guard behavior
 - pilot readiness report generation boundaries
 - task quality-gate policy shape and required boundary assertions
 - queue, ledger, control-state, and STATUS checkpoint discipline
