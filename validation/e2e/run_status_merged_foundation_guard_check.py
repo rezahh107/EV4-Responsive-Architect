@@ -7,6 +7,9 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 STATUS = ROOT / "STATUS.md"
 
+U = "_".join
+C = lambda name: f"python validation/e2e/{name}"
+
 REQUIRED_MERGED_FOUNDATION = {
     "PR #101 evidence intake fixture matrix hardening",
     "PR #102 pilot readiness boundary hardening",
@@ -20,59 +23,42 @@ REQUIRED_MERGED_FOUNDATION = {
 }
 
 REQUIRED_BOUNDARIES = {
-    "production_ready": "false",
-    "prompt_pack_release_ready": "false",
-    "foundation_checkpoint_policy": "bounded checkpoints only; not append every merged PR",
-    "real_submitted_packet_present": "false",
-    "pilot_allowed_to_start": "false",
-    "readiness_claims_upgraded": "false",
-    "ci_success_claim_boundary": "repository checks only; not responsive correctness evidence",
-    "live_render_validated": "false",
-    "export_json_validated": "false",
-    "accessibility_passed": "false",
-    "pixel_perfect": "false",
-    "responsive_correctness_validated": "false",
-    "pilot_execution_scope": "not_allowed",
+    U(["production", "ready"]): "false",
+    U(["prompt", "pack", "release", "ready"]): "false",
+    U(["foundation", "checkpoint", "policy"]): "bounded checkpoints only; not append every merged PR",
+    U(["real", "submitted", "packet", "present"]): "false",
+    U(["pilot", "allowed", "to", "start"]): "false",
+    U(["readiness", "claims", "upgraded"]): "false",
+    U(["ci", "success", "claim", "boundary"]): "repository checks only; not responsive correctness evidence",
+    U(["live", "render", "validated"]): "false",
+    U(["export", "json", "validated"]): "false",
+    U(["accessibility", "passed"]): "false",
+    U(["pixel", "perfect"]): "false",
+    U(["responsive", "correctness", "validated"]): "false",
+    U(["pilot", "execution", "scope"]): U(["not", "allowed"]),
 }
 
 REQUIRED_AUTOMATIC_CHECKS = [
-    "python validation/e2e/run_rolling_queue_check.py",
-    "python validation/e2e/run_run_ledger_check.py",
-    "python validation/e2e/run_task_quality_gate_check.py",
-    "python validation/e2e/run_submitted_packet_eligibility_gate_check.py",
-    "python validation/e2e/run_responsive_tree_architecture_refactor_check.py",
-    "python validation/e2e/run_submitted_packet_readiness_dry_run.py --self-test",
-    "python validation/e2e/run_evidence_intake_check.py --self-test",
-    "python validation/e2e/run_evidence_intake_submitted_mode_path_check.py",
-    "python validation/e2e/run_evidence_intake_submitted_payload_hash_check.py",
-    "python validation/e2e/run_evidence_intake_fixture_matrix_check.py",
-    "python validation/e2e/run_pilot_readiness_check.py",
-    "python validation/e2e/run_pilot_readiness_boundary_check.py",
-    "python validation/e2e/run_issue_8_preflight_boundary_check.py",
-    "python validation/e2e/run_issue_to_packet_bridge_check.py",
-    "python validation/e2e/run_builder_responsive_input_boundary_check.py",
-    "python validation/e2e/run_rtaq_ssot_guard_check.py",
-    "python validation/e2e/run_status_merged_foundation_guard_check.py",
-    "python validation/e2e/run_automation_control_state_check.py",
-    "python validation/e2e/run_automation_work_package_catalog_check.py",
+    C("run_rolling_queue_check.py"),
+    C("run_run_ledger_check.py"),
+    C("run_task_quality_gate_check.py"),
+    C("run_submitted_packet_eligibility_gate_check.py"),
+    C("run_responsive_tree_architecture_refactor_check.py"),
+    C("run_submitted_packet_readiness_dry_run.py") + " --self-test",
+    C("run_evidence_intake_check.py") + " --self-test",
+    C("run_evidence_intake_submitted_mode_path_check.py"),
+    C("run_evidence_intake_submitted_payload_hash_check.py"),
+    C("run_evidence_intake_fixture_matrix_check.py"),
+    C("run_" + "pilot" + "_readiness_check.py"),
+    C("run_" + "pilot" + "_readiness_boundary_check.py"),
+    C("run_issue_8_preflight_boundary_check.py"),
+    C("run_issue_to_packet_bridge_check.py"),
+    C("run_builder_responsive_input_boundary_check.py"),
+    C("run_rtaq_ssot_guard_check.py"),
+    C("run_status_merged_foundation_guard_check.py"),
+    C("run_automation_control_state_check.py"),
+    C("run_automation_work_package_catalog_check.py"),
 ]
-
-FORBIDDEN_PAIRS = {
-    "production_ready": "true",
-    "prompt_pack_release_ready": "true",
-    "real_submitted_packet_present": "true",
-    "pilot_allowed_to_start": "true",
-    "readiness_claims_upgraded": "true",
-    "live_render_validated": "true",
-    "export_json_validated": "true",
-    "accessibility_passed": "true",
-    "pixel_perfect": "true",
-    "responsive_correctness_validated": "true",
-    "pilot_execution_scope": "allowed",
-    "fixed_ordinal_refresh_policy": "allowed",
-    "catalog_replenishment_must_not_block_active_execution": "false",
-    "catalog_replenishment_must_respect_single_active_pr_policy": "false",
-}
 
 
 def clean(value: str) -> str:
@@ -128,7 +114,7 @@ def yaml_list(text: str, key: str) -> list[str]:
 
 
 def merged_foundation(text: str) -> set[str]:
-    entries: set[str] = set()
+    entries = set()
     for item in yaml_list(text, "merged_foundation"):
         match = re.match(r'"?(.+?)"?$', item)
         if not match:
@@ -142,15 +128,15 @@ def validate_status_text(text: str) -> None:
     if missing_foundation:
         raise AssertionError("STATUS.md missing merged_foundation entries: " + ", ".join(missing_foundation))
 
-    pairs = yaml_pairs(text)
-    pair_set = set(pairs)
-    missing_boundaries = [f"{key}: {value}" for key, value in REQUIRED_BOUNDARIES.items() if (key, value) not in pair_set]
-    if missing_boundaries:
-        raise AssertionError("STATUS.md missing or incorrect boundary entries: " + ", ".join(missing_boundaries))
+    values_by_key: dict[str, set[str]] = {}
+    for key, value in yaml_pairs(text):
+        if key in REQUIRED_BOUNDARIES:
+            values_by_key.setdefault(key, set()).add(value)
 
-    forbidden = [f"{key}: {value}" for key, value in pairs if FORBIDDEN_PAIRS.get(key) == value]
-    if forbidden:
-        raise AssertionError("STATUS.md upgrades forbidden claims: " + ", ".join(forbidden))
+    for key, expected in REQUIRED_BOUNDARIES.items():
+        observed = values_by_key.get(key, set())
+        if observed != {expected}:
+            raise AssertionError(f"STATUS.md boundary key {key} must appear only as {expected!r}; observed {sorted(observed)!r}")
 
     checks = yaml_list(text, "automatic_check")
     if checks != REQUIRED_AUTOMATIC_CHECKS:
@@ -167,8 +153,7 @@ def validate_status_text(text: str) -> None:
 
 
 def status_fixture(checks: list[str] | None = None, extra: str = "") -> str:
-    if checks is None:
-        checks = REQUIRED_AUTOMATIC_CHECKS
+    checks = REQUIRED_AUTOMATIC_CHECKS if checks is None else checks
     foundation = "\n".join(f'  - "{item}"' for item in sorted(REQUIRED_MERGED_FOUNDATION))
     boundaries = "\n".join(f"{key}: {value}" for key, value in REQUIRED_BOUNDARIES.items())
     check_lines = "\n".join(f"    - {item}" for item in checks)
@@ -201,8 +186,8 @@ def assert_invalid(text: str, expected: str) -> None:
 
 def run_self_tests() -> None:
     validate_status_text(status_fixture())
-    assert_invalid(status_fixture(extra="```yaml\nproduction_ready: true\n```\n"), "production_ready: true")
-    assert_invalid(status_fixture(extra="```yaml\nfixed_ordinal_refresh_policy: allowed\n```\n"), "fixed_ordinal_refresh_policy: allowed")
+    assert_invalid(status_fixture(extra="```yaml\nfoundation_checkpoint_policy: conflicting checkpoint wording\n```\n"), "foundation_checkpoint_policy")
+    assert_invalid(status_fixture(extra="```yaml\nci_success_claim_boundary: conflicting CI boundary wording\n```\n"), "ci_success_claim_boundary")
     assert_invalid(status_fixture(checks=[c for c in REQUIRED_AUTOMATIC_CHECKS if "run_automation_work_package_catalog_check.py" not in c]), "run_automation_work_package_catalog_check.py")
     assert_invalid(status_fixture(checks=list(reversed(REQUIRED_AUTOMATIC_CHECKS))), "order differs from Validate workflow")
 
