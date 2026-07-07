@@ -4,13 +4,13 @@
 
 Close the Builder → Responsive intake gap that was still marked `not_implemented` by adding a schema-bound, non-executing Responsive intake eligibility package.
 
-WP-RESP-002/PR-A extends that boundary by making the future Project Gate → Builder → Responsive transition path operationally explicit while preserving the same non-executing, evidence-bound scope.
+WP-RESP-002/PR-A extends that boundary by making the future Builder → Project Gate → Responsive transition path operationally explicit while preserving the same non-executing, evidence-bound scope.
 
 ## Technical decision
 
 The package validates only the shape and evidence references of a future Builder handoff. It deliberately stops before Project Gate execution, pilot execution, readiness generation, or any responsive-correctness claim.
 
-Responsive owns only local intake eligibility checks. Project Gate remains responsible for verified transport of Builder-owned artifacts when that route exists, and Builder remains responsible for Builder-owned output and execution evidence. Responsive must not copy upstream schemas as canonical truth, fabricate missing evidence, or infer viewport correctness from transport.
+Responsive owns only local intake eligibility checks. Builder remains responsible for Builder-owned output and execution evidence, and Project Gate remains responsible for verified transport of Builder-owned artifacts when that route exists. Responsive must not copy upstream schemas as canonical truth, fabricate missing evidence, or infer viewport correctness from transport.
 
 ## Added boundary artifacts
 
