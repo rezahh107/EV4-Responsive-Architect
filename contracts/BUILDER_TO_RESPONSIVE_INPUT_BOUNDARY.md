@@ -7,7 +7,7 @@ Responsive repair behavior changed: no
 
 ## Purpose
 
-This contract note clarifies what Responsive may accept from a future Project Gate Builder → Responsive route.
+This contract note clarifies what Responsive may accept from a future Builder → Project Gate → Responsive route.
 
 ```text
 Builder output and build evidence
@@ -62,16 +62,16 @@ responsive_handoff_export:
   schema_family: ev4-responsive-handoff-export@0.3.0
 ```
 
-## Operational Project Gate → Builder → Responsive transition boundary
+## Operational Builder → Project Gate → Responsive transition boundary
 
 This boundary is intentionally non-executing until Project Gate supplies a verified Builder transition packet. Responsive may validate the shape of a Builder→Responsive package, but it must not infer that Project Gate exists, that Builder execution was real, or that viewport behavior is correct.
 
 ```yaml
-project_gate_transition:
+builder_project_gate_responsive_transition:
   status: future_verified_transport_required
   responsive_role: validate intake eligibility only
-  project_gate_role: verify and transport Builder-owned artifacts
   builder_role: produce Builder-owned output and evidence artifacts
+  project_gate_role: verify and transport Builder-owned artifacts
   allowed_responsive_action:
     - accept schema-valid Builder package only after Project Gate status is verified
     - preserve artifact references and sha256 digests for traceability
@@ -139,10 +139,9 @@ allow_intake_only_when:
     execution_evidence_ref: present
     layout_check_ref: present
     completion_gate_ref: present
-  viewport_evidence:
-    desktop: provided
-    tablet: provided
-    mobile: provided
+  viewport_evidence.desktop.evidence_status: provided
+  viewport_evidence.tablet.evidence_status: provided
+  viewport_evidence.mobile.evidence_status: provided
   responsive_intake_decision.claim_boundary: input eligibility only; not responsive correctness evidence
 
 block_intake_when:
