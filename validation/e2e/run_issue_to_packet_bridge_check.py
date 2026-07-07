@@ -12,6 +12,7 @@ INVALID_TEXT_PROOF = ROOT / "validation" / "fixtures" / "invalid" / "issue_to_pa
 REQUIRED_BLOCKED_STATES = {
     "MISSING_ATTACHMENT",
     "MISSING_HASH",
+    "MALFORMED_HASH",
     "PRIVACY_NOT_ACKED",
     "CONFLICTING_SOURCE",
     "SAMPLE_MARKER_PRESENT",
@@ -50,6 +51,18 @@ def assert_blocked_bridge_is_safe(payload: dict[str, Any]) -> None:
     if policy["requires_privacy_acknowledgement"] is not True:
         fail("bridge must require privacy acknowledgement")
 
+    hash_mappings = [
+        mapping
+        for mapping in payload["field_mappings"]
+        if mapping["packet_field"] == "main_ev4_handoff.payload_identity_hash"
+    ]
+    if len(hash_mappings) != 1:
+        fail("bridge must carry exactly one payload identity hash mapping")
+    if hash_mappings[0]["evidence_kind"] != "hash":
+        fail("payload identity mapping must be hash evidence")
+    if "sha256:<64 lowercase hex>" not in hash_mappings[0]["source_requirement"]:
+        fail("payload identity mapping must require sha256:<64 lowercase hex> format")
+
     blocked_state_ids = {state["state_id"] for state in payload["blocked_states"]}
     missing = REQUIRED_BLOCKED_STATES - blocked_state_ids
     if missing:
@@ -58,6 +71,8 @@ def assert_blocked_bridge_is_safe(payload: dict[str, Any]) -> None:
     for state in payload["blocked_states"]:
         if state["pilot_allowed_to_start"] is not False:
             fail(f"blocked state {state['state_id']} must keep pilot_allowed_to_start=false")
+        if state["state_id"] == "MALFORMED_HASH" and state["required_action"] != "request_hashes":
+            fail("malformed hash state must request corrected hashes")
 
     verdict = payload["bridge_verdict"]
     if verdict["status"] != "blocked_missing_evidence":
