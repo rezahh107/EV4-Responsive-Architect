@@ -69,6 +69,7 @@ jobs:
           test -f validation/e2e/run_pilot_readiness_check.py
           test -f validation/e2e/run_pilot_readiness_boundary_check.py
           test -f validation/e2e/run_issue_8_preflight_boundary_check.py
+          test -f validation/e2e/run_issue_to_packet_bridge_check.py
           test -f validation/e2e/run_builder_responsive_input_boundary_check.py
           test -f validation/e2e/run_task_quality_gate_check.py
           test -f validation/e2e/run_rtaq_ssot_guard_check.py
@@ -102,6 +103,8 @@ jobs:
         run: python validation/e2e/run_pilot_readiness_boundary_check.py
       - name: Issue 8 preflight boundary
         run: python validation/e2e/run_issue_8_preflight_boundary_check.py
+      - name: Issue-to-packet bridge
+        run: python validation/e2e/run_issue_to_packet_bridge_check.py
       - name: Builder responsive input boundary
         run: python validation/e2e/run_builder_responsive_input_boundary_check.py
       - name: RTAQ SSOT guard
