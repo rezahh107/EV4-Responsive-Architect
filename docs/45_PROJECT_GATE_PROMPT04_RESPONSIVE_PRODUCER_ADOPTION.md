@@ -32,3 +32,8 @@ This document records Responsive Producer adoption of the Project Gate common-co
 ## Prompt 5 handoff block
 
 Project Gate routing, final Project Gate acceptance, and cross-repository E2E remain `not_implemented`. This repository now emits Responsive-owned artifacts for a later Prompt 5 integration, but it does not perform Prompt 5 routing.
+
+
+## PR #142 workflow startup fix
+
+The Project Gate reusable workflow caller now passes only `lock_path` to the pinned workflow. Unsupported `lock-file` and `vendored-contract` inputs were removed. The Producer Gate Export lock now uses the official `project-gate-common-contract-lock.v1` shape with `canonical`, `vendored`, and `verification` sections. Stage Bundle v1 remains separate evidence and is not claimed as covered by the common lock.

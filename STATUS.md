@@ -208,3 +208,16 @@ prompt_04_responsive_producer_adoption:
   prompt_5_project_gate_routing: not_implemented
   responsive_correctness: not_claimed
 ```
+
+## PR #142 verification workflow blocker fix
+
+```yaml
+pr_142_verification_workflow_fix:
+  status: pending_ci_observation
+  workflow_caller_input: lock_path
+  unsupported_inputs_removed: [lock-file, vendored-contract]
+  lock_schema: project-gate-common-contract-lock.v1
+  lock_shape: official_project_gate_common_contract_lock
+  stage_bundle_common_lock_coverage: false
+  human_review_required: true
+```

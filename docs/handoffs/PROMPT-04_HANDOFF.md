@@ -61,3 +61,12 @@ PR 141 was treated as unrelated to Prompt 4 and not used as a dependency. Its kn
 - Exact CI for the PR head is not observed in this local environment.
 - Live responsive correctness is not claimed.
 - Prompt 5 integration is blocked by scope.
+
+
+## PR #142 workflow startup fix
+
+- Corrected `.github/workflows/verify-vendored-common-contract.yml` to use `lock_path`.
+- Removed unsupported `lock-file` and `vendored-contract` workflow inputs.
+- Replaced the custom Prompt 4 lock shape with the official `project-gate-common-contract-lock.v1` shape.
+- Stage Bundle v1 remains separate from the common contract lock.
+- CI on the new exact head must be observed before merge readiness can be green.
