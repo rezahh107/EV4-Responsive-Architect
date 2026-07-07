@@ -21,7 +21,7 @@ schema: schemas/ev4-builder-responsive-input.schema.json
 validator: validation/e2e/run_builder_responsive_input_boundary_check.py
 valid_fixture:
   - validation/fixtures/valid/builder_responsive_input.valid.json
-invalid_fixture:
+negative_fixture:
   - validation/fixtures/invalid/builder_responsive_input_missing_mobile_evidence.invalid.json
   - validation/fixtures/invalid/builder_responsive_input_blocked_project_gate_allows_intake.invalid.json
   - validation/fixtures/invalid/builder_responsive_input_blocked_viewport_allows_intake.invalid.json
@@ -61,7 +61,7 @@ responsive_forbidden_to_claim:
 ## Validator-backed fixture semantics
 
 ```yaml
-required_invalid_fixture_names:
+required_negative_fixture_names:
   - builder_responsive_input_missing_mobile_evidence.invalid.json
   - builder_responsive_input_blocked_project_gate_allows_intake.invalid.json
   - builder_responsive_input_blocked_viewport_allows_intake.invalid.json
@@ -74,7 +74,13 @@ required_negative_semantics:
   blocked_viewport: at least one viewport evidence status is not provided and intake_allowed is false
   forbidden_claim_subset: forbidden claim list is incomplete and intake_allowed is false
   malformed_hash: malformed Project Gate or Builder artifact digest keeps intake_allowed false
+
+schema_valid_negative_fixtures:
+  - builder_responsive_input_blocked_project_gate_allows_intake.invalid.json
+  - builder_responsive_input_blocked_viewport_allows_intake.invalid.json
 ```
+
+Some negative fixtures are intentionally schema-valid because they represent validly shaped handoff packets with an explicit denied intake decision. The validator checks their semantic boundary instead of requiring every negative fixture to fail JSON Schema validation.
 
 These checks remain repository-local eligibility checks. They do not validate live rendering, export JSON correctness, accessibility, pixel precision, production readiness, release readiness, or responsive correctness.
 
