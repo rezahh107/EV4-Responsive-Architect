@@ -221,3 +221,18 @@ pr_142_verification_workflow_fix:
   stage_bundle_common_lock_coverage: false
   human_review_required: true
 ```
+
+## PR #142 canonical vendored contract correction
+
+```yaml
+pr_142_canonical_contract_correction:
+  status: pending_push_and_ci_observation
+  producer_gate_export_schema: exact_canonical_project_gate_copy
+  producer_gate_export_schema_sha256: c556bb9deeccdcafeb885a1c8b3dbd660e4e06f452b8ac3c7040d21377465fcc
+  common_lock_schema: exact_canonical_project_gate_copy
+  local_validator_checks_actual_vendored_schema_hash: true
+  local_validator_resolves_stage_bundle_ref_locally: true
+  verify_vendored_project_gate_common_contract: not_observed_on_new_head
+  validate: not_observed_on_new_head
+  human_review_required: true
+```

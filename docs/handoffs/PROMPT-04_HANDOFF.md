@@ -70,3 +70,11 @@ PR 141 was treated as unrelated to Prompt 4 and not used as a dependency. Its kn
 - Replaced the custom Prompt 4 lock shape with the official `project-gate-common-contract-lock.v1` shape.
 - Stage Bundle v1 remains separate from the common contract lock.
 - CI on the new exact head must be observed before merge readiness can be green.
+
+## PR #142 canonical contract correction
+
+- Replaced `contracts/project-gate/producer-gate-export.v1.schema.json` with the canonical Project Gate contract copy from commit `ea19c22c32458068e167b267da8b819e9263cdf7`.
+- Replaced `contracts/project-gate/common-contract-lock.v1.schema.json` with the canonical Project Gate common-lock schema shape.
+- Updated `validation/project_gate/validate_responsive_producer_adoption.py` to compute the actual vendored Producer Gate Export schema SHA-256 and require `c556bb9deeccdcafeb885a1c8b3dbd660e4e06f452b8ac3c7040d21377465fcc`.
+- Added local Stage Bundle `$ref` resolution for Producer Gate Export schema validation.
+- CI on a pushed exact head remains required before merge readiness can become green.

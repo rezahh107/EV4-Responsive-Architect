@@ -37,3 +37,9 @@ Project Gate routing, final Project Gate acceptance, and cross-repository E2E re
 ## PR #142 workflow startup fix
 
 The Project Gate reusable workflow caller now passes only `lock_path` to the pinned workflow. Unsupported `lock-file` and `vendored-contract` inputs were removed. The Producer Gate Export lock now uses the official `project-gate-common-contract-lock.v1` shape with `canonical`, `vendored`, and `verification` sections. Stage Bundle v1 remains separate evidence and is not claimed as covered by the common lock.
+
+## PR #142 canonical contract correction
+
+The vendored `contracts/project-gate/producer-gate-export.v1.schema.json` was replaced with the canonical Project Gate contract bytes from commit `ea19c22c32458068e167b267da8b819e9263cdf7`, producing SHA-256 `c556bb9deeccdcafeb885a1c8b3dbd660e4e06f452b8ac3c7040d21377465fcc`. The local `contracts/project-gate/common-contract-lock.v1.schema.json` was also replaced with the canonical Project Gate common-lock schema shape so local schema documentation no longer contradicts the lock used by the reusable workflow.
+
+The Responsive Prompt 4 validator now verifies the actual vendored Producer Gate Export schema file hash and resolves the Stage Bundle `$ref` through the local vendored Stage Bundle schema instead of attempting network retrieval.

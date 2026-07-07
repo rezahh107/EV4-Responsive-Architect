@@ -1,11 +1,23 @@
 #!/usr/bin/env python3
 from __future__ import annotations
+import hashlib
 import json
 from pathlib import Path
 from jsonschema import Draft202012Validator
+from referencing import Registry, Resource
 ROOT=Path(__file__).resolve().parents[2]
 def load(p): return json.loads((ROOT/p).read_text())
-def errors(schema,payload): return list(Draft202012Validator(schema).iter_errors(payload))
+def make_validator(schema):
+    resources=[
+        (
+            'https://ev4.local/schemas/stage-bundle/stage-bundle.v1.schema.json',
+            Resource.from_contents(load('schemas/project-gate/stage-bundle.v1.schema.json')),
+        )
+    ]
+    registry=Registry().with_resources(resources)
+    return Draft202012Validator(schema, registry=registry)
+def errors(schema,payload): return list(make_validator(schema).iter_errors(payload))
+def sha256(path): return hashlib.sha256((ROOT/path).read_bytes()).hexdigest()
 def assert_no_errors(label,schema,payload):
     es=errors(schema,payload)
     if es: raise AssertionError(f"{label}: {es[0].message}")
@@ -55,6 +67,9 @@ def main():
     invalid_payload=load('validation/fixtures/prompt04/invalid/responsive_stage_payload_cross_viewport.invalid.json')
     assert_no_errors('valid responsive payload',payload_schema,valid_payload)
     assert_has_errors('invalid cross viewport payload',payload_schema,invalid_payload)
+    if sha256('contracts/project-gate/producer-gate-export.v1.schema.json')!='c556bb9deeccdcafeb885a1c8b3dbd660e4e06f452b8ac3c7040d21377465fcc': raise AssertionError('vendored producer schema bytes do not match pinned Project Gate canonical hash')
+    common_lock_schema=load('contracts/project-gate/common-contract-lock.v1.schema.json')
+    assert_no_errors('producer lock against common lock schema',common_lock_schema,lock)
     producer_schema=load('contracts/project-gate/producer-gate-export.v1.schema.json')
     valid_export=load('validation/fixtures/prompt04/valid/responsive_producer_gate_export.valid.json')
     invalid_export=load('validation/fixtures/prompt04/invalid/responsive_producer_gate_export_silent_fallback.invalid.json')
