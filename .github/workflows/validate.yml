@@ -75,6 +75,7 @@ jobs:
           test -f validation/e2e/run_rtaq_ssot_guard_check.py
           test -f validation/e2e/run_status_merged_foundation_guard_check.py
           test -f validation/e2e/run_automation_control_state_check.py
+          test -f validation/e2e/run_automation_work_package_catalog_check.py
           test -f validation/e2e/run_rolling_queue_check.py
           test -f validation/e2e/run_run_ledger_check.py
       - name: Rolling queue guard
@@ -113,3 +114,5 @@ jobs:
         run: python validation/e2e/run_status_merged_foundation_guard_check.py
       - name: Automation control state
         run: python validation/e2e/run_automation_control_state_check.py
+      - name: Automation work package catalog
+        run: python validation/e2e/run_automation_work_package_catalog_check.py
