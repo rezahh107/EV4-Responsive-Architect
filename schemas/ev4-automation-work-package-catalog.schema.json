@@ -1,0 +1,234 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ev4-automation-work-package-catalog@1.0.0",
+  "title": "EV4 Automation Work Package Catalog",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "project",
+    "catalog_path",
+    "catalog_status",
+    "execution_driver",
+    "rolling_queue_authority",
+    "selection_policy",
+    "global_boundaries",
+    "work_packages"
+  ],
+  "properties": {
+    "schema": {"const": "ev4-automation-work-package-catalog@1.0.0"},
+    "project": {"const": "EV4 Responsive Architect"},
+    "catalog_path": {"const": "planning/EV4_AUTOMATION_WORK_PACKAGE_CATALOG.json"},
+    "catalog_status": {"const": "approved_material_objective_source"},
+    "execution_driver": {"const": "work_package_catalog_guard"},
+    "rolling_queue_authority": {"const": "historical_reconciled_archive"},
+    "selection_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "controller_must_select_from_catalog_only",
+        "exactly_one_work_package_or_slice_per_run",
+        "arbitrary_rtaq_task_invention_forbidden",
+        "micro_task_invention_forbidden",
+        "checkpoint_only_loop_forbidden",
+        "artificial_reserve_tasks_forbidden",
+        "guard_only_work_requires_named_work_package_unblock",
+        "open_prs_must_be_reconciled_before_new_selection",
+        "reviewable_pr_slices_required",
+        "split_by_layer_under_same_work_package_id"
+      ],
+      "properties": {
+        "controller_must_select_from_catalog_only": {"const": true},
+        "exactly_one_work_package_or_slice_per_run": {"const": true},
+        "arbitrary_rtaq_task_invention_forbidden": {"const": true},
+        "micro_task_invention_forbidden": {"const": true},
+        "checkpoint_only_loop_forbidden": {"const": true},
+        "artificial_reserve_tasks_forbidden": {"const": true},
+        "guard_only_work_requires_named_work_package_unblock": {"const": true},
+        "open_prs_must_be_reconciled_before_new_selection": {"const": true},
+        "reviewable_pr_slices_required": {"const": true},
+        "split_by_layer_under_same_work_package_id": {"const": true}
+      }
+    },
+    "global_boundaries": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "submitted_evidence_created_by_catalog",
+        "issue_8_mutation_allowed_by_catalog",
+        "real_pilot_execution_allowed_by_catalog",
+        "catalog_completion_is_evidence_validation",
+        "ci_success_is_responsive_correctness_evidence",
+        "production_ready",
+        "release_ready",
+        "live_render_validated",
+        "export_json_validated",
+        "accessibility_passed",
+        "pixel_perfect",
+        "responsive_correctness_validated"
+      ],
+      "properties": {
+        "submitted_evidence_created_by_catalog": {"const": false},
+        "issue_8_mutation_allowed_by_catalog": {"const": false},
+        "real_pilot_execution_allowed_by_catalog": {"const": false},
+        "catalog_completion_is_evidence_validation": {"const": false},
+        "ci_success_is_responsive_correctness_evidence": {"const": false},
+        "production_ready": {"const": false},
+        "release_ready": {"const": false},
+        "live_render_validated": {"const": false},
+        "export_json_validated": {"const": false},
+        "accessibility_passed": {"const": false},
+        "pixel_perfect": {"const": false},
+        "responsive_correctness_validated": {"const": false}
+      }
+    },
+    "work_packages": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": false,
+      "propertyNames": {"pattern": "^WP-RESP-[0-9]{3}$"},
+      "patternProperties": {"^WP-RESP-[0-9]{3}$": {"$ref": "#/$defs/work_package"}}
+    }
+  },
+  "$defs": {
+    "non_empty_string": {"type": "string", "minLength": 1},
+    "string_list": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
+    "work_package": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "title",
+        "capability_area",
+        "current_state",
+        "target_state",
+        "target_capability",
+        "expected_project_delta",
+        "selectable",
+        "priority",
+        "allowed_work",
+        "forbidden_work",
+        "must_deliver",
+        "must_preserve",
+        "evidence_boundary",
+        "readiness_boundary",
+        "definition_of_done",
+        "quality_gates",
+        "split_rule",
+        "allowed_pr_slices",
+        "blocked_if",
+        "completion_record_requirements",
+        "unblocks_work_package_ids"
+      ],
+      "properties": {
+        "id": {"type": "string", "pattern": "^WP-RESP-[0-9]{3}$"},
+        "title": {"$ref": "#/$defs/non_empty_string"},
+        "capability_area": {"enum": ["evidence_intake", "builder_responsive_boundary", "validation_chain", "pilot_readiness_boundary", "catalog_governance"]},
+        "current_state": {"type": "string", "minLength": 30},
+        "target_state": {"type": "string", "minLength": 30},
+        "target_capability": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["statement", "measurement", "measurable"],
+          "properties": {
+            "statement": {"type": "string", "minLength": 30},
+            "measurement": {"type": "string", "minLength": 30},
+            "measurable": {"const": true}
+          }
+        },
+        "expected_project_delta": {"type": "string", "minLength": 40},
+        "selectable": {"type": "boolean"},
+        "priority": {"type": "integer", "minimum": 1, "maximum": 100},
+        "allowed_work": {"$ref": "#/$defs/string_list"},
+        "forbidden_work": {"type": "array", "minItems": 5, "items": {"type": "string", "minLength": 1}},
+        "must_deliver": {"$ref": "#/$defs/string_list"},
+        "must_preserve": {"type": "array", "minItems": 4, "items": {"type": "string", "minLength": 1}},
+        "evidence_boundary": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "submitted_evidence_created_by_package",
+            "issue_8_mutation_allowed",
+            "real_pilot_execution_allowed",
+            "ci_success_is_domain_evidence",
+            "merged_pr_is_domain_evidence",
+            "catalog_completion_is_evidence_validation",
+            "claims_require_real_evidence_gates",
+            "forbidden_claims_without_real_evidence"
+          ],
+          "properties": {
+            "submitted_evidence_created_by_package": {"const": false},
+            "issue_8_mutation_allowed": {"const": false},
+            "real_pilot_execution_allowed": {"const": false},
+            "ci_success_is_domain_evidence": {"const": false},
+            "merged_pr_is_domain_evidence": {"const": false},
+            "catalog_completion_is_evidence_validation": {"const": false},
+            "claims_require_real_evidence_gates": {"const": true},
+            "forbidden_claims_without_real_evidence": {
+              "type": "array",
+              "minItems": 7,
+              "maxItems": 7,
+              "uniqueItems": true,
+              "items": {"enum": ["production_ready", "release_ready", "live_render_validated", "export_json_validated", "accessibility_passed", "pixel_perfect", "responsive_correctness_validated"]}
+            }
+          }
+        },
+        "readiness_boundary": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["pilot_allowed_to_start", "production_ready", "release_ready", "live_render_validated", "export_json_validated", "accessibility_passed", "pixel_perfect", "responsive_correctness_validated"],
+          "properties": {
+            "pilot_allowed_to_start": {"const": false},
+            "production_ready": {"const": false},
+            "release_ready": {"const": false},
+            "live_render_validated": {"const": false},
+            "export_json_validated": {"const": false},
+            "accessibility_passed": {"const": false},
+            "pixel_perfect": {"const": false},
+            "responsive_correctness_validated": {"const": false}
+          }
+        },
+        "definition_of_done": {"type": "array", "minItems": 3, "items": {"type": "string", "minLength": 1}},
+        "quality_gates": {"type": "array", "minItems": 5, "items": {"type": "string", "minLength": 1}},
+        "split_rule": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["principle", "split_by", "requires_slice_id_prefix", "forbidden_splits"],
+          "properties": {
+            "principle": {"type": "string", "minLength": 20},
+            "split_by": {"const": "implementation_layer_under_same_work_package_id"},
+            "requires_slice_id_prefix": {"const": "<WORK_PACKAGE_ID>/PR-"},
+            "forbidden_splits": {
+              "type": "array",
+              "minItems": 4,
+              "items": {"enum": ["invent_unrelated_rtaq_tasks", "guard_only_task_without_named_work_package_unblock", "checkpoint_only_pr_after_every_merge", "artificial_reserve_task_to_keep_task_count_high", "queue_refresh_loop_as_execution_driver"]}
+            }
+          }
+        },
+        "allowed_pr_slices": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["slice_id", "title", "layer", "objective", "review_boundary"],
+            "properties": {
+              "slice_id": {"type": "string", "pattern": "^WP-RESP-[0-9]{3}/PR-[A-Z]$"},
+              "title": {"$ref": "#/$defs/non_empty_string"},
+              "layer": {"enum": ["schema_fixtures", "validator_ci", "docs_status", "schema_contract", "validator_fixtures", "validator_inventory", "fixtures", "quality_debt", "validator", "docs", "schema_validator", "catalog_metadata"]},
+              "objective": {"type": "string", "minLength": 20},
+              "review_boundary": {"type": "string", "minLength": 20}
+            }
+          }
+        },
+        "blocked_if": {"$ref": "#/$defs/string_list"},
+        "completion_record_requirements": {"type": "array", "minItems": 5, "items": {"type": "string", "minLength": 1}},
+        "unblocks_work_package_ids": {"type": "array", "items": {"type": "string", "pattern": "^WP-RESP-[0-9]{3}$"}, "uniqueItems": true},
+        "maintenance_type": {"const": "non_selectable_material_state_change_governance"}
+      },
+      "allOf": [
+        {"if": {"properties": {"selectable": {"const": false}}, "required": ["selectable"]}, "then": {"required": ["maintenance_type"]}}
+      ]
+    }
+  }
+}
