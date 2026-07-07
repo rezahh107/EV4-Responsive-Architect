@@ -39,8 +39,12 @@ def payload_identity_hash(packet: dict[str, Any]) -> Any:
     return handoff.get("payload_identity_hash")
 
 
+def is_real_issue_submission(packet: dict[str, Any]) -> bool:
+    return packet.get("packet_origin") == REAL_ORIGIN
+
+
 def validate_real_submitted_payload_identity_hash(packet: dict[str, Any]) -> None:
-    if packet.get("packet_origin") != REAL_ORIGIN:
+    if not is_real_issue_submission(packet):
         return
     digest = payload_identity_hash(packet)
     if not isinstance(digest, str) or SUBMITTED_HASH_RE.fullmatch(digest) is None:
@@ -115,7 +119,8 @@ def main() -> int:
             print("Submitted payload hash self-tests passed")
             return 0
         packet_path = args.packet if args.packet.is_absolute() else ROOT / args.packet
-        validate_real_submitted_payload_identity_hash(load_json(packet_path))
+        packet = load_json(packet_path)
+        validate_real_submitted_payload_identity_hash(packet)
     except AssertionError as exc:
         print(f"Submitted payload hash check failed: {exc}", file=sys.stderr)
         return 1
@@ -123,7 +128,10 @@ def main() -> int:
         print("Submitted payload hash check crashed unexpectedly:", file=sys.stderr)
         traceback.print_exc(file=sys.stderr)
         return 1
-    print("Submitted payload hash check passed: real submitted payload identity hash is well-formed")
+    if is_real_issue_submission(packet):
+        print("Submitted payload hash check passed: real submitted payload identity hash is well-formed")
+    else:
+        print("Submitted payload hash check skipped: packet is not a real issue submission")
     return 0
 
 
