@@ -33,6 +33,10 @@ REQUIRED_BOUNDARIES = {
     "pixel_perfect": "false",
     "responsive_correctness_validated": "false",
     "pilot_execution_scope": "not_allowed",
+    "fixed_ordinal_refresh_policy": "forbidden",
+    "state_driven_refresh": "true",
+    "catalog_replenishment_must_not_block_active_execution": "true",
+    "catalog_replenishment_must_respect_single_active_pr_policy": "true",
 }
 
 REQUIRED_AUTOMATIC_CHECKS = [
@@ -69,6 +73,9 @@ FORBIDDEN_PAIRS = {
     "pixel_perfect": "true",
     "responsive_correctness_validated": "true",
     "pilot_execution_scope": "allowed",
+    "fixed_ordinal_refresh_policy": "allowed",
+    "catalog_replenishment_must_not_block_active_execution": "false",
+    "catalog_replenishment_must_respect_single_active_pr_policy": "false",
 }
 
 
@@ -117,8 +124,8 @@ def yaml_list(text: str, key: str) -> list[str]:
             in_list = True
             continue
         if in_list:
-            if raw.startswith("  - "):
-                out.append(clean(raw.split("-", 1)[1]))
+            if line.startswith("- "):
+                out.append(clean(line.split("-", 1)[1]))
             elif line and not line.startswith("#"):
                 break
     return out
@@ -168,7 +175,7 @@ def status_fixture(checks: list[str] | None = None, extra: str = "") -> str:
         checks = REQUIRED_AUTOMATIC_CHECKS
     foundation = "\n".join(f'  - "{item}"' for item in sorted(REQUIRED_MERGED_FOUNDATION))
     boundaries = "\n".join(f"{key}: {value}" for key, value in REQUIRED_BOUNDARIES.items())
-    check_lines = "\n".join(f"  - {item}" for item in checks)
+    check_lines = "\n".join(f"    - {item}" for item in checks)
     return f"""# STATUS
 ```yaml
 foundation_checkpoint_policy: bounded checkpoints only; not append every merged PR
@@ -199,6 +206,7 @@ def assert_invalid(text: str, expected: str) -> None:
 def run_self_tests() -> None:
     validate_status_text(status_fixture())
     assert_invalid(status_fixture(extra="```yaml\nproduction_ready: true\n```\n"), "production_ready: true")
+    assert_invalid(status_fixture(extra="```yaml\nfixed_ordinal_refresh_policy: allowed\n```\n"), "fixed_ordinal_refresh_policy: allowed")
     assert_invalid(status_fixture(checks=[c for c in REQUIRED_AUTOMATIC_CHECKS if "run_automation_work_package_catalog_check.py" not in c]), "run_automation_work_package_catalog_check.py")
     assert_invalid(status_fixture(checks=list(reversed(REQUIRED_AUTOMATIC_CHECKS))), "order differs from Validate workflow")
 
