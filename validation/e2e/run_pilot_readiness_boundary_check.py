@@ -7,6 +7,7 @@ mutate Issue #8, does not create submitted evidence, and does not start a pilot.
 from __future__ import annotations
 
 import copy
+import json
 import sys
 from pathlib import Path
 from typing import Any
@@ -18,11 +19,20 @@ sys.path.insert(0, str(ROOT))
 
 from validation.e2e import run_pilot_readiness_check as readiness  # noqa: E402
 
+CONTROL_STATE = ROOT / "planning" / "EV4_AUTOMATION_CONTROL_STATE.json"
+
 OVERRIDE_FIELDS = {
     "readiness_score": 100,
     "repository_check_conclusion": "success",
     "ci_success": True,
     "merged_pr": 101,
+    "pilot_allowed_to_start": True,
+    "release_ready": True,
+    "live_render_validated": True,
+    "export_json_validated": True,
+    "accessibility_passed": True,
+    "pixel_perfect": True,
+    "responsive_correctness_validated": True,
 }
 
 EXPECTED_BOUNDARY_ASSERTIONS = {
@@ -31,6 +41,35 @@ EXPECTED_BOUNDARY_ASSERTIONS = {
     "playwright_visual_regression_validated": "no_playwright_visual_regression_run",
     "accessibility_pass_claimed": "accessibility_gate_not_executed_on_real_dom",
     "production_ready_claimed": "release_gate_evidence_missing",
+}
+
+CONTROL_STATE_FALSE_CLAIMS = {
+    "real_submitted_packet_present",
+    "pilot_allowed_to_start",
+    "readiness_claims_upgraded",
+    "production_ready",
+    "release_ready",
+    "live_render_validated",
+    "export_json_validated",
+    "accessibility_passed",
+    "pixel_perfect",
+    "responsive_correctness_validated",
+}
+
+EXPECTED_FORBIDDEN_NEXT_ACTIONS = [
+    "create_checkpoint_only_pr_for_every_merge",
+    "treat_stale_rolling_queue_as_current_driver",
+    "invent_rtaq_task_without_catalog_work_package",
+    "invent_micro_task_outside_catalog",
+    "create_artificial_reserve_task_to_keep_task_count_high",
+    "create_parallel_catalog_pr_while_active_mutation_pr_exists",
+    "refresh_catalog_because_fixed_ordinal_was_reached",
+    "upgrade_evidence_pilot_readiness_or_release_claims",
+]
+
+SHADOW_ONLY_SCOPES = {
+    "shadow_mode_only",
+    "shadow_mode_only_with_visible_flags",
 }
 
 
@@ -58,6 +97,40 @@ def _assert_not_authorized(report: dict[str, Any], label: str) -> None:
         raise AssertionError(f"{label} must preserve explicit blocking reasons")
 
 
+def _assert_shadow_mode_authorization_is_not_real_pilot(report: dict[str, Any], label: str) -> None:
+    authorization = report["pilot_start_authorization"]
+    if authorization["authorization_scope"] not in SHADOW_ONLY_SCOPES:
+        raise AssertionError(f"{label} must be shadow-mode scoped or blocked")
+    if report["required_next_action"] not in {
+        "start_shadow_mode_pilot",
+        "start_shadow_mode_pilot_with_visible_flags",
+    }:
+        raise AssertionError(f"{label} must not produce a non-shadow next action")
+    _assert_forbidden_claims(report)
+
+
+def _assert_contract_fixture_remains_dry_run_only(packet_path: Path, report: dict[str, Any]) -> None:
+    packet = readiness.load_json(packet_path)
+    verdict = packet.get("intake_verdict")
+    if not isinstance(verdict, dict):
+        raise AssertionError("contract fixture must expose an intake_verdict")
+    if packet.get("packet_origin") != "fixture_contract_validation":
+        raise AssertionError("default readiness fixture must remain fixture_contract_validation")
+    if packet.get("issue_reference") is not None:
+        raise AssertionError("default readiness fixture must not carry an Issue #8 reference")
+    if verdict.get("allowed_scope") != "contract_fixture_only":
+        raise AssertionError("default readiness fixture must stay contract_fixture_only")
+    if verdict.get("sample_dry_run_allowed") is not True:
+        raise AssertionError("default readiness fixture must stay dry-run allowed")
+    if verdict.get("real_pilot_allowed_to_start") is not False:
+        raise AssertionError("default readiness fixture must not allow real pilot start")
+
+    authorization = report["pilot_start_authorization"]
+    if authorization["authorization_scope"] == "real_shadow_mode_only":
+        raise AssertionError("contract fixture report must not become real-shadow authorization")
+    _assert_shadow_mode_authorization_is_not_real_pilot(report, "default dry-run contract fixture")
+
+
 def _assert_forbidden_claims(report: dict[str, Any]) -> None:
     authorization = report["pilot_start_authorization"]
     required = set(readiness.FORBIDDEN_CLAIMS)
@@ -75,8 +148,33 @@ def _assert_forbidden_claims(report: dict[str, Any]) -> None:
             raise AssertionError(f"validation boundary reason drifted for {boundary_name}")
 
 
+def _assert_control_state_stop_conditions() -> None:
+    with CONTROL_STATE.open("r", encoding="utf-8") as f:
+        control_state = json.load(f)
+    boundary_claims = control_state.get("boundary_claims")
+    if not isinstance(boundary_claims, dict):
+        raise AssertionError("automation control state must expose boundary_claims")
+    if set(boundary_claims.keys()) != CONTROL_STATE_FALSE_CLAIMS:
+        raise AssertionError("automation control state boundary_claims keys mismatch")
+    for claim in sorted(CONTROL_STATE_FALSE_CLAIMS):
+        if boundary_claims.get(claim) is not False:
+            raise AssertionError(f"control-state stop condition unexpectedly true or missing: {claim}")
+
+    forbidden_actions = control_state.get("forbidden_next_actions")
+    if forbidden_actions != EXPECTED_FORBIDDEN_NEXT_ACTIONS:
+        raise AssertionError("automation control state forbidden_next_actions order or completeness mismatch")
+
+
 def main() -> int:
     try:
+        positive_or_flagged = readiness.run_readiness_for_packet(
+            readiness.DEFAULT_PACKET,
+            out_path=None,
+            allow_blocked=False,
+            run_full_schema_validator=False,
+        )
+        _assert_contract_fixture_remains_dry_run_only(readiness.DEFAULT_PACKET, positive_or_flagged)
+
         blocked_missing = readiness.run_readiness_for_packet(
             readiness.DEFAULT_BLOCKED_PACKET,
             out_path=None,
@@ -96,13 +194,16 @@ def main() -> int:
         _assert_forbidden_claims(blocked_conflict)
 
         for field, value in OVERRIDE_FIELDS.items():
+            _assert_schema_rejects_override(positive_or_flagged, field, value)
             _assert_schema_rejects_override(blocked_missing, field, value)
             _assert_schema_rejects_override(blocked_conflict, field, value)
+
+        _assert_control_state_stop_conditions()
     except AssertionError as exc:
         print(f"pilot readiness boundary check failed: {exc}", file=sys.stderr)
         return 1
 
-    print("pilot readiness boundary check passed: blocked gates ignore score, CI, merge, and check-state overrides")
+    print("pilot readiness boundary check passed: shadow-mode reports preserve stop conditions and reject readiness overrides")
     return 0
 
 
