@@ -56,6 +56,17 @@ CONTROL_STATE_FALSE_CLAIMS = {
     "responsive_correctness_validated",
 }
 
+EXPECTED_FORBIDDEN_NEXT_ACTIONS = [
+    "create_checkpoint_only_pr_for_every_merge",
+    "treat_stale_rolling_queue_as_current_driver",
+    "invent_rtaq_task_without_catalog_work_package",
+    "invent_micro_task_outside_catalog",
+    "create_artificial_reserve_task_to_keep_task_count_high",
+    "create_parallel_catalog_pr_while_active_mutation_pr_exists",
+    "refresh_catalog_because_fixed_ordinal_was_reached",
+    "upgrade_evidence_pilot_readiness_or_release_claims",
+]
+
 SHADOW_ONLY_SCOPES = {
     "shadow_mode_only",
     "shadow_mode_only_with_visible_flags",
@@ -98,6 +109,28 @@ def _assert_shadow_mode_authorization_is_not_real_pilot(report: dict[str, Any], 
     _assert_forbidden_claims(report)
 
 
+def _assert_contract_fixture_remains_dry_run_only(packet_path: Path, report: dict[str, Any]) -> None:
+    packet = readiness.load_json(packet_path)
+    verdict = packet.get("intake_verdict")
+    if not isinstance(verdict, dict):
+        raise AssertionError("contract fixture must expose an intake_verdict")
+    if packet.get("packet_origin") != "fixture_contract_validation":
+        raise AssertionError("default readiness fixture must remain fixture_contract_validation")
+    if packet.get("issue_reference") is not None:
+        raise AssertionError("default readiness fixture must not carry an Issue #8 reference")
+    if verdict.get("allowed_scope") != "contract_fixture_only":
+        raise AssertionError("default readiness fixture must stay contract_fixture_only")
+    if verdict.get("sample_dry_run_allowed") is not True:
+        raise AssertionError("default readiness fixture must stay dry-run allowed")
+    if verdict.get("real_pilot_allowed_to_start") is not False:
+        raise AssertionError("default readiness fixture must not allow real pilot start")
+
+    authorization = report["pilot_start_authorization"]
+    if authorization["authorization_scope"] == "real_shadow_mode_only":
+        raise AssertionError("contract fixture report must not become real-shadow authorization")
+    _assert_shadow_mode_authorization_is_not_real_pilot(report, "default dry-run contract fixture")
+
+
 def _assert_forbidden_claims(report: dict[str, Any]) -> None:
     authorization = report["pilot_start_authorization"]
     required = set(readiness.FORBIDDEN_CLAIMS)
@@ -121,9 +154,15 @@ def _assert_control_state_stop_conditions() -> None:
     boundary_claims = control_state.get("boundary_claims")
     if not isinstance(boundary_claims, dict):
         raise AssertionError("automation control state must expose boundary_claims")
+    if set(boundary_claims.keys()) != CONTROL_STATE_FALSE_CLAIMS:
+        raise AssertionError("automation control state boundary_claims keys mismatch")
     for claim in sorted(CONTROL_STATE_FALSE_CLAIMS):
         if boundary_claims.get(claim) is not False:
             raise AssertionError(f"control-state stop condition unexpectedly true or missing: {claim}")
+
+    forbidden_actions = control_state.get("forbidden_next_actions")
+    if forbidden_actions != EXPECTED_FORBIDDEN_NEXT_ACTIONS:
+        raise AssertionError("automation control state forbidden_next_actions order or completeness mismatch")
 
 
 def main() -> int:
@@ -134,7 +173,7 @@ def main() -> int:
             allow_blocked=False,
             run_full_schema_validator=False,
         )
-        _assert_shadow_mode_authorization_is_not_real_pilot(positive_or_flagged, "default readiness fixture")
+        _assert_contract_fixture_remains_dry_run_only(readiness.DEFAULT_PACKET, positive_or_flagged)
 
         blocked_missing = readiness.run_readiness_for_packet(
             readiness.DEFAULT_BLOCKED_PACKET,
