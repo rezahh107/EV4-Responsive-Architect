@@ -1,7 +1,7 @@
 # Controlled Manual First-Run Guide
 
 Task: `RTAQ-0003`
-Updated by: `RTAQ-0008`
+Updated by: `RTAQ-0008`, `WP-RESP-004/PR-B`
 
 This guide describes how to perform a controlled manual first run of the EV4 Responsive Architect repository without upgrading evidence, readiness, production, release, or pilot claims.
 
@@ -43,6 +43,20 @@ Use this order:
 6. Review whether any output is only planning material or eligible for a future evidence gate.
 7. Stop if any evidence, readiness, or pilot boundary would be crossed.
 
+## Shadow-mode preparation path
+
+For pilot-readiness preparation, use [docs/45_SHADOW_MODE_PREPARATION_PATH_RTAQ_0040.md](45_SHADOW_MODE_PREPARATION_PATH_RTAQ_0040.md) as the bounded manual guide.
+
+Shadow-mode preparation is repository-local and planning-only while the current repository state records:
+
+```yaml
+real_submitted_packet_present: false
+pilot_allowed_to_start: false
+issue_8_evidence_state: evidence_pending
+```
+
+A readiness report may classify fixture or packet behavior as `ready_for_shadow_mode_pilot`, `partial_ready_with_visible_flags`, or a blocked state. None of those classifications authorize a real pilot while real submitted evidence is absent and Issue #8 remains evidence-pending.
+
 ## Stop conditions
 
 Stop immediately if any of these occur:
@@ -53,6 +67,7 @@ Stop immediately if any of these occur:
 - A run would claim production readiness or release readiness.
 - A run would claim live-render validation, export validation, accessibility pass, or pixel-perfect validation.
 - A run would treat CI success or fixture success as real responsive correctness evidence.
+- A run would treat shadow-mode readiness output as permission to bypass submitted-mode evidence gates.
 
 ## Validation command index
 
@@ -62,6 +77,8 @@ Run from repository root:
 python validation/e2e/run_responsive_tree_architecture_refactor_check.py
 python validation/e2e/run_submitted_packet_eligibility_gate_check.py
 python validation/e2e/run_task_quality_gate_check.py
+python validation/e2e/run_pilot_readiness_check.py
+python validation/e2e/run_pilot_readiness_boundary_check.py
 ```
 
 For the full active/delegated/manual guard command list, use [docs/17_VALIDATION_COMMAND_INDEX.md](17_VALIDATION_COMMAND_INDEX.md). That index is authoritative for controlled manual validation commands.
@@ -72,7 +89,7 @@ If dependencies are missing, install the repository requirements first:
 python -m pip install -r requirements.txt
 ```
 
-The automated GitHub workflow currently runs the responsive-tree refactor check. The submitted-packet eligibility gate and task-quality gate are active repository checks, and queue/ledger checks are delegated through the responsive-tree checker. Their results remain repository-check evidence only.
+The automated GitHub workflow currently runs the responsive-tree refactor check. The submitted-packet eligibility gate, pilot-readiness guards, task-quality gate, queue/ledger checks, and catalog/control checks are active repository checks. Their results remain repository-check evidence only.
 
 ## Expected outputs
 
@@ -83,6 +100,7 @@ classification_review: draft_or_blocked
 route_review: draft_or_blocked
 handoff_review: draft_or_blocked
 validation_plan: planning_only
+shadow_mode_preparation: blocked_or_planning_only
 real_evidence_status: not_present
 pilot_status: blocked
 ```
