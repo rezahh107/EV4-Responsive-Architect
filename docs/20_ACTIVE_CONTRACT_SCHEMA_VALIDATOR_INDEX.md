@@ -1,7 +1,7 @@
 # Active Contract / Schema / Validator Index
 
 Task: `RTAQ-0047`
-Updated by: `RTAQ-0047`
+Updated by: `RTAQ-0051`
 
 This index records the active repository surfaces needed for controlled manual use and queue-safe handoff. It is an index only; it does not validate a real submitted packet, mutate Issue #8, authorize pilot execution, or upgrade readiness.
 
@@ -115,6 +115,9 @@ primary_validate_workflow:
     evidence_intake_submitted_mode_path_guard:
       path: validation/e2e/run_evidence_intake_submitted_mode_path_check.py
       role: submitted-mode path, Issue #8 ref, and artifact allowlist guard
+    evidence_intake_submitted_payload_hash_guard:
+      path: validation/e2e/run_evidence_intake_submitted_payload_hash_check.py
+      role: real submitted payload identity hash format guard
     evidence_intake_fixture_matrix:
       path: validation/e2e/run_evidence_intake_fixture_matrix_check.py
       role: submitted evidence fixture matrix consistency guard
