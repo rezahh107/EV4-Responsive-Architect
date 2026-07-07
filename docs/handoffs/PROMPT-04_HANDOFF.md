@@ -1,80 +1,123 @@
-# Prompt 04 Handoff — Responsive Producer Adoption
+# PROMPT-04 HANDOFF — Responsive Producer Gate Adoption
 
 ```yaml
-branch: project-gate-prompt-04-responsive-producer-adoption
-status: pending_merge
-next_allowed_prompt: Prompt 5 after human review and merge
-prompt_5_handoff_block: true
+producer: responsive
+repository: rezahh107/EV4-Responsive-Architect
+prompt: Prompt 4
+normalization_status: complete
+producer_adoption_status: merged
+producer_pr: 142
+producer_pr_head_sha: f565f0bdd48b53c5a3c70706cbfce1d44fcb72e1
+producer_merge_commit_sha: 28a995a603a5a383b8592d6beae7db8943f20acf
+project_gate_prompt_0_commit: ea19c22c32458068e167b267da8b819e9263cdf7
+exact_head_ci_status: passed
+project_gate_runtime_integration: not_implemented
+producer_repositories_modified_by_prompt_5: false
+prompt_5_ready_input: true
+human_review_required: true
 ```
 
-## Files changed
+## Normalization note
 
-Prompt 4 adds a Responsive pipeline manifest, Responsive Stage Payload schema, viewport ledger schema, breakpoint and Elementor capability registries, Project Gate vendored common contract carriers, validation fixtures, a pinned reusable workflow caller, and this handoff.
+This handoff was normalized after Producer PR #142 was merged. It updates stale handoff prose only and does not redo Producer adoption.
 
-## Tests run
+## Canonical Producer evidence
 
-Recorded by final agent response. Do not treat CI as responsive correctness evidence.
+```yaml
+producer_pr: 142
+producer_pr_state: merged
+base_branch: main
+head_sha: f565f0bdd48b53c5a3c70706cbfce1d44fcb72e1
+merge_commit_sha: 28a995a603a5a383b8592d6beae7db8943f20acf
+exact_head_ci:
+  - workflow_name: Verify vendored Project Gate common contract
+    conclusion: success
+  - workflow_name: Validate
+    conclusion: success
+```
 
-## Tests not run
+## Project Gate Prompt 0 pin
 
-Live viewport rendering, Elementor export validation, accessibility pass, production readiness, and Prompt 5 cross-repository routing were not run.
+```yaml
+project_gate_prompt_0:
+  repository: rezahh107/EV4-Project-Gate
+  pr_number: 40
+  merged_commit_sha: ea19c22c32458068e167b267da8b819e9263cdf7
+  producer_gate_export_schema_path: contracts/common/producer-gate-export.v1.schema.json
+  producer_gate_export_schema_sha256: c556bb9deeccdcafeb885a1c8b3dbd660e4e06f452b8ac3c7040d21377465fcc
+  stage_bundle_schema_path: schemas/stage-bundle/stage-bundle.v1.schema.json
+  stage_bundle_schema_sha256: fc1ec6d3f7aecbabaeb0a3455d9eb42788779d2fa1531e8c7b2cb3bde706a886
+  acquisition_mode: producer_emitted_gate_artifact
+  silent_fallback_allowed: false
+```
 
-## Coverage advanced
+## Canonical artifact paths
 
-- Mode separation for `design_to_responsive_tree` and `responsive_repair`.
-- Architecture identity preservation and Architecture Mutation Veto in the machine payload path.
-- Matching viewport evidence isolation.
-- Producer Gate Export with `producer_emitted_gate_artifact` and `silent_fallback_allowed: false`.
-- Stage Bundle v1 tracked separately from the Project Gate common lock.
+```yaml
+artifact_paths:
+  adoption_report: {path: docs/45_PROJECT_GATE_PROMPT04_RESPONSIVE_PRODUCER_ADOPTION.md, status: verified}
+  pipeline_manifest: {path: manifests/ev4-responsive-pipeline-manifest.v1.json, status: verified}
+  stage_payload_schema: {path: schemas/ev4-responsive-stage-payload.v1.schema.json, status: verified}
+  viewport_ledger_schema: {path: schemas/ev4-responsive-viewport-source-ledger.v1.schema.json, status: verified}
+  breakpoint_registry: {path: registries/breakpoint-profiles.v1.json, status: verified}
+  elementor_capability_registry: {path: registries/elementor-responsive-capabilities.v1.json, status: verified}
+  producer_gate_export_schema: {path: contracts/project-gate/producer-gate-export.v1.schema.json, status: verified}
+  producer_gate_export_lock: {path: contracts/project-gate/producer-gate-export.v1.lock.json, status: verified}
+  common_contract_lock_schema: {path: contracts/project-gate/common-contract-lock.v1.schema.json, status: verified}
+  stage_bundle_schema: {path: schemas/project-gate/stage-bundle.v1.schema.json, status: verified}
+  validator: {path: validation/project_gate/validate_responsive_producer_adoption.py, status: verified}
+  workflow_project_gate_contract: {path: .github/workflows/verify-vendored-common-contract.yml, status: verified}
+```
 
-## Rules still gap
+## Validation evidence
 
-Real browser evidence and final Project Gate acceptance remain `insufficient_evidence` until Prompt 5 and human-run viewport validation.
+```yaml
+original_pr_body_recorded_validation: present
+remote_exact_head_ci_observed:
+  Verify vendored Project Gate common contract: success
+  Validate: success
+normalization_local_tests_run: []
+normalization_tests_not_run:
+  - validation/project_gate/validate_responsive_producer_adoption.py
+ci_scope: repository_validation_evidence_only
+```
 
-## New diagnostics
+## Boundaries preserved
 
-- Invalid cross-viewport Responsive Stage Payload fixture.
-- Invalid silent-fallback Producer Gate Export fixture.
-
-## CLI/CI changes
-
-- `validation/project_gate/validate_responsive_producer_adoption.py`
-- `.github/workflows/verify-vendored-common-contract.yml`
-
-## Important design decisions
-
-- The common lock locks only `producer-gate-export.v1`; Stage Bundle v1 is verified and referenced separately.
-- User summary remains documentation; machine truth is in schema, fixtures, manifest, and export artifacts.
-- Project Gate routing is not implemented in this prompt.
-
-## Web or official sources used
-
-Project Gate commit `ea19c22c32458068e167b267da8b819e9263cdf7` was inspected via immutable GitHub raw content fallback because direct local `git fetch` was blocked by the environment proxy.
-
-## Open PR handling
-
-PR 141 was treated as unrelated to Prompt 4 and not used as a dependency. Its known changed files are outside Prompt 4 carriers: `validation/e2e/run_issue_to_packet_bridge_check.py` and `validation/fixtures/valid/issue_to_packet_bridge.valid.json`.
-
-## Blockers and remaining insufficient_evidence
-
-- Human review is mandatory.
-- Exact CI for the PR head is not observed in this local environment.
+- Project Gate runtime integration is not implemented by this Producer handoff.
+- Prompt 5 routing is not implemented by this Producer handoff.
+- Real browser evidence is not claimed.
 - Live responsive correctness is not claimed.
-- Prompt 5 integration is blocked by scope.
+- No downstream acceptance is claimed.
+- No production readiness is claimed.
+- Project Gate routing is not implemented in Responsive.
+- CI success is repository validation evidence only.
+- No evidence is invented or silently normalized.
 
+## Remaining insufficient_evidence
 
-## PR #142 workflow startup fix
+- Project Gate Prompt 4.5 must verify or accept remaining cross-repository evidence requirements.
+- Real browser evidence remains `insufficient_evidence`.
+- Live responsive correctness remains `insufficient_evidence`.
+- Production readiness remains unclaimed.
+- Prompt 5 integration remains blocked by scope.
 
-- Corrected `.github/workflows/verify-vendored-common-contract.yml` to use `lock_path`.
-- Removed unsupported `lock-file` and `vendored-contract` workflow inputs.
-- Replaced the custom Prompt 4 lock shape with the official `project-gate-common-contract-lock.v1` shape.
-- Stage Bundle v1 remains separate from the common contract lock.
-- CI on the new exact head must be observed before merge readiness can be green.
+## Prompt 5 consumption rule
 
-## PR #142 canonical contract correction
+`Project Gate may consume this handoff as normalized Producer evidence only after this normalization PR is merged and Project Gate Prompt 4.5 evidence repair verifies or accepts the remaining cross-repository evidence requirements.`
 
-- Replaced `contracts/project-gate/producer-gate-export.v1.schema.json` with the canonical Project Gate contract copy from commit `ea19c22c32458068e167b267da8b819e9263cdf7`.
-- Replaced `contracts/project-gate/common-contract-lock.v1.schema.json` with the canonical Project Gate common-lock schema shape.
-- Updated `validation/project_gate/validate_responsive_producer_adoption.py` to compute the actual vendored Producer Gate Export schema SHA-256 and require `c556bb9deeccdcafeb885a1c8b3dbd660e4e06f452b8ac3c7040d21377465fcc`.
-- Added local Stage Bundle `$ref` resolution for Producer Gate Export schema validation.
-- CI on a pushed exact head remains required before merge readiness can become green.
+## Files changed by this normalization
+
+```yaml
+files_changed:
+  - docs/handoffs/PROMPT-04_HANDOFF.md
+```
+
+## No-false-execution notes
+
+- Producer adoption was not rerun.
+- Runtime code was not modified.
+- Validators were not modified.
+- Schemas were not modified.
+- Fixtures were not modified.
+- Workflows were not modified.
