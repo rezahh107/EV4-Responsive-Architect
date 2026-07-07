@@ -1,7 +1,7 @@
 # Validation Command Index
 
 Task: `RTAQ-0003`
-Updated by: `RTAQ-0050`
+Updated by: `RTAQ-0051`
 
 This index lists repository validation commands for controlled manual use. Command success is repository-check evidence only; it is not responsive correctness evidence and does not authorize production, release, real pilot, export, live-render, accessibility, or pixel-validation claims.
 
@@ -24,6 +24,7 @@ python validation/e2e/run_responsive_tree_architecture_refactor_check.py
 python validation/e2e/run_submitted_packet_readiness_dry_run.py --self-test
 python validation/e2e/run_evidence_intake_check.py --self-test
 python validation/e2e/run_evidence_intake_submitted_mode_path_check.py
+python validation/e2e/run_evidence_intake_submitted_payload_hash_check.py
 python validation/e2e/run_evidence_intake_fixture_matrix_check.py
 python validation/e2e/run_pilot_readiness_check.py
 python validation/e2e/run_pilot_readiness_boundary_check.py
@@ -42,6 +43,8 @@ Use submitted mode only for an explicit non-default Issue #8 real-submission pac
 python validation/e2e/run_evidence_intake_check.py --self-test
 python validation/e2e/run_evidence_intake_check.py --packet issue-8/evidence_intake_packet.submitted.json --submitted-mode
 python validation/e2e/run_evidence_intake_submitted_mode_path_check.py
+python validation/e2e/run_evidence_intake_submitted_payload_hash_check.py
+python validation/e2e/run_evidence_intake_submitted_payload_hash_check.py --packet issue-8/evidence_intake_packet.submitted.json
 python validation/e2e/run_evidence_intake_fixture_matrix_check.py
 ```
 
@@ -97,7 +100,7 @@ The commands can be used to inspect deterministic repository behavior:
 - responsive-tree architecture contracts, schema, and route fixtures
 - invalid fixture rejection
 - submitted-packet eligibility failure modes
-- submitted evidence source-kind, completeness, readiness-status, artifact-path, submitted-mode, Issue #8 identity, and privacy guard behavior
+- submitted evidence source-kind, completeness, readiness-status, artifact-path, submitted-mode, payload-hash, Issue #8 identity, and privacy guard behavior
 - pilot readiness report generation boundaries
 - task quality-gate policy shape and required boundary assertions
 - queue, ledger, control-state, and STATUS checkpoint discipline
