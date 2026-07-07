@@ -1,0 +1,59 @@
+{
+  "$id": "https://ev4.local/schemas/stage-bundle/stage-bundle.v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "bundle_id": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "evidence": {
+      "minItems": 1,
+      "type": "array"
+    },
+    "evidence_status": {
+      "enum": [
+        "complete",
+        "insufficient_evidence"
+      ]
+    },
+    "missing_evidence": {
+      "type": "array"
+    },
+    "payload": {
+      "type": "object"
+    },
+    "payload_schema": {
+      "type": "object"
+    },
+    "produced_by": {
+      "type": "object"
+    },
+    "provenance": {
+      "type": "object"
+    },
+    "schema_version": {
+      "const": "stage-evidence-bundle.v1"
+    },
+    "stage": {
+      "const": "responsive"
+    },
+    "synthetic": {
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "schema_version",
+    "bundle_id",
+    "stage",
+    "payload_schema",
+    "produced_by",
+    "evidence_status",
+    "payload",
+    "evidence",
+    "provenance",
+    "synthetic"
+  ],
+  "title": "EV4 Stage Evidence Bundle v1",
+  "type": "object"
+}

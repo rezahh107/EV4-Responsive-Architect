@@ -50,6 +50,11 @@ REQUIRED_FILES = [
     ROOT / 'stages/11_RESPONSIVE_FINAL_REVIEW.md',
     ROOT / 'stages/12_RESPONSIVE_OUTPUT_PACKAGE.md',
     SCHEMA,
+    ROOT / 'manifests/ev4-responsive-pipeline-manifest.v1.json',
+    ROOT / 'schemas/ev4-responsive-stage-payload.v1.schema.json',
+    ROOT / 'schemas/ev4-responsive-viewport-source-ledger.v1.schema.json',
+    ROOT / 'contracts/project-gate/producer-gate-export.v1.lock.json',
+    ROOT / 'registries/breakpoint-profiles.v1.json',
     *VALID_FIXTURES,
     *INVALID_FIXTURES,
 ]

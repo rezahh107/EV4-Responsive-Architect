@@ -1,0 +1,73 @@
+{
+  "manifest_id": "ev4-responsive-producer-pipeline-manifest",
+  "modes": [
+    {
+      "id": "design_to_responsive_tree",
+      "stage_sequence": [
+        "architect_baseline_intake",
+        "builder_responsive_intake",
+        "viewport_source_ledger",
+        "relationship_classification",
+        "strategy_routing",
+        "route_specific_output",
+        "display_contract",
+        "content_accessibility_duplication_gate",
+        "responsive_output_package",
+        "responsive_stage_payload",
+        "producer_gate_export"
+      ]
+    },
+    {
+      "id": "responsive_repair",
+      "stage_sequence": [
+        "builder_responsive_intake",
+        "viewport_source_ledger",
+        "responsive_failure_map",
+        "repair_ownership",
+        "atomic_repair_plan",
+        "architecture_mutation_veto",
+        "responsive_final_audit",
+        "responsive_stage_payload",
+        "producer_gate_export"
+      ]
+    }
+  ],
+  "producer": "responsive",
+  "project_gate_pin": {
+    "acquisition_mode": "producer_emitted_gate_artifact",
+    "commit_sha": "ea19c22c32458068e167b267da8b819e9263cdf7",
+    "producer_gate_export_sha256": "c556bb9deeccdcafeb885a1c8b3dbd660e4e06f452b8ac3c7040d21377465fcc",
+    "silent_fallback_allowed": false,
+    "stage_bundle_sha256": "fc1ec6d3f7aecbabaeb0a3455d9eb42788779d2fa1531e8c7b2cb3bde706a886"
+  },
+  "prompt_5_handoff_block": {
+    "final_project_gate_acceptance": "not_implemented",
+    "human_review_required": true,
+    "project_gate_routing": "not_implemented"
+  },
+  "repository": "rezahh107/EV4-Responsive-Architect",
+  "rules": [
+    "Classify first.",
+    "Route second.",
+    "Generate responsive tree or overrides third.",
+    "Validate only with matching viewport evidence.",
+    "Export machine truth last."
+  ],
+  "schema": "ev4-responsive-pipeline-manifest@1.0.0",
+  "separation": {
+    "control_plane": [
+      "human_review_gate",
+      "prompt_5_handoff_block"
+    ],
+    "project_stage": [
+      "responsive_stage_payload",
+      "producer_gate_export"
+    ],
+    "validation_track": [
+      "viewport_source_ledger",
+      "evidence_isolation",
+      "schema_validation"
+    ]
+  },
+  "version": "1.0.0"
+}

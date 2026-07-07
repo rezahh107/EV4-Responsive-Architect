@@ -1,0 +1,131 @@
+{
+  "$id": "https://ev4-responsive.local/schemas/ev4-responsive-stage-payload.v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "architecture_identity": {
+      "additionalProperties": false,
+      "properties": {
+        "mutation_veto_applied": {
+          "const": true
+        },
+        "preserved": {
+          "const": true
+        },
+        "source_refs": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "type": "array"
+        }
+      },
+      "required": [
+        "preserved",
+        "source_refs",
+        "mutation_veto_applied"
+      ],
+      "type": "object"
+    },
+    "breakpoint_profile": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "classification": {
+      "type": "object"
+    },
+    "evidence_boundary": {
+      "properties": {
+        "ci_success_is_responsive_correctness": {
+          "const": false
+        }
+      },
+      "required": [
+        "ci_success_is_responsive_correctness"
+      ],
+      "type": "object"
+    },
+    "human_review": {
+      "properties": {
+        "required": {
+          "const": true
+        }
+      },
+      "required": [
+        "required"
+      ],
+      "type": "object"
+    },
+    "mode": {
+      "enum": [
+        "design_to_responsive_tree",
+        "responsive_repair"
+      ]
+    },
+    "outputs": {
+      "minItems": 1,
+      "type": "array"
+    },
+    "payload_id": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "routing": {
+      "type": "object"
+    },
+    "schema": {
+      "const": "ev4-responsive-stage-payload@1.0.0"
+    },
+    "viewport_source_ledger": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "evidence_ref": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "evidence_status": {
+            "enum": [
+              "provided",
+              "insufficient_evidence"
+            ]
+          },
+          "proves_only_viewport": {
+            "const": true
+          },
+          "viewport": {
+            "enum": [
+              "desktop",
+              "tablet",
+              "mobile"
+            ]
+          }
+        },
+        "required": [
+          "viewport",
+          "evidence_ref",
+          "evidence_status",
+          "proves_only_viewport"
+        ],
+        "type": "object"
+      },
+      "minItems": 1,
+      "type": "array"
+    }
+  },
+  "required": [
+    "schema",
+    "payload_id",
+    "mode",
+    "architecture_identity",
+    "viewport_source_ledger",
+    "breakpoint_profile",
+    "classification",
+    "routing",
+    "outputs",
+    "evidence_boundary",
+    "human_review"
+  ],
+  "title": "EV4 Responsive Stage Payload v1",
+  "type": "object"
+}

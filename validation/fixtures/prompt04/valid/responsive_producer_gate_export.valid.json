@@ -1,0 +1,158 @@
+{
+  "acquisition_mode": {
+    "mode": "producer_emitted_gate_artifact",
+    "silent_fallback_allowed": false
+  },
+  "export_id": "responsive-export-valid-001",
+  "final_stage_bundle": {
+    "bundle_id": "responsive-stage-bundle-valid-001",
+    "evidence": [
+      {
+        "artifact_hash": {
+          "algorithm": "sha256",
+          "scope": "file_bytes",
+          "value": "0000000000000000000000000000000000000000000000000000000000000000"
+        },
+        "description": "synthetic Prompt 4 fixture",
+        "id": "fixture",
+        "kind": "fixture",
+        "source": {
+          "reference": "validation/fixtures/prompt04/valid/responsive_stage_payload.valid.json",
+          "type": "synthetic_fixture"
+        },
+        "state": "validated"
+      }
+    ],
+    "evidence_status": "insufficient_evidence",
+    "missing_evidence": [
+      {
+        "id": "live-render",
+        "owner": "human_review",
+        "reason": "fixture has no real viewport render"
+      }
+    ],
+    "payload": {
+      "data": {
+        "architecture_identity": {
+          "mutation_veto_applied": true,
+          "preserved": true,
+          "source_refs": [
+            "architect-baseline-001"
+          ]
+        },
+        "breakpoint_profile": "elementor_v4_default_unverified",
+        "classification": {
+          "relationship": "same_section_adaptation"
+        },
+        "evidence_boundary": {
+          "ci_success_is_responsive_correctness": false
+        },
+        "human_review": {
+          "required": true
+        },
+        "mode": "design_to_responsive_tree",
+        "outputs": [
+          {
+            "artifact_ref": "responsive_output_same_tree.valid.json",
+            "kind": "override_plan"
+          }
+        ],
+        "payload_id": "rsp-valid-001",
+        "routing": {
+          "route": "same_tree_responsive_overrides"
+        },
+        "schema": "ev4-responsive-stage-payload@1.0.0",
+        "viewport_source_ledger": [
+          {
+            "evidence_ref": "desktop-shot",
+            "evidence_status": "provided",
+            "proves_only_viewport": true,
+            "viewport": "desktop"
+          },
+          {
+            "evidence_ref": "mobile-shot",
+            "evidence_status": "provided",
+            "proves_only_viewport": true,
+            "viewport": "mobile"
+          }
+        ]
+      },
+      "schema_id": "ev4-responsive-stage-payload@1.0.0"
+    },
+    "payload_schema": {
+      "id": "ev4-responsive-stage-payload",
+      "owner_repository": "rezahh107/EV4-Responsive-Architect",
+      "version": "1.0.0"
+    },
+    "produced_by": {
+      "commit_sha": "0000000000000000000000000000000000000000",
+      "ref": "project-gate-prompt-04-responsive-producer-adoption",
+      "repository": "rezahh107/EV4-Responsive-Architect"
+    },
+    "provenance": {
+      "created_by": "prompt04-validator",
+      "source": "synthetic_fixture"
+    },
+    "schema_version": "stage-evidence-bundle.v1",
+    "stage": "responsive",
+    "synthetic": true
+  },
+  "handoff": {
+    "allowed": false,
+    "blocking_diagnostics": [],
+    "failure_reasons": [
+      {
+        "id": "human_review_required"
+      }
+    ],
+    "status": "insufficient_evidence",
+    "target": "EV4-Project-Gate Prompt 5",
+    "unresolved_evidence": [
+      {
+        "id": "live_render"
+      }
+    ]
+  },
+  "pipeline_id": "ev4-responsive-producer-pipeline-manifest",
+  "producer": {
+    "commit_sha": "0000000000000000000000000000000000000000",
+    "ref": "project-gate-prompt-04-responsive-producer-adoption",
+    "repository": "rezahh107/EV4-Responsive-Architect",
+    "stage": "responsive"
+  },
+  "run_id": "prompt04-fixture-run",
+  "schema_version": "producer-gate-export.v1",
+  "stage_manifest": [
+    {
+      "blockers": [],
+      "mandatory": true,
+      "ordinal": 1,
+      "output": {
+        "present": true
+      },
+      "stage_id": "responsive_stage_payload",
+      "stage_version": "1.0.0",
+      "status": "complete",
+      "unknowns": []
+    },
+    {
+      "blockers": [],
+      "mandatory": true,
+      "ordinal": 2,
+      "output": {
+        "present": true
+      },
+      "stage_id": "producer_gate_export",
+      "stage_version": "1.0.0",
+      "status": "complete",
+      "unknowns": []
+    }
+  ],
+  "validation": {
+    "diagnostics": [],
+    "schema_valid": true,
+    "semantic_valid": true,
+    "validator_id": "ev4-producer-gate-export-validator",
+    "validator_version": "1.0.0"
+  }
+}

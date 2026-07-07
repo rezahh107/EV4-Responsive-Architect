@@ -188,3 +188,51 @@ manual_same_head_recovery:
   required_inputs: [ref, expected_sha]
   exact_sha_required: true
 ```
+
+## Project Gate Prompt 04 Responsive Producer Adoption
+
+```yaml
+prompt_04_responsive_producer_adoption:
+  status: pending_merge
+  branch: project-gate-prompt-04-responsive-producer-adoption
+  pipeline_manifest: manifests/ev4-responsive-pipeline-manifest.v1.json
+  responsive_stage_payload_schema: schemas/ev4-responsive-stage-payload.v1.schema.json
+  viewport_source_ledger_schema: schemas/ev4-responsive-viewport-source-ledger.v1.schema.json
+  breakpoint_registry: registries/breakpoint-profiles.v1.json
+  producer_gate_export_schema: contracts/project-gate/producer-gate-export.v1.schema.json
+  vendored_contract_lock: contracts/project-gate/producer-gate-export.v1.lock.json
+  stage_bundle_v1_reference: schemas/project-gate/stage-bundle.v1.schema.json
+  acquisition_mode: producer_emitted_gate_artifact
+  silent_fallback_allowed: false
+  human_review_required: true
+  prompt_5_project_gate_routing: not_implemented
+  responsive_correctness: not_claimed
+```
+
+## PR #142 verification workflow blocker fix
+
+```yaml
+pr_142_verification_workflow_fix:
+  status: pending_ci_observation
+  workflow_caller_input: lock_path
+  unsupported_inputs_removed: [lock-file, vendored-contract]
+  lock_schema: project-gate-common-contract-lock.v1
+  lock_shape: official_project_gate_common_contract_lock
+  stage_bundle_common_lock_coverage: false
+  human_review_required: true
+```
+
+## PR #142 canonical vendored contract correction
+
+```yaml
+pr_142_canonical_contract_correction:
+  status: pending_push_and_ci_observation
+  producer_gate_export_schema: exact_canonical_project_gate_copy
+  producer_gate_export_schema_sha256: c556bb9deeccdcafeb885a1c8b3dbd660e4e06f452b8ac3c7040d21377465fcc
+  common_lock_schema: exact_canonical_project_gate_copy
+  local_validator_checks_actual_vendored_schema_hash: true
+  local_validator_resolves_stage_bundle_ref_locally: true
+  verify_vendored_project_gate_common_contract: not_observed_on_new_head
+  validate: not_observed_on_new_head
+  human_review_required: true
+```
