@@ -85,7 +85,7 @@ def _has_malformed_digest(data: dict[str, object]) -> bool:
         digests.append(project_gate.get("gate_hash"))
     if isinstance(builder_output, dict):
         digests.append(builder_output.get("artifact_hash"))
-    return any(isinstance(digest, str) and not SHA256_DIGEST_PATTERN.fullmatch(digest) for digest in digests)
+    return any(not isinstance(digest, str) or not SHA256_DIGEST_PATTERN.fullmatch(digest) for digest in digests)
 
 
 def _reason_requires_denied_intake(reason: object) -> bool:
@@ -102,7 +102,7 @@ def _assert_quality_debt_register() -> None:
     debts = register.get("quality_debts")
     if not isinstance(debts, list):
         raise AssertionError("quality debt register must list quality_debts")
-    
+
     debt_by_id = {}
     for debt in debts:
         if not isinstance(debt, dict):
@@ -157,6 +157,8 @@ def _assert_invalid_fixture_semantics(data: dict[str, object], path: Path) -> No
     decision = _decision(data, path)
     intake_allowed = decision.get("intake_allowed")
     reason = decision.get("reason")
+    if not isinstance(reason, str):
+        raise AssertionError(f"{path.relative_to(ROOT)} decision reason must be a string")
 
     if path.name == "builder_responsive_input_malformed_hash.invalid.json" and intake_allowed is not False:
         raise AssertionError(f"{path.relative_to(ROOT)} malformed-hash fixture must keep intake_allowed=false")
