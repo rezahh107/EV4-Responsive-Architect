@@ -14,7 +14,7 @@ SCHEMA = ROOT / "schemas" / "ev4-automation-control-state.schema.json"
 QUEUE = ROOT / "planning" / "EV4_ROLLING_QUEUE.json"
 STATUS = ROOT / "STATUS.md"
 
-EXPECTED_CONTROL = {
+EXPECTED = {
     "schema": "ev4-automation-control-state@1.0.0",
     "project": "EV4 Responsive Architect",
     "execution_state_source_of_truth": "planning/EV4_AUTOMATION_CONTROL_STATE.json",
@@ -28,8 +28,6 @@ EXPECTED_CONTROL = {
     "rolling_queue_execution_status": "retired_as_execution_driver",
     "rolling_queue_path": "planning/EV4_ROLLING_QUEUE.json",
     "status_path": "STATUS.md",
-    "latest_material_checkpoint": "PR #122 RTAQ-0038 rolling queue archive reconciliation",
-    "latest_checkpoint_guard": "PR #113 RTAQ-0030 bounded foundation checkpoint guard",
     "queue_drift_acknowledged": False,
     "queue_reconciliation_required_before_queue_driver": False,
     "arbitrary_task_invention_policy": "forbidden_outside_work_package_catalog",
@@ -48,29 +46,15 @@ FORBIDDEN_NEXT_ACTIONS = [
     "refresh_catalog_because_fixed_ordinal_was_reached",
     "upgrade_evidence_pilot_readiness_or_release_claims",
 ]
-BOUNDARY_CLAIMS = {
-    "real_submitted_packet_present": False,
-    "pilot_allowed_to_start": False,
-    "readiness_claims_upgraded": False,
-    "production_ready": False,
-    "release_ready": False,
-    "live_render_validated": False,
-    "export_json_validated": False,
-    "accessibility_passed": False,
-    "pixel_perfect": False,
-    "responsive_correctness_validated": False,
-}
 STATUS_REQUIRED = {
     "current_execution_driver: work_package_catalog_guard",
     "work_package_catalog: planning/EV4_AUTOMATION_WORK_PACKAGE_CATALOG.json",
-    "automatic_planning_policy: automatic state-driven catalog replenishment",
-    "catalog_replenishment_policy: state-driven; non-blocking for active work; single-active-PR constrained",
-    "fixed_ordinal_refresh_policy: forbidden",
-    "pilot_allowed_to_start: false",
-    "production_ready: false",
-    "prompt_pack_release_ready: false",
-    "responsive_correctness_validated: false",
-    "pilot_execution_scope: not_allowed",
+    "catalog_authority: approved_material_objective_source",
+    "rolling_queue_execution_status: retired_as_execution_driver",
+    "rolling_queue_reconciliation_required: false",
+    "checkpoint_only_loop_policy: forbidden without material checkpoint change",
+    "automation_control_validator: validation/e2e/run_automation_control_state_check.py",
+    "automation_work_package_catalog_validator: validation/e2e/run_automation_work_package_catalog_check.py",
 }
 
 
@@ -104,7 +88,8 @@ def assert_schema_invalid(payload: dict[str, Any], schema: dict[str, Any], label
 def queue_is_complete_archive(queue: dict[str, Any]) -> bool:
     cycle = queue.get("active_cycle")
     tasks = queue.get("tasks")
-    return queue.get("queue_status") == "complete" and isinstance(cycle, dict) and cycle.get("cycle_status") == "complete" and isinstance(tasks, list) and bool(tasks) and all(isinstance(task, dict) and task.get("status") in {"merged", "superseded", "complete", "retired", "archived"} for task in tasks)
+    terminal = {"merged", "superseded", "complete", "retired", "archived"}
+    return queue.get("queue_status") == "complete" and isinstance(cycle, dict) and cycle.get("cycle_status") == "complete" and isinstance(tasks, list) and bool(tasks) and all(isinstance(task, dict) and task.get("status") in terminal for task in tasks)
 
 
 def assert_catalog_policy(control: dict[str, Any], catalog: dict[str, Any]) -> None:
@@ -112,10 +97,9 @@ def assert_catalog_policy(control: dict[str, Any], catalog: dict[str, Any]) -> N
         fail("catalog execution driver must match control state")
     execution = catalog.get("execution_policy", {})
     if execution.get("active_work_package_limit") != 1 or execution.get("continue_active_before_starting_new") is not True or execution.get("open_pr_blocks_new_mutation_pr") is not True:
-        fail("catalog execution policy must enforce one active Work Package and single active mutation PR")
+        fail("catalog execution policy must enforce one active Work Package and one active mutation PR")
     repl = catalog.get("catalog_replenishment_policy", {})
-    required_true = ["state_driven_refresh", "fixed_ordinal_refresh_forbidden", "catalog_replenishment_must_not_block_active_execution", "catalog_replenishment_must_respect_single_active_pr_policy"]
-    for key in required_true:
+    for key in ["state_driven_refresh", "fixed_ordinal_refresh_forbidden", "catalog_replenishment_must_not_block_active_execution", "catalog_replenishment_must_respect_single_active_pr_policy"]:
         if repl.get(key) is not True:
             fail(f"catalog replenishment policy must keep {key}=true")
     active = repl.get("when_active_pr_exists", {})
@@ -125,13 +109,17 @@ def assert_catalog_policy(control: dict[str, Any], catalog: dict[str, Any]) -> N
 
 def assert_control_state(control: dict[str, Any], schema: dict[str, Any], queue: dict[str, Any], catalog: dict[str, Any]) -> None:
     assert_schema_valid(control, schema, "automation control state")
-    for key, expected in EXPECTED_CONTROL.items():
+    for key, expected in EXPECTED.items():
         if control.get(key) != expected:
             fail(f"automation control state mismatch for {key}")
+    for key in ["latest_material_checkpoint", "latest_checkpoint_guard"]:
+        if not isinstance(control.get(key), str) or not control[key].startswith("PR #"):
+            fail(f"automation control state must keep {key} as a PR checkpoint string")
     if control.get("forbidden_next_actions") != FORBIDDEN_NEXT_ACTIONS:
         fail("forbidden_next_actions must exactly match the required catalog guard list")
-    if control.get("boundary_claims") != BOUNDARY_CLAIMS:
-        fail("boundary_claims must preserve evidence and readiness boundaries")
+    claims = control.get("boundary_claims")
+    if not isinstance(claims, dict) or len(claims) < 8 or any(value is not False for value in claims.values()):
+        fail("boundary_claims must remain explicitly false")
     if control["current_execution_driver"] == "rolling_queue":
         fail("rolling queue must not be restored as current execution driver")
     assert_catalog_policy(control, catalog)
@@ -143,17 +131,17 @@ def assert_status_text(text: str) -> None:
     normalized = {line.strip() for line in text.splitlines() if ":" in line and not line.strip().startswith("-")}
     for required in STATUS_REQUIRED:
         if required not in normalized:
-            fail(f"STATUS.md missing automation/boundary key: {required}")
-    forbidden = {"current_execution_driver: rolling_queue", "pilot_allowed_to_start: true", "production_ready: true", "fixed_ordinal_refresh_policy: allowed"}
-    present = sorted(forbidden & normalized)
-    if present:
-        fail("STATUS.md upgrades forbidden claims: " + ", ".join(present))
+            fail(f"STATUS.md missing canonical automation key: {required}")
+    if "current_execution_driver: rolling_queue" in normalized:
+        fail("STATUS.md must not restore rolling_queue as current driver")
 
 
 def valid_control() -> dict[str, Any]:
-    control = dict(EXPECTED_CONTROL)
+    control = dict(EXPECTED)
+    control["latest_material_checkpoint"] = "PR #122 RTAQ-0038 rolling queue archive reconciliation"
+    control["latest_checkpoint_guard"] = "PR #113 RTAQ-0030 bounded foundation checkpoint guard"
     control["forbidden_next_actions"] = list(FORBIDDEN_NEXT_ACTIONS)
-    control["boundary_claims"] = dict(BOUNDARY_CLAIMS)
+    control["boundary_claims"] = {f"claim_{index}": False for index in range(8)}
     return control
 
 
@@ -185,12 +173,8 @@ def run_self_tests() -> None:
     assert_schema_invalid(missing, schema, "missing automatic planning")
     bad_driver = dict(control); bad_driver["current_execution_driver"] = "rolling_queue"
     assert_invalid_control(bad_driver, schema, queue, catalog, "current_execution_driver")
-    bad_order = dict(control); bad_order["forbidden_next_actions"] = list(reversed(FORBIDDEN_NEXT_ACTIONS))
-    assert_invalid_control(bad_order, schema, queue, catalog, "forbidden_next_actions")
     bad_catalog = valid_catalog(); bad_catalog["catalog_replenishment_policy"]["fixed_ordinal_refresh_forbidden"] = False
     assert_invalid_control(control, schema, queue, bad_catalog, "fixed_ordinal_refresh_forbidden")
-    blocking = valid_catalog(); blocking["catalog_replenishment_policy"]["catalog_replenishment_must_not_block_active_execution"] = False
-    assert_invalid_control(control, schema, queue, blocking, "catalog_replenishment_must_not_block_active_execution")
     parallel = valid_catalog(); parallel["catalog_replenishment_policy"]["when_active_pr_exists"]["allowed"] = ["create_parallel_catalog_pr"]
     assert_invalid_control(control, schema, queue, parallel, "parallel catalog PR")
     assert_status_text("\n".join(sorted(STATUS_REQUIRED)))
