@@ -4,13 +4,13 @@
   "project_gate_ref": {
     "gate_id": "pg-001",
     "gate_status": "verified",
-    "gate_hash": "sha256:project-gate"
+    "gate_hash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
   },
   "selected_candidate_id": "candidate-a",
   "builder_output_ref": {
     "output_id": "builder-output-001",
     "artifact_ref": "artifacts/builder/output.json",
-    "artifact_hash": "sha256:builder-output"
+    "artifact_hash": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
   },
   "builder_evidence": {
     "action_batch_ref": "evidence/builder/action-batch.json",
@@ -27,5 +27,14 @@
     "reason": "Mobile evidence is missing, so Builder to Responsive intake remains blocked.",
     "claim_boundary": "input eligibility only; not responsive correctness evidence"
   },
-  "forbidden_claims": ["production_ready"]
+  "forbidden_claims": [
+    "production_ready",
+    "release_ready",
+    "pixel_perfect",
+    "live_render_validated",
+    "export_json_validated",
+    "accessibility_passed",
+    "responsive_correctness_validated",
+    "ci_success_as_frontend_evidence"
+  ]
 }
