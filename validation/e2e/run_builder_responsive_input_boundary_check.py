@@ -132,7 +132,7 @@ def _assert_blocked_viewport_fixture(data: dict[str, object], path: Path) -> Non
     blocked = []
     for viewport in ("desktop", "tablet", "mobile"):
         evidence = viewport_evidence.get(viewport)
-        if isinstance(evidence, dict) and evidence.get("evidence_status") != "provided":
+        if not isinstance(evidence, dict) or evidence.get("evidence_status") != "provided":
             blocked.append(viewport)
     if not blocked:
         raise AssertionError(f"{path.relative_to(ROOT)} must exercise at least one non-provided viewport")
@@ -266,7 +266,11 @@ def main() -> int:
             _assert_invalid_fixture_semantics(data, fixture)
             try:
                 validator.validate(data)
-            except jsonschema.exceptions.ValidationError:
+            except jsonschema.exceptions.ValidationError as err:
+                if fixture.name in SCHEMA_VALID_NEGATIVE_FIXTURE_NAMES:
+                    raise AssertionError(
+                        f"Schema-valid negative fixture failed schema validation: {fixture.relative_to(ROOT)}"
+                    ) from err
                 continue
             if fixture.name in SCHEMA_VALID_NEGATIVE_FIXTURE_NAMES:
                 continue
