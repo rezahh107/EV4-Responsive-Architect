@@ -4,13 +4,13 @@
   "project_gate_ref": {
     "gate_id": "pg-001",
     "gate_status": "blocked",
-    "gate_hash": "sha256:project-gate"
+    "gate_hash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
   },
   "selected_candidate_id": "candidate-a",
   "builder_output_ref": {
     "output_id": "builder-output-001",
     "artifact_ref": "artifacts/builder/output.json",
-    "artifact_hash": "sha256:builder-output"
+    "artifact_hash": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
   },
   "builder_evidence": {
     "action_batch_ref": "evidence/builder/action-batch.json",
@@ -25,7 +25,7 @@
   },
   "responsive_intake_decision": {
     "intake_allowed": false,
-    "reason": "A non-verified Project Gate keeps Responsive intake disabled.",
+    "reason": "A non-verified Project Gate must not allow Responsive intake.",
     "claim_boundary": "input eligibility only; not responsive correctness evidence"
   },
   "forbidden_claims": [
