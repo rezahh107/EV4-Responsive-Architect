@@ -120,6 +120,7 @@ controlled_use_docs:
   - docs/42_PILOT_READINESS_VALIDATE_CHAIN_RTAQ_0036.md
   - docs/43_CONTROL_CHECKPOINT_RECONCILIATION_RTAQ_0037.md
   - docs/44_CONTROL_STATE_POST_QUEUE_RECONCILIATION_RTAQ_0039.md
+  - docs/45_SHADOW_MODE_PREPARATION_PATH_RTAQ_0040.md
   - docs/AUTOMATION_WORK_PACKAGE_CATALOG.md
 ```
 
@@ -167,6 +168,8 @@ readiness_claims_upgraded: false
 ci_success_claim_boundary: repository checks only; not responsive correctness evidence
 issue_8_status: draft_evidence_pending
 pilot_execution_scope: not_allowed
+shadow_mode_preparation_path: docs/45_SHADOW_MODE_PREPARATION_PATH_RTAQ_0040.md
+shadow_mode_preparation_status: planning_only_blocked_without_real_submitted_packet
 live_render_validated: false
 export_json_validated: false
 accessibility_passed: false
