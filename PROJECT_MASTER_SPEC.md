@@ -5,7 +5,7 @@ Status: responsive_tree_architecture_active_on_main
 Production status: not_production_ready  
 Language: Persian reports, English technical identifiers  
 Target platform: Elementor V4  
-Execution model: classification-first, route-gated, builder-handoff-oriented, evidence-bounded
+Execution model: classification-first, route-gated, builder-handoff-oriented, catalog-backed, evidence-bounded
 
 ---
 
@@ -22,6 +22,8 @@ Secondary mode: responsive_repair
 
 The system runs after the main `EV4 Architect` pipeline has produced an approved desktop/section architecture and build tree. Its job is to classify the relationship between desktop and responsive evidence, choose a safe Elementor route, produce a builder handoff, and plan validation without overstating evidence.
 
+Automation objective selection is controlled by the Work Package Catalog, not by the retired rolling queue execution driver.
+
 ---
 
 ## 1. Active Source of Truth
@@ -37,22 +39,19 @@ active_contracts:
   - contracts/EV4_RESPONSIVE_HANDOFF_EXPORT_CONTRACT.md
 active_schema:
   - schemas/ev4-responsive-output.schema.json
+  - schemas/ev4-automation-control-state.schema.json
+  - schemas/ev4-automation-work-package-catalog.schema.json
 active_validation:
   - validation/e2e/run_responsive_tree_architecture_refactor_check.py
   - validation/e2e/run_submitted_packet_eligibility_gate_check.py
   - validation/e2e/run_task_quality_gate_check.py
-controlled_use_docs:
-  - docs/15_CONTROLLED_USE_READINESS_SNAPSHOT.md
-  - docs/16_CONTROLLED_MANUAL_FIRST_RUN_GUIDE.md
-  - docs/17_VALIDATION_COMMAND_INDEX.md
-  - docs/18_GUARDED_HANDOFF_PACK.md
-  - docs/19_REPOSITORY_DRIFT_AUDIT_RTAQ_0004.md
-  - docs/20_ACTIVE_CONTRACT_SCHEMA_VALIDATOR_INDEX.md
-  - docs/21_QUEUE_REFRESH_AUDIT_RTAQ_0005.md
-  - docs/22_MASTER_STATUS_DRIFT_CLOSURE_RTAQ_0006.md
-  - docs/23_EVIDENCE_BOUND_DOCUMENTATION_GUARD_RTAQ_0008.md
-  - docs/24_AUTOMATION_QUALITY_GATE_ENFORCEMENT_AUDIT_RTAQ_0009.md
-active_queue:
+  - validation/e2e/run_automation_control_state_check.py
+  - validation/e2e/run_automation_work_package_catalog_check.py
+automation_control_state:
+  - planning/EV4_AUTOMATION_CONTROL_STATE.json
+work_package_catalog:
+  - planning/EV4_AUTOMATION_WORK_PACKAGE_CATALOG.json
+historical_rolling_queue_archive:
   - planning/EV4_ROLLING_QUEUE.json
 active_run_ledger:
   - planning/EV4_RUN_LEDGER.json
@@ -68,6 +67,7 @@ active_run_ledger:
 - Meaningful content must not be removed from a viewport without explicit authorization.
 - Route selection is planning evidence, not validation evidence.
 - CI success or a merged PR is repository evidence only, not responsive correctness evidence.
+- Catalog completion or Work Package completion is not evidence validation.
 - Higher-readiness claims remain blocked without matching real evidence.
 - Issue #8 remains evidence-pending until a real submitted packet validates.
 - The real pilot remains blocked until submitted packet and readiness gates pass.
@@ -147,13 +147,13 @@ unresolved_requires_designer_input: blocked_pending_input
 
 ## 6. Current Machine-Checked Chain
 
-The automatic workflow installs validation dependencies and runs:
+The automatic workflow installs validation dependencies and runs the primary Validate chain listed in:
 
-```bash
-python validation/e2e/run_responsive_tree_architecture_refactor_check.py
+```text
+docs/17_VALIDATION_COMMAND_INDEX.md
 ```
 
-The checker covers:
+The checker coverage includes:
 
 ```text
 required responsive-tree docs/contracts/stages
@@ -163,24 +163,12 @@ valid route fixture acceptance
 invalid fixture rejection
 builder handoff step integrity
 route/mode consistency
-delegated RTAQ queue, ledger, task-quality, and submitted-packet eligibility checks
+catalog-backed Work Package selection discipline
+retired rolling-queue archive discipline
+run-ledger, task-quality, and submitted-packet eligibility checks
 ```
 
-Additional repository-check validators are active in the bounded RTAQ path:
-
-```bash
-python validation/e2e/run_submitted_packet_eligibility_gate_check.py
-python validation/e2e/run_task_quality_gate_check.py
-```
-
-The responsive-tree checker also delegates these queue-control validators:
-
-```bash
-python validation/e2e/run_rolling_queue_check.py
-python validation/e2e/run_run_ledger_check.py
-```
-
-All of these active and delegated validators harden repository contracts, submitted-packet eligibility, task quality-gate structure, queue discipline, and ledger discipline. They do not prove live render correctness, export validation, accessibility pass, pixel accuracy, production readiness, or release readiness.
+All active validators harden repository contracts, submitted-packet eligibility, task quality-gate structure, catalog-selection discipline, queue archive discipline, and ledger discipline. They do not prove live render correctness, export validation, accessibility pass, pixel accuracy, production readiness, or release readiness.
 
 The legacy run-ledger workflow is manual-only during this refactor path.
 
@@ -214,4 +202,5 @@ Route second.
 Generate tree or overrides third.
 Package builder handoff fourth.
 Plan validation without claiming validation fifth.
+Select automation work only from the Work Package Catalog.
 ```
