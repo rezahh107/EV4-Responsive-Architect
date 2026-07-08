@@ -48,7 +48,33 @@ one approved PR slice under one Work Package ID
 
 Never invent new `RTAQ-*` tasks, micro-tasks, guard-only tasks, checkpoint-only tasks, queue-depth reserve tasks, or unrelated objectives outside the catalog.
 
-Stop after one material objective slice.
+Stop after one material objective slice or one approved in-scope PR-reconciliation patch.
+
+## Catalog format rule
+
+`planning/EV4_AUTOMATION_WORK_PACKAGE_CATALOG.json` must remain durable and human-reviewable.
+
+When automation writes the catalog, serialize it in canonical readable JSON format:
+
+```text
+json.dumps(data, indent=2, ensure_ascii=False) + "\n"
+```
+
+Required catalog write behavior:
+
+```text
+preserve existing key order unless a deliberate schema migration requires otherwise
+use 2-space indentation
+write exactly one trailing newline
+keep UTF-8 text readable
+avoid compact/minified JSON
+avoid single-line object serialization
+avoid hidden normalization or unrelated reordering
+```
+
+Do not use `jq`, Prettier, or other external JSON formatting tools unless the repository deliberately adopts them and wires them into the same deterministic validation path.
+
+If catalog growth makes review diffs too large, do not silently flatten or compress the file. Defer the broad structural change and propose a separate catalog-split Work Package with an index file plus one file per Work Package, schema/validator reassembly checks, and no Work Package semantic changes.
 
 ## Catalog replenishment rule
 
