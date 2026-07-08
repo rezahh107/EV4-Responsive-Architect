@@ -105,8 +105,32 @@ REQUIREMENTS_TRUE = {
     "negative_fixture_coverage_when_applicable",
     "estimated_percentage_is_reporting_only",
 }
-MATERIAL_TERMS = ("schema", "validator", "ci", "fixture", "handoff", "submitted-mode", "boundary", "readiness", "catalog", "evidence", "contract", "quality")
-BAD_SELECTABLE_TERMS = ("checkpoint-only", "checkpoint only", "bookkeeping-only", "bookkeeping only", "status-only", "status only", "artificial reserve", "pending depth reserve", "keep task count", "keep queue depth")
+MATERIAL_TERMS = (
+    "schema",
+    "validator",
+    "ci",
+    "fixture",
+    "handoff",
+    "submitted-mode",
+    "boundary",
+    "readiness",
+    "catalog",
+    "evidence",
+    "contract",
+    "quality",
+)
+BAD_SELECTABLE_TERMS = (
+    "checkpoint-only",
+    "checkpoint only",
+    "bookkeeping-only",
+    "bookkeeping only",
+    "status-only",
+    "status only",
+    "artificial reserve",
+    "pending depth reserve",
+    "keep task count",
+    "keep queue depth",
+)
 FIXED_TERMS = ("every fifth", "fifth task", "after four tasks", "next four tasks", "fixed ordinal", "fixed count")
 REQUIRED_SPLIT_FORBIDDEN = {
     "invent_unrelated_rtaq_tasks",
@@ -138,6 +162,17 @@ def load_json(path: Path) -> dict[str, Any]:
     return payload
 
 
+def assert_canonical_readable_format(path: Path, payload: dict[str, Any]) -> None:
+    """Fail when the catalog is compact/minified or lacks the canonical trailing newline."""
+    actual = path.read_text(encoding="utf-8")
+    expected = json.dumps(payload, indent=2, ensure_ascii=False) + "\n"
+    if actual != expected:
+        fail(
+            f"{path.relative_to(ROOT)} must use canonical readable JSON format "
+            "(json.dumps(data, indent=2, ensure_ascii=False) plus one trailing newline)"
+        )
+
+
 def schema_errors(payload: dict[str, Any], schema: dict[str, Any]) -> list[str]:
     validator = Draft202012Validator(schema)
     errors = sorted(validator.iter_errors(payload), key=lambda error: [str(part) for part in error.path])
@@ -166,17 +201,19 @@ def text_blob(value: Any) -> str:
 
 
 def positive_blob(wp: dict[str, Any]) -> str:
-    return text_blob({
-        "title": wp["title"],
-        "current_state": wp["current_state"],
-        "target_state": wp["target_state"],
-        "measurable_current_state": wp["measurable_current_state"],
-        "measurable_target_state": wp["measurable_target_state"],
-        "target_capability": wp["target_capability"],
-        "expected_project_delta": wp["expected_project_delta"],
-        "allowed_work": wp["allowed_work"],
-        "must_deliver": wp["must_deliver"],
-    })
+    return text_blob(
+        {
+            "title": wp["title"],
+            "current_state": wp["current_state"],
+            "target_state": wp["target_state"],
+            "measurable_current_state": wp["measurable_current_state"],
+            "measurable_target_state": wp["measurable_target_state"],
+            "target_capability": wp["target_capability"],
+            "expected_project_delta": wp["expected_project_delta"],
+            "allowed_work": wp["allowed_work"],
+            "must_deliver": wp["must_deliver"],
+        }
+    )
 
 
 def assert_policy(catalog: dict[str, Any]) -> None:
@@ -213,7 +250,14 @@ def assert_policy(catalog: dict[str, Any]) -> None:
 
 def assert_boundaries(wp_id: str, wp: dict[str, Any]) -> None:
     evidence = wp["evidence_boundary"]
-    for key in ["submitted_evidence_created_by_package", "issue_8_mutation_allowed", "real_pilot_execution_allowed", "ci_success_is_domain_evidence", "merged_pr_is_domain_evidence", "catalog_completion_is_evidence_validation"]:
+    for key in [
+        "submitted_evidence_created_by_package",
+        "issue_8_mutation_allowed",
+        "real_pilot_execution_allowed",
+        "ci_success_is_domain_evidence",
+        "merged_pr_is_domain_evidence",
+        "catalog_completion_is_evidence_validation",
+    ]:
         if evidence.get(key) is not False:
             fail(f"{wp_id} must keep {key}=false")
     if evidence.get("claims_require_real_evidence_gates") is not True:
@@ -379,12 +423,16 @@ def run_self_tests() -> None:
     assert_invalid(bad_governance, schema, "selectable package cannot use governance")
     rolling_queue_driver = copy.deepcopy(valid); rolling_queue_driver["execution_driver"] = "rolling_queue"
     assert_schema_invalid(rolling_queue_driver, schema, "rolling queue driver")
+    compact_text = json.dumps(valid, separators=(",", ":")) + "\n"
+    if compact_text == json.dumps(valid, indent=2, ensure_ascii=False) + "\n":
+        fail("canonical format self-test fixture is invalid")
 
 
 def main() -> int:
     run_self_tests()
     schema = load_json(SCHEMA)
     catalog = load_json(CATALOG)
+    assert_canonical_readable_format(CATALOG, catalog)
     assert_catalog(catalog, schema)
     print("automation work package catalog check passed")
     return 0
