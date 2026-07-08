@@ -5,19 +5,1205 @@
   "catalog_status": "approved_material_objective_source",
   "execution_driver": "work_package_catalog_guard",
   "rolling_queue_authority": "historical_reconciled_archive",
-  "selection_policy": {"controller_must_select_from_catalog_only": true, "exactly_one_work_package_or_slice_per_run": true, "arbitrary_rtaq_task_invention_forbidden": true, "micro_task_invention_forbidden": true, "checkpoint_only_loop_forbidden": true, "artificial_reserve_tasks_forbidden": true, "guard_only_work_requires_named_work_package_unblock": true, "open_prs_must_be_reconciled_before_new_selection": true, "reviewable_pr_slices_required": true, "split_by_layer_under_same_work_package_id": true},
-  "execution_policy": {"active_work_package_limit": 1, "continue_active_before_starting_new": true, "reconcile_open_pr_before_new_mutation": true, "complete_same_objective_in_one_run_when_safe": true, "open_pr_blocks_new_mutation_pr": true},
-  "catalog_replenishment_policy": {"ready_work_package_target": 3, "refresh_when_ready_below": 2, "max_ready_work_packages": 5, "state_driven_refresh": true, "fixed_ordinal_refresh_forbidden": true, "artificial_work_packages_forbidden": true, "checkpoint_only_work_forbidden": true, "bookkeeping_only_work_forbidden": true, "catalog_replenishment_must_not_block_active_execution": true, "catalog_replenishment_must_respect_single_active_pr_policy": true, "catalog_changes_require_schema_validation": true, "catalog_changes_require_ci": true, "catalog_changes_require_reviewable_pr": true, "state_driven_triggers": ["ready_work_package_depth_below_threshold", "active_work_package_completed_and_project_state_changed", "material_blocker_changed_priorities", "core_contract_or_architecture_changed", "no_executable_work_package_exists_and_real_project_gap_detected"], "forbidden_refresh_triggers": ["fixed_task_ordinal_reached", "every_fifth_task", "after_four_tasks_create_next_four", "fixed_count_reached", "checkpoint_only_refresh", "bookkeeping_only_refresh"], "when_active_pr_exists": {"allowed": ["detect_catalog_depth", "report_replenishment_needed", "prepare_non_mutating_replenishment_plan", "update_catalog_only_if_in_scope_for_same_active_pr"], "forbidden": ["create_parallel_catalog_pr", "interrupt_active_work_package", "start_unrelated_catalog_mutation", "create_checkpoint_only_catalog_refresh_pr"]}, "when_no_active_pr_exists": {"allowed": ["continue_active_work_package", "select_next_ready_work_package", "create_catalog_replenishment_pr_if_ready_depth_below_threshold", "update_catalog_as_part_of_same_material_work_package_if_in_scope"]}},
-  "work_package_requirements": {"measurable_current_state_required": true, "measurable_target_state_required": true, "capability_level_outcome_required": true, "truth_boundaries_required": true, "acceptance_gates_required": true, "negative_fixture_coverage_when_applicable": true, "estimated_percentage_is_reporting_only": true},
-  "global_boundaries": {"submitted_evidence_created_by_catalog": false, "issue_8_mutation_allowed_by_catalog": false, "real_pilot_execution_allowed_by_catalog": false, "catalog_completion_is_evidence_validation": false, "ci_success_is_responsive_correctness_evidence": false, "production_ready": false, "release_ready": false, "live_render_validated": false, "export_json_validated": false, "accessibility_passed": false, "pixel_perfect": false, "responsive_correctness_validated": false},
+  "selection_policy": {
+    "controller_must_select_from_catalog_only": true,
+    "exactly_one_work_package_or_slice_per_run": true,
+    "arbitrary_rtaq_task_invention_forbidden": true,
+    "micro_task_invention_forbidden": true,
+    "checkpoint_only_loop_forbidden": true,
+    "artificial_reserve_tasks_forbidden": true,
+    "guard_only_work_requires_named_work_package_unblock": true,
+    "open_prs_must_be_reconciled_before_new_selection": true,
+    "reviewable_pr_slices_required": true,
+    "split_by_layer_under_same_work_package_id": true
+  },
+  "execution_policy": {
+    "active_work_package_limit": 1,
+    "continue_active_before_starting_new": true,
+    "reconcile_open_pr_before_new_mutation": true,
+    "complete_same_objective_in_one_run_when_safe": true,
+    "open_pr_blocks_new_mutation_pr": true
+  },
+  "catalog_replenishment_policy": {
+    "ready_work_package_target": 3,
+    "refresh_when_ready_below": 2,
+    "max_ready_work_packages": 5,
+    "state_driven_refresh": true,
+    "fixed_ordinal_refresh_forbidden": true,
+    "artificial_work_packages_forbidden": true,
+    "checkpoint_only_work_forbidden": true,
+    "bookkeeping_only_work_forbidden": true,
+    "catalog_replenishment_must_not_block_active_execution": true,
+    "catalog_replenishment_must_respect_single_active_pr_policy": true,
+    "catalog_changes_require_schema_validation": true,
+    "catalog_changes_require_ci": true,
+    "catalog_changes_require_reviewable_pr": true,
+    "state_driven_triggers": [
+      "ready_work_package_depth_below_threshold",
+      "active_work_package_completed_and_project_state_changed",
+      "material_blocker_changed_priorities",
+      "core_contract_or_architecture_changed",
+      "no_executable_work_package_exists_and_real_project_gap_detected"
+    ],
+    "forbidden_refresh_triggers": [
+      "fixed_task_ordinal_reached",
+      "every_fifth_task",
+      "after_four_tasks_create_next_four",
+      "fixed_count_reached",
+      "checkpoint_only_refresh",
+      "bookkeeping_only_refresh"
+    ],
+    "when_active_pr_exists": {
+      "allowed": [
+        "detect_catalog_depth",
+        "report_replenishment_needed",
+        "prepare_non_mutating_replenishment_plan",
+        "update_catalog_only_if_in_scope_for_same_active_pr"
+      ],
+      "forbidden": [
+        "create_parallel_catalog_pr",
+        "interrupt_active_work_package",
+        "start_unrelated_catalog_mutation",
+        "create_checkpoint_only_catalog_refresh_pr"
+      ]
+    },
+    "when_no_active_pr_exists": {
+      "allowed": [
+        "continue_active_work_package",
+        "select_next_ready_work_package",
+        "create_catalog_replenishment_pr_if_ready_depth_below_threshold",
+        "update_catalog_as_part_of_same_material_work_package_if_in_scope"
+      ]
+    }
+  },
+  "work_package_requirements": {
+    "measurable_current_state_required": true,
+    "measurable_target_state_required": true,
+    "capability_level_outcome_required": true,
+    "truth_boundaries_required": true,
+    "acceptance_gates_required": true,
+    "negative_fixture_coverage_when_applicable": true,
+    "estimated_percentage_is_reporting_only": true
+  },
+  "global_boundaries": {
+    "submitted_evidence_created_by_catalog": false,
+    "issue_8_mutation_allowed_by_catalog": false,
+    "real_pilot_execution_allowed_by_catalog": false,
+    "catalog_completion_is_evidence_validation": false,
+    "ci_success_is_responsive_correctness_evidence": false,
+    "production_ready": false,
+    "release_ready": false,
+    "live_render_validated": false,
+    "export_json_validated": false,
+    "accessibility_passed": false,
+    "pixel_perfect": false,
+    "responsive_correctness_validated": false
+  },
   "work_packages": {
-    "WP-RESP-001": {"id": "WP-RESP-001", "title": "Complete Issue #8 Submitted Evidence Intake Path", "capability_area": "evidence_intake", "current_state": "Draft evidence handling is guarded, but real submitted-mode packet path remains blocked because the real Issue #8 evidence source is absent or ambiguous.", "target_state": "A locally validated submitted-mode packet path exists for real Issue #8 attachments while pilot execution remains blocked.", "measurable_current_state": {"statement": "Draft evidence handling is guarded, but real submitted-mode packet path remains blocked because the real Issue #8 evidence source is absent or ambiguous.", "measurement": "Measured by submitted-mode validators, Issue #8 blockers, STATUS markers, and real evidence source presence.", "measurable": true}, "measurable_target_state": {"statement": "A locally validated submitted-mode packet path exists for real Issue #8 attachments while pilot execution remains blocked.", "measurement": "Accepted only when schema, fixtures, validator coverage, CI, docs, and boundary markers pass for submitted-mode packet handling.", "measurable": true}, "target_capability": {"statement": "Submitted-mode Issue #8 packet path is deterministic and locally checkable by schema, fixture, validator, CI, and documentation coverage.", "measurement": "Schema or fixture plus validator and CI-visible checks cover missing, malformed, sample, and real-path packet states.", "measurable": true}, "expected_project_delta": "Repository gains schema, fixture, validator, CI, and documentation support for a submitted-mode Issue #8 packet path without creating submitted evidence or changing Issue #8 state.", "selectable": true, "ready_state": "blocked", "priority": 10, "reporting": {"estimated_completion_percentage": 20, "estimated_percentage_is_reporting_only": true}, "allowed_work": ["Harden submitted-mode packet schema, fixtures, validator behavior, and CI-visible coverage.", "Document how real Issue #8 evidence must be supplied without automation mutating the issue."], "forbidden_work": ["Do not create submitted evidence unless explicitly authorized by the repository owner and current Issue #8 submitted-mode contracts.", "Do not mutate Issue #8 or mark Issue #8 evidence as satisfied.", "Do not run or authorize real pilot execution.", "Do not claim production_ready, release_ready, live_render_validated, export_json_validated, accessibility_passed, pixel_perfect, or responsive_correctness_validated.", "Do not treat CI success, merged PRs, catalog completion, Work Package completion, or queue completion as domain evidence."], "must_deliver": ["Submitted-mode path contract or fixture coverage where applicable.", "Deterministic validator coverage for missing, malformed, sample, and real-path packet states.", "Documentation that pilot execution remains blocked until real evidence and readiness gates pass."], "must_preserve": ["Rolling queue remains a historical reconciled archive, not the execution driver.", "Controller selection must come only from planning/EV4_AUTOMATION_WORK_PACKAGE_CATALOG.json.", "Quality gates, CI, review, and evidence boundaries remain mandatory.", "Technical evidence claims remain false unless real evidence gates pass.", "Catalog replenishment is state-driven and must not block active Work Package execution.", "Catalog replenishment must respect the single-active-mutation-PR policy."], "evidence_boundary": {"submitted_evidence_created_by_package": false, "issue_8_mutation_allowed": false, "real_pilot_execution_allowed": false, "ci_success_is_domain_evidence": false, "merged_pr_is_domain_evidence": false, "catalog_completion_is_evidence_validation": false, "claims_require_real_evidence_gates": true, "forbidden_claims_without_real_evidence": ["production_ready", "release_ready", "live_render_validated", "export_json_validated", "accessibility_passed", "pixel_perfect", "responsive_correctness_validated"]}, "readiness_boundary": {"pilot_allowed_to_start": false, "production_ready": false, "release_ready": false, "live_render_validated": false, "export_json_validated": false, "accessibility_passed": false, "pixel_perfect": false, "responsive_correctness_validated": false}, "definition_of_done": ["The measurable target state is met by schema-backed or validator-backed repository evidence.", "The selected PR slice remains reviewable and stays under this Work Package ID.", "No submitted evidence, Issue #8 mutation, pilot authorization, or forbidden readiness claim is produced by the Work Package."], "quality_gates": ["python validation/e2e/run_automation_work_package_catalog_check.py", "python validation/e2e/run_automation_control_state_check.py", "python validation/e2e/run_rolling_queue_check.py", "python validation/e2e/run_run_ledger_check.py", "python validation/e2e/run_task_quality_gate_check.py"], "split_rule": {"principle": "A Work Package may be large in objective, but each PR must remain reviewable.", "split_by": "implementation_layer_under_same_work_package_id", "requires_slice_id_prefix": "<WORK_PACKAGE_ID>/PR-", "forbidden_splits": ["invent_unrelated_rtaq_tasks", "guard_only_task_without_named_work_package_unblock", "checkpoint_only_pr_after_every_merge", "artificial_reserve_task_to_keep_task_count_high", "queue_refresh_loop_as_execution_driver", "fixed_ordinal_refresh"]}, "allowed_pr_slices": [{"slice_id": "WP-RESP-001/PR-A", "title": "schema and fixtures", "layer": "schema_fixtures", "objective": "Add or harden submitted-mode packet contracts and valid/invalid fixtures.", "review_boundary": "Reviewable PR slice under the same Work Package ID; no unrelated micro-objective may be introduced."}, {"slice_id": "WP-RESP-001/PR-B", "title": "validators and CI", "layer": "validator_ci", "objective": "Add deterministic validation and wire required checks into Validate.", "review_boundary": "Reviewable PR slice under the same Work Package ID; no unrelated micro-objective may be introduced."}, {"slice_id": "WP-RESP-001/PR-C", "title": "docs, STATUS, and integration", "layer": "docs_status", "objective": "Record the submitted-mode path and remaining evidence boundaries.", "review_boundary": "Reviewable PR slice under the same Work Package ID; no unrelated micro-objective may be introduced."}], "blocked_if": ["Issue #8 real-submission source is absent or ambiguous.", "The slice would create submitted evidence or mutate Issue #8 without explicit owner authorization."], "completion_record_requirements": ["Record selected Work Package ID and PR slice ID in the PR body.", "List files changed, validators changed, and CI commands run.", "State commands not run and why.", "Restate evidence/pilot/readiness/production/release/responsive-correctness boundaries.", "Record whether catalog replenishment was checked and whether it was non-mutating, same-PR in-scope, or blocked by single-active-PR policy.", "Record remaining risks and the next safe human action."], "unblocks_work_package_ids": []},
-    "WP-RESP-002": {"id": "WP-RESP-002", "title": "Complete Builder to Responsive Transition Boundary", "capability_area": "builder_responsive_boundary", "current_state": "Builder to Responsive handoff boundary was completed by PR #144, PR #147, and PR #148 with contract, fixture, validator, and STATUS alignment.", "target_state": "Builder and Project Gate to Responsive handoff is operationally clear, validation-backed, and explicitly not a responsive-correctness claim.", "measurable_current_state": {"statement": "Builder to Responsive handoff boundary was completed by PR #144, PR #147, and PR #148 with contract, fixture, validator, and STATUS alignment.", "measurement": "Measured by boundary contracts, schema, fixtures, validator diagnostics, STATUS, and command index coverage.", "measurable": true}, "measurable_target_state": {"statement": "Builder and Project Gate to Responsive handoff is operationally clear, validation-backed, and explicitly not a responsive-correctness claim.", "measurement": "Accepted when handoff contract, schema references, validator fixtures, and STATUS/docs all agree without claiming responsive correctness.", "measurable": true}, "target_capability": {"statement": "Builder and Project Gate to Responsive handoff boundary is deterministic and validation-backed without claiming live responsive correctness.", "measurement": "Contract, schema, fixtures, validator diagnostics, STATUS, and command index identify allowed and blocked handoff states.", "measurable": true}, "expected_project_delta": "Repository has a coherent Builder to Responsive handoff boundary with schema, validator, fixture, documentation, and STATUS traceability while preserving ownership boundaries.", "selectable": true, "ready_state": "completed", "priority": 20, "reporting": {"estimated_completion_percentage": 100, "estimated_percentage_is_reporting_only": true}, "allowed_work": ["Preserve the completed Builder and Project Gate handoff boundary and patch only regressions discovered by validators or review.", "Maintain boundary fixtures and diagnostics for allowed and blocked handoff states."], "forbidden_work": ["Do not create submitted evidence unless explicitly authorized by the repository owner and current Issue #8 submitted-mode contracts.", "Do not mutate Issue #8 or mark Issue #8 evidence as satisfied.", "Do not run or authorize real pilot execution.", "Do not claim production_ready, release_ready, live_render_validated, export_json_validated, accessibility_passed, pixel_perfect, or responsive_correctness_validated.", "Do not treat CI success, merged PRs, catalog completion, Work Package completion, or queue completion as domain evidence."], "must_deliver": ["Completed boundary contract and integration note.", "Completed validator and fixture coverage for Project Gate and Builder handoff states.", "Completed STATUS and command-index alignment with active checks."], "must_preserve": ["Rolling queue remains a historical reconciled archive, not the execution driver.", "Controller selection must come only from planning/EV4_AUTOMATION_WORK_PACKAGE_CATALOG.json.", "Quality gates, CI, review, and evidence boundaries remain mandatory.", "Technical evidence claims remain false unless real evidence gates pass.", "Catalog replenishment is state-driven and must not block active Work Package execution.", "Catalog replenishment must respect the single-active-mutation-PR policy."], "evidence_boundary": {"submitted_evidence_created_by_package": false, "issue_8_mutation_allowed": false, "real_pilot_execution_allowed": false, "ci_success_is_domain_evidence": false, "merged_pr_is_domain_evidence": false, "catalog_completion_is_evidence_validation": false, "claims_require_real_evidence_gates": true, "forbidden_claims_without_real_evidence": ["production_ready", "release_ready", "live_render_validated", "export_json_validated", "accessibility_passed", "pixel_perfect", "responsive_correctness_validated"]}, "readiness_boundary": {"pilot_allowed_to_start": false, "production_ready": false, "release_ready": false, "live_render_validated": false, "export_json_validated": false, "accessibility_passed": false, "pixel_perfect": false, "responsive_correctness_validated": false}, "definition_of_done": ["The measurable target state is met by schema-backed or validator-backed repository evidence.", "The selected PR slice remains reviewable and stays under this Work Package ID.", "No submitted evidence, Issue #8 mutation, pilot authorization, or forbidden readiness claim is produced by the Work Package."], "quality_gates": ["python validation/e2e/run_automation_work_package_catalog_check.py", "python validation/e2e/run_automation_control_state_check.py", "python validation/e2e/run_rolling_queue_check.py", "python validation/e2e/run_run_ledger_check.py", "python validation/e2e/run_task_quality_gate_check.py"], "split_rule": {"principle": "A Work Package may be large in objective, but each PR must remain reviewable.", "split_by": "implementation_layer_under_same_work_package_id", "requires_slice_id_prefix": "<WORK_PACKAGE_ID>/PR-", "forbidden_splits": ["invent_unrelated_rtaq_tasks", "guard_only_task_without_named_work_package_unblock", "checkpoint_only_pr_after_every_merge", "artificial_reserve_task_to_keep_task_count_high", "queue_refresh_loop_as_execution_driver", "fixed_ordinal_refresh"]}, "allowed_pr_slices": [{"slice_id": "WP-RESP-002/PR-A", "title": "contract and schema boundary", "layer": "schema_contract", "objective": "Clarify the handoff contract and schema references.", "review_boundary": "Reviewable PR slice under the same Work Package ID; no unrelated micro-objective may be introduced."}, {"slice_id": "WP-RESP-002/PR-B", "title": "validator and fixture coverage", "layer": "validator_fixtures", "objective": "Add or harden deterministic eligibility checks.", "review_boundary": "Reviewable PR slice under the same Work Package ID; no unrelated micro-objective may be introduced."}], "blocked_if": ["The work would re-open completed handoff scope without a real regression or contract drift."], "completion_record_requirements": ["Record selected Work Package ID and PR slice ID in the PR body.", "List files changed, validators changed, and CI commands run.", "State commands not run and why.", "Restate evidence/pilot/readiness/production/release/responsive-correctness boundaries.", "Record whether catalog replenishment was checked and whether it was non-mutating, same-PR in-scope, or blocked by single-active-PR policy.", "Record remaining risks and the next safe human action."], "unblocks_work_package_ids": []},
-    "WP-RESP-003": {"id": "WP-RESP-003", "title": "Consolidate Validation Chain and Quality Debt", "capability_area": "validation_chain", "current_state": "Validation chain and quality-debt consolidation was completed by PR #149 and PR #150 with index parity and negative fixture coverage.", "target_state": "Primary Validate, validator index, fixture coverage, and review-debt rules are consolidated into one auditable repository validation chain.", "measurable_current_state": {"statement": "Validation chain and quality-debt consolidation was completed by PR #149 and PR #150 with index parity and negative fixture coverage.", "measurement": "Measured by workflow, STATUS, command index, validator list, and named quality-debt records.", "measurable": true}, "measurable_target_state": {"statement": "Primary Validate, validator index, fixture coverage, and review-debt rules are consolidated into one auditable repository validation chain.", "measurement": "Accepted when workflow, STATUS, command index, validators, fixtures, and quality-debt records align without removing safety checks.", "measurable": true}, "target_capability": {"statement": "Validation chain governance is coherent, deterministic, and CI-visible through workflow, STATUS, command index, validators, and named debt records.", "measurement": "Workflow, STATUS, command index, validators, and named quality-debt records align without removing existing safety checks.", "measurable": true}, "expected_project_delta": "Repository has coherent validation-chain governance that makes validators discoverable, keeps STATUS/workflow parity machine-checked, and closes named quality debt without inventing checkpoint tasks.", "selectable": true, "ready_state": "completed", "priority": 30, "reporting": {"estimated_completion_percentage": 100, "estimated_percentage_is_reporting_only": true}, "allowed_work": ["Preserve validator index and CI workflow parity and patch only real drift or named debt regressions.", "Improve diagnostics where validators already own the behavior."], "forbidden_work": ["Do not create submitted evidence unless explicitly authorized by the repository owner and current Issue #8 submitted-mode contracts.", "Do not mutate Issue #8 or mark Issue #8 evidence as satisfied.", "Do not run or authorize real pilot execution.", "Do not claim production_ready, release_ready, live_render_validated, export_json_validated, accessibility_passed, pixel_perfect, or responsive_correctness_validated.", "Do not treat CI success, merged PRs, catalog completion, Work Package completion, or queue completion as domain evidence."], "must_deliver": ["Completed validation command index and STATUS parity checks.", "Completed named quality-debt closure records or deterministic validator improvements.", "Completed CI workflow alignment without removing existing checks."], "must_preserve": ["Rolling queue remains a historical reconciled archive, not the execution driver.", "Controller selection must come only from planning/EV4_AUTOMATION_WORK_PACKAGE_CATALOG.json.", "Quality gates, CI, review, and evidence boundaries remain mandatory.", "Technical evidence claims remain false unless real evidence gates pass.", "Catalog replenishment is state-driven and must not block active Work Package execution.", "Catalog replenishment must respect the single-active-mutation-PR policy."], "evidence_boundary": {"submitted_evidence_created_by_package": false, "issue_8_mutation_allowed": false, "real_pilot_execution_allowed": false, "ci_success_is_domain_evidence": false, "merged_pr_is_domain_evidence": false, "catalog_completion_is_evidence_validation": false, "claims_require_real_evidence_gates": true, "forbidden_claims_without_real_evidence": ["production_ready", "release_ready", "live_render_validated", "export_json_validated", "accessibility_passed", "pixel_perfect", "responsive_correctness_validated"]}, "readiness_boundary": {"pilot_allowed_to_start": false, "production_ready": false, "release_ready": false, "live_render_validated": false, "export_json_validated": false, "accessibility_passed": false, "pixel_perfect": false, "responsive_correctness_validated": false}, "definition_of_done": ["The measurable target state is met by schema-backed or validator-backed repository evidence.", "The selected PR slice remains reviewable and stays under this Work Package ID.", "No submitted evidence, Issue #8 mutation, pilot authorization, or forbidden readiness claim is produced by the Work Package."], "quality_gates": ["python validation/e2e/run_automation_work_package_catalog_check.py", "python validation/e2e/run_automation_control_state_check.py", "python validation/e2e/run_rolling_queue_check.py", "python validation/e2e/run_run_ledger_check.py", "python validation/e2e/run_task_quality_gate_check.py"], "split_rule": {"principle": "A Work Package may be large in objective, but each PR must remain reviewable.", "split_by": "implementation_layer_under_same_work_package_id", "requires_slice_id_prefix": "<WORK_PACKAGE_ID>/PR-", "forbidden_splits": ["invent_unrelated_rtaq_tasks", "guard_only_task_without_named_work_package_unblock", "checkpoint_only_pr_after_every_merge", "artificial_reserve_task_to_keep_task_count_high", "queue_refresh_loop_as_execution_driver", "fixed_ordinal_refresh"]}, "allowed_pr_slices": [{"slice_id": "WP-RESP-003/PR-A", "title": "validator inventory and parity", "layer": "validator_inventory", "objective": "Align workflow, STATUS, and command index.", "review_boundary": "Reviewable PR slice under the same Work Package ID; no unrelated micro-objective may be introduced."}, {"slice_id": "WP-RESP-003/PR-B", "title": "fixture coverage debt", "layer": "fixtures", "objective": "Add focused valid/invalid fixture coverage for named gaps.", "review_boundary": "Reviewable PR slice under the same Work Package ID; no unrelated micro-objective may be introduced."}], "blocked_if": ["The work would remove or weaken any existing Validate step."], "completion_record_requirements": ["Record selected Work Package ID and PR slice ID in the PR body.", "List files changed, validators changed, and CI commands run.", "State commands not run and why.", "Restate evidence/pilot/readiness/production/release/responsive-correctness boundaries.", "Record whether catalog replenishment was checked and whether it was non-mutating, same-PR in-scope, or blocked by single-active-PR policy.", "Record remaining risks and the next safe human action."], "unblocks_work_package_ids": []},
-    "WP-RESP-004": {"id": "WP-RESP-004", "title": "Prepare Shadow-Mode Pilot Readiness Without Production Claim", "capability_area": "pilot_readiness_boundary", "current_state": "Shadow-mode preparation path was completed by PR #151 and PR #152 with dry-run stop guards, manual path documentation, and STATUS boundary markers.", "target_state": "A controlled shadow-mode preparation path is documented and validated while production, release, pilot, and responsive-correctness claims remain false.", "measurable_current_state": {"statement": "Shadow-mode preparation path was completed by PR #151 and PR #152 with dry-run stop guards, manual path documentation, and STATUS boundary markers.", "measurement": "Measured by dry-run validators, STATUS markers, stop conditions, and absence of real submitted evidence.", "measurable": true}, "measurable_target_state": {"statement": "A controlled shadow-mode preparation path is documented and validated while production, release, pilot, and responsive-correctness claims remain false.", "measurement": "Accepted when dry-run validators, docs, fixtures, and STATUS preserve false readiness and production claims.", "measurable": true}, "target_capability": {"statement": "Shadow-mode preparation is deterministic as a blocked readiness path with dry-run validators and explicit stop-condition documentation.", "measurement": "Dry-run validators, stop-condition documentation, and STATUS markers preserve false readiness and production claims.", "measurable": true}, "expected_project_delta": "Repository has a bounded shadow-mode preparation path with dry-run validators, explicit stop conditions, and completion records that cannot authorize pilot execution.", "selectable": true, "ready_state": "completed", "priority": 40, "reporting": {"estimated_completion_percentage": 100, "estimated_percentage_is_reporting_only": true}, "allowed_work": ["Preserve dry-run readiness outputs and stop-condition diagnostics.", "Document operator steps that remain manual and blocked until real gates pass.", "Add fixtures proving readiness claims stay false without real evidence."], "forbidden_work": ["Do not create submitted evidence unless explicitly authorized by the repository owner and current Issue #8 submitted-mode contracts.", "Do not mutate Issue #8 or mark Issue #8 evidence as satisfied.", "Do not run or authorize real pilot execution.", "Do not claim production_ready, release_ready, live_render_validated, export_json_validated, accessibility_passed, pixel_perfect, or responsive_correctness_validated.", "Do not treat CI success, merged PRs, catalog completion, Work Package completion, or queue completion as domain evidence."], "must_deliver": ["Completed dry-run readiness validator coverage.", "Completed manual/operator guide updates with explicit stop conditions.", "Completed STATUS boundary markers that keep pilot execution blocked."], "must_preserve": ["Rolling queue remains a historical reconciled archive, not the execution driver.", "Controller selection must come only from planning/EV4_AUTOMATION_WORK_PACKAGE_CATALOG.json.", "Quality gates, CI, review, and evidence boundaries remain mandatory.", "Technical evidence claims remain false unless real evidence gates pass.", "Catalog replenishment is state-driven and must not block active Work Package execution.", "Catalog replenishment must respect the single-active-mutation-PR policy."], "evidence_boundary": {"submitted_evidence_created_by_package": false, "issue_8_mutation_allowed": false, "real_pilot_execution_allowed": false, "ci_success_is_domain_evidence": false, "merged_pr_is_domain_evidence": false, "catalog_completion_is_evidence_validation": false, "claims_require_real_evidence_gates": true, "forbidden_claims_without_real_evidence": ["production_ready", "release_ready", "live_render_validated", "export_json_validated", "accessibility_passed", "pixel_perfect", "responsive_correctness_validated"]}, "readiness_boundary": {"pilot_allowed_to_start": false, "production_ready": false, "release_ready": false, "live_render_validated": false, "export_json_validated": false, "accessibility_passed": false, "pixel_perfect": false, "responsive_correctness_validated": false}, "definition_of_done": ["The measurable target state is met by schema-backed or validator-backed repository evidence.", "The selected PR slice remains reviewable and stays under this Work Package ID.", "No submitted evidence, Issue #8 mutation, pilot authorization, or forbidden readiness claim is produced by the Work Package."], "quality_gates": ["python validation/e2e/run_automation_work_package_catalog_check.py", "python validation/e2e/run_automation_control_state_check.py", "python validation/e2e/run_rolling_queue_check.py", "python validation/e2e/run_run_ledger_check.py", "python validation/e2e/run_task_quality_gate_check.py"], "split_rule": {"principle": "A Work Package may be large in objective, but each PR must remain reviewable.", "split_by": "implementation_layer_under_same_work_package_id", "requires_slice_id_prefix": "<WORK_PACKAGE_ID>/PR-", "forbidden_splits": ["invent_unrelated_rtaq_tasks", "guard_only_task_without_named_work_package_unblock", "checkpoint_only_pr_after_every_merge", "artificial_reserve_task_to_keep_task_count_high", "queue_refresh_loop_as_execution_driver", "fixed_ordinal_refresh"]}, "allowed_pr_slices": [{"slice_id": "WP-RESP-004/PR-A", "title": "readiness dry-run guards", "layer": "validator", "objective": "Harden dry-run readiness and stop-condition checks.", "review_boundary": "Reviewable PR slice under the same Work Package ID; no unrelated micro-objective may be introduced."}, {"slice_id": "WP-RESP-004/PR-B", "title": "manual shadow-mode path docs", "layer": "docs", "objective": "Document the blocked preparation path and required evidence gates.", "review_boundary": "Reviewable PR slice under the same Work Package ID; no unrelated micro-objective may be introduced."}], "blocked_if": ["Real submitted evidence is absent and the slice attempts to authorize live pilot execution."], "completion_record_requirements": ["Record selected Work Package ID and PR slice ID in the PR body.", "List files changed, validators changed, and CI commands run.", "State commands not run and why.", "Restate evidence/pilot/readiness/production/release/responsive-correctness boundaries.", "Record whether catalog replenishment was checked and whether it was non-mutating, same-PR in-scope, or blocked by single-active-PR policy.", "Record remaining risks and the next safe human action."], "unblocks_work_package_ids": []},
-    "WP-RESP-005": {"id": "WP-RESP-005", "title": "Catalog Governance and State-Driven Replenishment", "capability_area": "catalog_governance", "current_state": "Automation objective selection uses an approved Work Package Catalog and now requires state-driven metadata updates after completed material packages.", "target_state": "Catalog governance updates happen only when ready depth, project state, blockers, contracts, architecture, or real gaps require replenishment under the single-active-PR policy.", "measurable_current_state": {"statement": "Automation objective selection uses an approved Work Package Catalog and now requires state-driven metadata updates after completed material packages.", "measurement": "Measured by catalog policy fields, schema, validator self-tests, STATUS, and controller prompt behavior.", "measurable": true}, "measurable_target_state": {"statement": "Catalog governance updates happen only when ready depth, project state, blockers, contracts, architecture, or real gaps require replenishment under the single-active-PR policy.", "measurement": "Accepted when schema, validator, docs, and STATUS reject fixed ordinal refresh and enforce single-active-PR replenishment limits.", "measurable": true}, "target_capability": {"statement": "Catalog governance remains deterministic and does not become a recurring fixed-ordinal refresh loop.", "measurement": "Schema, validator, docs, and STATUS reject fixed ordinal refresh, arbitrary tasks, and catalog mutations that violate single-active-PR policy.", "measurable": true}, "expected_project_delta": "Repository gains explicit state-driven catalog governance that allows automatic replenishment when real repository state requires it while preventing checkpoint loops and arbitrary task invention.", "selectable": false, "ready_state": "governance", "priority": 90, "reporting": {"estimated_completion_percentage": 10, "estimated_percentage_is_reporting_only": true}, "allowed_work": ["Detect ready Work Package depth and report replenishment needs.", "Prepare non-mutating replenishment plans while another mutation PR is active.", "Update catalog metadata only when material Work Package state changes or same-PR scope allows it.", "Create a reviewed catalog replenishment PR only when no active mutation PR blocks it and ready depth is below threshold."], "forbidden_work": ["Do not create submitted evidence unless explicitly authorized by the repository owner and current Issue #8 submitted-mode contracts.", "Do not mutate Issue #8 or mark Issue #8 evidence as satisfied.", "Do not run or authorize real pilot execution.", "Do not claim production_ready, release_ready, live_render_validated, export_json_validated, accessibility_passed, pixel_perfect, or responsive_correctness_validated.", "Do not treat CI success, merged PRs, catalog completion, Work Package completion, or queue completion as domain evidence."], "must_deliver": ["Catalog metadata update tied to named Work Package state change or ready-depth threshold.", "Validator coverage proving catalog refresh cannot become a fixed fifth-task loop.", "Documentation update explaining the state-driven trigger and single-active-PR rule."], "must_preserve": ["Rolling queue remains a historical reconciled archive, not the execution driver.", "Controller selection must come only from planning/EV4_AUTOMATION_WORK_PACKAGE_CATALOG.json.", "Quality gates, CI, review, and evidence boundaries remain mandatory.", "Technical evidence claims remain false unless real evidence gates pass.", "Catalog replenishment is state-driven and must not block active Work Package execution.", "Catalog replenishment must respect the single-active-mutation-PR policy."], "evidence_boundary": {"submitted_evidence_created_by_package": false, "issue_8_mutation_allowed": false, "real_pilot_execution_allowed": false, "ci_success_is_domain_evidence": false, "merged_pr_is_domain_evidence": false, "catalog_completion_is_evidence_validation": false, "claims_require_real_evidence_gates": true, "forbidden_claims_without_real_evidence": ["production_ready", "release_ready", "live_render_validated", "export_json_validated", "accessibility_passed", "pixel_perfect", "responsive_correctness_validated"]}, "readiness_boundary": {"pilot_allowed_to_start": false, "production_ready": false, "release_ready": false, "live_render_validated": false, "export_json_validated": false, "accessibility_passed": false, "pixel_perfect": false, "responsive_correctness_validated": false}, "definition_of_done": ["The measurable target state is met by schema-backed or validator-backed repository evidence.", "The selected PR slice remains reviewable and stays under this Work Package ID.", "No submitted evidence, Issue #8 mutation, pilot authorization, or forbidden readiness claim is produced by the Work Package."], "quality_gates": ["python validation/e2e/run_automation_work_package_catalog_check.py", "python validation/e2e/run_automation_control_state_check.py", "python validation/e2e/run_rolling_queue_check.py", "python validation/e2e/run_run_ledger_check.py", "python validation/e2e/run_task_quality_gate_check.py"], "split_rule": {"principle": "A Work Package may be large in objective, but each PR must remain reviewable.", "split_by": "implementation_layer_under_same_work_package_id", "requires_slice_id_prefix": "<WORK_PACKAGE_ID>/PR-", "forbidden_splits": ["invent_unrelated_rtaq_tasks", "guard_only_task_without_named_work_package_unblock", "checkpoint_only_pr_after_every_merge", "artificial_reserve_task_to_keep_task_count_high", "queue_refresh_loop_as_execution_driver", "fixed_ordinal_refresh"]}, "allowed_pr_slices": [{"slice_id": "WP-RESP-005/PR-A", "title": "governance schema and validator", "layer": "schema_validator", "objective": "Harden catalog governance rules when material state changes or ready depth falls below threshold.", "review_boundary": "Reviewable PR slice under the same Work Package ID; no unrelated micro-objective may be introduced."}, {"slice_id": "WP-RESP-005/PR-B", "title": "catalog state update", "layer": "catalog_metadata", "objective": "Update Work Package state after a named material outcome or allowed replenishment trigger.", "review_boundary": "Reviewable PR slice under the same Work Package ID; no unrelated micro-objective may be introduced."}], "blocked_if": ["No material Work Package state changed.", "Ready Work Package depth is at or above threshold.", "The update exists only to keep a task count, refresh cadence, fixed ordinal, or checkpoint loop alive.", "Another active mutation PR exists and the catalog mutation is not in-scope for that same PR."], "completion_record_requirements": ["Record selected Work Package ID and PR slice ID in the PR body.", "List files changed, validators changed, and CI commands run.", "State commands not run and why.", "Restate evidence/pilot/readiness/production/release/responsive-correctness boundaries.", "Record whether catalog replenishment was checked and whether it was non-mutating, same-PR in-scope, or blocked by single-active-PR policy.", "Record remaining risks and the next safe human action."], "unblocks_work_package_ids": ["WP-RESP-001", "WP-RESP-002", "WP-RESP-003", "WP-RESP-004"], "maintenance_type": "non_selectable_state_driven_catalog_replenishment_governance"},
-    "WP-RESP-006": {"id": "WP-RESP-006", "title": "Harden Responsive Contract Drift Sentinel", "capability_area": "contract_drift", "current_state": "Responsive contracts, STATUS, command index, and workflow are aligned today, but there is no dedicated contract-drift sentinel package for future schema and documentation divergence.", "target_state": "Contract, schema, validator, STATUS, command-index, and workflow drift are detectable through one deterministic CI-visible sentinel path.", "measurable_current_state": {"statement": "Responsive contracts, STATUS, command index, and workflow are aligned today, but there is no dedicated contract-drift sentinel package for future schema and documentation divergence.", "measurement": "Measured by contract, schema, validator, fixture, CI, STATUS, and documentation coverage for this package.", "measurable": true}, "measurable_target_state": {"statement": "Contract, schema, validator, STATUS, command-index, and workflow drift are detectable through one deterministic CI-visible sentinel path.", "measurement": "Accepted when contract, schema, fixture, validator, CI, documentation, and STATUS signals align without stronger evidence claims.", "measurable": true}, "target_capability": {"statement": "Responsive contract drift detection is schema-backed, validator-backed, and CI-visible without weakening existing safety gates.", "measurement": "Measured by deterministic validator and CI-visible checks plus documented contract boundaries.", "measurable": true}, "expected_project_delta": "Repository gains a focused contract-drift sentinel so future contract, schema, validator, STATUS, and documentation changes cannot silently diverge.", "selectable": true, "ready_state": "ready", "priority": 50, "reporting": {"estimated_completion_percentage": 15, "estimated_percentage_is_reporting_only": true}, "allowed_work": ["Add or harden validator diagnostics for contract, schema, STATUS, command-index, and workflow drift.", "Add focused fixtures or documentation records for real drift cases already represented in repository files."], "forbidden_work": ["Do not create submitted evidence unless explicitly authorized by the repository owner and current Issue #8 submitted-mode contracts.", "Do not mutate Issue #8 or mark Issue #8 evidence as satisfied.", "Do not run or authorize real pilot execution.", "Do not claim production_ready, release_ready, live_render_validated, export_json_validated, accessibility_passed, pixel_perfect, or responsive_correctness_validated.", "Do not treat CI success, merged PRs, catalog completion, Work Package completion, or queue completion as domain evidence."], "must_deliver": ["Contract drift validator or fixture coverage.", "Documentation describing the drift sentinel path and its non-domain-evidence boundary.", "STATUS or command-index alignment only when directly affected."], "must_preserve": ["Rolling queue remains a historical reconciled archive, not the execution driver.", "Controller selection must come only from planning/EV4_AUTOMATION_WORK_PACKAGE_CATALOG.json.", "Quality gates, CI, review, and evidence boundaries remain mandatory.", "Technical evidence claims remain false unless real evidence gates pass.", "Catalog replenishment is state-driven and must not block active Work Package execution.", "Catalog replenishment must respect the single-active-mutation-PR policy."], "evidence_boundary": {"submitted_evidence_created_by_package": false, "issue_8_mutation_allowed": false, "real_pilot_execution_allowed": false, "ci_success_is_domain_evidence": false, "merged_pr_is_domain_evidence": false, "catalog_completion_is_evidence_validation": false, "claims_require_real_evidence_gates": true, "forbidden_claims_without_real_evidence": ["production_ready", "release_ready", "live_render_validated", "export_json_validated", "accessibility_passed", "pixel_perfect", "responsive_correctness_validated"]}, "readiness_boundary": {"pilot_allowed_to_start": false, "production_ready": false, "release_ready": false, "live_render_validated": false, "export_json_validated": false, "accessibility_passed": false, "pixel_perfect": false, "responsive_correctness_validated": false}, "definition_of_done": ["The measurable target state is met by schema-backed or validator-backed repository evidence.", "The selected PR slice remains reviewable and stays under this Work Package ID.", "No submitted evidence, Issue #8 mutation, pilot authorization, or forbidden readiness claim is produced by the Work Package."], "quality_gates": ["python validation/e2e/run_automation_work_package_catalog_check.py", "python validation/e2e/run_automation_control_state_check.py", "python validation/e2e/run_rolling_queue_check.py", "python validation/e2e/run_run_ledger_check.py", "python validation/e2e/run_task_quality_gate_check.py"], "split_rule": {"principle": "A Work Package may be large in objective, but each PR must remain reviewable.", "split_by": "implementation_layer_under_same_work_package_id", "requires_slice_id_prefix": "<WORK_PACKAGE_ID>/PR-", "forbidden_splits": ["invent_unrelated_rtaq_tasks", "guard_only_task_without_named_work_package_unblock", "checkpoint_only_pr_after_every_merge", "artificial_reserve_task_to_keep_task_count_high", "queue_refresh_loop_as_execution_driver", "fixed_ordinal_refresh"]}, "allowed_pr_slices": [{"slice_id": "WP-RESP-006/PR-A", "title": "contract drift inventory", "layer": "validator_inventory", "objective": "Map contract, schema, STATUS, command-index, and workflow ownership into one drift sentinel.", "review_boundary": "Reviewable PR slice under the same Work Package ID; no unrelated micro-objective may be introduced."}, {"slice_id": "WP-RESP-006/PR-B", "title": "drift fixtures and docs", "layer": "fixtures_docs", "objective": "Add focused fixture or documentation coverage for detected contract-drift scenarios.", "review_boundary": "Reviewable PR slice under the same Work Package ID; no unrelated micro-objective may be introduced."}], "blocked_if": ["The work would remove or weaken an existing Validate step.", "The package would treat drift checks as responsive-correctness evidence."], "completion_record_requirements": ["Record selected Work Package ID and PR slice ID in the PR body.", "List files changed, validators changed, and CI commands run.", "State commands not run and why.", "Restate evidence/pilot/readiness/production/release/responsive-correctness boundaries.", "Record whether catalog replenishment was checked and whether it was non-mutating, same-PR in-scope, or blocked by single-active-PR policy.", "Record remaining risks and the next safe human action."], "unblocks_work_package_ids": []},
-    "WP-RESP-007": {"id": "WP-RESP-007", "title": "Codify Viewport Inheritance and Reset Decision Matrix", "capability_area": "responsive_boundary", "current_state": "Viewport inheritance, reset, and breakpoint behavior are represented across contracts and fixtures, but the decision matrix is not yet isolated as a catalog-backed material capability.", "target_state": "Viewport inheritance and reset decisions are documented and validation-backed as input and strategy boundaries, not live responsive correctness evidence.", "measurable_current_state": {"statement": "Viewport inheritance, reset, and breakpoint behavior are represented across contracts and fixtures, but the decision matrix is not yet isolated as a catalog-backed material capability.", "measurement": "Measured by contract, schema, validator, fixture, CI, STATUS, and documentation coverage for this package.", "measurable": true}, "measurable_target_state": {"statement": "Viewport inheritance and reset decisions are documented and validation-backed as input and strategy boundaries, not live responsive correctness evidence.", "measurement": "Accepted when contract, schema, fixture, validator, CI, documentation, and STATUS signals align without stronger evidence claims.", "measurable": true}, "target_capability": {"statement": "Viewport inheritance and reset decision handling is deterministic, contract-backed, fixture-covered, and CI-visible.", "measurement": "Measured by deterministic validator and CI-visible checks plus documented contract boundaries.", "measurable": true}, "expected_project_delta": "Repository gains a clear viewport inheritance and reset decision matrix that supports safer responsive strategy routing while preserving false readiness and evidence claims.", "selectable": true, "ready_state": "ready", "priority": 60, "reporting": {"estimated_completion_percentage": 20, "estimated_percentage_is_reporting_only": true}, "allowed_work": ["Clarify viewport inheritance and reset contract expectations.", "Add or harden focused fixtures for allowed and blocked inheritance/reset states.", "Improve validator diagnostics where existing validators own the behavior."], "forbidden_work": ["Do not create submitted evidence unless explicitly authorized by the repository owner and current Issue #8 submitted-mode contracts.", "Do not mutate Issue #8 or mark Issue #8 evidence as satisfied.", "Do not run or authorize real pilot execution.", "Do not claim production_ready, release_ready, live_render_validated, export_json_validated, accessibility_passed, pixel_perfect, or responsive_correctness_validated.", "Do not treat CI success, merged PRs, catalog completion, Work Package completion, or queue completion as domain evidence."], "must_deliver": ["Decision matrix contract or documentation.", "Focused valid/invalid fixture coverage for inheritance and reset boundaries.", "Validator diagnostics that keep the result within repository-check evidence."], "must_preserve": ["Rolling queue remains a historical reconciled archive, not the execution driver.", "Controller selection must come only from planning/EV4_AUTOMATION_WORK_PACKAGE_CATALOG.json.", "Quality gates, CI, review, and evidence boundaries remain mandatory.", "Technical evidence claims remain false unless real evidence gates pass.", "Catalog replenishment is state-driven and must not block active Work Package execution.", "Catalog replenishment must respect the single-active-mutation-PR policy."], "evidence_boundary": {"submitted_evidence_created_by_package": false, "issue_8_mutation_allowed": false, "real_pilot_execution_allowed": false, "ci_success_is_domain_evidence": false, "merged_pr_is_domain_evidence": false, "catalog_completion_is_evidence_validation": false, "claims_require_real_evidence_gates": true, "forbidden_claims_without_real_evidence": ["production_ready", "release_ready", "live_render_validated", "export_json_validated", "accessibility_passed", "pixel_perfect", "responsive_correctness_validated"]}, "readiness_boundary": {"pilot_allowed_to_start": false, "production_ready": false, "release_ready": false, "live_render_validated": false, "export_json_validated": false, "accessibility_passed": false, "pixel_perfect": false, "responsive_correctness_validated": false}, "definition_of_done": ["The measurable target state is met by schema-backed or validator-backed repository evidence.", "The selected PR slice remains reviewable and stays under this Work Package ID.", "No submitted evidence, Issue #8 mutation, pilot authorization, or forbidden readiness claim is produced by the Work Package."], "quality_gates": ["python validation/e2e/run_automation_work_package_catalog_check.py", "python validation/e2e/run_automation_control_state_check.py", "python validation/e2e/run_rolling_queue_check.py", "python validation/e2e/run_run_ledger_check.py", "python validation/e2e/run_task_quality_gate_check.py"], "split_rule": {"principle": "A Work Package may be large in objective, but each PR must remain reviewable.", "split_by": "implementation_layer_under_same_work_package_id", "requires_slice_id_prefix": "<WORK_PACKAGE_ID>/PR-", "forbidden_splits": ["invent_unrelated_rtaq_tasks", "guard_only_task_without_named_work_package_unblock", "checkpoint_only_pr_after_every_merge", "artificial_reserve_task_to_keep_task_count_high", "queue_refresh_loop_as_execution_driver", "fixed_ordinal_refresh"]}, "allowed_pr_slices": [{"slice_id": "WP-RESP-007/PR-A", "title": "decision matrix contract", "layer": "contract_docs", "objective": "Document the viewport inheritance and reset decision matrix boundaries.", "review_boundary": "Reviewable PR slice under the same Work Package ID; no unrelated micro-objective may be introduced."}, {"slice_id": "WP-RESP-007/PR-B", "title": "matrix fixtures and validator", "layer": "fixtures_validator", "objective": "Add or harden fixture and validator coverage for inheritance and reset decisions.", "review_boundary": "Reviewable PR slice under the same Work Package ID; no unrelated micro-objective may be introduced."}], "blocked_if": ["The slice would claim live responsive correctness or pixel-perfect rendering.", "Required viewport contract source is missing or ambiguous."], "completion_record_requirements": ["Record selected Work Package ID and PR slice ID in the PR body.", "List files changed, validators changed, and CI commands run.", "State commands not run and why.", "Restate evidence/pilot/readiness/production/release/responsive-correctness boundaries.", "Record whether catalog replenishment was checked and whether it was non-mutating, same-PR in-scope, or blocked by single-active-PR policy.", "Record remaining risks and the next safe human action."], "unblocks_work_package_ids": []},
-    "WP-RESP-008": {"id": "WP-RESP-008", "title": "Define Responsive Handoff Export Boundary Manifest", "capability_area": "handoff_export", "current_state": "Responsive handoff export contracts exist, but the export boundary manifest needs clearer schema and validator traceability without claiming export JSON has been validated from a live build.", "target_state": "A responsive handoff export boundary manifest is schema-backed, validator-backed, documented, and explicitly not an export_json_validated claim.", "measurable_current_state": {"statement": "Responsive handoff export contracts exist, but the export boundary manifest needs clearer schema and validator traceability without claiming export JSON has been validated from a live build.", "measurement": "Measured by contract, schema, validator, fixture, CI, STATUS, and documentation coverage for this package.", "measurable": true}, "measurable_target_state": {"statement": "A responsive handoff export boundary manifest is schema-backed, validator-backed, documented, and explicitly not an export_json_validated claim.", "measurement": "Accepted when contract, schema, fixture, validator, CI, documentation, and STATUS signals align without stronger evidence claims.", "measurable": true}, "target_capability": {"statement": "Responsive handoff export boundaries are deterministic and CI-visible as repository contracts, not live export evidence.", "measurement": "Measured by deterministic validator and CI-visible checks plus documented contract boundaries.", "measurable": true}, "expected_project_delta": "Repository gains a bounded handoff export manifest path that makes export expectations auditable while preserving the false export and readiness claims.", "selectable": true, "ready_state": "ready", "priority": 70, "reporting": {"estimated_completion_percentage": 15, "estimated_percentage_is_reporting_only": true}, "allowed_work": ["Clarify responsive handoff export manifest boundaries.", "Add schema or fixture coverage for manifest eligibility and forbidden stronger claims.", "Document export boundary expectations without claiming live exported JSON validation."], "forbidden_work": ["Do not create submitted evidence unless explicitly authorized by the repository owner and current Issue #8 submitted-mode contracts.", "Do not mutate Issue #8 or mark Issue #8 evidence as satisfied.", "Do not run or authorize real pilot execution.", "Do not claim production_ready, release_ready, live_render_validated, export_json_validated, accessibility_passed, pixel_perfect, or responsive_correctness_validated.", "Do not treat CI success, merged PRs, catalog completion, Work Package completion, or queue completion as domain evidence."], "must_deliver": ["Export boundary manifest contract or schema coverage.", "Validator or fixture coverage for allowed and blocked manifest states.", "Documentation that export_json_validated remains false without real evidence gates."], "must_preserve": ["Rolling queue remains a historical reconciled archive, not the execution driver.", "Controller selection must come only from planning/EV4_AUTOMATION_WORK_PACKAGE_CATALOG.json.", "Quality gates, CI, review, and evidence boundaries remain mandatory.", "Technical evidence claims remain false unless real evidence gates pass.", "Catalog replenishment is state-driven and must not block active Work Package execution.", "Catalog replenishment must respect the single-active-mutation-PR policy."], "evidence_boundary": {"submitted_evidence_created_by_package": false, "issue_8_mutation_allowed": false, "real_pilot_execution_allowed": false, "ci_success_is_domain_evidence": false, "merged_pr_is_domain_evidence": false, "catalog_completion_is_evidence_validation": false, "claims_require_real_evidence_gates": true, "forbidden_claims_without_real_evidence": ["production_ready", "release_ready", "live_render_validated", "export_json_validated", "accessibility_passed", "pixel_perfect", "responsive_correctness_validated"]}, "readiness_boundary": {"pilot_allowed_to_start": false, "production_ready": false, "release_ready": false, "live_render_validated": false, "export_json_validated": false, "accessibility_passed": false, "pixel_perfect": false, "responsive_correctness_validated": false}, "definition_of_done": ["The measurable target state is met by schema-backed or validator-backed repository evidence.", "The selected PR slice remains reviewable and stays under this Work Package ID.", "No submitted evidence, Issue #8 mutation, pilot authorization, or forbidden readiness claim is produced by the Work Package."], "quality_gates": ["python validation/e2e/run_automation_work_package_catalog_check.py", "python validation/e2e/run_automation_control_state_check.py", "python validation/e2e/run_rolling_queue_check.py", "python validation/e2e/run_run_ledger_check.py", "python validation/e2e/run_task_quality_gate_check.py"], "split_rule": {"principle": "A Work Package may be large in objective, but each PR must remain reviewable.", "split_by": "implementation_layer_under_same_work_package_id", "requires_slice_id_prefix": "<WORK_PACKAGE_ID>/PR-", "forbidden_splits": ["invent_unrelated_rtaq_tasks", "guard_only_task_without_named_work_package_unblock", "checkpoint_only_pr_after_every_merge", "artificial_reserve_task_to_keep_task_count_high", "queue_refresh_loop_as_execution_driver", "fixed_ordinal_refresh"]}, "allowed_pr_slices": [{"slice_id": "WP-RESP-008/PR-A", "title": "export manifest contract", "layer": "schema_contract", "objective": "Define or clarify responsive handoff export manifest contract boundaries.", "review_boundary": "Reviewable PR slice under the same Work Package ID; no unrelated micro-objective may be introduced."}, {"slice_id": "WP-RESP-008/PR-B", "title": "manifest fixtures and validator", "layer": "fixtures_validator", "objective": "Add focused fixture and validator coverage for export manifest boundary states.", "review_boundary": "Reviewable PR slice under the same Work Package ID; no unrelated micro-objective may be introduced."}], "blocked_if": ["The work would claim export_json_validated from repository-only checks.", "The work requires real live export evidence not present in the repository."], "completion_record_requirements": ["Record selected Work Package ID and PR slice ID in the PR body.", "List files changed, validators changed, and CI commands run.", "State commands not run and why.", "Restate evidence/pilot/readiness/production/release/responsive-correctness boundaries.", "Record whether catalog replenishment was checked and whether it was non-mutating, same-PR in-scope, or blocked by single-active-PR policy.", "Record remaining risks and the next safe human action."], "unblocks_work_package_ids": []}
+    "WP-RESP-001": {
+      "id": "WP-RESP-001",
+      "title": "Complete Issue #8 Submitted Evidence Intake Path",
+      "capability_area": "evidence_intake",
+      "current_state": "Draft evidence handling is guarded, but real submitted-mode packet path remains blocked because the real Issue #8 evidence source is absent or ambiguous.",
+      "target_state": "A locally validated submitted-mode packet path exists for real Issue #8 attachments while pilot execution remains blocked.",
+      "measurable_current_state": {
+        "statement": "Draft evidence handling is guarded, but real submitted-mode packet path remains blocked because the real Issue #8 evidence source is absent or ambiguous.",
+        "measurement": "Measured by submitted-mode validators, Issue #8 blockers, STATUS markers, and real evidence source presence.",
+        "measurable": true
+      },
+      "measurable_target_state": {
+        "statement": "A locally validated submitted-mode packet path exists for real Issue #8 attachments while pilot execution remains blocked.",
+        "measurement": "Accepted only when schema, fixtures, validator coverage, CI, docs, and boundary markers pass for submitted-mode packet handling.",
+        "measurable": true
+      },
+      "target_capability": {
+        "statement": "Submitted-mode Issue #8 packet path is deterministic and locally checkable by schema, fixture, validator, CI, and documentation coverage.",
+        "measurement": "Schema or fixture plus validator and CI-visible checks cover missing, malformed, sample, and real-path packet states.",
+        "measurable": true
+      },
+      "expected_project_delta": "Repository gains schema, fixture, validator, CI, and documentation support for a submitted-mode Issue #8 packet path without creating submitted evidence or changing Issue #8 state.",
+      "selectable": true,
+      "ready_state": "blocked",
+      "priority": 10,
+      "reporting": {
+        "estimated_completion_percentage": 20,
+        "estimated_percentage_is_reporting_only": true
+      },
+      "allowed_work": [
+        "Harden submitted-mode packet schema, fixtures, validator behavior, and CI-visible coverage.",
+        "Document how real Issue #8 evidence must be supplied without automation mutating the issue."
+      ],
+      "forbidden_work": [
+        "Do not create submitted evidence unless explicitly authorized by the repository owner and current Issue #8 submitted-mode contracts.",
+        "Do not mutate Issue #8 or mark Issue #8 evidence as satisfied.",
+        "Do not run or authorize real pilot execution.",
+        "Do not claim production_ready, release_ready, live_render_validated, export_json_validated, accessibility_passed, pixel_perfect, or responsive_correctness_validated.",
+        "Do not treat CI success, merged PRs, catalog completion, Work Package completion, or queue completion as domain evidence."
+      ],
+      "must_deliver": [
+        "Submitted-mode path contract or fixture coverage where applicable.",
+        "Deterministic validator coverage for missing, malformed, sample, and real-path packet states.",
+        "Documentation that pilot execution remains blocked until real evidence and readiness gates pass."
+      ],
+      "must_preserve": [
+        "Rolling queue remains a historical reconciled archive, not the execution driver.",
+        "Controller selection must come only from planning/EV4_AUTOMATION_WORK_PACKAGE_CATALOG.json.",
+        "Quality gates, CI, review, and evidence boundaries remain mandatory.",
+        "Technical evidence claims remain false unless real evidence gates pass.",
+        "Catalog replenishment is state-driven and must not block active Work Package execution.",
+        "Catalog replenishment must respect the single-active-mutation-PR policy."
+      ],
+      "evidence_boundary": {
+        "submitted_evidence_created_by_package": false,
+        "issue_8_mutation_allowed": false,
+        "real_pilot_execution_allowed": false,
+        "ci_success_is_domain_evidence": false,
+        "merged_pr_is_domain_evidence": false,
+        "catalog_completion_is_evidence_validation": false,
+        "claims_require_real_evidence_gates": true,
+        "forbidden_claims_without_real_evidence": [
+          "production_ready",
+          "release_ready",
+          "live_render_validated",
+          "export_json_validated",
+          "accessibility_passed",
+          "pixel_perfect",
+          "responsive_correctness_validated"
+        ]
+      },
+      "readiness_boundary": {
+        "pilot_allowed_to_start": false,
+        "production_ready": false,
+        "release_ready": false,
+        "live_render_validated": false,
+        "export_json_validated": false,
+        "accessibility_passed": false,
+        "pixel_perfect": false,
+        "responsive_correctness_validated": false
+      },
+      "definition_of_done": [
+        "The measurable target state is met by schema-backed or validator-backed repository evidence.",
+        "The selected PR slice remains reviewable and stays under this Work Package ID.",
+        "No submitted evidence, Issue #8 mutation, pilot authorization, or forbidden readiness claim is produced by the Work Package."
+      ],
+      "quality_gates": [
+        "python validation/e2e/run_automation_work_package_catalog_check.py",
+        "python validation/e2e/run_automation_control_state_check.py",
+        "python validation/e2e/run_rolling_queue_check.py",
+        "python validation/e2e/run_run_ledger_check.py",
+        "python validation/e2e/run_task_quality_gate_check.py"
+      ],
+      "split_rule": {
+        "principle": "A Work Package may be large in objective, but each PR must remain reviewable.",
+        "split_by": "implementation_layer_under_same_work_package_id",
+        "requires_slice_id_prefix": "<WORK_PACKAGE_ID>/PR-",
+        "forbidden_splits": [
+          "invent_unrelated_rtaq_tasks",
+          "guard_only_task_without_named_work_package_unblock",
+          "checkpoint_only_pr_after_every_merge",
+          "artificial_reserve_task_to_keep_task_count_high",
+          "queue_refresh_loop_as_execution_driver",
+          "fixed_ordinal_refresh"
+        ]
+      },
+      "allowed_pr_slices": [
+        {
+          "slice_id": "WP-RESP-001/PR-A",
+          "title": "schema and fixtures",
+          "layer": "schema_fixtures",
+          "objective": "Add or harden submitted-mode packet contracts and valid/invalid fixtures.",
+          "review_boundary": "Reviewable PR slice under the same Work Package ID; no unrelated micro-objective may be introduced."
+        },
+        {
+          "slice_id": "WP-RESP-001/PR-B",
+          "title": "validators and CI",
+          "layer": "validator_ci",
+          "objective": "Add deterministic validation and wire required checks into Validate.",
+          "review_boundary": "Reviewable PR slice under the same Work Package ID; no unrelated micro-objective may be introduced."
+        },
+        {
+          "slice_id": "WP-RESP-001/PR-C",
+          "title": "docs, STATUS, and integration",
+          "layer": "docs_status",
+          "objective": "Record the submitted-mode path and remaining evidence boundaries.",
+          "review_boundary": "Reviewable PR slice under the same Work Package ID; no unrelated micro-objective may be introduced."
+        }
+      ],
+      "blocked_if": [
+        "Issue #8 real-submission source is absent or ambiguous.",
+        "The slice would create submitted evidence or mutate Issue #8 without explicit owner authorization."
+      ],
+      "completion_record_requirements": [
+        "Record selected Work Package ID and PR slice ID in the PR body.",
+        "List files changed, validators changed, and CI commands run.",
+        "State commands not run and why.",
+        "Restate evidence/pilot/readiness/production/release/responsive-correctness boundaries.",
+        "Record whether catalog replenishment was checked and whether it was non-mutating, same-PR in-scope, or blocked by single-active-PR policy.",
+        "Record remaining risks and the next safe human action."
+      ],
+      "unblocks_work_package_ids": []
+    },
+    "WP-RESP-002": {
+      "id": "WP-RESP-002",
+      "title": "Complete Builder to Responsive Transition Boundary",
+      "capability_area": "builder_responsive_boundary",
+      "current_state": "Builder to Responsive handoff boundary was completed by PR #144, PR #147, and PR #148 with contract, fixture, validator, and STATUS alignment.",
+      "target_state": "Builder and Project Gate to Responsive handoff is operationally clear, validation-backed, and explicitly not a responsive-correctness claim.",
+      "measurable_current_state": {
+        "statement": "Builder to Responsive handoff boundary was completed by PR #144, PR #147, and PR #148 with contract, fixture, validator, and STATUS alignment.",
+        "measurement": "Measured by boundary contracts, schema, fixtures, validator diagnostics, STATUS, and command index coverage.",
+        "measurable": true
+      },
+      "measurable_target_state": {
+        "statement": "Builder and Project Gate to Responsive handoff is operationally clear, validation-backed, and explicitly not a responsive-correctness claim.",
+        "measurement": "Accepted when handoff contract, schema references, validator fixtures, and STATUS/docs all agree without claiming responsive correctness.",
+        "measurable": true
+      },
+      "target_capability": {
+        "statement": "Builder and Project Gate to Responsive handoff boundary is deterministic and validation-backed without claiming live responsive correctness.",
+        "measurement": "Contract, schema, fixtures, validator diagnostics, STATUS, and command index identify allowed and blocked handoff states.",
+        "measurable": true
+      },
+      "expected_project_delta": "Repository has a coherent Builder to Responsive handoff boundary with schema, validator, fixture, documentation, and STATUS traceability while preserving ownership boundaries.",
+      "selectable": true,
+      "ready_state": "completed",
+      "priority": 20,
+      "reporting": {
+        "estimated_completion_percentage": 100,
+        "estimated_percentage_is_reporting_only": true
+      },
+      "allowed_work": [
+        "Preserve the completed Builder and Project Gate handoff boundary and patch only regressions discovered by validators or review.",
+        "Maintain boundary fixtures and diagnostics for allowed and blocked handoff states."
+      ],
+      "forbidden_work": [
+        "Do not create submitted evidence unless explicitly authorized by the repository owner and current Issue #8 submitted-mode contracts.",
+        "Do not mutate Issue #8 or mark Issue #8 evidence as satisfied.",
+        "Do not run or authorize real pilot execution.",
+        "Do not claim production_ready, release_ready, live_render_validated, export_json_validated, accessibility_passed, pixel_perfect, or responsive_correctness_validated.",
+        "Do not treat CI success, merged PRs, catalog completion, Work Package completion, or queue completion as domain evidence."
+      ],
+      "must_deliver": [
+        "Completed boundary contract and integration note.",
+        "Completed validator and fixture coverage for Project Gate and Builder handoff states.",
+        "Completed STATUS and command-index alignment with active checks."
+      ],
+      "must_preserve": [
+        "Rolling queue remains a historical reconciled archive, not the execution driver.",
+        "Controller selection must come only from planning/EV4_AUTOMATION_WORK_PACKAGE_CATALOG.json.",
+        "Quality gates, CI, review, and evidence boundaries remain mandatory.",
+        "Technical evidence claims remain false unless real evidence gates pass.",
+        "Catalog replenishment is state-driven and must not block active Work Package execution.",
+        "Catalog replenishment must respect the single-active-mutation-PR policy."
+      ],
+      "evidence_boundary": {
+        "submitted_evidence_created_by_package": false,
+        "issue_8_mutation_allowed": false,
+        "real_pilot_execution_allowed": false,
+        "ci_success_is_domain_evidence": false,
+        "merged_pr_is_domain_evidence": false,
+        "catalog_completion_is_evidence_validation": false,
+        "claims_require_real_evidence_gates": true,
+        "forbidden_claims_without_real_evidence": [
+          "production_ready",
+          "release_ready",
+          "live_render_validated",
+          "export_json_validated",
+          "accessibility_passed",
+          "pixel_perfect",
+          "responsive_correctness_validated"
+        ]
+      },
+      "readiness_boundary": {
+        "pilot_allowed_to_start": false,
+        "production_ready": false,
+        "release_ready": false,
+        "live_render_validated": false,
+        "export_json_validated": false,
+        "accessibility_passed": false,
+        "pixel_perfect": false,
+        "responsive_correctness_validated": false
+      },
+      "definition_of_done": [
+        "The measurable target state is met by schema-backed or validator-backed repository evidence.",
+        "The selected PR slice remains reviewable and stays under this Work Package ID.",
+        "No submitted evidence, Issue #8 mutation, pilot authorization, or forbidden readiness claim is produced by the Work Package."
+      ],
+      "quality_gates": [
+        "python validation/e2e/run_automation_work_package_catalog_check.py",
+        "python validation/e2e/run_automation_control_state_check.py",
+        "python validation/e2e/run_rolling_queue_check.py",
+        "python validation/e2e/run_run_ledger_check.py",
+        "python validation/e2e/run_task_quality_gate_check.py"
+      ],
+      "split_rule": {
+        "principle": "A Work Package may be large in objective, but each PR must remain reviewable.",
+        "split_by": "implementation_layer_under_same_work_package_id",
+        "requires_slice_id_prefix": "<WORK_PACKAGE_ID>/PR-",
+        "forbidden_splits": [
+          "invent_unrelated_rtaq_tasks",
+          "guard_only_task_without_named_work_package_unblock",
+          "checkpoint_only_pr_after_every_merge",
+          "artificial_reserve_task_to_keep_task_count_high",
+          "queue_refresh_loop_as_execution_driver",
+          "fixed_ordinal_refresh"
+        ]
+      },
+      "allowed_pr_slices": [
+        {
+          "slice_id": "WP-RESP-002/PR-A",
+          "title": "contract and schema boundary",
+          "layer": "schema_contract",
+          "objective": "Clarify the handoff contract and schema references.",
+          "review_boundary": "Reviewable PR slice under the same Work Package ID; no unrelated micro-objective may be introduced."
+        },
+        {
+          "slice_id": "WP-RESP-002/PR-B",
+          "title": "validator and fixture coverage",
+          "layer": "validator_fixtures",
+          "objective": "Add or harden deterministic eligibility checks.",
+          "review_boundary": "Reviewable PR slice under the same Work Package ID; no unrelated micro-objective may be introduced."
+        }
+      ],
+      "blocked_if": [
+        "The work would re-open completed handoff scope without a real regression or contract drift."
+      ],
+      "completion_record_requirements": [
+        "Record selected Work Package ID and PR slice ID in the PR body.",
+        "List files changed, validators changed, and CI commands run.",
+        "State commands not run and why.",
+        "Restate evidence/pilot/readiness/production/release/responsive-correctness boundaries.",
+        "Record whether catalog replenishment was checked and whether it was non-mutating, same-PR in-scope, or blocked by single-active-PR policy.",
+        "Record remaining risks and the next safe human action."
+      ],
+      "unblocks_work_package_ids": []
+    },
+    "WP-RESP-003": {
+      "id": "WP-RESP-003",
+      "title": "Consolidate Validation Chain and Quality Debt",
+      "capability_area": "validation_chain",
+      "current_state": "Validation chain and quality-debt consolidation was completed by PR #149 and PR #150 with index parity and negative fixture coverage.",
+      "target_state": "Primary Validate, validator index, fixture coverage, and review-debt rules are consolidated into one auditable repository validation chain.",
+      "measurable_current_state": {
+        "statement": "Validation chain and quality-debt consolidation was completed by PR #149 and PR #150 with index parity and negative fixture coverage.",
+        "measurement": "Measured by workflow, STATUS, command index, validator list, and named quality-debt records.",
+        "measurable": true
+      },
+      "measurable_target_state": {
+        "statement": "Primary Validate, validator index, fixture coverage, and review-debt rules are consolidated into one auditable repository validation chain.",
+        "measurement": "Accepted when workflow, STATUS, command index, validators, fixtures, and quality-debt records align without removing safety checks.",
+        "measurable": true
+      },
+      "target_capability": {
+        "statement": "Validation chain governance is coherent, deterministic, and CI-visible through workflow, STATUS, command index, validators, and named debt records.",
+        "measurement": "Workflow, STATUS, command index, validators, and named quality-debt records align without removing existing safety checks.",
+        "measurable": true
+      },
+      "expected_project_delta": "Repository has coherent validation-chain governance that makes validators discoverable, keeps STATUS/workflow parity machine-checked, and closes named quality debt without inventing checkpoint tasks.",
+      "selectable": true,
+      "ready_state": "completed",
+      "priority": 30,
+      "reporting": {
+        "estimated_completion_percentage": 100,
+        "estimated_percentage_is_reporting_only": true
+      },
+      "allowed_work": [
+        "Preserve validator index and CI workflow parity and patch only real drift or named debt regressions.",
+        "Improve diagnostics where validators already own the behavior."
+      ],
+      "forbidden_work": [
+        "Do not create submitted evidence unless explicitly authorized by the repository owner and current Issue #8 submitted-mode contracts.",
+        "Do not mutate Issue #8 or mark Issue #8 evidence as satisfied.",
+        "Do not run or authorize real pilot execution.",
+        "Do not claim production_ready, release_ready, live_render_validated, export_json_validated, accessibility_passed, pixel_perfect, or responsive_correctness_validated.",
+        "Do not treat CI success, merged PRs, catalog completion, Work Package completion, or queue completion as domain evidence."
+      ],
+      "must_deliver": [
+        "Completed validation command index and STATUS parity checks.",
+        "Completed named quality-debt closure records or deterministic validator improvements.",
+        "Completed CI workflow alignment without removing existing checks."
+      ],
+      "must_preserve": [
+        "Rolling queue remains a historical reconciled archive, not the execution driver.",
+        "Controller selection must come only from planning/EV4_AUTOMATION_WORK_PACKAGE_CATALOG.json.",
+        "Quality gates, CI, review, and evidence boundaries remain mandatory.",
+        "Technical evidence claims remain false unless real evidence gates pass.",
+        "Catalog replenishment is state-driven and must not block active Work Package execution.",
+        "Catalog replenishment must respect the single-active-mutation-PR policy."
+      ],
+      "evidence_boundary": {
+        "submitted_evidence_created_by_package": false,
+        "issue_8_mutation_allowed": false,
+        "real_pilot_execution_allowed": false,
+        "ci_success_is_domain_evidence": false,
+        "merged_pr_is_domain_evidence": false,
+        "catalog_completion_is_evidence_validation": false,
+        "claims_require_real_evidence_gates": true,
+        "forbidden_claims_without_real_evidence": [
+          "production_ready",
+          "release_ready",
+          "live_render_validated",
+          "export_json_validated",
+          "accessibility_passed",
+          "pixel_perfect",
+          "responsive_correctness_validated"
+        ]
+      },
+      "readiness_boundary": {
+        "pilot_allowed_to_start": false,
+        "production_ready": false,
+        "release_ready": false,
+        "live_render_validated": false,
+        "export_json_validated": false,
+        "accessibility_passed": false,
+        "pixel_perfect": false,
+        "responsive_correctness_validated": false
+      },
+      "definition_of_done": [
+        "The measurable target state is met by schema-backed or validator-backed repository evidence.",
+        "The selected PR slice remains reviewable and stays under this Work Package ID.",
+        "No submitted evidence, Issue #8 mutation, pilot authorization, or forbidden readiness claim is produced by the Work Package."
+      ],
+      "quality_gates": [
+        "python validation/e2e/run_automation_work_package_catalog_check.py",
+        "python validation/e2e/run_automation_control_state_check.py",
+        "python validation/e2e/run_rolling_queue_check.py",
+        "python validation/e2e/run_run_ledger_check.py",
+        "python validation/e2e/run_task_quality_gate_check.py"
+      ],
+      "split_rule": {
+        "principle": "A Work Package may be large in objective, but each PR must remain reviewable.",
+        "split_by": "implementation_layer_under_same_work_package_id",
+        "requires_slice_id_prefix": "<WORK_PACKAGE_ID>/PR-",
+        "forbidden_splits": [
+          "invent_unrelated_rtaq_tasks",
+          "guard_only_task_without_named_work_package_unblock",
+          "checkpoint_only_pr_after_every_merge",
+          "artificial_reserve_task_to_keep_task_count_high",
+          "queue_refresh_loop_as_execution_driver",
+          "fixed_ordinal_refresh"
+        ]
+      },
+      "allowed_pr_slices": [
+        {
+          "slice_id": "WP-RESP-003/PR-A",
+          "title": "validator inventory and parity",
+          "layer": "validator_inventory",
+          "objective": "Align workflow, STATUS, and command index.",
+          "review_boundary": "Reviewable PR slice under the same Work Package ID; no unrelated micro-objective may be introduced."
+        },
+        {
+          "slice_id": "WP-RESP-003/PR-B",
+          "title": "fixture coverage debt",
+          "layer": "fixtures",
+          "objective": "Add focused valid/invalid fixture coverage for named gaps.",
+          "review_boundary": "Reviewable PR slice under the same Work Package ID; no unrelated micro-objective may be introduced."
+        }
+      ],
+      "blocked_if": [
+        "The work would remove or weaken any existing Validate step."
+      ],
+      "completion_record_requirements": [
+        "Record selected Work Package ID and PR slice ID in the PR body.",
+        "List files changed, validators changed, and CI commands run.",
+        "State commands not run and why.",
+        "Restate evidence/pilot/readiness/production/release/responsive-correctness boundaries.",
+        "Record whether catalog replenishment was checked and whether it was non-mutating, same-PR in-scope, or blocked by single-active-PR policy.",
+        "Record remaining risks and the next safe human action."
+      ],
+      "unblocks_work_package_ids": []
+    },
+    "WP-RESP-004": {
+      "id": "WP-RESP-004",
+      "title": "Prepare Shadow-Mode Pilot Readiness Without Production Claim",
+      "capability_area": "pilot_readiness_boundary",
+      "current_state": "Shadow-mode preparation path was completed by PR #151 and PR #152 with dry-run stop guards, manual path documentation, and STATUS boundary markers.",
+      "target_state": "A controlled shadow-mode preparation path is documented and validated while production, release, pilot, and responsive-correctness claims remain false.",
+      "measurable_current_state": {
+        "statement": "Shadow-mode preparation path was completed by PR #151 and PR #152 with dry-run stop guards, manual path documentation, and STATUS boundary markers.",
+        "measurement": "Measured by dry-run validators, STATUS markers, stop conditions, and absence of real submitted evidence.",
+        "measurable": true
+      },
+      "measurable_target_state": {
+        "statement": "A controlled shadow-mode preparation path is documented and validated while production, release, pilot, and responsive-correctness claims remain false.",
+        "measurement": "Accepted when dry-run validators, docs, fixtures, and STATUS preserve false readiness and production claims.",
+        "measurable": true
+      },
+      "target_capability": {
+        "statement": "Shadow-mode preparation is deterministic as a blocked readiness path with dry-run validators and explicit stop-condition documentation.",
+        "measurement": "Dry-run validators, stop-condition documentation, and STATUS markers preserve false readiness and production claims.",
+        "measurable": true
+      },
+      "expected_project_delta": "Repository has a bounded shadow-mode preparation path with dry-run validators, explicit stop conditions, and completion records that cannot authorize pilot execution.",
+      "selectable": true,
+      "ready_state": "completed",
+      "priority": 40,
+      "reporting": {
+        "estimated_completion_percentage": 100,
+        "estimated_percentage_is_reporting_only": true
+      },
+      "allowed_work": [
+        "Preserve dry-run readiness outputs and stop-condition diagnostics.",
+        "Document operator steps that remain manual and blocked until real gates pass.",
+        "Add fixtures proving readiness claims stay false without real evidence."
+      ],
+      "forbidden_work": [
+        "Do not create submitted evidence unless explicitly authorized by the repository owner and current Issue #8 submitted-mode contracts.",
+        "Do not mutate Issue #8 or mark Issue #8 evidence as satisfied.",
+        "Do not run or authorize real pilot execution.",
+        "Do not claim production_ready, release_ready, live_render_validated, export_json_validated, accessibility_passed, pixel_perfect, or responsive_correctness_validated.",
+        "Do not treat CI success, merged PRs, catalog completion, Work Package completion, or queue completion as domain evidence."
+      ],
+      "must_deliver": [
+        "Completed dry-run readiness validator coverage.",
+        "Completed manual/operator guide updates with explicit stop conditions.",
+        "Completed STATUS boundary markers that keep pilot execution blocked."
+      ],
+      "must_preserve": [
+        "Rolling queue remains a historical reconciled archive, not the execution driver.",
+        "Controller selection must come only from planning/EV4_AUTOMATION_WORK_PACKAGE_CATALOG.json.",
+        "Quality gates, CI, review, and evidence boundaries remain mandatory.",
+        "Technical evidence claims remain false unless real evidence gates pass.",
+        "Catalog replenishment is state-driven and must not block active Work Package execution.",
+        "Catalog replenishment must respect the single-active-mutation-PR policy."
+      ],
+      "evidence_boundary": {
+        "submitted_evidence_created_by_package": false,
+        "issue_8_mutation_allowed": false,
+        "real_pilot_execution_allowed": false,
+        "ci_success_is_domain_evidence": false,
+        "merged_pr_is_domain_evidence": false,
+        "catalog_completion_is_evidence_validation": false,
+        "claims_require_real_evidence_gates": true,
+        "forbidden_claims_without_real_evidence": [
+          "production_ready",
+          "release_ready",
+          "live_render_validated",
+          "export_json_validated",
+          "accessibility_passed",
+          "pixel_perfect",
+          "responsive_correctness_validated"
+        ]
+      },
+      "readiness_boundary": {
+        "pilot_allowed_to_start": false,
+        "production_ready": false,
+        "release_ready": false,
+        "live_render_validated": false,
+        "export_json_validated": false,
+        "accessibility_passed": false,
+        "pixel_perfect": false,
+        "responsive_correctness_validated": false
+      },
+      "definition_of_done": [
+        "The measurable target state is met by schema-backed or validator-backed repository evidence.",
+        "The selected PR slice remains reviewable and stays under this Work Package ID.",
+        "No submitted evidence, Issue #8 mutation, pilot authorization, or forbidden readiness claim is produced by the Work Package."
+      ],
+      "quality_gates": [
+        "python validation/e2e/run_automation_work_package_catalog_check.py",
+        "python validation/e2e/run_automation_control_state_check.py",
+        "python validation/e2e/run_rolling_queue_check.py",
+        "python validation/e2e/run_run_ledger_check.py",
+        "python validation/e2e/run_task_quality_gate_check.py"
+      ],
+      "split_rule": {
+        "principle": "A Work Package may be large in objective, but each PR must remain reviewable.",
+        "split_by": "implementation_layer_under_same_work_package_id",
+        "requires_slice_id_prefix": "<WORK_PACKAGE_ID>/PR-",
+        "forbidden_splits": [
+          "invent_unrelated_rtaq_tasks",
+          "guard_only_task_without_named_work_package_unblock",
+          "checkpoint_only_pr_after_every_merge",
+          "artificial_reserve_task_to_keep_task_count_high",
+          "queue_refresh_loop_as_execution_driver",
+          "fixed_ordinal_refresh"
+        ]
+      },
+      "allowed_pr_slices": [
+        {
+          "slice_id": "WP-RESP-004/PR-A",
+          "title": "readiness dry-run guards",
+          "layer": "validator",
+          "objective": "Harden dry-run readiness and stop-condition checks.",
+          "review_boundary": "Reviewable PR slice under the same Work Package ID; no unrelated micro-objective may be introduced."
+        },
+        {
+          "slice_id": "WP-RESP-004/PR-B",
+          "title": "manual shadow-mode path docs",
+          "layer": "docs",
+          "objective": "Document the blocked preparation path and required evidence gates.",
+          "review_boundary": "Reviewable PR slice under the same Work Package ID; no unrelated micro-objective may be introduced."
+        }
+      ],
+      "blocked_if": [
+        "Real submitted evidence is absent and the slice attempts to authorize live pilot execution."
+      ],
+      "completion_record_requirements": [
+        "Record selected Work Package ID and PR slice ID in the PR body.",
+        "List files changed, validators changed, and CI commands run.",
+        "State commands not run and why.",
+        "Restate evidence/pilot/readiness/production/release/responsive-correctness boundaries.",
+        "Record whether catalog replenishment was checked and whether it was non-mutating, same-PR in-scope, or blocked by single-active-PR policy.",
+        "Record remaining risks and the next safe human action."
+      ],
+      "unblocks_work_package_ids": []
+    },
+    "WP-RESP-005": {
+      "id": "WP-RESP-005",
+      "title": "Catalog Governance and State-Driven Replenishment",
+      "capability_area": "catalog_governance",
+      "current_state": "Automation objective selection uses an approved Work Package Catalog and now requires state-driven metadata updates after completed material packages.",
+      "target_state": "Catalog governance updates happen only when ready depth, project state, blockers, contracts, architecture, or real gaps require replenishment under the single-active-PR policy.",
+      "measurable_current_state": {
+        "statement": "Automation objective selection uses an approved Work Package Catalog and now requires state-driven metadata updates after completed material packages.",
+        "measurement": "Measured by catalog policy fields, schema, validator self-tests, STATUS, and controller prompt behavior.",
+        "measurable": true
+      },
+      "measurable_target_state": {
+        "statement": "Catalog governance updates happen only when ready depth, project state, blockers, contracts, architecture, or real gaps require replenishment under the single-active-PR policy.",
+        "measurement": "Accepted when schema, validator, docs, and STATUS reject fixed ordinal refresh and enforce single-active-PR replenishment limits.",
+        "measurable": true
+      },
+      "target_capability": {
+        "statement": "Catalog governance remains deterministic and does not become a recurring fixed-ordinal refresh loop.",
+        "measurement": "Schema, validator, docs, and STATUS reject fixed ordinal refresh, arbitrary tasks, and catalog mutations that violate single-active-PR policy.",
+        "measurable": true
+      },
+      "expected_project_delta": "Repository gains explicit state-driven catalog governance that allows automatic replenishment when real repository state requires it while preventing checkpoint loops and arbitrary task invention.",
+      "selectable": false,
+      "ready_state": "governance",
+      "priority": 90,
+      "reporting": {
+        "estimated_completion_percentage": 10,
+        "estimated_percentage_is_reporting_only": true
+      },
+      "allowed_work": [
+        "Detect ready Work Package depth and report replenishment needs.",
+        "Prepare non-mutating replenishment plans while another mutation PR is active.",
+        "Update catalog metadata only when material Work Package state changes or same-PR scope allows it.",
+        "Create a reviewed catalog replenishment PR only when no active mutation PR blocks it and ready depth is below threshold."
+      ],
+      "forbidden_work": [
+        "Do not create submitted evidence unless explicitly authorized by the repository owner and current Issue #8 submitted-mode contracts.",
+        "Do not mutate Issue #8 or mark Issue #8 evidence as satisfied.",
+        "Do not run or authorize real pilot execution.",
+        "Do not claim production_ready, release_ready, live_render_validated, export_json_validated, accessibility_passed, pixel_perfect, or responsive_correctness_validated.",
+        "Do not treat CI success, merged PRs, catalog completion, Work Package completion, or queue completion as domain evidence."
+      ],
+      "must_deliver": [
+        "Catalog metadata update tied to named Work Package state change or ready-depth threshold.",
+        "Validator coverage proving catalog refresh cannot become a fixed fifth-task loop.",
+        "Documentation update explaining the state-driven trigger and single-active-PR rule."
+      ],
+      "must_preserve": [
+        "Rolling queue remains a historical reconciled archive, not the execution driver.",
+        "Controller selection must come only from planning/EV4_AUTOMATION_WORK_PACKAGE_CATALOG.json.",
+        "Quality gates, CI, review, and evidence boundaries remain mandatory.",
+        "Technical evidence claims remain false unless real evidence gates pass.",
+        "Catalog replenishment is state-driven and must not block active Work Package execution.",
+        "Catalog replenishment must respect the single-active-mutation-PR policy."
+      ],
+      "evidence_boundary": {
+        "submitted_evidence_created_by_package": false,
+        "issue_8_mutation_allowed": false,
+        "real_pilot_execution_allowed": false,
+        "ci_success_is_domain_evidence": false,
+        "merged_pr_is_domain_evidence": false,
+        "catalog_completion_is_evidence_validation": false,
+        "claims_require_real_evidence_gates": true,
+        "forbidden_claims_without_real_evidence": [
+          "production_ready",
+          "release_ready",
+          "live_render_validated",
+          "export_json_validated",
+          "accessibility_passed",
+          "pixel_perfect",
+          "responsive_correctness_validated"
+        ]
+      },
+      "readiness_boundary": {
+        "pilot_allowed_to_start": false,
+        "production_ready": false,
+        "release_ready": false,
+        "live_render_validated": false,
+        "export_json_validated": false,
+        "accessibility_passed": false,
+        "pixel_perfect": false,
+        "responsive_correctness_validated": false
+      },
+      "definition_of_done": [
+        "The measurable target state is met by schema-backed or validator-backed repository evidence.",
+        "The selected PR slice remains reviewable and stays under this Work Package ID.",
+        "No submitted evidence, Issue #8 mutation, pilot authorization, or forbidden readiness claim is produced by the Work Package."
+      ],
+      "quality_gates": [
+        "python validation/e2e/run_automation_work_package_catalog_check.py",
+        "python validation/e2e/run_automation_control_state_check.py",
+        "python validation/e2e/run_rolling_queue_check.py",
+        "python validation/e2e/run_run_ledger_check.py",
+        "python validation/e2e/run_task_quality_gate_check.py"
+      ],
+      "split_rule": {
+        "principle": "A Work Package may be large in objective, but each PR must remain reviewable.",
+        "split_by": "implementation_layer_under_same_work_package_id",
+        "requires_slice_id_prefix": "<WORK_PACKAGE_ID>/PR-",
+        "forbidden_splits": [
+          "invent_unrelated_rtaq_tasks",
+          "guard_only_task_without_named_work_package_unblock",
+          "checkpoint_only_pr_after_every_merge",
+          "artificial_reserve_task_to_keep_task_count_high",
+          "queue_refresh_loop_as_execution_driver",
+          "fixed_ordinal_refresh"
+        ]
+      },
+      "allowed_pr_slices": [
+        {
+          "slice_id": "WP-RESP-005/PR-A",
+          "title": "governance schema and validator",
+          "layer": "schema_validator",
+          "objective": "Harden catalog governance rules when material state changes or ready depth falls below threshold.",
+          "review_boundary": "Reviewable PR slice under the same Work Package ID; no unrelated micro-objective may be introduced."
+        },
+        {
+          "slice_id": "WP-RESP-005/PR-B",
+          "title": "catalog state update",
+          "layer": "catalog_metadata",
+          "objective": "Update Work Package state after a named material outcome or allowed replenishment trigger.",
+          "review_boundary": "Reviewable PR slice under the same Work Package ID; no unrelated micro-objective may be introduced."
+        }
+      ],
+      "blocked_if": [
+        "No material Work Package state changed.",
+        "Ready Work Package depth is at or above threshold.",
+        "The update exists only to keep a task count, refresh cadence, fixed ordinal, or checkpoint loop alive.",
+        "Another active mutation PR exists and the catalog mutation is not in-scope for that same PR."
+      ],
+      "completion_record_requirements": [
+        "Record selected Work Package ID and PR slice ID in the PR body.",
+        "List files changed, validators changed, and CI commands run.",
+        "State commands not run and why.",
+        "Restate evidence/pilot/readiness/production/release/responsive-correctness boundaries.",
+        "Record whether catalog replenishment was checked and whether it was non-mutating, same-PR in-scope, or blocked by single-active-PR policy.",
+        "Record remaining risks and the next safe human action."
+      ],
+      "unblocks_work_package_ids": [
+        "WP-RESP-001",
+        "WP-RESP-002",
+        "WP-RESP-003",
+        "WP-RESP-004"
+      ],
+      "maintenance_type": "non_selectable_state_driven_catalog_replenishment_governance"
+    },
+    "WP-RESP-006": {
+      "id": "WP-RESP-006",
+      "title": "Harden Responsive Contract Drift Sentinel",
+      "capability_area": "contract_drift",
+      "current_state": "Responsive contracts, STATUS, command index, and workflow are aligned today, but there is no dedicated contract-drift sentinel package for future schema and documentation divergence.",
+      "target_state": "Contract, schema, validator, STATUS, command-index, and workflow drift are detectable through one deterministic CI-visible sentinel path.",
+      "measurable_current_state": {
+        "statement": "Responsive contracts, STATUS, command index, and workflow are aligned today, but there is no dedicated contract-drift sentinel package for future schema and documentation divergence.",
+        "measurement": "Measured by contract, schema, validator, fixture, CI, STATUS, and documentation coverage for this package.",
+        "measurable": true
+      },
+      "measurable_target_state": {
+        "statement": "Contract, schema, validator, STATUS, command-index, and workflow drift are detectable through one deterministic CI-visible sentinel path.",
+        "measurement": "Accepted when contract, schema, fixture, validator, CI, documentation, and STATUS signals align without stronger evidence claims.",
+        "measurable": true
+      },
+      "target_capability": {
+        "statement": "Responsive contract drift detection is schema-backed, validator-backed, and CI-visible without weakening existing safety gates.",
+        "measurement": "Measured by deterministic validator and CI-visible checks plus documented contract boundaries.",
+        "measurable": true
+      },
+      "expected_project_delta": "Repository gains a focused contract-drift sentinel so future contract, schema, validator, STATUS, and documentation changes cannot silently diverge.",
+      "selectable": true,
+      "ready_state": "ready",
+      "priority": 50,
+      "reporting": {
+        "estimated_completion_percentage": 15,
+        "estimated_percentage_is_reporting_only": true
+      },
+      "allowed_work": [
+        "Add or harden validator diagnostics for contract, schema, STATUS, command-index, and workflow drift.",
+        "Add focused fixtures or documentation records for real drift cases already represented in repository files."
+      ],
+      "forbidden_work": [
+        "Do not create submitted evidence unless explicitly authorized by the repository owner and current Issue #8 submitted-mode contracts.",
+        "Do not mutate Issue #8 or mark Issue #8 evidence as satisfied.",
+        "Do not run or authorize real pilot execution.",
+        "Do not claim production_ready, release_ready, live_render_validated, export_json_validated, accessibility_passed, pixel_perfect, or responsive_correctness_validated.",
+        "Do not treat CI success, merged PRs, catalog completion, Work Package completion, or queue completion as domain evidence."
+      ],
+      "must_deliver": [
+        "Contract drift validator or fixture coverage.",
+        "Documentation describing the drift sentinel path and its non-domain-evidence boundary.",
+        "STATUS or command-index alignment only when directly affected."
+      ],
+      "must_preserve": [
+        "Rolling queue remains a historical reconciled archive, not the execution driver.",
+        "Controller selection must come only from planning/EV4_AUTOMATION_WORK_PACKAGE_CATALOG.json.",
+        "Quality gates, CI, review, and evidence boundaries remain mandatory.",
+        "Technical evidence claims remain false unless real evidence gates pass.",
+        "Catalog replenishment is state-driven and must not block active Work Package execution.",
+        "Catalog replenishment must respect the single-active-mutation-PR policy."
+      ],
+      "evidence_boundary": {
+        "submitted_evidence_created_by_package": false,
+        "issue_8_mutation_allowed": false,
+        "real_pilot_execution_allowed": false,
+        "ci_success_is_domain_evidence": false,
+        "merged_pr_is_domain_evidence": false,
+        "catalog_completion_is_evidence_validation": false,
+        "claims_require_real_evidence_gates": true,
+        "forbidden_claims_without_real_evidence": [
+          "production_ready",
+          "release_ready",
+          "live_render_validated",
+          "export_json_validated",
+          "accessibility_passed",
+          "pixel_perfect",
+          "responsive_correctness_validated"
+        ]
+      },
+      "readiness_boundary": {
+        "pilot_allowed_to_start": false,
+        "production_ready": false,
+        "release_ready": false,
+        "live_render_validated": false,
+        "export_json_validated": false,
+        "accessibility_passed": false,
+        "pixel_perfect": false,
+        "responsive_correctness_validated": false
+      },
+      "definition_of_done": [
+        "The measurable target state is met by schema-backed or validator-backed repository evidence.",
+        "The selected PR slice remains reviewable and stays under this Work Package ID.",
+        "No submitted evidence, Issue #8 mutation, pilot authorization, or forbidden readiness claim is produced by the Work Package."
+      ],
+      "quality_gates": [
+        "python validation/e2e/run_automation_work_package_catalog_check.py",
+        "python validation/e2e/run_automation_control_state_check.py",
+        "python validation/e2e/run_rolling_queue_check.py",
+        "python validation/e2e/run_run_ledger_check.py",
+        "python validation/e2e/run_task_quality_gate_check.py"
+      ],
+      "split_rule": {
+        "principle": "A Work Package may be large in objective, but each PR must remain reviewable.",
+        "split_by": "implementation_layer_under_same_work_package_id",
+        "requires_slice_id_prefix": "<WORK_PACKAGE_ID>/PR-",
+        "forbidden_splits": [
+          "invent_unrelated_rtaq_tasks",
+          "guard_only_task_without_named_work_package_unblock",
+          "checkpoint_only_pr_after_every_merge",
+          "artificial_reserve_task_to_keep_task_count_high",
+          "queue_refresh_loop_as_execution_driver",
+          "fixed_ordinal_refresh"
+        ]
+      },
+      "allowed_pr_slices": [
+        {
+          "slice_id": "WP-RESP-006/PR-A",
+          "title": "contract drift inventory",
+          "layer": "validator_inventory",
+          "objective": "Map contract, schema, STATUS, command-index, and workflow ownership into one drift sentinel.",
+          "review_boundary": "Reviewable PR slice under the same Work Package ID; no unrelated micro-objective may be introduced."
+        },
+        {
+          "slice_id": "WP-RESP-006/PR-B",
+          "title": "drift fixtures and docs",
+          "layer": "fixtures_docs",
+          "objective": "Add focused fixture or documentation coverage for detected contract-drift scenarios.",
+          "review_boundary": "Reviewable PR slice under the same Work Package ID; no unrelated micro-objective may be introduced."
+        }
+      ],
+      "blocked_if": [
+        "The work would remove or weaken an existing Validate step.",
+        "The package would treat drift checks as responsive-correctness evidence."
+      ],
+      "completion_record_requirements": [
+        "Record selected Work Package ID and PR slice ID in the PR body.",
+        "List files changed, validators changed, and CI commands run.",
+        "State commands not run and why.",
+        "Restate evidence/pilot/readiness/production/release/responsive-correctness boundaries.",
+        "Record whether catalog replenishment was checked and whether it was non-mutating, same-PR in-scope, or blocked by single-active-PR policy.",
+        "Record remaining risks and the next safe human action."
+      ],
+      "unblocks_work_package_ids": []
+    },
+    "WP-RESP-007": {
+      "id": "WP-RESP-007",
+      "title": "Codify Viewport Inheritance and Reset Decision Matrix",
+      "capability_area": "responsive_boundary",
+      "current_state": "Viewport inheritance, reset, and breakpoint behavior are represented across contracts and fixtures, but the decision matrix is not yet isolated as a catalog-backed material capability.",
+      "target_state": "Viewport inheritance and reset decisions are documented and validation-backed as input and strategy boundaries, not live responsive correctness evidence.",
+      "measurable_current_state": {
+        "statement": "Viewport inheritance, reset, and breakpoint behavior are represented across contracts and fixtures, but the decision matrix is not yet isolated as a catalog-backed material capability.",
+        "measurement": "Measured by contract, schema, validator, fixture, CI, STATUS, and documentation coverage for this package.",
+        "measurable": true
+      },
+      "measurable_target_state": {
+        "statement": "Viewport inheritance and reset decisions are documented and validation-backed as input and strategy boundaries, not live responsive correctness evidence.",
+        "measurement": "Accepted when contract, schema, fixture, validator, CI, documentation, and STATUS signals align without stronger evidence claims.",
+        "measurable": true
+      },
+      "target_capability": {
+        "statement": "Viewport inheritance and reset decision handling is deterministic, contract-backed, fixture-covered, and CI-visible.",
+        "measurement": "Measured by deterministic validator and CI-visible checks plus documented contract boundaries.",
+        "measurable": true
+      },
+      "expected_project_delta": "Repository gains a clear viewport inheritance and reset decision matrix that supports safer responsive strategy routing while preserving false readiness and evidence claims.",
+      "selectable": true,
+      "ready_state": "ready",
+      "priority": 60,
+      "reporting": {
+        "estimated_completion_percentage": 20,
+        "estimated_percentage_is_reporting_only": true
+      },
+      "allowed_work": [
+        "Clarify viewport inheritance and reset contract expectations.",
+        "Add or harden focused fixtures for allowed and blocked inheritance/reset states.",
+        "Improve validator diagnostics where existing validators own the behavior."
+      ],
+      "forbidden_work": [
+        "Do not create submitted evidence unless explicitly authorized by the repository owner and current Issue #8 submitted-mode contracts.",
+        "Do not mutate Issue #8 or mark Issue #8 evidence as satisfied.",
+        "Do not run or authorize real pilot execution.",
+        "Do not claim production_ready, release_ready, live_render_validated, export_json_validated, accessibility_passed, pixel_perfect, or responsive_correctness_validated.",
+        "Do not treat CI success, merged PRs, catalog completion, Work Package completion, or queue completion as domain evidence."
+      ],
+      "must_deliver": [
+        "Decision matrix contract or documentation.",
+        "Focused valid/invalid fixture coverage for inheritance and reset boundaries.",
+        "Validator diagnostics that keep the result within repository-check evidence."
+      ],
+      "must_preserve": [
+        "Rolling queue remains a historical reconciled archive, not the execution driver.",
+        "Controller selection must come only from planning/EV4_AUTOMATION_WORK_PACKAGE_CATALOG.json.",
+        "Quality gates, CI, review, and evidence boundaries remain mandatory.",
+        "Technical evidence claims remain false unless real evidence gates pass.",
+        "Catalog replenishment is state-driven and must not block active Work Package execution.",
+        "Catalog replenishment must respect the single-active-mutation-PR policy."
+      ],
+      "evidence_boundary": {
+        "submitted_evidence_created_by_package": false,
+        "issue_8_mutation_allowed": false,
+        "real_pilot_execution_allowed": false,
+        "ci_success_is_domain_evidence": false,
+        "merged_pr_is_domain_evidence": false,
+        "catalog_completion_is_evidence_validation": false,
+        "claims_require_real_evidence_gates": true,
+        "forbidden_claims_without_real_evidence": [
+          "production_ready",
+          "release_ready",
+          "live_render_validated",
+          "export_json_validated",
+          "accessibility_passed",
+          "pixel_perfect",
+          "responsive_correctness_validated"
+        ]
+      },
+      "readiness_boundary": {
+        "pilot_allowed_to_start": false,
+        "production_ready": false,
+        "release_ready": false,
+        "live_render_validated": false,
+        "export_json_validated": false,
+        "accessibility_passed": false,
+        "pixel_perfect": false,
+        "responsive_correctness_validated": false
+      },
+      "definition_of_done": [
+        "The measurable target state is met by schema-backed or validator-backed repository evidence.",
+        "The selected PR slice remains reviewable and stays under this Work Package ID.",
+        "No submitted evidence, Issue #8 mutation, pilot authorization, or forbidden readiness claim is produced by the Work Package."
+      ],
+      "quality_gates": [
+        "python validation/e2e/run_automation_work_package_catalog_check.py",
+        "python validation/e2e/run_automation_control_state_check.py",
+        "python validation/e2e/run_rolling_queue_check.py",
+        "python validation/e2e/run_run_ledger_check.py",
+        "python validation/e2e/run_task_quality_gate_check.py"
+      ],
+      "split_rule": {
+        "principle": "A Work Package may be large in objective, but each PR must remain reviewable.",
+        "split_by": "implementation_layer_under_same_work_package_id",
+        "requires_slice_id_prefix": "<WORK_PACKAGE_ID>/PR-",
+        "forbidden_splits": [
+          "invent_unrelated_rtaq_tasks",
+          "guard_only_task_without_named_work_package_unblock",
+          "checkpoint_only_pr_after_every_merge",
+          "artificial_reserve_task_to_keep_task_count_high",
+          "queue_refresh_loop_as_execution_driver",
+          "fixed_ordinal_refresh"
+        ]
+      },
+      "allowed_pr_slices": [
+        {
+          "slice_id": "WP-RESP-007/PR-A",
+          "title": "decision matrix contract",
+          "layer": "contract_docs",
+          "objective": "Document the viewport inheritance and reset decision matrix boundaries.",
+          "review_boundary": "Reviewable PR slice under the same Work Package ID; no unrelated micro-objective may be introduced."
+        },
+        {
+          "slice_id": "WP-RESP-007/PR-B",
+          "title": "matrix fixtures and validator",
+          "layer": "fixtures_validator",
+          "objective": "Add or harden fixture and validator coverage for inheritance and reset decisions.",
+          "review_boundary": "Reviewable PR slice under the same Work Package ID; no unrelated micro-objective may be introduced."
+        }
+      ],
+      "blocked_if": [
+        "The slice would claim live responsive correctness or pixel-perfect rendering.",
+        "Required viewport contract source is missing or ambiguous."
+      ],
+      "completion_record_requirements": [
+        "Record selected Work Package ID and PR slice ID in the PR body.",
+        "List files changed, validators changed, and CI commands run.",
+        "State commands not run and why.",
+        "Restate evidence/pilot/readiness/production/release/responsive-correctness boundaries.",
+        "Record whether catalog replenishment was checked and whether it was non-mutating, same-PR in-scope, or blocked by single-active-PR policy.",
+        "Record remaining risks and the next safe human action."
+      ],
+      "unblocks_work_package_ids": []
+    },
+    "WP-RESP-008": {
+      "id": "WP-RESP-008",
+      "title": "Define Responsive Handoff Export Boundary Manifest",
+      "capability_area": "handoff_export",
+      "current_state": "Responsive handoff export contracts exist, but the export boundary manifest needs clearer schema and validator traceability without claiming export JSON has been validated from a live build.",
+      "target_state": "A responsive handoff export boundary manifest is schema-backed, validator-backed, documented, and explicitly not an export_json_validated claim.",
+      "measurable_current_state": {
+        "statement": "Responsive handoff export contracts exist, but the export boundary manifest needs clearer schema and validator traceability without claiming export JSON has been validated from a live build.",
+        "measurement": "Measured by contract, schema, validator, fixture, CI, STATUS, and documentation coverage for this package.",
+        "measurable": true
+      },
+      "measurable_target_state": {
+        "statement": "A responsive handoff export boundary manifest is schema-backed, validator-backed, documented, and explicitly not an export_json_validated claim.",
+        "measurement": "Accepted when contract, schema, fixture, validator, CI, documentation, and STATUS signals align without stronger evidence claims.",
+        "measurable": true
+      },
+      "target_capability": {
+        "statement": "Responsive handoff export boundaries are deterministic and CI-visible as repository contracts, not live export evidence.",
+        "measurement": "Measured by deterministic validator and CI-visible checks plus documented contract boundaries.",
+        "measurable": true
+      },
+      "expected_project_delta": "Repository gains a bounded handoff export manifest path that makes export expectations auditable while preserving the false export and readiness claims.",
+      "selectable": true,
+      "ready_state": "ready",
+      "priority": 70,
+      "reporting": {
+        "estimated_completion_percentage": 15,
+        "estimated_percentage_is_reporting_only": true
+      },
+      "allowed_work": [
+        "Clarify responsive handoff export manifest boundaries.",
+        "Add schema or fixture coverage for manifest eligibility and forbidden stronger claims.",
+        "Document export boundary expectations without claiming live exported JSON validation."
+      ],
+      "forbidden_work": [
+        "Do not create submitted evidence unless explicitly authorized by the repository owner and current Issue #8 submitted-mode contracts.",
+        "Do not mutate Issue #8 or mark Issue #8 evidence as satisfied.",
+        "Do not run or authorize real pilot execution.",
+        "Do not claim production_ready, release_ready, live_render_validated, export_json_validated, accessibility_passed, pixel_perfect, or responsive_correctness_validated.",
+        "Do not treat CI success, merged PRs, catalog completion, Work Package completion, or queue completion as domain evidence."
+      ],
+      "must_deliver": [
+        "Export boundary manifest contract or schema coverage.",
+        "Validator or fixture coverage for allowed and blocked manifest states.",
+        "Documentation that export_json_validated remains false without real evidence gates."
+      ],
+      "must_preserve": [
+        "Rolling queue remains a historical reconciled archive, not the execution driver.",
+        "Controller selection must come only from planning/EV4_AUTOMATION_WORK_PACKAGE_CATALOG.json.",
+        "Quality gates, CI, review, and evidence boundaries remain mandatory.",
+        "Technical evidence claims remain false unless real evidence gates pass.",
+        "Catalog replenishment is state-driven and must not block active Work Package execution.",
+        "Catalog replenishment must respect the single-active-mutation-PR policy."
+      ],
+      "evidence_boundary": {
+        "submitted_evidence_created_by_package": false,
+        "issue_8_mutation_allowed": false,
+        "real_pilot_execution_allowed": false,
+        "ci_success_is_domain_evidence": false,
+        "merged_pr_is_domain_evidence": false,
+        "catalog_completion_is_evidence_validation": false,
+        "claims_require_real_evidence_gates": true,
+        "forbidden_claims_without_real_evidence": [
+          "production_ready",
+          "release_ready",
+          "live_render_validated",
+          "export_json_validated",
+          "accessibility_passed",
+          "pixel_perfect",
+          "responsive_correctness_validated"
+        ]
+      },
+      "readiness_boundary": {
+        "pilot_allowed_to_start": false,
+        "production_ready": false,
+        "release_ready": false,
+        "live_render_validated": false,
+        "export_json_validated": false,
+        "accessibility_passed": false,
+        "pixel_perfect": false,
+        "responsive_correctness_validated": false
+      },
+      "definition_of_done": [
+        "The measurable target state is met by schema-backed or validator-backed repository evidence.",
+        "The selected PR slice remains reviewable and stays under this Work Package ID.",
+        "No submitted evidence, Issue #8 mutation, pilot authorization, or forbidden readiness claim is produced by the Work Package."
+      ],
+      "quality_gates": [
+        "python validation/e2e/run_automation_work_package_catalog_check.py",
+        "python validation/e2e/run_automation_control_state_check.py",
+        "python validation/e2e/run_rolling_queue_check.py",
+        "python validation/e2e/run_run_ledger_check.py",
+        "python validation/e2e/run_task_quality_gate_check.py"
+      ],
+      "split_rule": {
+        "principle": "A Work Package may be large in objective, but each PR must remain reviewable.",
+        "split_by": "implementation_layer_under_same_work_package_id",
+        "requires_slice_id_prefix": "<WORK_PACKAGE_ID>/PR-",
+        "forbidden_splits": [
+          "invent_unrelated_rtaq_tasks",
+          "guard_only_task_without_named_work_package_unblock",
+          "checkpoint_only_pr_after_every_merge",
+          "artificial_reserve_task_to_keep_task_count_high",
+          "queue_refresh_loop_as_execution_driver",
+          "fixed_ordinal_refresh"
+        ]
+      },
+      "allowed_pr_slices": [
+        {
+          "slice_id": "WP-RESP-008/PR-A",
+          "title": "export manifest contract",
+          "layer": "schema_contract",
+          "objective": "Define or clarify responsive handoff export manifest contract boundaries.",
+          "review_boundary": "Reviewable PR slice under the same Work Package ID; no unrelated micro-objective may be introduced."
+        },
+        {
+          "slice_id": "WP-RESP-008/PR-B",
+          "title": "manifest fixtures and validator",
+          "layer": "fixtures_validator",
+          "objective": "Add focused fixture and validator coverage for export manifest boundary states.",
+          "review_boundary": "Reviewable PR slice under the same Work Package ID; no unrelated micro-objective may be introduced."
+        }
+      ],
+      "blocked_if": [
+        "The work would claim export_json_validated from repository-only checks.",
+        "The work requires real live export evidence not present in the repository."
+      ],
+      "completion_record_requirements": [
+        "Record selected Work Package ID and PR slice ID in the PR body.",
+        "List files changed, validators changed, and CI commands run.",
+        "State commands not run and why.",
+        "Restate evidence/pilot/readiness/production/release/responsive-correctness boundaries.",
+        "Record whether catalog replenishment was checked and whether it was non-mutating, same-PR in-scope, or blocked by single-active-PR policy.",
+        "Record remaining risks and the next safe human action."
+      ],
+      "unblocks_work_package_ids": []
+    }
   }
 }
