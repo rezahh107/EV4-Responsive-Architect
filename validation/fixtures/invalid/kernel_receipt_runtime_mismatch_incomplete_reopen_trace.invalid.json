@@ -1,0 +1,14 @@
+{
+  "fixture": "runtime_mismatch_incomplete_reopen_trace_blocks_mismatch_receipt",
+  "decision_lineage": {
+    "selected_option": "blocked_pending_input",
+    "evidence_state": "reopen_required",
+    "consumer_stage": "runtime_evidence_conflict"
+  },
+  "kernel_decision_receipt": {
+    "receipt_state": "runtime_mismatch_warning",
+    "message": "⚠️ runtime mismatch دیده شد، اما این رسید تصمیم جدید نیست؛ تصمیم باید با trace معتبر reopen یا repair شود.",
+    "trace_ref": "decision_lineage",
+    "surface": "mismatch_report"
+  }
+}
