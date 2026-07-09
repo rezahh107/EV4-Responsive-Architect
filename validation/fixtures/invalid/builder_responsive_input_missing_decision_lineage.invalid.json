@@ -4,7 +4,7 @@
   "project_gate_ref": {
     "gate_id": "pg-001",
     "gate_status": "verified",
-    "gate_hash": "sha256:not-a-real-digest"
+    "gate_hash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
   },
   "selected_candidate_id": "candidate-a",
   "builder_output_ref": {
@@ -34,7 +34,7 @@
   },
   "responsive_intake_decision": {
     "intake_allowed": false,
-    "reason": "Malformed Project Gate digest must block Builder to Responsive intake eligibility.",
+    "reason": "Kernel decision lineage is missing; Responsive intake must fail closed.",
     "claim_boundary": "input eligibility only; not responsive correctness evidence"
   },
   "forbidden_claims": [
@@ -46,21 +46,5 @@
     "accessibility_passed",
     "responsive_correctness_validated",
     "ci_success_as_frontend_evidence"
-  ],
-  "decision_lineage": {
-    "decision_family": "responsive_tree_architecture_route",
-    "decision_card_ref": "kernel-decision-card:responsive-tree-architecture-route:v1",
-    "selected_option": "same_tree_responsive_overrides",
-    "rejected_options": [
-      "viewport_specific_variant_tree",
-      "hybrid_split_architecture",
-      "blocked_pending_input"
-    ],
-    "evidence_refs": [
-      "decision-evidence:architect-approved-candidate",
-      "decision-evidence:builder-project-gate-package"
-    ],
-    "evidence_state": "validated",
-    "consumer_stage": "responsive_intake"
-  }
+  ]
 }

@@ -34,8 +34,18 @@ submitted_packet_readiness:
 
 builder_to_responsive_input:
   schema: ev4-builder-responsive-input@0.1.0
+  required_decision_lineage_fields:
+    - decision_family
+    - decision_card_ref
+    - selected_option
+    - rejected_options
+    - evidence_refs
+    - evidence_state
+    - consumer_stage
   schema_file: schemas/ev4-builder-responsive-input.schema.json
   validator: validation/e2e/run_builder_responsive_input_boundary_check.py
+  sequence_validator: validation/e2e/run_responsive_decision_lineage_sequence_check.py
+  sequence_schema_validator: validation/e2e/run_decision_escape_routes_schema_check.py
   command: python validation/e2e/run_builder_responsive_input_boundary_check.py
   status: input eligibility only; not responsive correctness evidence
 
@@ -98,6 +108,9 @@ builder_to_responsive_input_package:
   fixture_suite:
     valid:
       - validation/fixtures/valid/builder_responsive_input.valid.json
+      - validation/fixtures/valid/builder_responsive_input_viewport_tree.valid.json
+      - validation/fixtures/valid/builder_responsive_input_hybrid.valid.json
+      - validation/fixtures/valid/builder_responsive_input_blocked.valid.json
     invalid:
       - validation/fixtures/invalid/builder_responsive_input_missing_mobile_evidence.invalid.json
       - validation/fixtures/invalid/builder_responsive_input_blocked_project_gate_allows_intake.invalid.json
@@ -108,6 +121,7 @@ builder_to_responsive_input_package:
     gate_hash: sha256:<64 lowercase hexadecimal characters>
     artifact_hash: sha256:<64 lowercase hexadecimal characters>
   claim_boundary: input eligibility only; not responsive correctness evidence
+  decision_lineage_rule: missing or incomplete Kernel decision lineage blocks intake; Responsive must not infer or replace it
 ```
 
 Until Project Gate exists, Responsive intake remains fail-closed for Builder→Responsive automation. A future Project Gate transition may verify and transport Builder-owned artifacts, but Responsive must not treat transport alone as proof of viewport correctness.

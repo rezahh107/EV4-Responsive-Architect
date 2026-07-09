@@ -1,6 +1,6 @@
 {
   "schema": "ev4-responsive-output@0.3.0",
-  "source_packet_ref": "ev4-responsive-start-packet.sample.noncanonical-breakpoints",
+  "source_packet_ref": "ev4-responsive-start-packet.sample.same-tree",
   "selected_route": "same_tree_responsive_overrides",
   "relationship_classification_ref": {
     "classification": "same_section_adaptation",
@@ -12,7 +12,7 @@
   },
   "responsive_tree_output": {
     "mode": "same_tree",
-    "summary": "Breakpoint text is intentionally noncanonical and must be rejected by semantic validation.",
+    "summary": "Preserve the approved desktop tree and derive tablet/mobile overrides.",
     "tree_ref": "desktop_tree.sample",
     "breakpoint_overrides": {
       "tablet": {
@@ -26,7 +26,7 @@
   "display_contract": {
     "breakpoint_scope": {
       "desktop": ">=1025px",
-      "tablet": "768px to 1024px",
+      "tablet": "768px-1024px",
       "mobile": "<=767px"
     },
     "display_rules": [
@@ -45,7 +45,7 @@
     "mode": "same_tree_responsive_overrides",
     "steps": [
       {
-        "step_id": "BP-001",
+        "step_id": "ST-001",
         "target_node": "section.root",
         "viewport": "tablet",
         "action": "Set main container direction to column.",
@@ -55,16 +55,19 @@
   },
   "validation_plan": {
     "required_checks": [
-      "Confirm breakpoint scopes use the canonical repository contract labels."
+      "Confirm desktop tree remains unchanged.",
+      "Confirm mobile content is not removed."
     ],
     "evidence_to_collect": [
-      "desktop_after_build_screenshot"
+      "desktop_after_build_screenshot",
+      "tablet_after_build_screenshot",
+      "mobile_after_build_screenshot"
     ],
-    "claim_boundary": "This invalid fixture must fail before any breakpoint relationship claim is accepted."
+    "claim_boundary": "This is a handoff plan, not live render validation."
   },
   "final_review": {
     "handoff_ready": true,
-    "reason": "This should not be accepted because the tablet breakpoint label is noncanonical."
+    "reason": "Same-tree route has a display contract and no unresolved blocker."
   },
   "unresolved_unknowns": [],
   "forbidden_claims": [
@@ -89,7 +92,6 @@
       "decision-evidence:builder-project-gate-package",
       "responsive-validation-evidence:viewport-plan"
     ],
-    "evidence_state": "validated",
     "consumer_stage": "responsive_validation_output"
   }
 }

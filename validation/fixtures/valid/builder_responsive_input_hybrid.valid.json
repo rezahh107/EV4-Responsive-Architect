@@ -1,14 +1,14 @@
 {
   "schema": "ev4-builder-responsive-input@0.1.0",
-  "source_packet_ref": "packet:submitted-example:sha256:111",
+  "source_packet_ref": "packet:submitted-example:hybrid:sha256:111",
   "project_gate_ref": {
     "gate_id": "pg-001",
     "gate_status": "verified",
-    "gate_hash": "sha256:not-a-real-digest"
+    "gate_hash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
   },
-  "selected_candidate_id": "candidate-a",
+  "selected_candidate_id": "candidate-hybrid",
   "builder_output_ref": {
-    "output_id": "builder-output-001",
+    "output_id": "builder-output-hybrid",
     "artifact_ref": "artifacts/builder/output.json",
     "artifact_hash": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
   },
@@ -33,8 +33,8 @@
     }
   },
   "responsive_intake_decision": {
-    "intake_allowed": false,
-    "reason": "Malformed Project Gate digest must block Builder to Responsive intake eligibility.",
+    "intake_allowed": true,
+    "reason": "All required Builder and viewport evidence references are present for Responsive intake eligibility.",
     "claim_boundary": "input eligibility only; not responsive correctness evidence"
   },
   "forbidden_claims": [
@@ -50,10 +50,10 @@
   "decision_lineage": {
     "decision_family": "responsive_tree_architecture_route",
     "decision_card_ref": "kernel-decision-card:responsive-tree-architecture-route:v1",
-    "selected_option": "same_tree_responsive_overrides",
+    "selected_option": "hybrid_split_architecture",
     "rejected_options": [
+      "same_tree_responsive_overrides",
       "viewport_specific_variant_tree",
-      "hybrid_split_architecture",
       "blocked_pending_input"
     ],
     "evidence_refs": [

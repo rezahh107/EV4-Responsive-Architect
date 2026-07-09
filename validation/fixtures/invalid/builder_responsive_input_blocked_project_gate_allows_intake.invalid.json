@@ -19,9 +19,18 @@
     "completion_gate_ref": "evidence/builder/completion-gate.json"
   },
   "viewport_evidence": {
-    "desktop": {"evidence_ref": "evidence/viewport/desktop.json", "evidence_status": "provided"},
-    "tablet": {"evidence_ref": "evidence/viewport/tablet.json", "evidence_status": "provided"},
-    "mobile": {"evidence_ref": "evidence/viewport/mobile.json", "evidence_status": "provided"}
+    "desktop": {
+      "evidence_ref": "evidence/viewport/desktop.json",
+      "evidence_status": "provided"
+    },
+    "tablet": {
+      "evidence_ref": "evidence/viewport/tablet.json",
+      "evidence_status": "provided"
+    },
+    "mobile": {
+      "evidence_ref": "evidence/viewport/mobile.json",
+      "evidence_status": "provided"
+    }
   },
   "responsive_intake_decision": {
     "intake_allowed": false,
@@ -37,5 +46,21 @@
     "accessibility_passed",
     "responsive_correctness_validated",
     "ci_success_as_frontend_evidence"
-  ]
+  ],
+  "decision_lineage": {
+    "decision_family": "responsive_tree_architecture_route",
+    "decision_card_ref": "kernel-decision-card:responsive-tree-architecture-route:v1",
+    "selected_option": "same_tree_responsive_overrides",
+    "rejected_options": [
+      "viewport_specific_variant_tree",
+      "hybrid_split_architecture",
+      "blocked_pending_input"
+    ],
+    "evidence_refs": [
+      "decision-evidence:architect-approved-candidate",
+      "decision-evidence:builder-project-gate-package"
+    ],
+    "evidence_state": "validated",
+    "consumer_stage": "responsive_intake"
+  }
 }
