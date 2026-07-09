@@ -80,6 +80,25 @@ Runtime mismatches must stay warnings. They do not authorize Responsive to creat
 ⚠️ runtime mismatch دیده شد، اما این رسید تصمیم جدید نیست؛ تصمیم باید با trace معتبر reopen یا repair شود.
 ```
 
+A runtime mismatch receipt may be emitted only when the mismatch trace is complete and explicitly marked as a reopen/repair path:
+
+```yaml
+runtime_mismatch_required_trace:
+  required_fields:
+    - decision_family
+    - decision_card_ref
+    - selected_option
+    - rejected_options
+    - evidence_refs
+    - evidence_state
+    - consumer_stage
+  selected_option: blocked_pending_input
+  evidence_state: reopen_required
+  consumer_stage: runtime_evidence_conflict
+```
+
+If this trace is incomplete, Responsive must use the insufficient-evidence warning instead of the runtime mismatch receipt.
+
 A runtime mismatch receipt must not claim `runtime_monitor_enforced`, downstream enforcement, production readiness, or new Responsive design authority.
 
 ## Non-claims
@@ -114,6 +133,7 @@ Negative fixtures:
 negative_fixtures:
   - validation/fixtures/invalid/kernel_receipt_success_without_trace.invalid.json
   - validation/fixtures/invalid/kernel_receipt_runtime_mismatch_without_reopen_trace.invalid.json
+  - validation/fixtures/invalid/kernel_receipt_runtime_mismatch_incomplete_reopen_trace.invalid.json
   - validation/fixtures/invalid/kernel_receipt_claims_redesign_authority.invalid.json
   - validation/fixtures/invalid/kernel_receipt_claims_runtime_monitor_enforcement.invalid.json
 ```
