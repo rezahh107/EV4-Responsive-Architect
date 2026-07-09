@@ -58,3 +58,11 @@ A screenshot proves only visible assertions it supports. Structure evidence does
 ## Pull Requests
 
 State the behavior or contract changed, affected viewports and ownership boundaries, validation executed, regression coverage, and remaining unknowns.
+## Decision Escape Route Review
+
+Before opening or completing any PR that changes schemas, validators, prompts, fixtures, pipeline docs, handoff artifacts, fallback behavior, responsive validation outputs, runtime evidence outputs, or decision-bearing outputs, review `planning/DECISION_ESCAPE_ROUTES.yml`.
+
+Do not mark an escape route as resolved unless its `enforcement_status` meets the required threshold for its risk and `session_scope`; a Critical cross-turn rule is not resolved by single-artifact `ci_enforced` evidence. Do not add authored `resolved` or `production_ready` fields; those are derived audit conclusions.
+
+Responsive validates runtime/responsive behavior; it must not redesign architecture or claim runtime enforcement unless inspected evidence proves the required carriers exist.
+
