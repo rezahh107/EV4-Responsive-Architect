@@ -79,10 +79,22 @@ def _trace_ref(trace: object) -> str | None:
     return "decision_lineage" if isinstance(trace, Mapping) else None
 
 
+def _is_runtime_mismatch_trace(trace: object) -> bool:
+    return isinstance(trace, Mapping) and trace.get("consumer_stage") == RUNTIME_MISMATCH_STAGE
+
+
+def _is_runtime_mismatch_reopen_trace(trace: object) -> bool:
+    return (
+        trace_is_complete(trace)
+        and trace.get("selected_option") == RUNTIME_MISMATCH_REQUIRED_OPTION
+        and trace.get("evidence_state") == RUNTIME_MISMATCH_REQUIRED_EVIDENCE_STATE
+    )
+
+
 def format_responsive_kernel_receipt(payload: Mapping[str, object], surface: str) -> dict[str, object]:
     """Return the safe user-facing receipt for a Responsive output surface."""
     trace = payload.get("decision_lineage")
-    if isinstance(trace, Mapping) and trace.get("consumer_stage") == RUNTIME_MISMATCH_STAGE:
+    if _is_runtime_mismatch_trace(trace) and _is_runtime_mismatch_reopen_trace(trace):
         return {
             "receipt_state": "runtime_mismatch_warning",
             "message": RUNTIME_MISMATCH_WARNING_MESSAGE,
@@ -112,14 +124,18 @@ def _message_contains_forbidden_claim(message: object) -> bool:
     return any(claim in message for claim in FORBIDDEN_RECEIPT_CLAIMS)
 
 
-def assert_runtime_mismatch_reopen_trace(payload: Mapping[str, object], path: str) -> None:
+def assert_runtime_mismatch_reopen_trace(payload: Mapping[str, object], path: str, receipt_state: object) -> None:
     trace = payload.get("decision_lineage")
-    if not isinstance(trace, Mapping) or trace.get("consumer_stage") != RUNTIME_MISMATCH_STAGE:
+    if not _is_runtime_mismatch_trace(trace):
         return
-    if (
-        trace.get("selected_option") != RUNTIME_MISMATCH_REQUIRED_OPTION
-        or trace.get("evidence_state") != RUNTIME_MISMATCH_REQUIRED_EVIDENCE_STATE
-    ):
+    if not trace_is_complete(trace):
+        if receipt_state == "runtime_mismatch_warning":
+            raise ValueError(
+                "EV4_RESPONSIVE_RUNTIME_MISMATCH_INCOMPLETE_TRACE: "
+                f"{path} emitted a runtime mismatch receipt without complete machine-readable lineage"
+            )
+        return
+    if not _is_runtime_mismatch_reopen_trace(trace):
         raise ValueError(
             "EV4_RESPONSIVE_RUNTIME_MISMATCH_REOPEN_REQUIRED: "
             f"{path} must reopen or repair the traced decision instead of emitting a new Responsive choice"
@@ -156,7 +172,7 @@ def assert_receipt_matches_trace(payload: Mapping[str, object], path: str, surfa
                 f"{path} emitted a success receipt for runtime mismatch"
             )
 
-    assert_runtime_mismatch_reopen_trace(payload, path)
+    assert_runtime_mismatch_reopen_trace(payload, path, receipt.get("receipt_state"))
 
     expected = format_responsive_kernel_receipt(payload, surface)
     observed = dict(receipt)
