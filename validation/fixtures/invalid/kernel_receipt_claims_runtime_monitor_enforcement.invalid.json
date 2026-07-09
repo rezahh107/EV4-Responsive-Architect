@@ -1,0 +1,24 @@
+{
+  "fixture": "Responsive_receipt_does_not_claim_runtime_monitor_enforcement",
+  "decision_lineage": {
+    "decision_family": "responsive_tree_architecture_route",
+    "decision_card_ref": "kernel-decision-card:responsive-tree-architecture-route:v1",
+    "selected_option": "same_tree_responsive_overrides",
+    "rejected_options": [
+      "viewport_specific_variant_tree",
+      "hybrid_split_architecture",
+      "blocked_pending_input"
+    ],
+    "evidence_refs": [
+      "decision-evidence:architect-approved-candidate"
+    ],
+    "evidence_state": "validated",
+    "consumer_stage": "responsive_validation_output"
+  },
+  "kernel_decision_receipt": {
+    "receipt_state": "success",
+    "message": "✅ runtime_monitor_enforced is proven by this human-readable receipt.",
+    "trace_ref": "decision_lineage",
+    "surface": "runtime_evidence_reference"
+  }
+}

@@ -1,0 +1,61 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ev4-responsive-architect.local/schemas/ev4-responsive-kernel-decision-receipt.schema.json",
+  "title": "EV4 Responsive Kernel Decision Receipt",
+  "description": "Wave 5 presentation-layer receipt rendered from an existing Responsive decision_lineage. This schema does not replace or weaken the machine-readable trace.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "receipt_state",
+    "message",
+    "trace_ref",
+    "surface"
+  ],
+  "properties": {
+    "receipt_state": {
+      "enum": [
+        "success",
+        "insufficient_evidence",
+        "runtime_mismatch_warning"
+      ]
+    },
+    "message": {
+      "type": "string",
+      "minLength": 1
+    },
+    "trace_ref": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        "decision_lineage",
+        null
+      ]
+    },
+    "surface": {
+      "enum": [
+        "responsive_intake",
+        "responsive_validation_report",
+        "runtime_evidence_reference",
+        "mismatch_report",
+        "repair_request",
+        "handoff_output"
+      ]
+    }
+  },
+  "not": {
+    "anyOf": [
+      {
+        "required": [
+          "resolved"
+        ]
+      },
+      {
+        "required": [
+          "production_ready"
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "fixture": "runtime_mismatch_receipt_does_not_claim_new_design_decision",
+  "decision_lineage": {
+    "decision_family": "responsive_tree_architecture_route",
+    "decision_card_ref": "kernel-decision-card:responsive-tree-architecture-route:v1",
+    "selected_option": "hybrid_split_architecture",
+    "rejected_options": [
+      "same_tree_responsive_overrides",
+      "viewport_specific_variant_tree",
+      "blocked_pending_input"
+    ],
+    "evidence_refs": [
+      "responsive-runtime-evidence:viewport-conflict"
+    ],
+    "evidence_state": "validated",
+    "consumer_stage": "runtime_evidence_conflict"
+  },
+  "kernel_decision_receipt": {
+    "receipt_state": "runtime_mismatch_warning",
+    "message": "⚠️ runtime mismatch دیده شد، اما این رسید تصمیم جدید نیست؛ تصمیم باید با trace معتبر reopen یا repair شود.",
+    "trace_ref": "decision_lineage",
+    "surface": "mismatch_report"
+  }
+}

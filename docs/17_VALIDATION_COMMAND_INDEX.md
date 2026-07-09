@@ -31,6 +31,9 @@ python validation/e2e/run_pilot_readiness_boundary_check.py
 python validation/e2e/run_issue_8_preflight_boundary_check.py
 python validation/e2e/run_issue_to_packet_bridge_check.py
 python validation/e2e/run_builder_responsive_input_boundary_check.py
+python validation/e2e/run_responsive_decision_lineage_sequence_check.py
+python validation/e2e/run_responsive_kernel_receipt_check.py
+python validation/e2e/run_decision_escape_routes_schema_check.py
 python validation/e2e/run_rtaq_ssot_guard_check.py
 python validation/e2e/run_status_merged_foundation_guard_check.py
 python validation/e2e/run_automation_control_state_check.py
@@ -63,6 +66,16 @@ python validation/e2e/run_pilot_readiness_boundary_check.py
 python validation/e2e/run_issue_8_preflight_boundary_check.py
 python validation/e2e/run_issue_to_packet_bridge_check.py
 python validation/e2e/run_builder_responsive_input_boundary_check.py
+```
+
+## Kernel lineage and receipt commands
+
+These commands inspect Kernel trace preservation and Wave 5 receipt consistency. They are repository checks only; receipt success is not runtime, downstream, production, or release evidence:
+
+```bash
+python validation/e2e/run_responsive_decision_lineage_sequence_check.py
+python validation/e2e/run_responsive_kernel_receipt_check.py
+python validation/e2e/run_decision_escape_routes_schema_check.py
 ```
 
 ## Control-plane, catalog, and archive commands
@@ -106,6 +119,7 @@ The commands can be used to inspect deterministic repository behavior:
 - submitted-packet eligibility failure modes
 - submitted evidence source-kind, completeness, readiness-status, artifact-path, submitted-mode, payload-hash, Issue #8 identity, issue-to-packet bridge, and privacy guard behavior
 - pilot readiness report generation boundaries
+- Kernel decision lineage and Wave 5 receipt consistency
 - task quality-gate policy shape and required boundary assertions
 - queue, ledger, control-state, Work Package Catalog, and STATUS checkpoint discipline
 - boundary text preservation

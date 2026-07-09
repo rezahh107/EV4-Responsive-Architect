@@ -55,6 +55,16 @@ Run additional targeted checks relevant to the changed path. Report exactly what
 
 A screenshot proves only visible assertions it supports. Structure evidence does not prove frontend rendering, and frontend evidence does not prove hidden control values. Use `insufficient_evidence` instead of guessing.
 
+## Wave 5 Kernel Decision Receipts
+
+When producing or modifying a decision-bearing Responsive intake, validation report, runtime-evidence reference, mismatch report, repair request, or handoff output, render only the short human-readable Kernel decision receipt produced from the existing machine-readable `decision_lineage`.
+
+Use the success receipt only when `decision_lineage` exists and includes `decision_family`, `decision_card_ref`, `selected_option`, `rejected_options`, `evidence_refs`, `evidence_state`, and `consumer_stage` with sufficient validated evidence. If any required trace field is missing, use the insufficient-evidence warning instead of a green check.
+
+Runtime mismatch wording must remain a warning. It must not convert a mismatch into a new Responsive design choice and must not claim `runtime_monitor_enforced`, downstream enforcement, production readiness, or new Responsive design authority.
+
+A human-readable receipt is presentation-layer text only. It must not replace the machine trace, invent Kernel decision cards, invent evidence refs, silently replace upstream decisions, or author `resolved` or `production_ready` fields.
+
 ## Pull Requests
 
 State the behavior or contract changed, affected viewports and ownership boundaries, validation executed, regression coverage, and remaining unknowns.
@@ -65,4 +75,3 @@ Before opening or completing any PR that changes schemas, validators, prompts, f
 Do not mark an escape route as resolved unless its `enforcement_status` meets the required threshold for its risk and `session_scope`; a Critical cross-turn rule is not resolved by single-artifact `ci_enforced` evidence. Do not add authored `resolved` or `production_ready` fields; those are derived audit conclusions.
 
 Responsive validates runtime/responsive behavior; it must not redesign architecture or claim runtime enforcement unless inspected evidence proves the required carriers exist.
-
