@@ -1,0 +1,9 @@
+{
+  "fixture": "Responsive_cannot_emit_success_receipt_for_untraced_validation",
+  "kernel_decision_receipt": {
+    "receipt_state": "success",
+    "message": "✅ این Responsive validation به decision card کرنل وصل است؛ Responsive فقط رفتار responsive/runtime را بررسی کرده و lineage تصمیم حفظ شده است.",
+    "trace_ref": null,
+    "surface": "responsive_validation_report"
+  }
+}
