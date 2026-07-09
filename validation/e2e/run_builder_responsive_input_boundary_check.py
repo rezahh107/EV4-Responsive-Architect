@@ -22,6 +22,7 @@ REQUIRED_INVALID_FIXTURE_NAMES = {
     "builder_responsive_input_forbidden_claim_subset.invalid.json",
     "builder_responsive_input_malformed_hash.invalid.json",
     "builder_responsive_input_missing_mobile_evidence.invalid.json",
+    "builder_responsive_input_missing_decision_lineage.invalid.json",
 }
 REQUIRED_QUALITY_DEBT_INVALID_FIXTURE_NAMES = {
     "quality_debt_register_boundary_upgrade.invalid.json",
@@ -94,6 +95,32 @@ def _assert_forbidden_claims(data: dict[str, object], path: Path) -> None:
         extra = set(claims).difference(REQUIRED_FORBIDDEN_CLAIMS)
         raise AssertionError(
             f"{path.relative_to(ROOT)} forbidden claims mismatch. Missing: {sorted(missing)}, Extra: {sorted(extra)}"
+        )
+
+
+def _assert_decision_lineage(data: dict[str, object], path: Path) -> None:
+    lineage = data.get("decision_lineage")
+    if not isinstance(lineage, dict):
+        raise AssertionError(
+            f"EV4_RESPONSIVE_DECISION_LINEAGE_MISSING: {path.relative_to(ROOT)} missing decision_lineage"
+        )
+    required = {
+        "decision_family",
+        "decision_card_ref",
+        "selected_option",
+        "rejected_options",
+        "evidence_refs",
+        "evidence_state",
+        "consumer_stage",
+    }
+    missing = sorted(required.difference(lineage))
+    if missing:
+        raise AssertionError(
+            f"EV4_RESPONSIVE_DECISION_LINEAGE_INCOMPLETE: {path.relative_to(ROOT)} missing {missing}"
+        )
+    if lineage.get("consumer_stage") != "responsive_intake":
+        raise AssertionError(
+            f"EV4_RESPONSIVE_DECISION_LINEAGE_STAGE_INVALID: {path.relative_to(ROOT)} must use responsive_intake"
         )
 
 
@@ -259,6 +286,7 @@ def _assert_valid_fixture(data: dict[str, object], path: Path) -> None:
                 raise AssertionError(f"{path.relative_to(ROOT)} allowed intake must provide {viewport} evidence")
 
     _assert_forbidden_claims(data, path)
+    _assert_decision_lineage(data, path)
 
 
 def _assert_invalid_fixture_semantics(data: dict[str, object], path: Path) -> None:
@@ -279,6 +307,8 @@ def _assert_invalid_fixture_semantics(data: dict[str, object], path: Path) -> No
     _assert_blocked_viewport_fixture(data, path)
     _assert_missing_mobile_fixture(data, path)
     _assert_forbidden_claim_subset_fixture(data, path)
+    if path.name != "builder_responsive_input_missing_decision_lineage.invalid.json":
+        _assert_decision_lineage(data, path)
 
 
 def main() -> int:

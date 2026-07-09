@@ -25,6 +25,9 @@ INVALID_FIXTURES = [
     INVALID_DIR / 'responsive_output_builder_mode_mismatch.invalid.json',
     INVALID_DIR / 'responsive_output_noncanonical_breakpoint_scope.invalid.json',
     INVALID_DIR / 'responsive_output_unresolved_ready_mismatch.invalid.json',
+    INVALID_DIR / 'responsive_output_dropped_decision_lineage.invalid.json',
+    INVALID_DIR / 'responsive_output_replaced_decision_lineage.invalid.json',
+    INVALID_DIR / 'responsive_output_runtime_conflict_redesign.invalid.json',
 ]
 
 REQUIRED_FILES = [
@@ -120,6 +123,12 @@ def expected_invalid_reason(path):
         return 'Noncanonical breakpoint scope'
     if name == 'responsive_output_unresolved_ready_mismatch.invalid.json':
         return 'Final review readiness mismatch'
+    if name == 'responsive_output_dropped_decision_lineage.invalid.json':
+        return 'Schema validation failed'
+    if name == 'responsive_output_replaced_decision_lineage.invalid.json':
+        return 'EV4_RESPONSIVE_DECISION_LINEAGE_REPLACED'
+    if name == 'responsive_output_runtime_conflict_redesign.invalid.json':
+        return 'EV4_RESPONSIVE_RUNTIME_CONFLICT_REDENESIGN_FORBIDDEN'.replace('REDENESIGN', 'REDESIGN')
     raise ValueError(f'No expected invalid failure registered for {relative_path(path)}')
 
 
@@ -205,6 +214,24 @@ def assert_final_review_consistency(payload, path):
         )
 
 
+def assert_decision_lineage(payload, path):
+    lineage = payload.get('decision_lineage') or {}
+    if lineage.get('consumer_stage') not in {'responsive_validation_output', 'runtime_evidence_conflict'}:
+        raise ValueError(f'EV4_RESPONSIVE_DECISION_LINEAGE_STAGE_INVALID in {path}')
+    if lineage.get('selected_option') != payload.get('selected_route'):
+        raise ValueError(
+            f'EV4_RESPONSIVE_DECISION_LINEAGE_REPLACED in {path}: '
+            f"selected_option={lineage.get('selected_option')} selected_route={payload.get('selected_route')}"
+        )
+    if not lineage.get('decision_card_ref', '').startswith('kernel-decision-card:'):
+        raise ValueError(f'EV4_RESPONSIVE_DECISION_LINEAGE_REPLACED in {path}: non-Kernel decision card ref')
+    if lineage.get('consumer_stage') == 'runtime_evidence_conflict' and payload.get('selected_route') != 'blocked_pending_input':
+        raise ValueError(
+            f'EV4_RESPONSIVE_RUNTIME_CONFLICT_REDESIGN_FORBIDDEN in {path}: '
+            'runtime conflicts must flag/reopen instead of selecting a new Responsive architecture decision'
+        )
+
+
 def validate_payload(payload, path, validator):
     errors = list(validator.iter_errors(payload))
     if errors:
@@ -217,6 +244,7 @@ def validate_payload(payload, path, validator):
     assert_builder_handoff_mode(payload, path)
     assert_breakpoint_scope(payload, path)
     assert_final_review_consistency(payload, path)
+    assert_decision_lineage(payload, path)
 
 
 def run_queue_checks():

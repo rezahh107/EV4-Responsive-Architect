@@ -1,6 +1,6 @@
 schema_version: 3
 consumer_repo: EV4-Responsive-Architect
-consumer_repo_evidence_state: expected_unverified
+consumer_repo_evidence_state: validated
 
 last_updated:
   date: "2026-07-09"
@@ -16,4 +16,34 @@ kernel_reference:
   decision_taxonomy_version: null
   decision_cards_version: null
 
-records: []
+records:
+  - escape_route_id: EV4-RESP-W4-001
+    consumer_repo: EV4-Responsive-Architect
+    risk: Critical
+    session_scope: cross_turn
+    mapping_status: mapped
+    surface: Responsive intake to validation output decision lineage
+    description: >-
+      Responsive intake and validation output could accept, drop, or replace
+      Kernel-governed decision lineage across turns unless the Builder input,
+      Responsive output, runtime-conflict handling, fixtures, validator, and CI
+      sequence preserve the lineage fields.
+    carriers:
+      sequence_CI_step: .github/workflows/validate.yml / validation / Responsive decision lineage sequence
+      test_command: python validation/e2e/run_responsive_decision_lineage_sequence_check.py
+      positive_fixture: validation/fixtures/valid/builder_responsive_input.valid.json -> validation/fixtures/valid/responsive_output_same_tree.valid.json
+      negative_fixture: validation/fixtures/invalid/builder_responsive_input_missing_decision_lineage.invalid.json; validation/fixtures/invalid/responsive_output_dropped_decision_lineage.invalid.json; validation/fixtures/invalid/responsive_output_replaced_decision_lineage.invalid.json; validation/fixtures/invalid/responsive_output_runtime_conflict_redesign.invalid.json
+      validator_rule: validation/e2e/run_responsive_decision_lineage_sequence_check.py::assert_sequence_preserved
+      validator_diagnostic: EV4_RESPONSIVE_DECISION_LINEAGE_SEQUENCE_BREAK
+      downstream_contract: null
+    status:
+      enforcement_status: sequence_ci_enforced
+      evidence_state: validated
+      downstream_contract:
+        evidence_state: insufficient_evidence
+    notes: >-
+      Added schema-required decision_lineage on Builder Responsive intake and
+      Responsive output, positive and negative lineage fixtures, a sequence
+      validator that proves valid intake lineage is preserved into Responsive
+      validation output, and a CI workflow step that runs the sequence command.
+      No downstream_contract_enforced or runtime_monitor_enforced claim is made.

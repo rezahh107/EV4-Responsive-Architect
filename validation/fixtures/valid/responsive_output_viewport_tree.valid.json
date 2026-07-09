@@ -86,5 +86,22 @@
     "export_validated",
     "live_render_validated",
     "accessibility_passed"
-  ]
+  ],
+  "decision_lineage": {
+    "decision_family": "responsive_tree_architecture_route",
+    "decision_card_ref": "kernel-decision-card:responsive-tree-architecture-route:v1",
+    "selected_option": "viewport_specific_variant_tree",
+    "rejected_options": [
+      "same_tree_responsive_overrides",
+      "hybrid_split_architecture",
+      "blocked_pending_input"
+    ],
+    "evidence_refs": [
+      "decision-evidence:architect-approved-candidate",
+      "decision-evidence:builder-project-gate-package",
+      "responsive-validation-evidence:viewport-plan"
+    ],
+    "evidence_state": "validated",
+    "consumer_stage": "responsive_validation_output"
+  }
 }
