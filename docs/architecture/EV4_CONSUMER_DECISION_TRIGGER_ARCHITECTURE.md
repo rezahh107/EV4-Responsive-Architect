@@ -61,7 +61,7 @@ The baseline schema for that state file is maintained at:
 planning/decision-escape-routes.schema.json
 ```
 
-Wave 0 state starts as `expected_unverified` with an empty `records` array. The state file must not use a `routes` array, and authored records must not add `resolved` or `production_ready` fields. Those are derived audit conclusions for later waves only when evidence supports them.
+Wave 0 state starts as `expected_unverified` with an empty `records` array. The Wave 0 schema intentionally sets `records.maxItems` to `0`; non-empty records require a later schema wave that defines the full BRC-aligned record object. The state file must not use a `routes` array, and authored records must not add `resolved` or `production_ready` fields. Those are derived audit conclusions for later waves only when evidence supports them.
 
 ## Responsive Boundary
 
