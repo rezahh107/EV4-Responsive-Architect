@@ -40,6 +40,7 @@ WARNING_RECEIPT_FIXTURES = (
 INVALID_RECEIPT_FIXTURES = {
     INVALID_DIR / "kernel_receipt_success_without_trace.invalid.json": "EV4_RESPONSIVE_KERNEL_RECEIPT_GREEN_WITHOUT_TRACE",
     INVALID_DIR / "kernel_receipt_runtime_mismatch_without_reopen_trace.invalid.json": "EV4_RESPONSIVE_RUNTIME_MISMATCH_REOPEN_REQUIRED",
+    INVALID_DIR / "kernel_receipt_runtime_mismatch_incomplete_reopen_trace.invalid.json": "EV4_RESPONSIVE_RUNTIME_MISMATCH_INCOMPLETE_TRACE",
     INVALID_DIR / "kernel_receipt_claims_redesign_authority.invalid.json": "EV4_RESPONSIVE_KERNEL_RECEIPT_FORBIDDEN_CLAIM",
     INVALID_DIR / "kernel_receipt_claims_runtime_monitor_enforcement.invalid.json": "EV4_RESPONSIVE_KERNEL_RECEIPT_FORBIDDEN_CLAIM",
 }
