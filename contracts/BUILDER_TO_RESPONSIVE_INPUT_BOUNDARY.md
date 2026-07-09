@@ -45,6 +45,7 @@ builder_to_responsive_input:
   schema_file: schemas/ev4-builder-responsive-input.schema.json
   validator: validation/e2e/run_builder_responsive_input_boundary_check.py
   sequence_validator: validation/e2e/run_responsive_decision_lineage_sequence_check.py
+  sequence_schema_validator: validation/e2e/run_decision_escape_routes_schema_check.py
   command: python validation/e2e/run_builder_responsive_input_boundary_check.py
   status: input eligibility only; not responsive correctness evidence
 
@@ -107,6 +108,9 @@ builder_to_responsive_input_package:
   fixture_suite:
     valid:
       - validation/fixtures/valid/builder_responsive_input.valid.json
+      - validation/fixtures/valid/builder_responsive_input_viewport_tree.valid.json
+      - validation/fixtures/valid/builder_responsive_input_hybrid.valid.json
+      - validation/fixtures/valid/builder_responsive_input_blocked.valid.json
     invalid:
       - validation/fixtures/invalid/builder_responsive_input_missing_mobile_evidence.invalid.json
       - validation/fixtures/invalid/builder_responsive_input_blocked_project_gate_allows_intake.invalid.json

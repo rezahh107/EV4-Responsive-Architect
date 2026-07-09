@@ -12,7 +12,12 @@ import jsonschema
 ROOT = Path(__file__).resolve().parents[2]
 SCHEMA_PATH = ROOT / "schemas" / "ev4-builder-responsive-input.schema.json"
 QUALITY_DEBT_REGISTER = ROOT / "planning" / "EV4_POST_MERGE_QUALITY_DEBT_REGISTER.json"
-VALID_FIXTURES = (ROOT / "validation" / "fixtures" / "valid" / "builder_responsive_input.valid.json",)
+VALID_FIXTURES = (
+    ROOT / "validation" / "fixtures" / "valid" / "builder_responsive_input.valid.json",
+    ROOT / "validation" / "fixtures" / "valid" / "builder_responsive_input_viewport_tree.valid.json",
+    ROOT / "validation" / "fixtures" / "valid" / "builder_responsive_input_hybrid.valid.json",
+    ROOT / "validation" / "fixtures" / "valid" / "builder_responsive_input_blocked.valid.json",
+)
 INVALID_DIR = ROOT / "validation" / "fixtures" / "invalid"
 INVALID_FIXTURE_GLOB = "builder_responsive_input_*.invalid.json"
 QUALITY_DEBT_INVALID_FIXTURE_GLOB = "quality_debt_register_*.invalid.json"

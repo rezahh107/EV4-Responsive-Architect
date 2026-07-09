@@ -5,88 +5,328 @@
   "description": "Responsive consumer-side decision escape route records with Wave 4 sequence CI enforcement evidence.",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schema_version", "consumer_repo", "consumer_repo_evidence_state", "last_updated", "brc_reference", "kernel_reference", "records"],
+  "required": [
+    "schema_version",
+    "consumer_repo",
+    "consumer_repo_evidence_state",
+    "last_updated",
+    "brc_reference",
+    "kernel_reference",
+    "records"
+  ],
   "properties": {
-    "schema_version": {"const": 3},
-    "consumer_repo": {"const": "EV4-Responsive-Architect"},
-    "consumer_repo_evidence_state": {"enum": ["expected_unverified", "validated"]},
+    "schema_version": {
+      "const": 3
+    },
+    "consumer_repo": {
+      "const": "EV4-Responsive-Architect"
+    },
+    "consumer_repo_evidence_state": {
+      "enum": [
+        "expected_unverified",
+        "validated"
+      ]
+    },
     "last_updated": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["date", "pr", "commit"],
+      "required": [
+        "date",
+        "pr",
+        "commit"
+      ],
       "properties": {
-        "date": {"type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"},
-        "pr": {"type": ["integer", "string", "null"]},
-        "commit": {"type": ["string", "null"]}
+        "date": {
+          "type": "string",
+          "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+        },
+        "pr": {
+          "type": [
+            "integer",
+            "string",
+            "null"
+          ]
+        },
+        "commit": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
       }
     },
     "brc_reference": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["document", "profile"],
+      "required": [
+        "document",
+        "profile"
+      ],
       "properties": {
-        "document": {"const": "Behavioral_Rule_Coverage_v0.4.1"},
-        "profile": {"const": "EV4_CONSUMER_DECISION_TRIGGER_ARCHITECTURE_v0.4.1"}
+        "document": {
+          "const": "Behavioral_Rule_Coverage_v0.4.1"
+        },
+        "profile": {
+          "const": "EV4_CONSUMER_DECISION_TRIGGER_ARCHITECTURE_v0.4.1"
+        }
       }
     },
     "kernel_reference": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["repo", "decision_taxonomy_version", "decision_cards_version"],
+      "required": [
+        "repo",
+        "decision_taxonomy_version",
+        "decision_cards_version"
+      ],
       "properties": {
-        "repo": {"const": "EV4-Decision-Kernel"},
-        "decision_taxonomy_version": {"type": ["string", "null"]},
-        "decision_cards_version": {"type": ["string", "null"]}
+        "repo": {
+          "const": "EV4-Decision-Kernel"
+        },
+        "decision_taxonomy_version": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "decision_cards_version": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
       }
     },
-    "records": {"type": "array", "items": {"$ref": "#/$defs/record"}}
+    "records": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/record"
+      }
+    }
   },
-  "not": {"required": ["routes"]},
+  "not": {
+    "required": [
+      "routes"
+    ]
+  },
   "$defs": {
     "record": {
       "type": "object",
       "additionalProperties": false,
-      "not": {"anyOf": [{"required": ["resolved"]}, {"required": ["production_ready"]}]},
-      "required": ["escape_route_id", "consumer_repo", "risk", "session_scope", "mapping_status", "surface", "description", "carriers", "status", "notes"],
+      "not": {
+        "anyOf": [
+          {
+            "required": [
+              "resolved"
+            ]
+          },
+          {
+            "required": [
+              "production_ready"
+            ]
+          }
+        ]
+      },
+      "required": [
+        "escape_route_id",
+        "consumer_repo",
+        "risk",
+        "session_scope",
+        "mapping_status",
+        "surface",
+        "description",
+        "carriers",
+        "status",
+        "notes"
+      ],
       "properties": {
-        "escape_route_id": {"type": "string", "minLength": 1},
-        "consumer_repo": {"const": "EV4-Responsive-Architect"},
-        "risk": {"enum": ["Critical", "High", "Medium", "Low"]},
-        "session_scope": {"enum": ["cross_turn", "single_turn"]},
-        "mapping_status": {"enum": ["mapped", "unmapped"]},
-        "surface": {"type": "string", "minLength": 1},
-        "description": {"type": "string", "minLength": 1},
+        "escape_route_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "consumer_repo": {
+          "const": "EV4-Responsive-Architect"
+        },
+        "risk": {
+          "enum": [
+            "Critical",
+            "High",
+            "Medium",
+            "Low"
+          ]
+        },
+        "session_scope": {
+          "enum": [
+            "cross_turn",
+            "single_turn"
+          ]
+        },
+        "mapping_status": {
+          "enum": [
+            "mapped",
+            "unmapped"
+          ]
+        },
+        "surface": {
+          "type": "string",
+          "minLength": 1
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1
+        },
         "carriers": {
           "type": "object",
           "additionalProperties": false,
-          "required": ["sequence_CI_step", "test_command", "positive_fixture", "negative_fixture", "validator_rule", "validator_diagnostic", "downstream_contract"],
+          "required": [
+            "sequence_CI_step",
+            "test_command",
+            "positive_fixture",
+            "negative_fixture",
+            "validator_rule",
+            "validator_diagnostic",
+            "downstream_contract"
+          ],
           "properties": {
-            "sequence_CI_step": {"type": ["string", "null"]},
-            "test_command": {"type": ["string", "null"]},
-            "positive_fixture": {"type": ["string", "null"]},
-            "negative_fixture": {"type": ["string", "null"]},
-            "validator_rule": {"type": ["string", "null"]},
-            "validator_diagnostic": {"type": ["string", "null"]},
-            "downstream_contract": {"type": ["string", "null"]}
+            "sequence_CI_step": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "test_command": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "positive_fixture": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "negative_fixture": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "validator_rule": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "validator_diagnostic": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "downstream_contract": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
           }
         },
         "status": {
           "type": "object",
           "additionalProperties": false,
-          "required": ["enforcement_status", "evidence_state", "downstream_contract"],
+          "required": [
+            "enforcement_status",
+            "evidence_state",
+            "downstream_contract"
+          ],
           "properties": {
-            "enforcement_status": {"enum": ["expected_unverified", "ci_enforced", "sequence_ci_enforced", "downstream_contract_enforced", "insufficient_evidence"]},
-            "evidence_state": {"enum": ["expected_unverified", "validated", "insufficient_evidence"]},
+            "enforcement_status": {
+              "enum": [
+                "expected_unverified",
+                "ci_enforced",
+                "sequence_ci_enforced",
+                "downstream_contract_enforced",
+                "insufficient_evidence"
+              ]
+            },
+            "evidence_state": {
+              "enum": [
+                "expected_unverified",
+                "validated",
+                "insufficient_evidence"
+              ]
+            },
             "downstream_contract": {
               "type": "object",
               "additionalProperties": false,
-              "required": ["evidence_state"],
-              "properties": {"evidence_state": {"enum": ["validated", "insufficient_evidence"]}}
+              "required": [
+                "evidence_state"
+              ],
+              "properties": {
+                "evidence_state": {
+                  "enum": [
+                    "validated",
+                    "insufficient_evidence"
+                  ]
+                }
+              }
             }
           }
         },
-        "notes": {"type": "string", "minLength": 1}
-      }
+        "notes": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "properties": {
+                  "enforcement_status": {
+                    "const": "sequence_ci_enforced"
+                  }
+                },
+                "required": [
+                  "enforcement_status"
+                ]
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "carriers": {
+                "properties": {
+                  "sequence_CI_step": {
+                    "$ref": "#/$defs/nonEmptyString"
+                  },
+                  "test_command": {
+                    "$ref": "#/$defs/nonEmptyString"
+                  },
+                  "positive_fixture": {
+                    "$ref": "#/$defs/nonEmptyString"
+                  },
+                  "negative_fixture": {
+                    "$ref": "#/$defs/nonEmptyString"
+                  },
+                  "validator_rule": {
+                    "$ref": "#/$defs/nonEmptyString"
+                  },
+                  "validator_diagnostic": {
+                    "$ref": "#/$defs/nonEmptyString"
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "nonEmptyString": {
+      "type": "string",
+      "minLength": 1
     }
   }
 }

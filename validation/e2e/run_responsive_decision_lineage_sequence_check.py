@@ -7,13 +7,33 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-VALID_INTAKE = ROOT / "validation" / "fixtures" / "valid" / "builder_responsive_input.valid.json"
-VALID_OUTPUT = ROOT / "validation" / "fixtures" / "valid" / "responsive_output_same_tree.valid.json"
+VALID_SEQUENCE_PAIRS = (
+    (
+        ROOT / "validation" / "fixtures" / "valid" / "builder_responsive_input.valid.json",
+        ROOT / "validation" / "fixtures" / "valid" / "responsive_output_same_tree.valid.json",
+    ),
+    (
+        ROOT / "validation" / "fixtures" / "valid" / "builder_responsive_input_viewport_tree.valid.json",
+        ROOT / "validation" / "fixtures" / "valid" / "responsive_output_viewport_tree.valid.json",
+    ),
+    (
+        ROOT / "validation" / "fixtures" / "valid" / "builder_responsive_input_hybrid.valid.json",
+        ROOT / "validation" / "fixtures" / "valid" / "responsive_output_hybrid.valid.json",
+    ),
+    (
+        ROOT / "validation" / "fixtures" / "valid" / "builder_responsive_input_blocked.valid.json",
+        ROOT / "validation" / "fixtures" / "valid" / "responsive_output_blocked.valid.json",
+    ),
+)
+VALID_INTAKE = VALID_SEQUENCE_PAIRS[0][0]
 NEGATIVE_INTAKE = ROOT / "validation" / "fixtures" / "invalid" / "builder_responsive_input_missing_decision_lineage.invalid.json"
 NEGATIVE_OUTPUTS = (
     ROOT / "validation" / "fixtures" / "invalid" / "responsive_output_dropped_decision_lineage.invalid.json",
     ROOT / "validation" / "fixtures" / "invalid" / "responsive_output_replaced_decision_lineage.invalid.json",
     ROOT / "validation" / "fixtures" / "invalid" / "responsive_output_runtime_conflict_redesign.invalid.json",
+    ROOT / "validation" / "fixtures" / "invalid" / "responsive_output_evidence_state_insufficient.invalid.json",
+    ROOT / "validation" / "fixtures" / "invalid" / "responsive_output_evidence_state_provided.invalid.json",
+    ROOT / "validation" / "fixtures" / "invalid" / "responsive_output_missing_evidence_state.invalid.json",
 )
 STABLE_DIAGNOSTIC = "EV4_RESPONSIVE_DECISION_LINEAGE_SEQUENCE_BREAK"
 UPSTREAM_FIELDS = (
@@ -42,18 +62,28 @@ def lineage(payload: dict[str, object], path: Path) -> dict[str, object]:
     return value
 
 
-def assert_sequence_preserved(intake: dict[str, object], output: dict[str, object]) -> None:
-    intake_lineage = lineage(intake, VALID_INTAKE)
-    output_lineage = lineage(output, VALID_OUTPUT)
+def assert_sequence_preserved(
+    intake: dict[str, object],
+    output: dict[str, object],
+    intake_path: Path,
+    output_path: Path,
+) -> None:
+    intake_lineage = lineage(intake, intake_path)
+    output_lineage = lineage(output, output_path)
     for field in UPSTREAM_FIELDS:
         if output_lineage.get(field) != intake_lineage.get(field):
-            raise ValueError(f"{STABLE_DIAGNOSTIC}: output changed upstream {field}")
+            raise ValueError(f"{STABLE_DIAGNOSTIC}: {rel(output_path)} changed upstream {field}")
+    if output_lineage.get("evidence_state") != intake_lineage.get("evidence_state"):
+        raise ValueError(
+            f"{STABLE_DIAGNOSTIC}: {rel(output_path)} changed evidence_state from "
+            f"{intake_lineage.get('evidence_state')} to {output_lineage.get('evidence_state')}"
+        )
     intake_refs = set(intake_lineage.get("evidence_refs", []))
     output_refs = set(output_lineage.get("evidence_refs", []))
     if not intake_refs.issubset(output_refs):
-        raise ValueError(f"{STABLE_DIAGNOSTIC}: output dropped upstream evidence_refs")
+        raise ValueError(f"{STABLE_DIAGNOSTIC}: {rel(output_path)} dropped upstream evidence_refs")
     if output_lineage.get("consumer_stage") != "responsive_validation_output":
-        raise ValueError(f"{STABLE_DIAGNOSTIC}: output did not advance to responsive_validation_output")
+        raise ValueError(f"{STABLE_DIAGNOSTIC}: {rel(output_path)} did not advance to responsive_validation_output")
 
 
 def assert_negative_fixture_fails(path: Path) -> None:
@@ -65,6 +95,13 @@ def assert_negative_fixture_fails(path: Path) -> None:
             for field in UPSTREAM_FIELDS:
                 if candidate_lineage.get(field) != baseline.get(field):
                     raise ValueError(f"{STABLE_DIAGNOSTIC}: output changed upstream {field}")
+        if path.name in {
+            "responsive_output_evidence_state_insufficient.invalid.json",
+            "responsive_output_evidence_state_provided.invalid.json",
+        }:
+            baseline = lineage(load(VALID_INTAKE), VALID_INTAKE)
+            if candidate_lineage.get("evidence_state") != baseline.get("evidence_state"):
+                raise ValueError(f"{STABLE_DIAGNOSTIC}: output changed evidence_state")
         if path.name == "responsive_output_runtime_conflict_redesign.invalid.json":
             if candidate_lineage.get("consumer_stage") == "runtime_evidence_conflict" and payload.get("selected_route") != "blocked_pending_input":
                 raise ValueError(f"{STABLE_DIAGNOSTIC}: runtime mismatch converted into redesign")
@@ -77,7 +114,8 @@ def assert_negative_fixture_fails(path: Path) -> None:
 
 def main() -> int:
     try:
-        assert_sequence_preserved(load(VALID_INTAKE), load(VALID_OUTPUT))
+        for intake_path, output_path in VALID_SEQUENCE_PAIRS:
+            assert_sequence_preserved(load(intake_path), load(output_path), intake_path, output_path)
         assert_negative_fixture_fails(NEGATIVE_INTAKE)
         for path in NEGATIVE_OUTPUTS:
             assert_negative_fixture_fails(path)
