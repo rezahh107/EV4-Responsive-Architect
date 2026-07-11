@@ -16,7 +16,8 @@ FIXTURE_FILES = (
     INVALID_FIXTURES / "responsive_contract_drift_missing_owner_check.invalid.json",
     INVALID_FIXTURES / "responsive_contract_drift_commented_command.invalid.json",
 )
-SENTINEL_COMMAND = "python validation/e2e/run_responsive_contract_drift_sentinel_check.py"
+SENTINEL_PATH = "validation/e2e/run_responsive_contract_drift_sentinel_check.py"
+SENTINEL_COMMAND = f"python {SENTINEL_PATH}"
 
 FALSE_BOUNDARIES = {
     "ci_success_is_responsive_correctness_evidence",
@@ -70,15 +71,23 @@ def active_lines(text: str) -> list[str]:
     return [line for line in text.splitlines() if line.strip() and not line.lstrip().startswith("#")]
 
 
+def require_active_reference(name: str, text: str, reference: str) -> None:
+    if not any(reference in line for line in active_lines(text)):
+        raise AssertionError(f"responsive contract drift sentinel missing from parity surface: {name}")
+
+
 def validate_documentation_parity() -> None:
-    surfaces = {
-        "STATUS.md": STATUS.read_text(encoding="utf-8"),
-        "docs/17_VALIDATION_COMMAND_INDEX.md": COMMAND_INDEX.read_text(encoding="utf-8"),
-        "docs/20_ACTIVE_CONTRACT_SCHEMA_VALIDATOR_INDEX.md": ACTIVE_INDEX.read_text(encoding="utf-8"),
-    }
-    for name, text in surfaces.items():
-        if not any(SENTINEL_COMMAND in line for line in active_lines(text)):
-            raise AssertionError(f"responsive contract drift sentinel missing from parity surface: {name}")
+    require_active_reference("STATUS.md", STATUS.read_text(encoding="utf-8"), SENTINEL_COMMAND)
+    require_active_reference(
+        "docs/17_VALIDATION_COMMAND_INDEX.md",
+        COMMAND_INDEX.read_text(encoding="utf-8"),
+        SENTINEL_COMMAND,
+    )
+    require_active_reference(
+        "docs/20_ACTIVE_CONTRACT_SCHEMA_VALIDATOR_INDEX.md",
+        ACTIVE_INDEX.read_text(encoding="utf-8"),
+        SENTINEL_PATH,
+    )
 
 
 def validate_manifest(data: dict, workflow_text: str) -> None:
