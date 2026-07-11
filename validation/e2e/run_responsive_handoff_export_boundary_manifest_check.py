@@ -62,8 +62,8 @@ def _validate(data: dict[str, object], source: str) -> None:
     if not isinstance(refs, dict) or not all(_text(refs.get(k)) for k in ("responsive_handoff", "viewport_display")):
         raise AssertionError(f"{source} requires canonical contract references")
     artifacts = data.get("expected_artifact_classes")
-    if not isinstance(artifacts, list):
-        raise AssertionError(f"{source} expected_artifact_classes must be a list")
+    if not isinstance(artifacts, list) or any(not _text(item) for item in artifacts):
+        raise AssertionError(f"{source} expected_artifact_classes must be a list of non-empty strings")
     missing = REQUIRED_ARTIFACTS - set(artifacts)
     if missing:
         raise AssertionError(f"{source} missing required artifact classes: {', '.join(sorted(missing))}")
