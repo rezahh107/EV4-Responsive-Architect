@@ -1,7 +1,7 @@
 # Active Contract / Schema / Validator Index
 
-Task: `WP-RESP-003/PR-A`
-Updated by: `automation/wp-resp-003-pr-a-validator-parity`
+Task: `WP-RESP-006/PR-B`
+Updated by: `automation/wp-resp-006-pr-b-drift-fixtures-docs`
 
 This index records the active repository surfaces needed for controlled manual use and catalog-backed handoff. It is an index only; it does not validate a real submitted packet, mutate Issue #8, authorize pilot execution, or upgrade readiness.
 
@@ -16,6 +16,8 @@ automation_control_state:
   - planning/EV4_AUTOMATION_CONTROL_STATE.json
 work_package_catalog:
   - planning/EV4_AUTOMATION_WORK_PACKAGE_CATALOG.json
+contract_drift_inventory:
+  - planning/EV4_RESPONSIVE_CONTRACT_DRIFT_SENTINEL.json
 archived_queue:
   - planning/EV4_ROLLING_QUEUE.json
 run_ledger:
@@ -141,6 +143,9 @@ primary_validate_workflow:
     builder_responsive_input_boundary:
       path: validation/e2e/run_builder_responsive_input_boundary_check.py
       role: Builder -> Responsive input boundary checks
+    responsive_contract_drift_sentinel:
+      path: validation/e2e/run_responsive_contract_drift_sentinel_check.py
+      role: CI-visible parity guard for owned responsive contract, STATUS, command-index, active-index, and workflow surfaces
     rtaq_ssot_guard:
       path: validation/e2e/run_rtaq_ssot_guard_check.py
       role: queue, ledger, status, and SSOT policy preservation guard
@@ -218,69 +223,8 @@ controlled_use_docs:
     role: RTAQ-0004 drift findings and RTAQ-0005 follow-up candidates
   active_contract_schema_validator_index:
     path: docs/20_ACTIVE_CONTRACT_SCHEMA_VALIDATOR_INDEX.md
-    role: active contract, schema, and validator index
-  issue_8_submitted_packet_preflight_guide:
-    path: docs/30_ISSUE_8_SUBMITTED_PACKET_PREFLIGHT_GUIDE_RTAQ_0022.md
-    role: Issue #8 submitted-packet preflight guide
-  backlog_boundary_refresh:
-    path: docs/31_BACKLOG_BOUNDARY_REFRESH_RTAQ_0023.md
-    role: post-preflight backlog boundary refresh
-  issue_8_preflight_boundary_validation:
-    path: docs/32_ISSUE_8_PREFLIGHT_BOUNDARY_VALIDATION_RTAQ_0024.md
-    role: Issue #8 preflight boundary validation
-  builder_responsive_input_boundary:
-    path: docs/34_BUILDER_RESPONSIVE_INPUT_BOUNDARY_RTAQ_0028.md
-    role: Builder -> Responsive input boundary reference
-  responsive_intake_decision_guard:
-    path: docs/35_RESPONSIVE_INTAKE_DECISION_GUARD_RTAQ_0029.md
-    role: responsive intake decision guard
-  evidence_intake_issue8_lock:
-    path: docs/37_EVIDENCE_INTAKE_ISSUE8_LOCK_RTAQ_0031.md
-    role: Issue #8 evidence-intake lock
-  rolling_queue_driver_retirement:
-    path: docs/38_ROLLING_QUEUE_DRIVER_RETIREMENT_RTAQ_0032.md
-    role: retired rolling-queue driver boundary
-  primary_validation_chain:
-    path: docs/39_PRIMARY_VALIDATION_CHAIN_RTAQ_0033.md
-    role: primary validation chain reference
-  issue8_submitted_path_guard:
-    path: docs/40_ISSUE8_SUBMITTED_PATH_GUARD_RTAQ_0034.md
-    role: Issue #8 submitted path guard
-  issue8_artifact_scope_guard:
-    path: docs/41_ISSUE8_ARTIFACT_SCOPE_GUARD_RTAQ_0035.md
-    role: Issue #8 artifact scope guard
-  pilot_readiness_validate_chain:
-    path: docs/42_PILOT_READINESS_VALIDATE_CHAIN_RTAQ_0036.md
-    role: pilot readiness Validate-chain reference
-  control_checkpoint_reconciliation:
-    path: docs/43_CONTROL_CHECKPOINT_RECONCILIATION_RTAQ_0037.md
-    role: bounded control checkpoint reconciliation
-  control_state_post_queue_reconciliation:
-    path: docs/44_CONTROL_STATE_POST_QUEUE_RECONCILIATION_RTAQ_0039.md
-    role: post-queue control-state reconciliation
+    role: active contract, schema, validator, and workflow parity index
+  responsive_contract_drift_sentinel:
+    path: docs/47_RESPONSIVE_CONTRACT_DRIFT_SENTINEL.md
+    role: WP-RESP-006 sentinel behavior, fixtures, CI path, and non-domain-evidence boundary
 ```
-
-## CI interpretation
-
-```yaml
-success_boundary: repository checks only, not responsive correctness evidence
-real_submitted_packet_required_for_pilot: true
-readiness_claim_upgrade_allowed_by_index: false
-production_or_release_claim_upgrade_allowed_by_index: false
-```
-
-## Blockers before stronger claims
-
-```yaml
-required_before_stronger_claims:
-  - real submitted packet with non-placeholder payload identity
-  - Issue #8 evidence reference consistency
-  - submitted-packet eligibility gate pass on real evidence
-  - explicit pilot-readiness approval
-  - real pilot execution evidence
-  - separate validation evidence for live render, export, accessibility, and pixel behavior if those claims are requested
-```
-
-## Boundary statement
-
-This index is documentation only. It does not create submitted evidence, mutate Issue #8, execute a pilot, or upgrade readiness/release/production state.

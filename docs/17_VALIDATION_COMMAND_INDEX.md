@@ -1,7 +1,7 @@
 # Validation Command Index
 
-Task: `catalog-backed-work-package-architecture`
-Updated by: `automation/work-package-catalog-architecture`
+Task: `WP-RESP-006/PR-B`
+Updated by: `automation/wp-resp-006-pr-b-drift-fixtures-docs`
 
 This index lists repository validation commands for controlled manual use. Command success is repository-check evidence only; it is not responsive correctness evidence and does not authorize production, release, real pilot, export, live-render, accessibility, or pixel-validation claims.
 
@@ -33,6 +33,7 @@ python validation/e2e/run_issue_to_packet_bridge_check.py
 python validation/e2e/run_builder_responsive_input_boundary_check.py
 python validation/e2e/run_responsive_decision_lineage_sequence_check.py
 python validation/e2e/run_responsive_kernel_receipt_check.py
+python validation/e2e/run_responsive_contract_drift_sentinel_check.py
 python validation/e2e/run_decision_escape_routes_schema_check.py
 python validation/e2e/run_rtaq_ssot_guard_check.py
 python validation/e2e/run_status_merged_foundation_guard_check.py
@@ -78,9 +79,9 @@ python validation/e2e/run_responsive_kernel_receipt_check.py
 python validation/e2e/run_decision_escape_routes_schema_check.py
 ```
 
-## Control-plane, catalog, and archive commands
+## Control-plane, catalog, archive, and drift commands
 
-These commands preserve repository execution discipline, catalog-backed objective selection, and historical queue/ledger boundaries:
+These commands preserve repository execution discipline, catalog-backed objective selection, historical queue/ledger boundaries, and parity among STATUS, indexes, and the primary Validate workflow:
 
 ```bash
 python validation/e2e/run_rolling_queue_check.py
@@ -90,6 +91,7 @@ python validation/e2e/run_rtaq_ssot_guard_check.py
 python validation/e2e/run_status_merged_foundation_guard_check.py
 python validation/e2e/run_automation_control_state_check.py
 python validation/e2e/run_automation_work_package_catalog_check.py
+python validation/e2e/run_responsive_contract_drift_sentinel_check.py
 ```
 
 ## Legacy/manual guard commands
@@ -121,7 +123,7 @@ The commands can be used to inspect deterministic repository behavior:
 - pilot readiness report generation boundaries
 - Kernel decision lineage and Wave 5 receipt consistency
 - task quality-gate policy shape and required boundary assertions
-- queue, ledger, control-state, Work Package Catalog, and STATUS checkpoint discipline
+- queue, ledger, control-state, Work Package Catalog, STATUS checkpoint, and drift-sentinel parity discipline
 - boundary text preservation
 
 They must not be used to bypass the real submitted-packet gate or pilot-readiness gate.

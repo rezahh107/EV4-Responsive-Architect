@@ -82,6 +82,7 @@ active_validation:
   - validation/e2e/run_issue_8_preflight_boundary_check.py
   - validation/e2e/run_issue_to_packet_bridge_check.py
   - validation/e2e/run_builder_responsive_input_boundary_check.py
+  - validation/e2e/run_responsive_contract_drift_sentinel_check.py
   - validation/e2e/run_task_quality_gate_check.py
   - validation/e2e/run_rtaq_ssot_guard_check.py
   - validation/e2e/run_status_merged_foundation_guard_check.py
@@ -121,6 +122,7 @@ controlled_use_docs:
   - docs/43_CONTROL_CHECKPOINT_RECONCILIATION_RTAQ_0037.md
   - docs/44_CONTROL_STATE_POST_QUEUE_RECONCILIATION_RTAQ_0039.md
   - docs/45_SHADOW_MODE_PREPARATION_PATH_RTAQ_0040.md
+  - docs/47_RESPONSIVE_CONTRACT_DRIFT_SENTINEL.md
   - docs/AUTOMATION_WORK_PACKAGE_CATALOG.md
 ```
 
@@ -197,6 +199,7 @@ automatic_check:
   - python validation/e2e/run_issue_8_preflight_boundary_check.py
   - python validation/e2e/run_issue_to_packet_bridge_check.py
   - python validation/e2e/run_builder_responsive_input_boundary_check.py
+  - python validation/e2e/run_responsive_contract_drift_sentinel_check.py
   - python validation/e2e/run_rtaq_ssot_guard_check.py
   - python validation/e2e/run_status_merged_foundation_guard_check.py
   - python validation/e2e/run_automation_control_state_check.py

@@ -1,0 +1,6 @@
+{
+  "fixture": "responsive contract drift rejects an owned surface without owner_check",
+  "mutation": "remove_owner_check",
+  "surface": "responsive_status_projection",
+  "expected_diagnostic": "every owned surface requires a owner_check"
+}
