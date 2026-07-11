@@ -21,4 +21,9 @@ Core v0.1 contracts include input handoff, architecture mutation veto, evidence 
 ## Responsive decision contracts
 
 - `EV4_VIEWPORT_DISPLAY_CONTRACT.md` — canonical viewport display output shape.
-- `VIEWPORT_INHERITANCE_RESET_DECISION_MATRIX.md` — proposed deterministic explicit, inherited, reset, inactive, and unknown routing across desktop, tablet, and mobile; repository-check evidence only until validator/index activation.
+- `VIEWPORT_INHERITANCE_RESET_DECISION_MATRIX.md` — active deterministic explicit, inherited, reset, inactive, and unknown routing across desktop, tablet, and mobile; repository-check evidence only.
+
+## Responsive handoff and export contracts
+
+- `EV4_RESPONSIVE_HANDOFF_EXPORT_CONTRACT.md` — active responsive handoff output shape.
+- `RESPONSIVE_HANDOFF_EXPORT_BOUNDARY_MANIFEST.md` — proposed repository-level export eligibility manifest; it does not validate live exported JSON or responsive correctness.
