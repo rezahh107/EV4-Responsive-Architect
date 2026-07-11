@@ -1,7 +1,7 @@
 # Validation Command Index
 
-Task: `WP-RESP-007/PR-B`
-Updated by: `automation/wp-resp-007-pr-b-matrix-fixtures-validator`
+Task: `WP-RESP-008/PR-B`
+Updated by: `automation/wp-resp-008-pr-b-manifest-fixtures-validator`
 
 This index lists repository validation commands for controlled manual use. Command success is repository-check evidence only; it is not responsive correctness evidence and does not authorize production, release, real pilot, export, live-render, accessibility, or pixel-validation claims.
 
@@ -35,6 +35,7 @@ python validation/e2e/run_responsive_decision_lineage_sequence_check.py
 python validation/e2e/run_responsive_kernel_receipt_check.py
 python validation/e2e/run_responsive_contract_drift_sentinel_check.py
 python validation/e2e/run_viewport_inheritance_reset_matrix_check.py
+python validation/e2e/run_responsive_handoff_export_boundary_manifest_check.py
 python validation/e2e/run_decision_escape_routes_schema_check.py
 python validation/e2e/run_rtaq_ssot_guard_check.py
 python validation/e2e/run_status_merged_foundation_guard_check.py
@@ -69,6 +70,7 @@ python validation/e2e/run_issue_8_preflight_boundary_check.py
 python validation/e2e/run_issue_to_packet_bridge_check.py
 python validation/e2e/run_builder_responsive_input_boundary_check.py
 python validation/e2e/run_viewport_inheritance_reset_matrix_check.py
+python validation/e2e/run_responsive_handoff_export_boundary_manifest_check.py
 ```
 
 ## Kernel lineage and receipt commands
@@ -125,6 +127,7 @@ The commands can be used to inspect deterministic repository behavior:
 - pilot readiness report generation boundaries
 - Kernel decision lineage and Wave 5 receipt consistency
 - viewport inheritance/reset decisions, wider-to-narrower source ordering, explicit reset-source requirements, and unknown-state fail-closed behavior
+- responsive handoff export-boundary manifest lineage, required artifact-class coverage, and forbidden boundary-upgrade rejection
 - task quality-gate policy shape and required boundary assertions
 - queue, ledger, control-state, Work Package Catalog, STATUS checkpoint, and drift-sentinel parity discipline
 - boundary text preservation
