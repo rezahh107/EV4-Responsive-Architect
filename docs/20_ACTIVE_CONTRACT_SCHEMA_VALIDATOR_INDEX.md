@@ -1,7 +1,7 @@
 # Active Contract / Schema / Validator Index
 
-Task: `WP-RESP-007/PR-B`
-Updated by: `automation/wp-resp-007-pr-b-matrix-fixtures-validator`
+Task: `WP-RESP-008/PR-B`
+Updated by: `automation/wp-resp-008-pr-b-manifest-fixtures-validator`
 
 This index records the active repository surfaces needed for controlled manual use and catalog-backed handoff. It is an index only; it does not validate a real submitted packet, mutate Issue #8, authorize pilot execution, or upgrade readiness.
 
@@ -56,6 +56,9 @@ contracts:
   viewport_inheritance_reset_decision_matrix:
     path: contracts/VIEWPORT_INHERITANCE_RESET_DECISION_MATRIX.md
     role: deterministic viewport inheritance, reset, inactive, explicit, and unknown decision boundary
+  responsive_handoff_export_boundary_manifest:
+    path: contracts/RESPONSIVE_HANDOFF_EXPORT_BOUNDARY_MANIFEST.md
+    role: repository-level export eligibility, lineage, artifact-class, and boundary-assertion contract
 ```
 
 ## Schemas
@@ -152,6 +155,9 @@ primary_validate_workflow:
     viewport_inheritance_reset_matrix:
       path: validation/e2e/run_viewport_inheritance_reset_matrix_check.py
       role: fixture-backed viewport inheritance/reset decision guard; repository-check evidence only
+    responsive_handoff_export_boundary_manifest:
+      path: validation/e2e/run_responsive_handoff_export_boundary_manifest_check.py
+      role: fixture-backed export-boundary lineage, artifact-class, and forbidden-claim guard; repository-check evidence only
     rtaq_ssot_guard:
       path: validation/e2e/run_rtaq_ssot_guard_check.py
       role: queue, ledger, status, and SSOT policy preservation guard
