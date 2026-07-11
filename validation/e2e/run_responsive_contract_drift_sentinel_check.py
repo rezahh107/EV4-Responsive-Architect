@@ -30,6 +30,25 @@ def load_manifest() -> dict:
     return data
 
 
+def resolve_repo_file(value: object, field_name: str) -> Path:
+    if not isinstance(value, str) or not value:
+        raise AssertionError(f"every owned surface requires a {field_name}")
+
+    candidate = Path(value)
+    if candidate.is_absolute() or ".." in candidate.parts:
+        raise AssertionError(f"absolute or traversing {field_name} rejected: {value}")
+
+    resolved = (ROOT / candidate).resolve()
+    try:
+        resolved.relative_to(ROOT)
+    except ValueError as exc:
+        raise AssertionError(f"{field_name} escapes repository root: {value}") from exc
+
+    if not resolved.is_file():
+        raise AssertionError(f"{field_name} file missing: {value}")
+    return resolved
+
+
 def validate() -> None:
     data = load_manifest()
     boundaries = data.get("domain_evidence_boundary", {})
@@ -43,6 +62,9 @@ def validate() -> None:
 
     seen_paths: set[str] = set()
     for item in surfaces:
+        if not isinstance(item, dict):
+            raise AssertionError("every owned surface must be an object")
+
         path = item.get("path")
         owner_check = item.get("owner_check")
         if not isinstance(path, str) or not path:
@@ -50,18 +72,22 @@ def validate() -> None:
         if path in seen_paths:
             raise AssertionError(f"duplicate owned surface path: {path}")
         seen_paths.add(path)
-        if not (ROOT / path).is_file():
-            raise AssertionError(f"owned surface path missing: {path}")
-        if not isinstance(owner_check, str) or not (ROOT / owner_check).is_file():
-            raise AssertionError(f"owner check missing for {path}: {owner_check}")
+
+        resolve_repo_file(path, "path")
+        resolve_repo_file(owner_check, "owner_check")
 
     workflow_text = WORKFLOW.read_text(encoding="utf-8")
+    active_workflow_lines = [
+        line for line in workflow_text.splitlines() if line.strip() and not line.lstrip().startswith("#")
+    ]
     required = data.get("required_validate_commands")
     if not isinstance(required, list) or not required:
         raise AssertionError("required_validate_commands must be a non-empty list")
     for command in required:
-        if not isinstance(command, str) or command not in workflow_text:
-            raise AssertionError(f"required Validate command missing: {command}")
+        if not isinstance(command, str) or not command:
+            raise AssertionError("required Validate command must be a non-empty string")
+        if not any(command in line for line in active_workflow_lines):
+            raise AssertionError(f"required Validate command missing or commented out: {command}")
 
 
 def main() -> int:
