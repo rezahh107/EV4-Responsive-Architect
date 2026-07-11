@@ -1,0 +1,27 @@
+{
+  "viewport_decisions": [
+    {
+      "node_ref": "connector-card-01",
+      "viewport": "tablet",
+      "property_path": "layout.display",
+      "decision": "inherited",
+      "source_viewport": "mobile",
+      "source_ref": "responsive_payload.viewport_rules[1].mobile",
+      "reason": "invalid fixture: tablet must not inherit from mobile",
+      "conflicts": []
+    }
+  ],
+  "boundary_assertions": {
+    "submitted_evidence_created": false,
+    "issue_8_mutated": false,
+    "pilot_executed_or_authorized": false,
+    "production_ready": false,
+    "release_ready": false,
+    "live_render_validated": false,
+    "export_json_validated": false,
+    "accessibility_passed": false,
+    "pixel_perfect": false,
+    "responsive_correctness_validated": false,
+    "ci_success_treated_as_responsive_correctness_evidence": false
+  }
+}

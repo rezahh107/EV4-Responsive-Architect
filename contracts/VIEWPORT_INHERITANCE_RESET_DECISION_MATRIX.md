@@ -1,9 +1,10 @@
 # Viewport Inheritance and Reset Decision Matrix
 
-Status: proposed_v0.1.0
+Status: active_v0.2.0
 Work Package: `WP-RESP-007`
-PR slice: `WP-RESP-007/PR-A`
+PR slice: `WP-RESP-007/PR-B`
 Related contract: `contracts/EV4_VIEWPORT_DISPLAY_CONTRACT.md`
+Validator: `validation/e2e/run_viewport_inheritance_reset_matrix_check.py`
 
 ## Purpose
 
@@ -82,6 +83,15 @@ A valid reset decision must identify:
 - reason.
 
 A missing value, empty object, `null`, or omitted key is not automatically a reset. The owning schema or contract must explicitly define it as a reset marker.
+
+## Fixture Coverage
+
+The active validator requires:
+
+- a valid matrix covering `explicit`, `inherited`, `reset`, `inactive`, and `unknown`;
+- rejection of inheritance from the same or a narrower viewport;
+- rejection of reset without a non-empty canonical `source_ref`;
+- rejection of any upgraded evidence, pilot, readiness, production, release, export, accessibility, pixel, or responsive-correctness boundary.
 
 ## Allowed Work
 

@@ -1,0 +1,27 @@
+{
+  "viewport_decisions": [
+    {
+      "node_ref": "feature-card-02",
+      "viewport": "mobile",
+      "property_path": "layout.gap",
+      "decision": "reset",
+      "source_viewport": null,
+      "source_ref": null,
+      "reason": "invalid fixture: omission is not an explicit reset marker",
+      "conflicts": []
+    }
+  ],
+  "boundary_assertions": {
+    "submitted_evidence_created": false,
+    "issue_8_mutated": false,
+    "pilot_executed_or_authorized": false,
+    "production_ready": false,
+    "release_ready": false,
+    "live_render_validated": false,
+    "export_json_validated": false,
+    "accessibility_passed": false,
+    "pixel_perfect": false,
+    "responsive_correctness_validated": false,
+    "ci_success_treated_as_responsive_correctness_evidence": false
+  }
+}

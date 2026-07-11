@@ -1,7 +1,7 @@
 # Active Contract / Schema / Validator Index
 
-Task: `WP-RESP-006/PR-B`
-Updated by: `automation/wp-resp-006-pr-b-drift-fixtures-docs`
+Task: `WP-RESP-007/PR-B`
+Updated by: `automation/wp-resp-007-pr-b-matrix-fixtures-validator`
 
 This index records the active repository surfaces needed for controlled manual use and catalog-backed handoff. It is an index only; it does not validate a real submitted packet, mutate Issue #8, authorize pilot execution, or upgrade readiness.
 
@@ -53,6 +53,9 @@ contracts:
   responsive_handoff_export:
     path: contracts/EV4_RESPONSIVE_HANDOFF_EXPORT_CONTRACT.md
     role: builder handoff/export package boundary
+  viewport_inheritance_reset_decision_matrix:
+    path: contracts/VIEWPORT_INHERITANCE_RESET_DECISION_MATRIX.md
+    role: deterministic viewport inheritance, reset, inactive, explicit, and unknown decision boundary
 ```
 
 ## Schemas
@@ -146,6 +149,9 @@ primary_validate_workflow:
     responsive_contract_drift_sentinel:
       path: validation/e2e/run_responsive_contract_drift_sentinel_check.py
       role: CI-visible parity guard for owned responsive contract, STATUS, command-index, active-index, and workflow surfaces
+    viewport_inheritance_reset_matrix:
+      path: validation/e2e/run_viewport_inheritance_reset_matrix_check.py
+      role: fixture-backed viewport inheritance/reset decision guard; repository-check evidence only
     rtaq_ssot_guard:
       path: validation/e2e/run_rtaq_ssot_guard_check.py
       role: queue, ledger, status, and SSOT policy preservation guard
