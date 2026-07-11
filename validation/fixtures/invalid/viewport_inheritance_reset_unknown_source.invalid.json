@@ -1,0 +1,39 @@
+{
+  "viewport_decisions": [
+    {
+      "node_ref": "feature-card-04",
+      "viewport": "tablet",
+      "property_path": "layout.columns",
+      "decision": "unknown",
+      "source_viewport": null,
+      "source_ref": null,
+      "reason": "tablet source state is unresolved",
+      "conflicts": [
+        "authoritative tablet value unavailable"
+      ]
+    },
+    {
+      "node_ref": "feature-card-04",
+      "viewport": "mobile",
+      "property_path": "layout.columns",
+      "decision": "inherited",
+      "source_viewport": "tablet",
+      "source_ref": "responsive_payload.viewport_rules[4].tablet",
+      "reason": "invalid fixture: inheritance must stop at an unknown source viewport",
+      "conflicts": []
+    }
+  ],
+  "boundary_assertions": {
+    "submitted_evidence_created": false,
+    "issue_8_mutated": false,
+    "pilot_executed_or_authorized": false,
+    "production_ready": false,
+    "release_ready": false,
+    "live_render_validated": false,
+    "export_json_validated": false,
+    "accessibility_passed": false,
+    "pixel_perfect": false,
+    "responsive_correctness_validated": false,
+    "ci_success_treated_as_responsive_correctness_evidence": false
+  }
+}
