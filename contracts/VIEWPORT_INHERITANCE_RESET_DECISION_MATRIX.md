@@ -1,6 +1,6 @@
 # Viewport Inheritance and Reset Decision Matrix
 
-Status: active_v0.1.0
+Status: proposed_v0.1.0
 Work Package: `WP-RESP-007`
 PR slice: `WP-RESP-007/PR-A`
 Related contract: `contracts/EV4_VIEWPORT_DISPLAY_CONTRACT.md`
@@ -51,8 +51,8 @@ Missing or contradictory inputs produce `unknown`; they must not be guessed.
 | canonical reset marker | any | `reset` | Do not inherit the wider value; record the reset source and target property/state. |
 | canonical inactive marker | any | `inactive` | Mark the node inactive at this viewport; do not reinterpret as reset. |
 | no override | `explicit` or `inherited` | `inherited` | Use the nearest wider authoritative state only when inheritance is allowed for the field. |
-| no override | `reset` | `reset` | Preserve the wider reset unless a narrower explicit value changes it. |
-| no override | `inactive` | `inactive` | Preserve inactivity unless a narrower explicit activation is allowed and present. |
+| no override | `reset` | `reset` | Preserve the wider reset for the current viewport. |
+| no override | `inactive` | `inactive` | Preserve inactivity for the current viewport. |
 | no override | `unknown` | `unknown` | Stop inheritance; unresolved wider state cannot become authoritative. |
 | contradictory explicit/reset/inactive signals | any | `unknown` | Fail closed and report the conflicting sources. |
 | non-canonical viewport or property path | any | `unknown` | Reject routing until canonicalized by an owning contract. |
@@ -67,7 +67,7 @@ desktop -> tablet -> mobile
 ```
 
 - `tablet` may inherit from `desktop`.
-- `mobile` may inherit first from `tablet`, then from `desktop` only when tablet has no authoritative explicit, reset, inactive, or unknown state.
+- `mobile` may inherit from `tablet`; tablet may itself inherit from desktop when it has no override.
 - Wider viewports never inherit from narrower viewports.
 - An `unknown` state blocks further inference through that path.
 
@@ -110,7 +110,7 @@ viewport_decision:
   source_viewport: desktop | tablet | mobile | null
   source_ref: string | null
   reason: string
-  conflicts: []
+  conflicts: [string]
 ```
 
 ## Gate Rules
