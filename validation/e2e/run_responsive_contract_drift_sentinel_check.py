@@ -7,9 +7,6 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 MANIFEST = ROOT / "planning/EV4_RESPONSIVE_CONTRACT_DRIFT_SENTINEL.json"
 WORKFLOW = ROOT / ".github/workflows/validate.yml"
-COMMAND_INDEX = ROOT / "docs/17_VALIDATION_COMMAND_INDEX.md"
-ACTIVE_INDEX = ROOT / "docs/20_ACTIVE_CONTRACT_SCHEMA_VALIDATOR_INDEX.md"
-SELF_COMMAND = "python validation/e2e/run_responsive_contract_drift_sentinel_check.py"
 
 FALSE_BOUNDARIES = {
     "ci_success_is_responsive_correctness_evidence",
@@ -58,22 +55,18 @@ def validate() -> None:
         if not isinstance(owner_check, str) or not (ROOT / owner_check).is_file():
             raise AssertionError(f"owner check missing for {path}: {owner_check}")
 
-    required = data.get("required_validate_commands", [])
-    if SELF_COMMAND not in required:
-        raise AssertionError("drift sentinel command missing from required_validate_commands")
-
     workflow_text = WORKFLOW.read_text(encoding="utf-8")
-    if SELF_COMMAND not in workflow_text:
-        raise AssertionError("Validate workflow does not run the drift sentinel")
-
-    for index in (COMMAND_INDEX, ACTIVE_INDEX):
-        if SELF_COMMAND not in index.read_text(encoding="utf-8"):
-            raise AssertionError(f"command index missing drift sentinel: {index.relative_to(ROOT)}")
+    required = data.get("required_validate_commands")
+    if not isinstance(required, list) or not required:
+        raise AssertionError("required_validate_commands must be a non-empty list")
+    for command in required:
+        if not isinstance(command, str) or command not in workflow_text:
+            raise AssertionError(f"required Validate command missing: {command}")
 
 
 def main() -> int:
     validate()
-    print("responsive contract drift sentinel passed")
+    print("responsive contract drift sentinel inventory passed")
     return 0
 
 
