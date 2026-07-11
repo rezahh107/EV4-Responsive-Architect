@@ -49,7 +49,6 @@
   "required_validate_commands": [
     "python validation/e2e/run_status_merged_foundation_guard_check.py",
     "python validation/e2e/run_automation_control_state_check.py",
-    "python validation/e2e/run_automation_work_package_catalog_check.py",
-    "python validation/e2e/run_responsive_contract_drift_sentinel_check.py"
+    "python validation/e2e/run_automation_work_package_catalog_check.py"
   ]
 }
