@@ -53,6 +53,7 @@ responsive_handoff_export_boundary_manifest:
     - responsive_tree_output
     - breakpoint_overrides
     - viewport_display_contract
+    - content_gate
     - builder_handoff
     - validation_plan
     - final_review
@@ -69,7 +70,7 @@ responsive_handoff_export_boundary_manifest:
     production_ready: false
     release_ready: false
     live_render_validated: false
-    export_json_validated: false
+    export_validated: false
     accessibility_passed: false
     pixel_perfect: false
     responsive_correctness_validated: false
@@ -85,7 +86,7 @@ The repository-level manifest may report only one of these states:
 - `blocked_contract_conflict`: referenced contracts disagree or a blocking conflict remains unresolved;
 - `unknown`: available repository evidence cannot support a deterministic eligibility decision.
 
-`eligible_for_repository_validation` is not equivalent to `export_json_validated` and must never be translated into a live export claim.
+`eligible_for_repository_validation` is not equivalent to `export_validated` and must never be translated into a live export claim.
 
 ## Gate Rules
 
@@ -106,7 +107,7 @@ The repository-level manifest may report only one of these states:
 ## Forbidden Work
 
 - Creating or fabricating a real exported JSON artifact.
-- Setting `export_json_validated` to `true` from repository-only checks.
+- Setting `export_validated` to `true` from repository-only checks.
 - Mutating Issue #8 or creating submitted evidence.
 - Running or authorizing a real pilot.
 - Claiming production, release, live-render, accessibility, pixel-perfect, or responsive correctness.
