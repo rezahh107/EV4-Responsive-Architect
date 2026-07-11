@@ -1,8 +1,8 @@
 # Responsive Handoff Export Boundary Manifest
 
-Status: proposed_v0.1.0
+Status: active_v0.1.0
 Work Package: `WP-RESP-008`
-PR slice: `WP-RESP-008/PR-A`
+PR slice: `WP-RESP-008/PR-B`
 Related contract: `contracts/EV4_RESPONSIVE_HANDOFF_EXPORT_CONTRACT.md`
 
 ## Purpose
@@ -41,7 +41,7 @@ Missing or ambiguous source lineage must fail closed.
 ```yaml
 responsive_handoff_export_boundary_manifest:
   schema: ev4-responsive-handoff-export-boundary-manifest@0.1.0
-  status: proposed
+  status: eligible_for_repository_validation
   source_handoff_ref: string
   source_packet_ref: string
   selected_route_ref: string
@@ -101,7 +101,7 @@ The repository-level manifest may report only one of these states:
 ## Allowed Work
 
 - Clarify the boundary manifest shape and lineage requirements.
-- Add schema, fixtures, validators, CI wiring, STATUS entries, and indexes in later approved slices.
+- Add schema, fixtures, validators, CI wiring, STATUS entries, and indexes in approved slices.
 - Improve deterministic diagnostics for missing lineage, contract conflict, or forbidden boundary upgrades.
 
 ## Forbidden Work
@@ -137,4 +137,4 @@ Before activation, verify that:
 - required references are explicit and traceable;
 - unknowns and conflicts fail closed;
 - no live export, readiness, or responsive-correctness claim is implied;
-- later schema and validator work remains assigned to an approved Work Package slice.
+- fixture and validator coverage remains assigned to an approved Work Package slice.
