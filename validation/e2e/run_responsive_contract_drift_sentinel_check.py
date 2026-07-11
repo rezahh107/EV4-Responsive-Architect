@@ -8,11 +8,15 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 MANIFEST = ROOT / "planning/EV4_RESPONSIVE_CONTRACT_DRIFT_SENTINEL.json"
 WORKFLOW = ROOT / ".github/workflows/validate.yml"
+STATUS = ROOT / "STATUS.md"
+COMMAND_INDEX = ROOT / "docs/17_VALIDATION_COMMAND_INDEX.md"
+ACTIVE_INDEX = ROOT / "docs/20_ACTIVE_CONTRACT_SCHEMA_VALIDATOR_INDEX.md"
 INVALID_FIXTURES = ROOT / "validation/fixtures/invalid"
 FIXTURE_FILES = (
     INVALID_FIXTURES / "responsive_contract_drift_missing_owner_check.invalid.json",
     INVALID_FIXTURES / "responsive_contract_drift_commented_command.invalid.json",
 )
+SENTINEL_COMMAND = "python validation/e2e/run_responsive_contract_drift_sentinel_check.py"
 
 FALSE_BOUNDARIES = {
     "ci_success_is_responsive_correctness_evidence",
@@ -62,6 +66,21 @@ def resolve_repo_file(value: object, field_name: str) -> Path:
     return resolved
 
 
+def active_lines(text: str) -> list[str]:
+    return [line for line in text.splitlines() if line.strip() and not line.lstrip().startswith("#")]
+
+
+def validate_documentation_parity() -> None:
+    surfaces = {
+        "STATUS.md": STATUS.read_text(encoding="utf-8"),
+        "docs/17_VALIDATION_COMMAND_INDEX.md": COMMAND_INDEX.read_text(encoding="utf-8"),
+        "docs/20_ACTIVE_CONTRACT_SCHEMA_VALIDATOR_INDEX.md": ACTIVE_INDEX.read_text(encoding="utf-8"),
+    }
+    for name, text in surfaces.items():
+        if not any(SENTINEL_COMMAND in line for line in active_lines(text)):
+            raise AssertionError(f"responsive contract drift sentinel missing from parity surface: {name}")
+
+
 def validate_manifest(data: dict, workflow_text: str) -> None:
     boundaries = data.get("domain_evidence_boundary", {})
     for key in sorted(FALSE_BOUNDARIES):
@@ -88,9 +107,7 @@ def validate_manifest(data: dict, workflow_text: str) -> None:
         resolve_repo_file(path, "path")
         resolve_repo_file(owner_check, "owner_check")
 
-    active_workflow_lines = [
-        line for line in workflow_text.splitlines() if line.strip() and not line.lstrip().startswith("#")
-    ]
+    active_workflow_lines = active_lines(workflow_text)
     required = data.get("required_validate_commands")
     if not isinstance(required, list) or not required:
         raise AssertionError("required_validate_commands must be a non-empty list")
@@ -99,6 +116,9 @@ def validate_manifest(data: dict, workflow_text: str) -> None:
             raise AssertionError("required Validate command must be a non-empty string")
         if not any(command in line for line in active_workflow_lines):
             raise AssertionError(f"required Validate command missing or commented out: {command}")
+
+    if not any(SENTINEL_COMMAND in line for line in active_workflow_lines):
+        raise AssertionError("responsive contract drift sentinel missing from primary Validate workflow")
 
 
 def apply_fixture(base_manifest: dict, workflow_text: str, fixture: dict) -> tuple[dict, str]:
@@ -155,12 +175,13 @@ def validate() -> None:
     data = load_manifest()
     workflow_text = WORKFLOW.read_text(encoding="utf-8")
     validate_manifest(data, workflow_text)
+    validate_documentation_parity()
     validate_negative_fixtures(data, workflow_text)
 
 
 def main() -> int:
     validate()
-    print("responsive contract drift sentinel passed: inventory and negative fixtures are enforced")
+    print("responsive contract drift sentinel passed: inventory, parity, and negative fixtures are enforced")
     return 0
 
 
