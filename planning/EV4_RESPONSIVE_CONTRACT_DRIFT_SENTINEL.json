@@ -1,0 +1,55 @@
+{
+  "schema": "ev4-responsive-contract-drift-sentinel@1.0.0",
+  "work_package_id": "WP-RESP-006",
+  "slice_id": "WP-RESP-006/PR-A",
+  "purpose": "Define one deterministic ownership inventory for responsive contract, schema, validator, STATUS, command-index, and workflow drift detection.",
+  "domain_evidence_boundary": {
+    "ci_success_is_responsive_correctness_evidence": false,
+    "inventory_completion_is_responsive_correctness_evidence": false,
+    "production_ready": false,
+    "release_ready": false,
+    "live_render_validated": false,
+    "export_json_validated": false,
+    "accessibility_passed": false,
+    "pixel_perfect": false,
+    "responsive_correctness_validated": false
+  },
+  "owned_surfaces": [
+    {
+      "surface": "automation_control_contract",
+      "path": "planning/EV4_AUTOMATION_CONTROL_STATE.json",
+      "owner_check": "validation/e2e/run_automation_control_state_check.py"
+    },
+    {
+      "surface": "work_package_catalog_contract",
+      "path": "planning/EV4_AUTOMATION_WORK_PACKAGE_CATALOG.json",
+      "owner_check": "validation/e2e/run_automation_work_package_catalog_check.py"
+    },
+    {
+      "surface": "responsive_status_projection",
+      "path": "STATUS.md",
+      "owner_check": "validation/e2e/run_status_merged_foundation_guard_check.py"
+    },
+    {
+      "surface": "validation_command_index",
+      "path": "docs/17_VALIDATION_COMMAND_INDEX.md",
+      "owner_check": "validation/e2e/run_responsive_contract_drift_sentinel_check.py"
+    },
+    {
+      "surface": "active_contract_schema_validator_index",
+      "path": "docs/20_ACTIVE_CONTRACT_SCHEMA_VALIDATOR_INDEX.md",
+      "owner_check": "validation/e2e/run_responsive_contract_drift_sentinel_check.py"
+    },
+    {
+      "surface": "validate_workflow",
+      "path": ".github/workflows/validate.yml",
+      "owner_check": "validation/e2e/run_responsive_contract_drift_sentinel_check.py"
+    }
+  ],
+  "required_validate_commands": [
+    "python validation/e2e/run_status_merged_foundation_guard_check.py",
+    "python validation/e2e/run_automation_control_state_check.py",
+    "python validation/e2e/run_automation_work_package_catalog_check.py",
+    "python validation/e2e/run_responsive_contract_drift_sentinel_check.py"
+  ]
+}
