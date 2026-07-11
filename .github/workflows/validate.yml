@@ -80,6 +80,7 @@ jobs:
           test -f validation/e2e/run_run_ledger_check.py
           test -f validation/e2e/run_responsive_decision_lineage_sequence_check.py
           test -f validation/e2e/run_responsive_kernel_receipt_check.py
+          test -f validation/e2e/run_responsive_contract_drift_sentinel_check.py
       - name: Rolling queue guard
         run: python validation/e2e/run_rolling_queue_check.py
       - name: Run ledger guard
@@ -114,6 +115,8 @@ jobs:
         run: python validation/e2e/run_responsive_decision_lineage_sequence_check.py
       - name: Responsive Kernel receipt consistency
         run: python validation/e2e/run_responsive_kernel_receipt_check.py
+      - name: Responsive contract drift sentinel
+        run: python validation/e2e/run_responsive_contract_drift_sentinel_check.py
       - name: Decision escape routes schema
         run: python validation/e2e/run_decision_escape_routes_schema_check.py
       - name: RTAQ SSOT guard
