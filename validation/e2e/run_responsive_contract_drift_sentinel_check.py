@@ -118,7 +118,15 @@ def apply_fixture(base_manifest: dict, workflow_text: str, fixture: dict) -> tup
         command = fixture.get("command")
         if not isinstance(command, str) or command not in mutated_workflow:
             raise AssertionError(f"fixture command not found: {command}")
-        mutated_workflow = mutated_workflow.replace(command, f"# {command}", 1)
+        lines = mutated_workflow.splitlines()
+        for index, line in enumerate(lines):
+            if command in line:
+                indent = len(line) - len(line.lstrip())
+                lines[index] = line[:indent] + "# " + line[indent:]
+                break
+        else:
+            raise AssertionError(f"fixture command not found: {command}")
+        mutated_workflow = "\n".join(lines)
     else:
         raise AssertionError(f"unsupported drift fixture mutation: {mutation}")
 
