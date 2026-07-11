@@ -12,6 +12,7 @@ INVALID_FIXTURES = {
     "viewport_inheritance_reset_narrower_source.invalid.json": "must inherit only from a wider viewport",
     "viewport_inheritance_reset_missing_source.invalid.json": "requires a non-empty source_ref",
     "viewport_inheritance_reset_boundary_upgrade.invalid.json": "upgraded forbidden boundary claims",
+    "viewport_inheritance_reset_unknown_source.invalid.json": "must not inherit through an unknown source viewport",
 }
 CANONICAL_VIEWPORTS = {"desktop", "tablet", "mobile"}
 CANONICAL_DECISIONS = {"explicit", "inherited", "reset", "inactive", "unknown"}
@@ -53,7 +54,16 @@ def _validate_boundaries(data: dict[str, object], source: str) -> None:
         raise AssertionError(f"{source} upgraded forbidden boundary claims: {', '.join(upgraded)}")
 
 
-def _validate_decision(decision: object, source: str, index: int) -> None:
+def _decision_key(decision: dict[str, object]) -> tuple[object, object, object]:
+    return decision.get("node_ref"), decision.get("property_path"), decision.get("viewport")
+
+
+def _validate_decision(
+    decision: object,
+    source: str,
+    index: int,
+    decisions_by_key: dict[tuple[object, object, object], dict[str, object]],
+) -> None:
     label = f"{source} viewport_decisions[{index}]"
     if not isinstance(decision, dict):
         raise AssertionError(f"{label} must be an object")
@@ -82,6 +92,10 @@ def _validate_decision(decision: object, source: str, index: int) -> None:
 
     if decision_state in {"explicit", "reset", "inactive"} and not _non_empty_string(source_ref):
         raise AssertionError(f"{label} {decision_state} requires a non-empty source_ref")
+    if decision_state == "explicit" and source_viewport != viewport:
+        raise AssertionError(f"{label} explicit decision requires source_viewport to match viewport")
+    if decision_state in {"reset", "inactive"} and source_viewport is not None:
+        raise AssertionError(f"{label} {decision_state} decision must not specify a source_viewport")
 
     if decision_state == "inherited":
         if source_viewport not in CANONICAL_VIEWPORTS:
@@ -90,6 +104,9 @@ def _validate_decision(decision: object, source: str, index: int) -> None:
             raise AssertionError(f"{label} must inherit only from a wider viewport")
         if not _non_empty_string(source_ref):
             raise AssertionError(f"{label} inherited decision requires a non-empty source_ref")
+        source_decision = decisions_by_key.get((node_ref, property_path, source_viewport))
+        if source_decision is not None and source_decision.get("decision") == "unknown":
+            raise AssertionError(f"{label} must not inherit through an unknown source viewport")
 
     if decision_state == "unknown":
         if source_viewport is not None or source_ref is not None:
@@ -102,8 +119,18 @@ def _validate_payload(data: dict[str, object], source: str) -> None:
     decisions = data.get("viewport_decisions")
     if not isinstance(decisions, list) or not decisions:
         raise AssertionError(f"{source} must contain a non-empty viewport_decisions list")
+
+    decisions_by_key: dict[tuple[object, object, object], dict[str, object]] = {}
     for index, decision in enumerate(decisions):
-        _validate_decision(decision, source, index)
+        if not isinstance(decision, dict):
+            raise AssertionError(f"{source} viewport_decisions[{index}] must be an object")
+        key = _decision_key(decision)
+        if key in decisions_by_key:
+            raise AssertionError(f"{source} contains duplicate viewport decision key: {key}")
+        decisions_by_key[key] = decision
+
+    for index, decision in enumerate(decisions):
+        _validate_decision(decision, source, index, decisions_by_key)
     _validate_boundaries(data, source)
 
 
@@ -111,9 +138,13 @@ def main() -> int:
     _validate_payload(_load(VALID_FIXTURE), str(VALID_FIXTURE.relative_to(ROOT)))
 
     observed = {path.name for path in INVALID_DIR.glob("viewport_inheritance_reset_*.invalid.json")}
-    missing = set(INVALID_FIXTURES) - observed
+    registered = set(INVALID_FIXTURES)
+    missing = registered - observed
     if missing:
         raise AssertionError("missing required viewport matrix invalid fixtures: " + ", ".join(sorted(missing)))
+    extra = observed - registered
+    if extra:
+        raise AssertionError("unregistered viewport matrix invalid fixtures: " + ", ".join(sorted(extra)))
 
     for name, marker in INVALID_FIXTURES.items():
         path = INVALID_DIR / name
