@@ -26,4 +26,4 @@ Core v0.1 contracts include input handoff, architecture mutation veto, evidence 
 ## Responsive handoff and export contracts
 
 - `EV4_RESPONSIVE_HANDOFF_EXPORT_CONTRACT.md` — active responsive handoff output shape.
-- `RESPONSIVE_HANDOFF_EXPORT_BOUNDARY_MANIFEST.md` — proposed repository-level export eligibility manifest; it does not validate live exported JSON or responsive correctness.
+- `RESPONSIVE_HANDOFF_EXPORT_BOUNDARY_MANIFEST.md` — active repository-level export eligibility manifest; it does not validate live exported JSON or responsive correctness.

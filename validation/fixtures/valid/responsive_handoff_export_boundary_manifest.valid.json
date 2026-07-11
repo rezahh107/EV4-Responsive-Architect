@@ -1,0 +1,39 @@
+{
+  "schema": "ev4-responsive-handoff-export-boundary-manifest@0.1.0",
+  "status": "eligible_for_repository_validation",
+  "source_handoff_ref": "fixtures/handoff/example-responsive-handoff.json",
+  "source_packet_ref": "fixtures/packet/example-responsive-packet.json",
+  "selected_route_ref": "route:responsive-architect",
+  "relationship_classification_ref": "classification:builder-to-responsive",
+  "contract_refs": {
+    "responsive_handoff": "contracts/EV4_RESPONSIVE_HANDOFF_EXPORT_CONTRACT.md",
+    "viewport_display": "contracts/EV4_VIEWPORT_DISPLAY_CONTRACT.md"
+  },
+  "expected_artifact_classes": [
+    "responsive_tree_output",
+    "breakpoint_overrides",
+    "viewport_display_contract",
+    "content_gate",
+    "builder_handoff",
+    "validation_plan",
+    "final_review"
+  ],
+  "validation_plan_refs": [
+    "validation/e2e/run_responsive_handoff_export_boundary_manifest_check.py"
+  ],
+  "unresolved_unknowns": [],
+  "blocking_conflicts": [],
+  "boundary_assertions": {
+    "submitted_evidence_created": false,
+    "issue_8_mutated": false,
+    "pilot_executed_or_authorized": false,
+    "production_ready": false,
+    "release_ready": false,
+    "live_render_validated": false,
+    "export_validated": false,
+    "accessibility_passed": false,
+    "pixel_perfect": false,
+    "responsive_correctness_validated": false,
+    "ci_success_treated_as_domain_evidence": false
+  }
+}
