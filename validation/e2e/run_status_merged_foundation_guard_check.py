@@ -54,6 +54,7 @@ REQUIRED_AUTOMATIC_CHECKS = [
     C("run_issue_8_preflight_boundary_check.py"),
     C("run_issue_to_packet_bridge_check.py"),
     C("run_builder_responsive_input_boundary_check.py"),
+    C("run_responsive_contract_drift_sentinel_check.py"),
     C("run_rtaq_ssot_guard_check.py"),
     C("run_status_merged_foundation_guard_check.py"),
     C("run_automation_control_state_check.py"),
