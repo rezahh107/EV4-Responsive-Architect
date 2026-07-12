@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ev4-automation-work-package-file@1.0.0",
+  "title": "EV4 Automation Work Package File",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "id",
+    "work_package"
+  ],
+  "properties": {
+    "schema": {
+      "const": "ev4-automation-work-package-file@1.0.0"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^WP-RESP-[0-9]{3}$"
+    },
+    "work_package": {
+      "$ref": "ev4-automation-work-package-catalog.schema.json#/$defs/work_package"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "work_package": {
+            "type": "object",
+            "required": ["id"]
+          }
+        }
+      },
+      "then": {
+        "$comment": "The deterministic reassembly validator MUST enforce top-level id == work_package.id; JSON Schema draft 2020-12 cannot portably compare instance values."
+      }
+    }
+  ]
+}
