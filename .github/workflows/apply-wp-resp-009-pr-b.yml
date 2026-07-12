@@ -1,0 +1,56 @@
+name: Apply WP-RESP-009 PR-B
+
+on:
+  push:
+    branches:
+      - automation/wp-resp-009-pr-b-migration-reassembly
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: apply-wp-resp-009-pr-b-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  migrate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout exact branch head
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+        with:
+          ref: automation/wp-resp-009-pr-b-migration-reassembly
+          fetch-depth: 0
+          persist-credentials: true
+
+      - name: Set up Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.11'
+
+      - name: Generate modular catalog projection
+        run: python validation/e2e/run_automation_work_package_catalog_reassembly_check.py --write --self-test
+
+      - name: Verify generated scope
+        run: |
+          git diff --check
+          changed="$(git status --short | awk '{print $2}')"
+          test -n "$changed"
+          if printf '%s\n' "$changed" | grep -Ev '^(planning/EV4_AUTOMATION_WORK_PACKAGE_CATALOG_INDEX\.json|planning/work-packages/WP-RESP-[0-9]{3}\.json)$'; then
+            echo 'Unexpected generated path detected' >&2
+            exit 1
+          fi
+
+      - name: Commit material projection
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add planning/EV4_AUTOMATION_WORK_PACKAGE_CATALOG_INDEX.json planning/work-packages/
+          if git diff --cached --quiet; then
+            echo 'Projection already current.'
+            exit 0
+          fi
+          git commit -m "WP-RESP-009/PR-B generate modular catalog projection"
+          git push origin HEAD:automation/wp-resp-009-pr-b-migration-reassembly
