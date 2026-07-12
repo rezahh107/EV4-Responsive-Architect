@@ -63,7 +63,7 @@ jobs:
           python validation/e2e/run_run_ledger_check.py
           python validation/e2e/run_task_quality_gate_check.py
       - name: Remove one-shot migration tooling
-        run: git rm tools/apply_wp_resp_005_pr_b.py .github/workflows/apply-wp-resp-005-pr-b.yml
+        run: git rm -f tools/apply_wp_resp_005_pr_b.py .github/workflows/apply-wp-resp-005-pr-b.yml
       - name: Commit and push material result
         run: |
           git add planning/EV4_AUTOMATION_WORK_PACKAGE_CATALOG.json \
