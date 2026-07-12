@@ -43,6 +43,7 @@ jobs:
           script = script.replace('        pkg["material_outcome_references"] = refs\n', "")
           script = script.replace('    governance["material_outcome_references"] = ["PR #158", "PR #159", "PR #160", "PR #161", "PR #162", "PR #163", "PR #164"]\n', "")
           script = script.replace("run_catalog_replenishment_policy_transition_check.py", "run_automation_replenishment_policy_transition_check.py")
+          script = script.replace('    control["catalog_replenishment_policy"] = "state_driven_target_4_refresh_below_4_max_5_single_active_pr"\n', '    control["catalog_replenishment_policy"] = "state_driven_non_blocking_single_active_pr"\n')
           script_path.write_text(script, encoding="utf-8")
 
           validator_path = Path("validation/e2e/run_automation_work_package_catalog_check.py")
