@@ -1,0 +1,102 @@
+{
+  "schema": "ev4-automation-work-package-catalog-index@1.0.0",
+  "project": "EV4 Responsive Architect",
+  "authority_mode": "monolith_canonical_modular_shadow",
+  "canonical_catalog_path": "planning/EV4_AUTOMATION_WORK_PACKAGE_CATALOG.json",
+  "package_directory": "planning/work-packages",
+  "ordering": {
+    "key": "work_package_id_numeric_suffix",
+    "direction": "ascending",
+    "duplicate_ids_forbidden": true,
+    "missing_entries_forbidden": true,
+    "unindexed_files_forbidden": true
+  },
+  "package_entries": [
+    {
+      "id": "WP-RESP-001",
+      "path": "planning/work-packages/WP-RESP-001.json",
+      "schema": "ev4-automation-work-package-file@1.0.0",
+      "content_sha256": "7c1ea7d815a55fb506fe46d8d3a4c24daa119d07951536d644a1ab04bf86c1df"
+    },
+    {
+      "id": "WP-RESP-002",
+      "path": "planning/work-packages/WP-RESP-002.json",
+      "schema": "ev4-automation-work-package-file@1.0.0",
+      "content_sha256": "1ccd37ef56656ecc7f6fc4a0c176cab8a95ebb468e9aaef0908c8bb4e223b167"
+    },
+    {
+      "id": "WP-RESP-003",
+      "path": "planning/work-packages/WP-RESP-003.json",
+      "schema": "ev4-automation-work-package-file@1.0.0",
+      "content_sha256": "d639cdb76f5fc29f7ce6e8489325344c4b61caf6e73d18f8a1f6085135f7e064"
+    },
+    {
+      "id": "WP-RESP-004",
+      "path": "planning/work-packages/WP-RESP-004.json",
+      "schema": "ev4-automation-work-package-file@1.0.0",
+      "content_sha256": "09936f73a2c2ae065362c929f31d070b096b2750f7bd21b792a839e64801e5e0"
+    },
+    {
+      "id": "WP-RESP-005",
+      "path": "planning/work-packages/WP-RESP-005.json",
+      "schema": "ev4-automation-work-package-file@1.0.0",
+      "content_sha256": "e73984213a9db822d228c4c0f339c19cb20207b896272e7cbe86087b616e8b3d"
+    },
+    {
+      "id": "WP-RESP-006",
+      "path": "planning/work-packages/WP-RESP-006.json",
+      "schema": "ev4-automation-work-package-file@1.0.0",
+      "content_sha256": "943de75b7d0e85d68ebc45b4a6ea0d95b64a5769a276a1365e8f05048456f6dd"
+    },
+    {
+      "id": "WP-RESP-007",
+      "path": "planning/work-packages/WP-RESP-007.json",
+      "schema": "ev4-automation-work-package-file@1.0.0",
+      "content_sha256": "7119bfd476911610925b8a1d24bee9a868b5e06a4941906767e5e204b2bf4ee8"
+    },
+    {
+      "id": "WP-RESP-008",
+      "path": "planning/work-packages/WP-RESP-008.json",
+      "schema": "ev4-automation-work-package-file@1.0.0",
+      "content_sha256": "8e63fbdb63559b4ff7ccbac1cef8aff997be7dbe39c2fb13a2267bebfbb0dc0e"
+    },
+    {
+      "id": "WP-RESP-009",
+      "path": "planning/work-packages/WP-RESP-009.json",
+      "schema": "ev4-automation-work-package-file@1.0.0",
+      "content_sha256": "f1be9d333b1993c0bf519c751fcdce185b0e2ae8d663ab7c2e9ad0ab82e420d7"
+    },
+    {
+      "id": "WP-RESP-010",
+      "path": "planning/work-packages/WP-RESP-010.json",
+      "schema": "ev4-automation-work-package-file@1.0.0",
+      "content_sha256": "1037774d395a9ab36dfa3286104ac86b9e1a8c85fba6ecd5cfdbafd0df3a1c63"
+    },
+    {
+      "id": "WP-RESP-011",
+      "path": "planning/work-packages/WP-RESP-011.json",
+      "schema": "ev4-automation-work-package-file@1.0.0",
+      "content_sha256": "7562a65ab7019f79a57349f312113285c20aa97d181bbecd7e7e562f842b667f"
+    },
+    {
+      "id": "WP-RESP-012",
+      "path": "planning/work-packages/WP-RESP-012.json",
+      "schema": "ev4-automation-work-package-file@1.0.0",
+      "content_sha256": "f0c0c63543dd1234cd1ff88ada3046da882c857ce1b41d7bc99c9fd62e9be366"
+    }
+  ],
+  "global_boundaries": {
+    "submitted_evidence_created_by_catalog": false,
+    "issue_8_mutation_allowed_by_catalog": false,
+    "real_pilot_execution_allowed_by_catalog": false,
+    "catalog_completion_is_evidence_validation": false,
+    "ci_success_is_responsive_correctness_evidence": false,
+    "production_ready": false,
+    "release_ready": false,
+    "live_render_validated": false,
+    "export_json_validated": false,
+    "accessibility_passed": false,
+    "pixel_perfect": false,
+    "responsive_correctness_validated": false
+  }
+}
