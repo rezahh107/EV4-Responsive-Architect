@@ -49,8 +49,8 @@ EXECUTION_EXPECTED = {
     "open_pr_blocks_new_mutation_pr": True,
 }
 REPLENISHMENT_EXPECTED = {
-    "ready_work_package_target": 3,
-    "refresh_when_ready_below": 2,
+    "ready_work_package_target": 4,
+    "refresh_when_ready_below": 4,
     "max_ready_work_packages": 5,
     "state_driven_refresh": True,
     "fixed_ordinal_refresh_forbidden": True,

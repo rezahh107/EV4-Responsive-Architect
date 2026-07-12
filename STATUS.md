@@ -265,3 +265,12 @@ pr_142_canonical_contract_correction:
   validate: not_observed_on_new_head
   human_review_required: true
 ```
+
+## WP-RESP-005/PR-B — State-driven catalog replenishment
+
+- Preferred catalog policy: `target=4`, `refresh_when_ready_below=4`, `max=5`.
+- `WP-RESP-006`, `WP-RESP-007`, and `WP-RESP-008` are reconciled as completed with merged outcome references.
+- Selectable ready horizon: `WP-RESP-009` through `WP-RESP-012`.
+- No submitted evidence was created; Issue #8 was not mutated; no pilot was run or authorized.
+- Production, release, live-render, export, accessibility, pixel-perfect, and responsive-correctness claims remain false.
+- CI and catalog completion remain repository-check evidence only.
