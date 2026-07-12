@@ -37,8 +37,7 @@ jobs:
         run: |
           git diff --check
           changed="$(git status --short | awk '{print $2}')"
-          test -n "$changed"
-          if printf '%s\n' "$changed" | grep -Ev '^(planning/EV4_AUTOMATION_WORK_PACKAGE_CATALOG_INDEX\.json|planning/work-packages/WP-RESP-[0-9]{3}\.json)$'; then
+          if test -n "$changed" && printf '%s\n' "$changed" | grep -Ev '^(planning/EV4_AUTOMATION_WORK_PACKAGE_CATALOG_INDEX\.json|planning/work-packages/WP-RESP-[0-9]{3}\.json)$'; then
             echo 'Unexpected generated path detected' >&2
             exit 1
           fi
