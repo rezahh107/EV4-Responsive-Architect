@@ -24,7 +24,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout exact branch
-        uses: actions/checkout@v4
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
         with:
           ref: automation/wp-resp-005-pr-b-state-driven-replenishment
           fetch-depth: 0
@@ -32,11 +32,29 @@ jobs:
         run: |
           git config user.name "ev4-automation"
           git config user.email "actions@users.noreply.github.com"
+      - name: Repair reviewed one-shot migration defects
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          script_path = Path("tools/apply_wp_resp_005_pr_b.py")
+          script = script_path.read_text(encoding="utf-8")
+          script = script.replace("    seen = set()\n", "")
+          script = script.replace('        pkg["material_outcome_references"] = refs\n', "")
+          script = script.replace('    governance["material_outcome_references"] = ["PR #158", "PR #159", "PR #160", "PR #161", "PR #162", "PR #163", "PR #164"]\n', "")
+          script = script.replace("run_catalog_replenishment_policy_transition_check.py", "run_automation_replenishment_policy_transition_check.py")
+          script_path.write_text(script, encoding="utf-8")
+
+          validator_path = Path("validation/e2e/run_automation_work_package_catalog_check.py")
+          validator = validator_path.read_text(encoding="utf-8")
+          validator = validator.replace('    "ready_work_package_target": 3,\n    "refresh_when_ready_below": 2,', '    "ready_work_package_target": 4,\n    "refresh_when_ready_below": 4,')
+          validator_path.write_text(validator, encoding="utf-8")
+          PY
       - name: Apply deterministic migration
         run: python tools/apply_wp_resp_005_pr_b.py
       - name: Run affected validators
         run: |
-          python validation/e2e/run_catalog_replenishment_policy_transition_check.py
+          python validation/e2e/run_automation_replenishment_policy_transition_check.py
           python validation/e2e/run_automation_work_package_catalog_check.py
           python validation/e2e/run_automation_control_state_check.py
           python validation/e2e/run_rolling_queue_check.py
@@ -49,7 +67,8 @@ jobs:
           git add planning/EV4_AUTOMATION_WORK_PACKAGE_CATALOG.json \
                   planning/EV4_AUTOMATION_CONTROL_STATE.json \
                   STATUS.md \
-                  .github/workflows/validate.yml
+                  .github/workflows/validate.yml \
+                  validation/e2e/run_automation_work_package_catalog_check.py
           git diff --cached --check
           git commit -m "WP-RESP-005/PR-B: replenish catalog to four ready packages"
           git push origin HEAD:automation/wp-resp-005-pr-b-state-driven-replenishment
