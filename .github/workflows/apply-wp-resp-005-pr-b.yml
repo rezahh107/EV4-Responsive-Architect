@@ -1,6 +1,9 @@
 name: Apply WP-RESP-005 PR-B
 
 on:
+  pull_request:
+    branches:
+      - main
   push:
     branches:
       - automation/wp-resp-005-pr-b-state-driven-replenishment
@@ -17,6 +20,7 @@ concurrency:
 
 jobs:
   apply:
+    if: github.event_name == 'push' || github.head_ref == 'automation/wp-resp-005-pr-b-state-driven-replenishment'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout exact branch
