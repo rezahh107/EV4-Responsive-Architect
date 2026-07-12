@@ -136,3 +136,26 @@ jobs:
         run: python validation/e2e/run_automation_replenishment_policy_transition_check.py
       - name: Automation work package catalog
         run: python validation/e2e/run_automation_work_package_catalog_check.py
+
+  wp_resp_009_projection_payload:
+    name: WP-RESP-009 deterministic projection payload
+    if: ${{ github.event_name == 'pull_request' && github.head_ref == 'automation/wp-resp-009-pr-b-migration-reassembly' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout PR head
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Generate and validate projection
+        run: python validation/e2e/run_automation_work_package_catalog_reassembly_check.py --write --self-test
+      - name: Emit deterministic projection payload
+        run: |
+          tar -czf /tmp/wp-resp-009-projection.tar.gz \
+            planning/EV4_AUTOMATION_WORK_PACKAGE_CATALOG_INDEX.json \
+            planning/work-packages
+          echo 'WP_RESP_009_PROJECTION_BASE64_BEGIN'
+          base64 -w 0 /tmp/wp-resp-009-projection.tar.gz
+          echo
+          echo 'WP_RESP_009_PROJECTION_BASE64_END'
