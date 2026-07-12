@@ -27,6 +27,7 @@ from pathlib import Path
 from typing import Any
 
 from jsonschema import Draft202012Validator
+from referencing import Registry, Resource
 
 ROOT = Path(__file__).resolve().parents[2]
 SCHEMAS_DIR = ROOT / "schemas"
@@ -50,6 +51,7 @@ def load_json(path: Path) -> Any:
 
 def validate_schema_files() -> dict[str, Any]:
     schemas: dict[str, Any] = {}
+    canonical_ids: dict[str, str] = {}
     for schema_path in sorted(SCHEMAS_DIR.glob("*.schema.json")):
         schema = load_json(schema_path)
         Draft202012Validator.check_schema(schema)
@@ -58,10 +60,31 @@ def validate_schema_files() -> dict[str, Any]:
         required = schema.get("required", [])
         if schema.get("type") == "object" and "schema" not in required:
             raise SemanticValidationError(f"{schema_path.name} must require schema discriminator")
+        schema_id = schema.get("$id")
+        if schema_id:
+            if schema_id in canonical_ids:
+                raise SemanticValidationError(
+                    f"duplicate schema $id {schema_id}: {canonical_ids[schema_id]} and {schema_path.name}"
+                )
+            canonical_ids[schema_id] = schema_path.name
         schemas[schema_path.name] = schema
     if not schemas:
         raise RuntimeError("No schema files found.")
     return schemas
+
+
+def build_schema_registry(schemas: dict[str, Any]) -> Registry:
+    """Register sibling schemas by filename and canonical $id for cross-schema refs."""
+
+    resources: list[tuple[str, Resource[Any]]] = []
+    registered_uris: set[str] = set()
+    for schema_file, schema in schemas.items():
+        resource = Resource.from_contents(schema)
+        for uri in (schema_file, schema.get("$id")):
+            if isinstance(uri, str) and uri and uri not in registered_uris:
+                resources.append((uri, resource))
+                registered_uris.add(uri)
+    return Registry().with_resources(resources)
 
 
 def normalize_selector(selector: str) -> str:
@@ -340,7 +363,12 @@ def semantic_validate_payload(payload: dict[str, Any]) -> None:
     semantic_validate_fast_path_eligibility(payload)
 
 
-def validate_fixture(path: Path, schemas: dict[str, Any], should_pass: bool) -> None:
+def validate_fixture(
+    path: Path,
+    schemas: dict[str, Any],
+    registry: Registry,
+    should_pass: bool,
+) -> None:
     original_payload = load_json(path)
     if not isinstance(original_payload, dict):
         raise RuntimeError(f"Fixture {path} must be a JSON object")
@@ -352,7 +380,7 @@ def validate_fixture(path: Path, schemas: dict[str, Any], should_pass: bool) -> 
     if schema_file not in schemas:
         raise RuntimeError(f"Fixture {path} references missing schema {schema_file}")
 
-    validator = Draft202012Validator(schemas[schema_file])
+    validator = Draft202012Validator(schemas[schema_file], registry=registry)
     errors = sorted(validator.iter_errors(payload), key=lambda e: [str(p) for p in e.path])
 
     semantic_error: Exception | None = None
@@ -373,19 +401,20 @@ def validate_fixture(path: Path, schemas: dict[str, Any], should_pass: bool) -> 
         raise AssertionError(f"Expected {path} to fail, but it passed")
 
 
-def validate_fixtures(schemas: dict[str, Any]) -> None:
+def validate_fixtures(schemas: dict[str, Any], registry: Registry) -> None:
     valid_dir = FIXTURES_DIR / "valid"
     invalid_dir = FIXTURES_DIR / "invalid"
     for path in sorted(valid_dir.glob("*.json")) if valid_dir.exists() else []:
-        validate_fixture(path, schemas, should_pass=True)
+        validate_fixture(path, schemas, registry, should_pass=True)
     for path in sorted(invalid_dir.glob("*.json")) if invalid_dir.exists() else []:
-        validate_fixture(path, schemas, should_pass=False)
+        validate_fixture(path, schemas, registry, should_pass=False)
 
 
 def main() -> int:
     try:
         schemas = validate_schema_files()
-        validate_fixtures(schemas)
+        registry = build_schema_registry(schemas)
+        validate_fixtures(schemas, registry)
     except Exception as exc:  # noqa: BLE001 - CLI should print compact failure
         print(f"schema validation failed: {exc}", file=sys.stderr)
         return 1
