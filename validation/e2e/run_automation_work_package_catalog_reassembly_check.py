@@ -105,15 +105,18 @@ def expected_projection(catalog: dict):
 def validate_projection(root: Path = ROOT) -> None:
     catalog = load_json(root / MONOLITH.relative_to(ROOT))
     expected_index, expected_files = expected_projection(catalog)
-    actual_index = load_json(root / INDEX.relative_to(ROOT))
-    if actual_index != expected_index:
-        raise ValueError("catalog index drift from deterministic monolith projection")
+    actual_index_path = root / INDEX.relative_to(ROOT)
+    if actual_index_path.read_bytes() != canonical_bytes(expected_index):
+        raise ValueError("catalog index file is not canonical or has drifted from deterministic monolith projection")
+    actual_index = load_json(actual_index_path)
     indexed_paths = [entry["path"] for entry in actual_index["package_entries"]]
     if len(indexed_paths) != len(set(indexed_paths)):
         raise ValueError("duplicate indexed package path")
+    package_directory = root / PACKAGE_DIR.relative_to(ROOT)
     actual_paths = sorted(
         str(path.relative_to(root)).replace("\\", "/")
-        for path in (root / PACKAGE_DIR.relative_to(ROOT)).glob("WP-RESP-*.json")
+        for path in package_directory.iterdir()
+        if path.is_file()
     )
     if actual_paths != sorted(expected_files):
         raise ValueError("missing indexed package file or unindexed package file")
@@ -139,13 +142,21 @@ def write_projection() -> None:
     catalog = load_json(MONOLITH)
     index, package_files = expected_projection(catalog)
     PACKAGE_DIR.mkdir(parents=True, exist_ok=True)
-    for stale in PACKAGE_DIR.glob("WP-RESP-*.json"):
-        if str(stale.relative_to(ROOT)).replace("\\", "/") not in package_files:
+    for stale in PACKAGE_DIR.iterdir():
+        if stale.is_file() and str(stale.relative_to(ROOT)).replace("\\", "/") not in package_files:
             stale.unlink()
     for relative, data in package_files.items():
         (ROOT / relative).write_bytes(data)
     INDEX.write_bytes(canonical_bytes(index))
     validate_projection()
+
+
+def assert_rejected(root: Path, message: str) -> None:
+    try:
+        validate_projection(root)
+    except ValueError:
+        return
+    raise AssertionError(message)
 
 
 def self_test() -> None:
@@ -154,19 +165,26 @@ def self_test() -> None:
         (root / "planning/work-packages").mkdir(parents=True)
         catalog = load_json(MONOLITH)
         index, files = expected_projection(catalog)
+        index_path = root / "planning/EV4_AUTOMATION_WORK_PACKAGE_CATALOG_INDEX.json"
         (root / "planning/EV4_AUTOMATION_WORK_PACKAGE_CATALOG.json").write_bytes(canonical_bytes(catalog))
-        (root / "planning/EV4_AUTOMATION_WORK_PACKAGE_CATALOG_INDEX.json").write_bytes(canonical_bytes(index))
+        index_path.write_bytes(canonical_bytes(index))
         for relative, data in files.items():
             (root / relative).write_bytes(data)
         validate_projection(root)
-        first = root / index["package_entries"][0]["path"]
+
+        first_relative = index["package_entries"][0]["path"]
+        first = root / first_relative
         first.write_bytes(first.read_bytes() + b" ")
-        try:
-            validate_projection(root)
-        except ValueError:
-            pass
-        else:
-            raise AssertionError("negative non-canonical fixture was accepted")
+        assert_rejected(root, "negative non-canonical package fixture was accepted")
+        first.write_bytes(files[first_relative])
+
+        index_path.write_bytes(index_path.read_bytes() + b" ")
+        assert_rejected(root, "negative non-canonical index was accepted")
+        index_path.write_bytes(canonical_bytes(index))
+
+        extra = root / "planning/work-packages/EXTRA.json"
+        extra.write_text("{}\n", encoding="utf-8")
+        assert_rejected(root, "negative unindexed package-directory file was accepted")
 
 
 def main() -> int:
