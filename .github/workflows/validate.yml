@@ -137,25 +137,43 @@ jobs:
       - name: Automation work package catalog
         run: python validation/e2e/run_automation_work_package_catalog_check.py
 
-  wp_resp_009_projection_payload:
-    name: WP-RESP-009 deterministic projection payload
-    if: ${{ github.event_name == 'pull_request' && github.head_ref == 'automation/wp-resp-009-pr-b-migration-reassembly' }}
+  wp_resp_009_materialize_projection:
+    name: WP-RESP-009 materialize deterministic projection
+    if: ${{ github.event_name == 'pull_request' && github.head_ref == 'automation/wp-resp-009-pr-b-migration-reassembly' && github.event.pull_request.head.repo.full_name == github.repository }}
+    permissions:
+      contents: write
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout PR head
+      - name: Checkout exact PR branch head
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+          fetch-depth: 0
+          persist-credentials: true
+      - name: Verify exact event head
+        run: test "$(git rev-parse HEAD)" = "${{ github.event.pull_request.head.sha }}"
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
       - name: Generate and validate projection
         run: python validation/e2e/run_automation_work_package_catalog_reassembly_check.py --write --self-test
-      - name: Emit deterministic projection payload
+      - name: Verify generated scope
         run: |
-          tar -czf /tmp/wp-resp-009-projection.tar.gz \
-            planning/EV4_AUTOMATION_WORK_PACKAGE_CATALOG_INDEX.json \
-            planning/work-packages
-          echo 'WP_RESP_009_PROJECTION_BASE64_BEGIN'
-          base64 -w 0 /tmp/wp-resp-009-projection.tar.gz
-          echo
-          echo 'WP_RESP_009_PROJECTION_BASE64_END'
+          git diff --check
+          changed="$(git status --short | awk '{print $2}')"
+          if test -n "$changed" && printf '%s\n' "$changed" | grep -Ev '^(planning/EV4_AUTOMATION_WORK_PACKAGE_CATALOG_INDEX\.json|planning/work-packages/WP-RESP-[0-9]{3}\.json)$'; then
+            echo 'Unexpected generated path detected' >&2
+            exit 1
+          fi
+      - name: Commit material projection when changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add planning/EV4_AUTOMATION_WORK_PACKAGE_CATALOG_INDEX.json planning/work-packages/
+          if git diff --cached --quiet; then
+            echo 'Projection already current.'
+            exit 0
+          fi
+          git commit -m "WP-RESP-009/PR-B generate modular catalog projection"
+          git push origin "HEAD:${{ github.head_ref }}"
