@@ -77,6 +77,7 @@ jobs:
           test -f validation/e2e/run_automation_control_state_check.py
           test -f validation/e2e/run_automation_replenishment_policy_transition_check.py
           test -f validation/e2e/run_automation_work_package_catalog_check.py
+          test -f validation/e2e/run_automation_work_package_catalog_reassembly_check.py
           test -f validation/e2e/run_rolling_queue_check.py
           test -f validation/e2e/run_run_ledger_check.py
           test -f validation/e2e/run_responsive_decision_lineage_sequence_check.py
@@ -136,3 +137,5 @@ jobs:
         run: python validation/e2e/run_automation_replenishment_policy_transition_check.py
       - name: Automation work package catalog
         run: python validation/e2e/run_automation_work_package_catalog_check.py
+      - name: Automation work package catalog reassembly
+        run: python validation/e2e/run_automation_work_package_catalog_reassembly_check.py --self-test

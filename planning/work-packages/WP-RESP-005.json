@@ -1,0 +1,151 @@
+{
+  "schema": "ev4-automation-work-package-file@1.0.0",
+  "id": "WP-RESP-005",
+  "work_package": {
+    "id": "WP-RESP-005",
+    "title": "Catalog Governance and State-Driven Replenishment",
+    "capability_area": "catalog_governance",
+    "current_state": "Catalog governance supports the preferred 4/4/5 replenishment policy and records truthful completed outcomes before restoring a four-package selectable horizon.",
+    "target_state": "Catalog governance updates happen only when ready depth, project state, blockers, contracts, architecture, or real gaps require replenishment under the single-active-PR policy.",
+    "measurable_current_state": {
+      "statement": "Catalog governance supports the preferred 4/4/5 replenishment policy and records truthful completed outcomes before restoring a four-package selectable horizon.",
+      "measurement": "Measured by catalog policy fields, schema, validator self-tests, STATUS, and controller prompt behavior.",
+      "measurable": true
+    },
+    "measurable_target_state": {
+      "statement": "Catalog governance updates happen only when ready depth, project state, blockers, contracts, architecture, or real gaps require replenishment under the single-active-PR policy.",
+      "measurement": "Accepted when schema, validator, docs, and STATUS reject fixed ordinal refresh and enforce single-active-PR replenishment limits.",
+      "measurable": true
+    },
+    "target_capability": {
+      "statement": "Catalog governance remains deterministic and does not become a recurring fixed-ordinal refresh loop.",
+      "measurement": "Schema, validator, docs, and STATUS reject fixed ordinal refresh, arbitrary tasks, and catalog mutations that violate single-active-PR policy.",
+      "measurable": true
+    },
+    "expected_project_delta": "Repository gains explicit state-driven catalog governance that allows automatic replenishment when real repository state requires it while preventing checkpoint loops and arbitrary task invention.",
+    "selectable": false,
+    "ready_state": "governance",
+    "priority": 90,
+    "reporting": {
+      "estimated_completion_percentage": 100,
+      "estimated_percentage_is_reporting_only": true
+    },
+    "allowed_work": [
+      "Detect ready Work Package depth and report replenishment needs.",
+      "Prepare non-mutating replenishment plans while another mutation PR is active.",
+      "Update catalog metadata only when material Work Package state changes or same-PR scope allows it.",
+      "Create a reviewed catalog replenishment PR only when no active mutation PR blocks it and ready depth is below threshold."
+    ],
+    "forbidden_work": [
+      "Do not create submitted evidence unless explicitly authorized by the repository owner and current Issue #8 submitted-mode contracts.",
+      "Do not mutate Issue #8 or mark Issue #8 evidence as satisfied.",
+      "Do not run or authorize real pilot execution.",
+      "Do not claim production_ready, release_ready, live_render_validated, export_json_validated, accessibility_passed, pixel_perfect, or responsive_correctness_validated.",
+      "Do not treat CI success, merged PRs, catalog completion, Work Package completion, or queue completion as domain evidence."
+    ],
+    "must_deliver": [
+      "Catalog metadata update tied to named Work Package state change or ready-depth threshold.",
+      "Validator coverage proving catalog refresh cannot become a fixed fifth-task loop.",
+      "Documentation update explaining the state-driven trigger and single-active-PR rule."
+    ],
+    "must_preserve": [
+      "Rolling queue remains a historical reconciled archive, not the execution driver.",
+      "Controller selection must come only from planning/EV4_AUTOMATION_WORK_PACKAGE_CATALOG.json.",
+      "Quality gates, CI, review, and evidence boundaries remain mandatory.",
+      "Technical evidence claims remain false unless real evidence gates pass.",
+      "Catalog replenishment is state-driven and must not block active Work Package execution.",
+      "Catalog replenishment must respect the single-active-mutation-PR policy."
+    ],
+    "evidence_boundary": {
+      "submitted_evidence_created_by_package": false,
+      "issue_8_mutation_allowed": false,
+      "real_pilot_execution_allowed": false,
+      "ci_success_is_domain_evidence": false,
+      "merged_pr_is_domain_evidence": false,
+      "catalog_completion_is_evidence_validation": false,
+      "claims_require_real_evidence_gates": true,
+      "forbidden_claims_without_real_evidence": [
+        "production_ready",
+        "release_ready",
+        "live_render_validated",
+        "export_json_validated",
+        "accessibility_passed",
+        "pixel_perfect",
+        "responsive_correctness_validated"
+      ]
+    },
+    "readiness_boundary": {
+      "pilot_allowed_to_start": false,
+      "production_ready": false,
+      "release_ready": false,
+      "live_render_validated": false,
+      "export_json_validated": false,
+      "accessibility_passed": false,
+      "pixel_perfect": false,
+      "responsive_correctness_validated": false
+    },
+    "definition_of_done": [
+      "The measurable target state is met by schema-backed or validator-backed repository evidence.",
+      "The selected PR slice remains reviewable and stays under this Work Package ID.",
+      "No submitted evidence, Issue #8 mutation, pilot authorization, or forbidden readiness claim is produced by the Work Package."
+    ],
+    "quality_gates": [
+      "python validation/e2e/run_automation_work_package_catalog_check.py",
+      "python validation/e2e/run_automation_control_state_check.py",
+      "python validation/e2e/run_rolling_queue_check.py",
+      "python validation/e2e/run_run_ledger_check.py",
+      "python validation/e2e/run_task_quality_gate_check.py"
+    ],
+    "split_rule": {
+      "principle": "A Work Package may be large in objective, but each PR must remain reviewable.",
+      "split_by": "implementation_layer_under_same_work_package_id",
+      "requires_slice_id_prefix": "<WORK_PACKAGE_ID>/PR-",
+      "forbidden_splits": [
+        "invent_unrelated_rtaq_tasks",
+        "guard_only_task_without_named_work_package_unblock",
+        "checkpoint_only_pr_after_every_merge",
+        "artificial_reserve_task_to_keep_task_count_high",
+        "queue_refresh_loop_as_execution_driver",
+        "fixed_ordinal_refresh"
+      ]
+    },
+    "allowed_pr_slices": [
+      {
+        "slice_id": "WP-RESP-005/PR-A",
+        "title": "governance schema and validator",
+        "layer": "schema_validator",
+        "objective": "Harden catalog governance rules when material state changes or ready depth falls below threshold.",
+        "review_boundary": "Reviewable PR slice under the same Work Package ID; no unrelated micro-objective may be introduced."
+      },
+      {
+        "slice_id": "WP-RESP-005/PR-B",
+        "title": "catalog state update",
+        "layer": "catalog_metadata",
+        "objective": "Update Work Package state after a named material outcome or allowed replenishment trigger.",
+        "review_boundary": "Reviewable PR slice under the same Work Package ID; no unrelated micro-objective may be introduced."
+      }
+    ],
+    "blocked_if": [
+      "No material Work Package state changed.",
+      "Ready Work Package depth is at or above threshold.",
+      "The update exists only to keep a task count, refresh cadence, fixed ordinal, or checkpoint loop alive.",
+      "Another active mutation PR exists and the catalog mutation is not in-scope for that same PR."
+    ],
+    "completion_record_requirements": [
+      "Record selected Work Package ID and PR slice ID in the PR body.",
+      "List files changed, validators changed, and CI commands run.",
+      "State commands not run and why.",
+      "Restate evidence/pilot/readiness/production/release/responsive-correctness boundaries.",
+      "Record whether catalog replenishment was checked and whether it was non-mutating, same-PR in-scope, or blocked by single-active-PR policy.",
+      "Record remaining risks and the next safe human action."
+    ],
+    "unblocks_work_package_ids": [
+      "WP-RESP-001",
+      "WP-RESP-009",
+      "WP-RESP-010",
+      "WP-RESP-011",
+      "WP-RESP-012"
+    ],
+    "maintenance_type": "non_selectable_state_driven_catalog_replenishment_governance"
+  }
+}
