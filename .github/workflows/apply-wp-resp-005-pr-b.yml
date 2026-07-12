@@ -1,0 +1,51 @@
+name: Apply WP-RESP-005 PR-B
+
+on:
+  push:
+    branches:
+      - automation/wp-resp-005-pr-b-state-driven-replenishment
+    paths:
+      - tools/apply_wp_resp_005_pr_b.py
+      - .github/workflows/apply-wp-resp-005-pr-b.yml
+
+permissions:
+  contents: write
+
+concurrency:
+  group: apply-wp-resp-005-pr-b
+  cancel-in-progress: false
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout exact branch
+        uses: actions/checkout@v4
+        with:
+          ref: automation/wp-resp-005-pr-b-state-driven-replenishment
+          fetch-depth: 0
+      - name: Configure author
+        run: |
+          git config user.name "ev4-automation"
+          git config user.email "actions@users.noreply.github.com"
+      - name: Apply deterministic migration
+        run: python tools/apply_wp_resp_005_pr_b.py
+      - name: Run affected validators
+        run: |
+          python validation/e2e/run_catalog_replenishment_policy_transition_check.py
+          python validation/e2e/run_automation_work_package_catalog_check.py
+          python validation/e2e/run_automation_control_state_check.py
+          python validation/e2e/run_rolling_queue_check.py
+          python validation/e2e/run_run_ledger_check.py
+          python validation/e2e/run_task_quality_gate_check.py
+      - name: Remove one-shot migration tooling
+        run: git rm tools/apply_wp_resp_005_pr_b.py .github/workflows/apply-wp-resp-005-pr-b.yml
+      - name: Commit and push material result
+        run: |
+          git add planning/EV4_AUTOMATION_WORK_PACKAGE_CATALOG.json \
+                  planning/EV4_AUTOMATION_CONTROL_STATE.json \
+                  STATUS.md \
+                  .github/workflows/validate.yml
+          git diff --cached --check
+          git commit -m "WP-RESP-005/PR-B: replenish catalog to four ready packages"
+          git push origin HEAD:automation/wp-resp-005-pr-b-state-driven-replenishment
