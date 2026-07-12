@@ -1,5 +1,10 @@
 #!/usr/bin/env python3
-"""Deterministically generate and validate the modular Work Package Catalog."""
+"""Deterministically generate and validate the modular Work Package Catalog.
+
+The generated projection is reproducible from the canonical monolith and may be
+materialized by the temporary migration workflow without introducing a second
+authority.
+"""
 from __future__ import annotations
 
 import argparse
