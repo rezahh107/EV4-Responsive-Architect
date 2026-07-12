@@ -15,28 +15,11 @@
     },
     "id": {
       "type": "string",
-      "pattern": "^WP-RESP-[0-9]{3}$"
+      "pattern": "^WP-RESP-[0-9]{3}$",
+      "$comment": "The deterministic reassembly validator MUST enforce top-level id == work_package.id; JSON Schema draft 2020-12 cannot portably compare instance values."
     },
     "work_package": {
-      "$ref": "ev4-automation-work-package-catalog.schema.json#/$defs/work_package"
+      "$ref": "ev4-automation-work-package-catalog@1.0.0#/$defs/work_package"
     }
-  },
-  "allOf": [
-    {
-      "if": {
-        "properties": {
-          "id": {
-            "type": "string"
-          },
-          "work_package": {
-            "type": "object",
-            "required": ["id"]
-          }
-        }
-      },
-      "then": {
-        "$comment": "The deterministic reassembly validator MUST enforce top-level id == work_package.id; JSON Schema draft 2020-12 cannot portably compare instance values."
-      }
-    }
-  ]
+  }
 }
