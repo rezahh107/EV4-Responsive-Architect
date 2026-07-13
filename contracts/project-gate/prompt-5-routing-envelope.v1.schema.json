@@ -1,0 +1,263 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ev4.local/contracts/project-gate/prompt-5-routing-envelope.v1.schema.json",
+  "title": "EV4 Prompt 5 Project Gate Routing Envelope v1",
+  "x-ev4-contract-id": "prompt-5-routing-envelope.v1",
+  "x-ev4-contract-version": "1.0.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "routing_id",
+    "source",
+    "lineage",
+    "route",
+    "authority",
+    "boundary_claims"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "prompt-5-routing-envelope.v1"
+    },
+    "routing_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "source": {
+      "$ref": "#/$defs/source"
+    },
+    "lineage": {
+      "$ref": "#/$defs/lineage"
+    },
+    "route": {
+      "$ref": "#/$defs/route"
+    },
+    "authority": {
+      "$ref": "#/$defs/authority"
+    },
+    "boundary_claims": {
+      "$ref": "#/$defs/boundaryClaims"
+    }
+  },
+  "$defs": {
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "producer_stage",
+        "repository",
+        "ref",
+        "commit_sha",
+        "artifact_id",
+        "artifact_sha256"
+      ],
+      "properties": {
+        "producer_stage": {
+          "const": "responsive"
+        },
+        "repository": {
+          "type": "string",
+          "minLength": 3
+        },
+        "ref": {
+          "type": "string",
+          "minLength": 1
+        },
+        "commit_sha": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{40}$"
+        },
+        "artifact_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "artifact_sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      }
+    },
+    "lineage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "pipeline_id",
+        "run_id",
+        "producer_export_id",
+        "producer_export_schema",
+        "producer_export_sha256"
+      ],
+      "properties": {
+        "pipeline_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "run_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "producer_export_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "producer_export_schema": {
+          "const": "producer-gate-export.v1"
+        },
+        "producer_export_sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      }
+    },
+    "route": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "target",
+        "decision",
+        "transport_eligible",
+        "diagnostic_codes"
+      ],
+      "properties": {
+        "target": {
+          "const": "ev4-project-gate"
+        },
+        "decision": {
+          "enum": [
+            "route",
+            "reject"
+          ]
+        },
+        "transport_eligible": {
+          "type": "boolean"
+        },
+        "diagnostic_codes": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^P5R-[A-Z0-9_]+$"
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "decision": {
+                "const": "route"
+              }
+            },
+            "required": [
+              "decision"
+            ]
+          },
+          "then": {
+            "properties": {
+              "transport_eligible": {
+                "const": true
+              },
+              "diagnostic_codes": {
+                "maxItems": 0
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "decision": {
+                "const": "reject"
+              }
+            },
+            "required": [
+              "decision"
+            ]
+          },
+          "then": {
+            "properties": {
+              "transport_eligible": {
+                "const": false
+              },
+              "diagnostic_codes": {
+                "minItems": 1
+              }
+            }
+          }
+        }
+      ]
+    },
+    "authority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "routing_decision_owner",
+        "transport_execution_owner",
+        "responsive_executes_transport",
+        "responsive_substitutes_project_gate_decision"
+      ],
+      "properties": {
+        "routing_decision_owner": {
+          "const": "responsive"
+        },
+        "transport_execution_owner": {
+          "const": "ev4-project-gate"
+        },
+        "responsive_executes_transport": {
+          "const": false
+        },
+        "responsive_substitutes_project_gate_decision": {
+          "const": false
+        }
+      }
+    },
+    "boundaryClaims": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "submitted_evidence_created",
+        "issue_8_mutated",
+        "pilot_authorized",
+        "production_ready",
+        "release_ready",
+        "live_render_validated",
+        "export_json_validated",
+        "accessibility_passed",
+        "pixel_perfect",
+        "responsive_correctness_validated"
+      ],
+      "properties": {
+        "submitted_evidence_created": {
+          "const": false
+        },
+        "issue_8_mutated": {
+          "const": false
+        },
+        "pilot_authorized": {
+          "const": false
+        },
+        "production_ready": {
+          "const": false
+        },
+        "release_ready": {
+          "const": false
+        },
+        "live_render_validated": {
+          "const": false
+        },
+        "export_json_validated": {
+          "const": false
+        },
+        "accessibility_passed": {
+          "const": false
+        },
+        "pixel_perfect": {
+          "const": false
+        },
+        "responsive_correctness_validated": {
+          "const": false
+        }
+      }
+    }
+  }
+}
