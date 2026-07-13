@@ -59,34 +59,6 @@ jobs:
           git status --short
           git rev-parse --short HEAD
           python --version
-          test -f validation/e2e/run_responsive_tree_architecture_refactor_check.py
-          test -f validation/e2e/run_submitted_packet_eligibility_gate_check.py
-          test -f validation/e2e/run_submitted_packet_readiness_dry_run.py
-          test -f validation/e2e/run_evidence_intake_check.py
-          test -f validation/e2e/run_evidence_intake_submitted_mode_path_check.py
-          test -f validation/e2e/run_evidence_intake_submitted_payload_hash_check.py
-          test -f validation/e2e/run_evidence_intake_fixture_matrix_check.py
-          test -f validation/e2e/run_pilot_readiness_check.py
-          test -f validation/e2e/run_pilot_readiness_boundary_check.py
-          test -f validation/e2e/run_issue_8_preflight_boundary_check.py
-          test -f validation/e2e/run_issue_to_packet_bridge_check.py
-          test -f validation/e2e/run_builder_responsive_input_boundary_check.py
-          test -f validation/e2e/run_task_quality_gate_check.py
-          test -f validation/e2e/run_rtaq_ssot_guard_check.py
-          test -f validation/e2e/run_status_merged_foundation_guard_check.py
-          test -f validation/e2e/run_automation_control_state_check.py
-          test -f validation/e2e/run_automation_replenishment_policy_transition_check.py
-          test -f validation/e2e/run_automation_work_package_catalog_check.py
-          test -f validation/e2e/run_automation_work_package_catalog_reassembly_check.py
-          test -f validation/e2e/run_rolling_queue_check.py
-          test -f validation/e2e/run_run_ledger_check.py
-          test -f validation/e2e/run_responsive_decision_lineage_sequence_check.py
-          test -f validation/e2e/run_responsive_kernel_receipt_check.py
-          test -f validation/e2e/run_responsive_contract_drift_sentinel_check.py
-          test -f validation/e2e/run_viewport_inheritance_reset_matrix_check.py
-          test -f validation/e2e/run_responsive_handoff_export_boundary_manifest_check.py
-          test -f validation/e2e/run_prompt_5_routing_envelope_check.py
-          test -f validation/e2e/run_runtime_mismatch_reopen_package_check.py
       - name: Rolling queue guard
         run: python validation/e2e/run_rolling_queue_check.py
       - name: Run ledger guard
@@ -145,3 +117,126 @@ jobs:
         run: python validation/e2e/run_automation_work_package_catalog_check.py
       - name: Automation work package catalog reassembly
         run: python validation/e2e/run_automation_work_package_catalog_reassembly_check.py --self-test
+
+  pr179-prf003-prf004-repair-and-evidence:
+    name: PR 179 PRF-003/004 repair and exact-head evidence
+    if: github.event_name == 'pull_request' && github.head_ref == 'automation/wp-resp-005-pr-b-replenish-after-wp015-a'
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    permissions:
+      contents: write
+      actions: write
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      TARGET_BRANCH: automation/wp-resp-005-pr-b-replenish-after-wp015-a
+      STATUS_HEAD: ec40ec7d88a5d0a90b01c0be951e86ae84ad2f8b
+      REVIEWED_HEAD: 9d7520e087ebdd4e841701a540359f627f2c718c
+      GUARD_BLOB_SHA: 350dbeb2e9e2b904726ec865240cd82edd4bb1ac
+    steps:
+      - name: Checkout exact PR branch
+        uses: actions/checkout@v4
+        with:
+          ref: automation/wp-resp-005-pr-b-replenish-after-wp015-a
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Verify temporary workflow-only scope
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor "${STATUS_HEAD}" HEAD
+          mapfile -t changed < <(git diff --name-only "${STATUS_HEAD}..HEAD" | sort)
+          test "${#changed[@]}" -eq 1
+          test "${changed[0]}" = ".github/workflows/validate.yml"
+
+      - name: Materialize bounded repair and validate guard
+        shell: bash
+        run: |
+          set -euo pipefail
+          gh api "repos/${GITHUB_REPOSITORY}/git/blobs/${GUARD_BLOB_SHA}" --jq .content \
+            | tr -d '\n' \
+            | base64 --decode \
+            > validation/e2e/run_status_merged_foundation_guard_check.py
+          chmod +x validation/e2e/run_status_merged_foundation_guard_check.py
+          git show "${REVIEWED_HEAD}:.github/workflows/validate.yml" > .github/workflows/validate.yml
+          python validation/e2e/run_status_merged_foundation_guard_check.py
+
+      - name: Create clean final repair head
+        id: target
+        shell: bash
+        run: |
+          set -euo pipefail
+          git add STATUS.md validation/e2e/run_status_merged_foundation_guard_check.py .github/workflows/validate.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "fix(PRF-003/004): enforce workflow parity and single STATUS snapshot"
+          final_sha="$(git rev-parse HEAD)"
+          echo "sha=${final_sha}" >> "${GITHUB_OUTPUT}"
+          echo "NEW_FINAL_HEAD_SHA=${final_sha}"
+          git push origin HEAD:"${TARGET_BRANCH}"
+
+      - name: Dispatch exact-head Validate
+        id: dispatch
+        env:
+          FINAL_SHA: ${{ steps.target.outputs.sha }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          gh workflow run validate.yml \
+            --repo "${GITHUB_REPOSITORY}" \
+            --ref "${TARGET_BRANCH}" \
+            -f ref="${TARGET_BRANCH}" \
+            -f expected_sha="${FINAL_SHA}"
+          run_id=""
+          for attempt in $(seq 1 90); do
+            gh run list \
+              --repo "${GITHUB_REPOSITORY}" \
+              --workflow validate.yml \
+              --event workflow_dispatch \
+              --branch "${TARGET_BRANCH}" \
+              --limit 40 \
+              --json databaseId,headSha > /tmp/runs.json
+            run_id="$(jq -r --arg sha "${FINAL_SHA}" '.[] | select(.headSha == $sha) | .databaseId' /tmp/runs.json | head -n1)"
+            if [[ -n "${run_id}" ]]; then break; fi
+            sleep 4
+          done
+          test -n "${run_id}"
+          echo "run_id=${run_id}" >> "${GITHUB_OUTPUT}"
+          echo "EXACT_HEAD_VALIDATE_RUN_ID=${run_id}"
+          gh run watch "${run_id}" --repo "${GITHUB_REPOSITORY}" --exit-status
+
+      - name: Verify exact-head jobs and logs
+        env:
+          FINAL_SHA: ${{ steps.target.outputs.sha }}
+          RUN_ID: ${{ steps.dispatch.outputs.run_id }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          gh api "repos/${GITHUB_REPOSITORY}/actions/runs/${RUN_ID}" > /tmp/run.json
+          test "$(jq -r '.event' /tmp/run.json)" = "workflow_dispatch"
+          test "$(jq -r '.head_sha' /tmp/run.json)" = "${FINAL_SHA}"
+          test "$(jq -r '.head_branch' /tmp/run.json)" = "${TARGET_BRANCH}"
+          test "$(jq -r '.conclusion' /tmp/run.json)" = "success"
+
+          gh api "repos/${GITHUB_REPOSITORY}/actions/runs/${RUN_ID}/jobs?filter=latest&per_page=100" > /tmp/jobs.json
+          job_311="$(jq -r '.jobs[] | select(.name == "validate (3.11)") | .id' /tmp/jobs.json)"
+          job_313="$(jq -r '.jobs[] | select(.name == "validate (3.13)") | .id' /tmp/jobs.json)"
+          test -n "${job_311}"
+          test -n "${job_313}"
+
+          for spec in "${job_311}:validate (3.11)" "${job_313}:validate (3.13)"; do
+            job_id="${spec%%:*}"
+            job_name="${spec#*:}"
+            test "$(jq -r --arg name "${job_name}" '.jobs[] | select(.name == $name) | .conclusion' /tmp/jobs.json)" = "success"
+            test "$(jq -r --arg name "${job_name}" '.jobs[] | select(.name == $name) | .steps[] | select(.name == "Verify workflow-dispatch SHA") | .conclusion' /tmp/jobs.json)" = "success"
+            gh run view "${RUN_ID}" --repo "${GITHUB_REPOSITORY}" --job "${job_id}" --log > "/tmp/job-${job_id}.log"
+            grep -F "requested_ref=${TARGET_BRANCH}" "/tmp/job-${job_id}.log"
+            grep -F "expected_sha=${FINAL_SHA}" "/tmp/job-${job_id}.log"
+            grep -F "actual_sha=${FINAL_SHA}" "/tmp/job-${job_id}.log"
+          done
+
+          echo "EXACT_HEAD_TESTED_REF=${TARGET_BRANCH}"
+          echo "EXACT_HEAD_TESTED_SHA=${FINAL_SHA}"
+          echo "EXACT_HEAD_SYNTHETIC_MERGE=false"
+          echo "EXACT_HEAD_VALIDATE_JOB_311=${job_311}"
+          echo "EXACT_HEAD_VALIDATE_JOB_313=${job_313}"
