@@ -44,6 +44,10 @@ def validate_package(validator: Draft202012Validator, payload: dict) -> None:
         raise ValueError("prior decision evidence_state must remain reopen_required")
     if lineage["consumer_stage"] != "runtime_evidence_conflict":
         raise ValueError("prior decision consumer_stage must identify runtime evidence conflict")
+    if not lineage.get("evidence_refs"):
+        raise ValueError("prior decision evidence_refs must contain at least one reference")
+    if any(not isinstance(ref, str) or not ref.strip() for ref in lineage["evidence_refs"]):
+        raise ValueError("prior decision evidence_refs must contain non-empty strings")
 
     authority = payload["authority_boundary"]
     if authority["responsive_may_observe"] is not True:
@@ -55,6 +59,15 @@ def validate_package(validator: Draft202012Validator, payload: dict) -> None:
 
     if payload["requested_action"] != "reopen_for_authoritative_review":
         raise ValueError("only authoritative reopen review may be requested")
+
+    evidence_references = payload.get("evidence_references", [])
+    if not evidence_references:
+        raise ValueError("evidence_references must contain at least one reference")
+    for ref in evidence_references:
+        if not isinstance(ref, dict):
+            raise ValueError("evidence reference must be an object")
+        if not ref.get("kind") or not ref.get("uri") or not ref.get("sha256"):
+            raise ValueError("invalid evidence reference structure")
 
     boundary_claims = payload["boundary_claims"]
     if set(boundary_claims) != EXPECTED_BOUNDARY_CLAIMS:
@@ -83,6 +96,10 @@ def run_self_test(validator: Draft202012Validator, valid_payload: dict) -> None:
     replacement = copy.deepcopy(valid_payload)
     replacement["authority_boundary"]["responsive_may_replace_decision"] = True
     assert_invalid("responsive replacement decision", validator, replacement)
+
+    missing_lineage_evidence = copy.deepcopy(valid_payload)
+    missing_lineage_evidence["prior_decision_lineage"]["evidence_refs"] = []
+    assert_invalid("missing prior decision evidence refs", validator, missing_lineage_evidence)
 
     missing_evidence = copy.deepcopy(valid_payload)
     missing_evidence["evidence_references"] = []
