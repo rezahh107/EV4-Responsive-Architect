@@ -285,9 +285,42 @@ pr_142_canonical_contract_correction:
 
 ## WP-RESP-005/PR-B — State-driven catalog replenishment
 
-- Preferred catalog policy: `target=4`, `refresh_when_ready_below=4`, `max=5`.
-- `WP-RESP-006`, `WP-RESP-007`, and `WP-RESP-008` are reconciled as completed with merged outcome references.
-- Selectable ready horizon: `WP-RESP-009` through `WP-RESP-012`.
+The snapshot below is derived from the canonical monolithic catalog and is validator-enforced. It explicitly supersedes the former `WP-RESP-009` through `WP-RESP-012` ready-horizon statement.
+
+```json
+{
+  "schema": "ev4-status-work-package-catalog-snapshot@1.0.0",
+  "source": "planning/EV4_AUTOMATION_WORK_PACKAGE_CATALOG.json",
+  "catalog_state_snapshot_is_derived": true,
+  "policy": {
+    "max_ready_work_packages": 5,
+    "ready_work_package_target": 4,
+    "refresh_when_ready_below": 4
+  },
+  "selectable_ready_horizon": [
+    "WP-RESP-010",
+    "WP-RESP-011",
+    "WP-RESP-014",
+    "WP-RESP-016"
+  ],
+  "active_work_packages": [
+    "WP-RESP-015"
+  ],
+  "completed_work_packages": [
+    "WP-RESP-002",
+    "WP-RESP-003",
+    "WP-RESP-004",
+    "WP-RESP-006",
+    "WP-RESP-007",
+    "WP-RESP-008",
+    "WP-RESP-009",
+    "WP-RESP-012",
+    "WP-RESP-013"
+  ]
+}
+```
+
 - No submitted evidence was created; Issue #8 was not mutated; no pilot was run or authorized.
+- Project Gate transport was not executed and human-readable receipts are not Kernel authority.
 - Production, release, live-render, export, accessibility, pixel-perfect, and responsive-correctness claims remain false.
-- CI and catalog completion remain repository-check evidence only.
+- CI, catalog state, and catalog completion remain repository-check evidence only.
