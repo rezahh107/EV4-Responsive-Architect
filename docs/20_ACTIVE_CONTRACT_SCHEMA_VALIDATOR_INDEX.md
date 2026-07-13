@@ -1,7 +1,7 @@
 # Active Contract / Schema / Validator Index
 
-Task: `WP-RESP-008/PR-B`
-Updated by: `automation/wp-resp-008-pr-b-manifest-fixtures-validator`
+Task: `WP-RESP-012/PR-B parity reconciliation`
+Updated by: `automation/wp-resp-005-pr-b-replenish-after-wp015-a`
 
 This index records the active repository surfaces needed for controlled manual use and catalog-backed handoff. It is an index only; it does not validate a real submitted packet, mutate Issue #8, authorize pilot execution, or upgrade readiness.
 
@@ -59,6 +59,9 @@ contracts:
   responsive_handoff_export_boundary_manifest:
     path: contracts/RESPONSIVE_HANDOFF_EXPORT_BOUNDARY_MANIFEST.md
     role: repository-level export eligibility, lineage, artifact-class, and boundary-assertion contract
+  runtime_mismatch_reopen_boundary:
+    path: contracts/runtime/RUNTIME_MISMATCH_REOPEN_BOUNDARY.md
+    role: bounded runtime-observation and authoritative-reopen request boundary without Responsive redecision authority
   project_gate_prompt_5_routing_boundary:
     path: contracts/project-gate/PROMPT_5_ROUTING_BOUNDARY.md
     role: non-executing local route/reject and Project Gate authority boundary
@@ -80,6 +83,9 @@ schemas:
   automation_work_package_catalog:
     path: schemas/ev4-automation-work-package-catalog.schema.json
     role: catalog-backed Work Package selection schema
+  runtime_mismatch_reopen_package:
+    path: contracts/runtime/runtime-mismatch-reopen-package.v1.schema.json
+    role: fail-closed runtime-mismatch reopen package and evidence/readiness boundary schema
   project_gate_prompt_5_routing_envelope:
     path: contracts/project-gate/prompt-5-routing-envelope.v1.schema.json
     role: fail-closed Prompt 5 route/reject envelope and boundary-claim schema
@@ -158,6 +164,9 @@ primary_validate_workflow:
     project_gate_prompt_5_routing_envelope:
       path: validation/e2e/run_prompt_5_routing_envelope_check.py
       role: Prompt 5 schema, semantic coupling, authority, diagnostics, and all-false boundary checks
+    runtime_mismatch_reopen_package:
+      path: validation/e2e/run_runtime_mismatch_reopen_package_check.py
+      role: runtime-mismatch schema, lineage, authoritative-review action, authority, negative-fixture, and all-false boundary checks
     responsive_contract_drift_sentinel:
       path: validation/e2e/run_responsive_contract_drift_sentinel_check.py
       role: CI-visible parity guard for owned responsive contract, STATUS, command-index, active-index, and workflow surfaces

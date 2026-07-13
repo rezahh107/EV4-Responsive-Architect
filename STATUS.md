@@ -66,12 +66,14 @@ active_contracts:
   - contracts/EV4_RESPONSIVE_HANDOFF_EXPORT_CONTRACT.md
   - contracts/VIEWPORT_INHERITANCE_RESET_DECISION_MATRIX.md
   - contracts/RESPONSIVE_HANDOFF_EXPORT_BOUNDARY_MANIFEST.md
+  - contracts/runtime/RUNTIME_MISMATCH_REOPEN_BOUNDARY.md
   - contracts/project-gate/PROMPT_5_ROUTING_BOUNDARY.md
 active_schema:
   - schemas/ev4-responsive-output.schema.json
   - schemas/ev4-builder-responsive-input.schema.json
   - schemas/ev4-automation-control-state.schema.json
   - schemas/ev4-automation-work-package-catalog.schema.json
+  - contracts/runtime/runtime-mismatch-reopen-package.v1.schema.json
   - contracts/project-gate/prompt-5-routing-envelope.v1.schema.json
 active_validation:
   - validation/e2e/run_responsive_tree_architecture_refactor_check.py
@@ -87,6 +89,7 @@ active_validation:
   - validation/e2e/run_issue_to_packet_bridge_check.py
   - validation/e2e/run_builder_responsive_input_boundary_check.py
   - validation/e2e/run_prompt_5_routing_envelope_check.py
+  - validation/e2e/run_runtime_mismatch_reopen_package_check.py
   - validation/e2e/run_responsive_contract_drift_sentinel_check.py
   - validation/e2e/run_viewport_inheritance_reset_matrix_check.py
   - validation/e2e/run_responsive_handoff_export_boundary_manifest_check.py
@@ -208,6 +211,7 @@ automatic_check:
   - python validation/e2e/run_issue_to_packet_bridge_check.py
   - python validation/e2e/run_builder_responsive_input_boundary_check.py
   - python validation/e2e/run_prompt_5_routing_envelope_check.py
+  - python validation/e2e/run_runtime_mismatch_reopen_package_check.py
   - python validation/e2e/run_responsive_contract_drift_sentinel_check.py
   - python validation/e2e/run_viewport_inheritance_reset_matrix_check.py
   - python validation/e2e/run_responsive_handoff_export_boundary_manifest_check.py

@@ -1,7 +1,7 @@
 # Validation Command Index
 
-Task: `WP-RESP-008/PR-B`
-Updated by: `automation/wp-resp-008-pr-b-manifest-fixtures-validator`
+Task: `WP-RESP-012/PR-B parity reconciliation`
+Updated by: `automation/wp-resp-005-pr-b-replenish-after-wp015-a`
 
 This index lists repository validation commands for controlled manual use. Command success is repository-check evidence only; it is not responsive correctness evidence and does not authorize production, release, real pilot, export, live-render, accessibility, or pixel-validation claims.
 
@@ -32,6 +32,7 @@ python validation/e2e/run_issue_8_preflight_boundary_check.py
 python validation/e2e/run_issue_to_packet_bridge_check.py
 python validation/e2e/run_builder_responsive_input_boundary_check.py
 python validation/e2e/run_prompt_5_routing_envelope_check.py
+python validation/e2e/run_runtime_mismatch_reopen_package_check.py
 python validation/e2e/run_responsive_decision_lineage_sequence_check.py
 python validation/e2e/run_responsive_kernel_receipt_check.py
 python validation/e2e/run_responsive_contract_drift_sentinel_check.py
@@ -81,6 +82,7 @@ These commands inspect Kernel trace preservation and Wave 5 receipt consistency.
 ```bash
 python validation/e2e/run_responsive_decision_lineage_sequence_check.py
 python validation/e2e/run_responsive_kernel_receipt_check.py
+python validation/e2e/run_runtime_mismatch_reopen_package_check.py
 python validation/e2e/run_decision_escape_routes_schema_check.py
 ```
 
@@ -127,6 +129,7 @@ The commands can be used to inspect deterministic repository behavior:
 - submitted evidence source-kind, completeness, readiness-status, artifact-path, submitted-mode, payload-hash, Issue #8 identity, issue-to-packet bridge, and privacy guard behavior
 - pilot readiness report generation boundaries
 - Kernel decision lineage and Wave 5 receipt consistency
+- runtime-mismatch reopen lineage, authority, evidence-reference, and all-false boundary validation
 - viewport inheritance/reset decisions, wider-to-narrower source ordering, explicit reset-source requirements, and unknown-state fail-closed behavior
 - responsive handoff export-boundary manifest lineage, required artifact-class coverage, and forbidden boundary-upgrade rejection
 - task quality-gate policy shape and required boundary assertions
@@ -150,6 +153,14 @@ Stop and do not upgrade claims if:
 ## Boundary
 
 This command index is documentation only. It does not create evidence, mutate Issue #8, run the pilot, or change readiness state.
+
+## Runtime mismatch reopen package
+
+```bash
+python validation/e2e/run_runtime_mismatch_reopen_package_check.py
+```
+
+Validates the bounded runtime-mismatch reopen package, prior Kernel decision lineage, authoritative-review action, evidence-reference structure, Responsive observation-only authority, negative fixtures, and the complete all-false evidence/readiness boundary registry. Success is repository-check evidence only and does not create submitted evidence, authorize a pilot, execute Project Gate transport, replace a Kernel decision, or prove production, release, export, accessibility, pixel-perfect, live-render, or responsive-correctness outcomes.
 
 ## Project Gate Prompt 5 routing boundary
 
