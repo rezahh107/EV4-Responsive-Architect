@@ -54,6 +54,7 @@ REQUIRED_AUTOMATIC_CHECKS = [
     C("run_issue_8_preflight_boundary_check.py"),
     C("run_issue_to_packet_bridge_check.py"),
     C("run_builder_responsive_input_boundary_check.py"),
+    C("run_prompt_5_routing_envelope_check.py"),
     C("run_responsive_contract_drift_sentinel_check.py"),
     C("run_viewport_inheritance_reset_matrix_check.py"),
     C("run_responsive_handoff_export_boundary_manifest_check.py"),
