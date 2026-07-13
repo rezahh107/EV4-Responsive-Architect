@@ -160,7 +160,7 @@
         "source_commit_sha": {"const": "993e770229e0b88b7bd3c5068f6f5d59e1392743"},
         "schema_path": {"const": "contracts/runtime/runtime-mismatch-reopen-package.v1.schema.json"},
         "schema_git_blob_sha": {"const": "7b868ffbe6f79c70e20831a45a0032a19cc07002"},
-        "schema_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+        "schema_sha256": {"const": "1f8cb3db9cb9330ed72aabdfb065866fce2cf1a0eb961edf7c7ce5d18cad1445"}
       }
     },
     "dependencyPinPrompt5": {
@@ -174,7 +174,7 @@
         "source_commit_sha": {"const": "993e770229e0b88b7bd3c5068f6f5d59e1392743"},
         "schema_path": {"const": "contracts/project-gate/prompt-5-routing-envelope.v1.schema.json"},
         "schema_git_blob_sha": {"const": "9557994fcdb8f78b38ad2fff191b0b7a1e512746"},
-        "schema_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+        "schema_sha256": {"const": "172e7585af7cec08ed722f7ea88a10e138d2740239789ae6f4499251d686e3a8"}
       }
     },
     "boundaryClaims": {
