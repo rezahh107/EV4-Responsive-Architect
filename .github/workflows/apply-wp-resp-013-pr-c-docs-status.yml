@@ -5,6 +5,10 @@ on:
   push:
     branches:
       - automation/wp-resp-013-pr-c-routing-docs-status
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches:
+      - main
   workflow_dispatch:
 
 permissions:
