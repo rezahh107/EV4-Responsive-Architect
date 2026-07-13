@@ -1,0 +1,119 @@
+name: Publish PR 179 PRF-005 evidence identities
+
+on:
+  push:
+    branches:
+      - automation/wp-resp-005-pr-b-replenish-after-wp015-a
+
+permissions:
+  actions: write
+  contents: write
+  pull-requests: write
+
+jobs:
+  publish-identities:
+    if: ${{ github.actor != 'github-actions[bot]' }}
+    runs-on: ubuntu-latest
+    env:
+      TARGET_BRANCH: automation/wp-resp-005-pr-b-replenish-after-wp015-a
+      MATERIAL_HEAD: 408db1cc2c10f42ebc6c225287831c1e536a48f0
+      PR_NUMBER: "179"
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.TARGET_BRANCH }}
+          fetch-depth: 0
+
+      - name: Verify evidence-only scope
+        shell: bash
+        run: |
+          set -euo pipefail
+          mapfile -t changed < <(git diff --name-only "$MATERIAL_HEAD"..HEAD | sort)
+          expected=(".github/workflows/publish-pr179-prf005-evidence.yml")
+          printf '%s\n' "${changed[@]}"
+          test "${changed[*]}" = "${expected[*]}"
+
+      - name: Create final clean head
+        id: final
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git rm .github/workflows/publish-pr179-prf005-evidence.yml
+          git commit -m "chore: remove PRF-005 evidence publisher"
+          git push origin "HEAD:$TARGET_BRANCH"
+          final_sha="$(git rev-parse HEAD)"
+          echo "sha=$final_sha" >> "$GITHUB_OUTPUT"
+          echo "NEW_FINAL_HEAD_SHA=$final_sha"
+
+      - name: Dispatch exact-head workflows
+        id: dispatch
+        env:
+          GH_TOKEN: ${{ github.token }}
+          FINAL_SHA: ${{ steps.final.outputs.sha }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          started="$(date -u -d '-5 seconds' +%Y-%m-%dT%H:%M:%SZ)"
+
+          gh api --method POST \
+            "repos/${GITHUB_REPOSITORY}/actions/workflows/validate.yml/dispatches" \
+            -f ref="$TARGET_BRANCH" \
+            -f "inputs[ref]=$TARGET_BRANCH" \
+            -f "inputs[expected_sha]=$FINAL_SHA"
+
+          gh api --method POST \
+            "repos/${GITHUB_REPOSITORY}/actions/workflows/verify-vendored-common-contract.yml/dispatches" \
+            -f ref="$TARGET_BRANCH"
+
+          find_run() {
+            local workflow="$1"
+            for _ in $(seq 1 90); do
+              run_id="$(gh api "repos/${GITHUB_REPOSITORY}/actions/workflows/${workflow}/runs?event=workflow_dispatch&branch=${TARGET_BRANCH}&per_page=30" \
+                --jq ".workflow_runs[] | select(.head_sha == \"${FINAL_SHA}\" and .created_at >= \"${started}\") | .id" | head -n1)"
+              if [ -n "$run_id" ]; then
+                echo "$run_id"
+                return 0
+              fi
+              sleep 4
+            done
+            return 1
+          }
+
+          validate_run="$(find_run validate.yml)"
+          vendored_run="$(find_run verify-vendored-common-contract.yml)"
+          echo "validate_run=$validate_run" >> "$GITHUB_OUTPUT"
+          echo "vendored_run=$vendored_run" >> "$GITHUB_OUTPUT"
+          echo "VALIDATE_RUN_ID=$validate_run"
+          echo "VENDORED_RUN_ID=$vendored_run"
+
+      - name: Publish identities in PR body
+        env:
+          GH_TOKEN: ${{ github.token }}
+          FINAL_SHA: ${{ steps.final.outputs.sha }}
+          VALIDATE_RUN: ${{ steps.dispatch.outputs.validate_run }}
+          VENDORED_RUN: ${{ steps.dispatch.outputs.vendored_run }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          body="$(gh api "repos/${GITHUB_REPOSITORY}/pulls/${PR_NUMBER}" --jq .body)"
+          section="$(cat <<EOF
+
+          <!-- PRF005_EVIDENCE_IDENTITIES -->
+          ## PRF-005 exact-head run identities
+
+          - final head: \`$FINAL_SHA\`
+          - tested ref: \`$TARGET_BRANCH\`
+          - ref type: \`branch\`
+          - synthetic merge: \`false\`
+          - Validate run ID: \`$VALIDATE_RUN\`
+          - Vendored-contract run ID: \`$VENDORED_RUN\`
+          - evidence publisher run ID: \`${GITHUB_RUN_ID}\`
+
+          Results must be verified from the recorded run/job metadata before any readiness claim.
+          EOF
+          )"
+          gh api --method PATCH "repos/${GITHUB_REPOSITORY}/pulls/${PR_NUMBER}" \
+            -f body="$body$section" >/dev/null
