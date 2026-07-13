@@ -210,15 +210,20 @@ automatic_check:
   - python validation/e2e/run_issue_8_preflight_boundary_check.py
   - python validation/e2e/run_issue_to_packet_bridge_check.py
   - python validation/e2e/run_builder_responsive_input_boundary_check.py
-  - python validation/e2e/run_prompt_5_routing_envelope_check.py
-  - python validation/e2e/run_runtime_mismatch_reopen_package_check.py
+  - python validation/e2e/run_responsive_decision_lineage_sequence_check.py
+  - python validation/e2e/run_responsive_kernel_receipt_check.py
   - python validation/e2e/run_responsive_contract_drift_sentinel_check.py
   - python validation/e2e/run_viewport_inheritance_reset_matrix_check.py
   - python validation/e2e/run_responsive_handoff_export_boundary_manifest_check.py
+  - python validation/e2e/run_prompt_5_routing_envelope_check.py
+  - python validation/e2e/run_runtime_mismatch_reopen_package_check.py
+  - python validation/e2e/run_decision_escape_routes_schema_check.py
   - python validation/e2e/run_rtaq_ssot_guard_check.py
   - python validation/e2e/run_status_merged_foundation_guard_check.py
   - python validation/e2e/run_automation_control_state_check.py
+  - python validation/e2e/run_automation_replenishment_policy_transition_check.py
   - python validation/e2e/run_automation_work_package_catalog_check.py
+  - python validation/e2e/run_automation_work_package_catalog_reassembly_check.py --self-test
 delegated_repository_checks: []
 manual_same_head_recovery:
   workflow: .github/workflows/validate.yml
