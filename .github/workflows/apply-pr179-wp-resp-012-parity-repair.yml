@@ -37,7 +37,7 @@ jobs:
       - name: Install validation dependencies
         run: python -m pip install --disable-pip-version-check -r requirements.txt
 
-      - name: Materialize WP-RESP-012 documentation and STATUS parity
+      - name: Materialize WP-RESP-012 documentation, STATUS, and guard parity
         run: python scripts/apply_pr179_wp_resp_012_parity_repair.py
 
       - name: Verify bounded material diff
@@ -49,6 +49,7 @@ jobs:
             "STATUS.md"
             "docs/17_VALIDATION_COMMAND_INDEX.md"
             "docs/20_ACTIVE_CONTRACT_SCHEMA_VALIDATOR_INDEX.md"
+            "validation/e2e/run_status_merged_foundation_guard_check.py"
           )
           mapfile -t expected_sorted < <(printf '%s\n' "${expected[@]}" | sort)
           if [[ "$(printf '%s\n' "${changed[@]}")" != "$(printf '%s\n' "${expected_sorted[@]}")" ]]; then
@@ -81,7 +82,8 @@ jobs:
           git add \
             STATUS.md \
             docs/17_VALIDATION_COMMAND_INDEX.md \
-            docs/20_ACTIVE_CONTRACT_SCHEMA_VALIDATOR_INDEX.md
+            docs/20_ACTIVE_CONTRACT_SCHEMA_VALIDATOR_INDEX.md \
+            validation/e2e/run_status_merged_foundation_guard_check.py
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git commit -m "docs(WP-RESP-012): complete STATUS and validation parity"
