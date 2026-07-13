@@ -28,6 +28,15 @@ def validate_payload(validator: Draft202012Validator, payload: dict) -> None:
     errors = sorted(validator.iter_errors(payload), key=lambda e: tuple(map(str, e.absolute_path)))
     if errors:
         raise ValueError(errors[0].message)
+    lineage = payload["shared_lineage"]
+    if lineage["rejected_options"] != ["continue_without_review"]:
+        raise ValueError("rejected_options must contain exactly ['continue_without_review']")
+    evidence_refs = lineage["evidence_refs"]
+    if not evidence_refs or not all(
+        isinstance(ref, str) and ref.startswith("evidence/") and not ref.endswith("/")
+        for ref in evidence_refs
+    ):
+        raise ValueError("evidence_refs must contain non-empty evidence artifact references")
     route = payload["routing_compatibility"]
     if route["reopen_requested_action"] != "reopen_for_authoritative_review":
         raise ValueError("unsupported reopen action")
@@ -62,6 +71,14 @@ def run_self_tests(validator: Draft202012Validator, valid: dict) -> None:
     lineage = copy.deepcopy(valid)
     del lineage["shared_lineage"]["decision_id"]
     cases.append(("missing lineage", lineage))
+
+    rejected_options = copy.deepcopy(valid)
+    rejected_options["shared_lineage"]["rejected_options"].append("route_without_reopen")
+    cases.append(("rejected options drift", rejected_options))
+
+    evidence_refs = copy.deepcopy(valid)
+    evidence_refs["shared_lineage"]["evidence_refs"] = ["runtime-observation-001.json"]
+    cases.append(("invalid evidence reference", evidence_refs))
 
     action = copy.deepcopy(valid)
     action["routing_compatibility"]["reopen_requested_action"] = "continue_without_review"
