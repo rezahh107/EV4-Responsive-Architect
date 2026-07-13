@@ -31,6 +31,7 @@ python validation/e2e/run_pilot_readiness_boundary_check.py
 python validation/e2e/run_issue_8_preflight_boundary_check.py
 python validation/e2e/run_issue_to_packet_bridge_check.py
 python validation/e2e/run_builder_responsive_input_boundary_check.py
+python validation/e2e/run_prompt_5_routing_envelope_check.py
 python validation/e2e/run_responsive_decision_lineage_sequence_check.py
 python validation/e2e/run_responsive_kernel_receipt_check.py
 python validation/e2e/run_responsive_contract_drift_sentinel_check.py
@@ -149,6 +150,14 @@ Stop and do not upgrade claims if:
 ## Boundary
 
 This command index is documentation only. It does not create evidence, mutate Issue #8, run the pilot, or change readiness state.
+
+## Project Gate Prompt 5 routing boundary
+
+```bash
+python validation/e2e/run_prompt_5_routing_envelope_check.py
+```
+
+Validates the repository-local Prompt 5 route/reject envelope, lineage, transport eligibility, diagnostics, authority ownership, and all-false evidence/readiness boundary registry. Responsive remains non-executing; EV4 Project Gate retains transport and downstream gate authority. Success is repository-check evidence only and does not prove external transport, pilot readiness, production/release readiness, export, accessibility, pixel-perfect output, or responsive correctness.
 
 ## Project Gate Prompt 04 Responsive Producer Adoption
 
