@@ -64,7 +64,7 @@
       "id": "WP-RESP-009",
       "path": "planning/work-packages/WP-RESP-009.json",
       "schema": "ev4-automation-work-package-file@1.0.0",
-      "content_sha256": "f1be9d333b1993c0bf519c751fcdce185b0e2ae8d663ab7c2e9ad0ab82e420d7"
+      "content_sha256": "e706614100a1006e5c4eee5939ede0183dbf8a1626c76c7faa77411ff3ee7bd7"
     },
     {
       "id": "WP-RESP-010",
@@ -83,6 +83,12 @@
       "path": "planning/work-packages/WP-RESP-012.json",
       "schema": "ev4-automation-work-package-file@1.0.0",
       "content_sha256": "f0c0c63543dd1234cd1ff88ada3046da882c857ce1b41d7bc99c9fd62e9be366"
+    },
+    {
+      "id": "WP-RESP-013",
+      "path": "planning/work-packages/WP-RESP-013.json",
+      "schema": "ev4-automation-work-package-file@1.0.0",
+      "content_sha256": "a4f34f57af123f4cd698f1beb3b945f1ff71417724866dd7874b1d3b9377bb97"
     }
   ],
   "global_boundaries": {

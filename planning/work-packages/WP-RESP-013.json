@@ -1,39 +1,39 @@
 {
   "schema": "ev4-automation-work-package-file@1.0.0",
-  "id": "WP-RESP-009",
+  "id": "WP-RESP-013",
   "work_package": {
-    "id": "WP-RESP-009",
-    "title": "Split Work Package Catalog into Deterministic Index and Package Files",
-    "capability_area": "catalog_modularity",
-    "current_state": "Completed by PR #166 and PR #167: modular catalog contracts, package projection, canonical index, hash parity, deterministic reassembly, negative self-test coverage, and read-only exact-head CI validation are present.",
-    "target_state": "The deterministic modular catalog projection is implemented and validation-backed while the monolithic catalog remains canonical.",
+    "id": "WP-RESP-013",
+    "title": "Implement Project Gate Prompt 5 Routing Boundary",
+    "capability_area": "project_gate_prompt_5_routing",
+    "current_state": "STATUS records prompt_5_project_gate_routing as not_implemented; Responsive has guarded producer artifacts but no schema-backed, fail-closed routing package for verified Project Gate transport.",
+    "target_state": "A deterministic Prompt 5 routing boundary validates Project Gate transport inputs, routing decisions, lineage, and rejection states without letting Responsive execute Project Gate authority or claim responsive correctness.",
     "measurable_current_state": {
-      "statement": "Completed by PR #166 and PR #167: modular catalog contracts, package projection, canonical index, hash parity, deterministic reassembly, negative self-test coverage, and read-only exact-head CI validation are present.",
-      "measurement": "Measured by repository contracts, schemas, fixtures, validators, CI, documentation, and STATUS signals for WP-RESP-009.",
+      "statement": "STATUS records prompt_5_project_gate_routing as not_implemented; Responsive has guarded producer artifacts but no schema-backed, fail-closed routing package for verified Project Gate transport.",
+      "measurement": "Measured by STATUS prompt_5_project_gate_routing state and the absence of a dedicated routing contract, schema, fixtures, and validator.",
       "measurable": true
     },
     "measurable_target_state": {
-      "statement": "The deterministic modular catalog projection is implemented and validation-backed while the monolithic catalog remains canonical.",
-      "measurement": "Accepted only when the approved slices for WP-RESP-009 pass deterministic repository validators and exact-head CI without upgrading evidence or readiness claims.",
+      "statement": "A deterministic Prompt 5 routing boundary validates Project Gate transport inputs, routing decisions, lineage, and rejection states without letting Responsive execute Project Gate authority or claim responsive correctness.",
+      "measurement": "Accepted only when contract/schema, positive and negative fixtures, deterministic diagnostics, docs/STATUS parity, and exact-head CI pass without upgrading evidence or readiness claims.",
       "measurable": true
     },
     "target_capability": {
-      "statement": "An index plus one schema-validated file per Work Package can be deterministically reassembled and checked for duplicate IDs, ordering, parity, and boundary preservation.",
-      "measurement": "Measured by explicit contract, schema, fixture, validator, CI, docs, and STATUS parity for WP-RESP-009.",
+      "statement": "Responsive can validate and package the Prompt 5 Project Gate routing boundary while remaining non-executing and authority-preserving.",
+      "measurement": "Schema-backed route envelopes and fail-closed validators cover accepted transport, missing lineage, unsupported route, authority substitution, and forbidden readiness-upgrade states.",
       "measurable": true
     },
-    "expected_project_delta": "Catalog maintenance becomes reviewable and patch-safe without changing catalog authority, execution semantics, or evidence boundaries.",
+    "expected_project_delta": "The documented Prompt 5 routing gap becomes a bounded contract, fixture, validator, CI, and documentation objective while Project Gate remains the transport authority and all evidence/readiness claims remain false.",
     "selectable": true,
-    "ready_state": "completed",
-    "priority": 60,
+    "ready_state": "ready",
+    "priority": 100,
     "reporting": {
-      "estimated_completion_percentage": 100,
+      "estimated_completion_percentage": 0,
       "estimated_percentage_is_reporting_only": true
     },
     "allowed_work": [
-      "Define an index and package-file layout while preserving the catalog as the sole approved objective source.",
-      "Add deterministic reassembly, duplicate-ID, ordering, parity, and canonical-format validation.",
-      "Migrate existing package records without changing their truthful state or boundary claims."
+      "Define the local Prompt 5 routing envelope and Project Gate authority boundary.",
+      "Add positive and negative fixtures for lineage, route selection, transport eligibility, and rejection diagnostics.",
+      "Wire deterministic validators into CI and align directly affected documentation and STATUS records."
     ],
     "forbidden_work": [
       "Do not create submitted evidence unless explicitly authorized by the repository owner and current Issue #8 submitted-mode contracts.",
@@ -43,9 +43,9 @@
       "Do not treat CI success, merged PRs, catalog completion, Work Package completion, or queue completion as domain evidence."
     ],
     "must_deliver": [
-      "Schema-backed catalog index and package-file contracts.",
-      "Deterministic reassembly and duplicate/parity validators with negative fixtures.",
-      "CI, docs, STATUS, and controller-path updates required by the migration."
+      "Prompt 5 routing boundary contract and schema or schema reference.",
+      "Deterministic validator with valid fixtures and negative coverage for missing lineage, unsupported routes, authority substitution, and boundary upgrades.",
+      "CI, documentation, command-index, and STATUS parity where directly affected."
     ],
     "must_preserve": [
       "Rolling queue remains a historical reconciled archive, not the execution driver.",
@@ -110,23 +110,31 @@
     },
     "allowed_pr_slices": [
       {
-        "slice_id": "WP-RESP-009/PR-A",
-        "title": "index and package-file contracts",
-        "layer": "schema_contract",
-        "objective": "Define the modular catalog representation and deterministic authority rules.",
+        "slice_id": "WP-RESP-013/PR-A",
+        "title": "Prompt 5 routing contract and schema",
+        "layer": "contract_schema",
+        "objective": "Define the authority-preserving route envelope, inputs, outputs, and rejection semantics.",
         "review_boundary": "Reviewable PR slice under the same Work Package ID; no unrelated micro-objective may be introduced."
       },
       {
-        "slice_id": "WP-RESP-009/PR-B",
-        "title": "migration and reassembly validator",
-        "layer": "migration_validator",
-        "objective": "Migrate package records and add deterministic reassembly, parity, and negative coverage.",
+        "slice_id": "WP-RESP-013/PR-B",
+        "title": "routing fixtures, validator, and CI",
+        "layer": "fixture_validator_ci",
+        "objective": "Add deterministic accepted/rejected route coverage and primary validation-chain wiring.",
+        "review_boundary": "Reviewable PR slice under the same Work Package ID; no unrelated micro-objective may be introduced."
+      },
+      {
+        "slice_id": "WP-RESP-013/PR-C",
+        "title": "routing documentation and STATUS parity",
+        "layer": "docs_status",
+        "objective": "Record the implemented local routing boundary and remaining external transport and evidence limitations.",
         "review_boundary": "Reviewable PR slice under the same Work Package ID; no unrelated micro-objective may be introduced."
       }
     ],
     "blocked_if": [
-      "The migration would create two competing catalog authorities.",
-      "Reassembly cannot preserve canonical ordering, metadata, and all false evidence/readiness claims."
+      "The slice would implement or mutate Project Gate runtime behavior in an external repository.",
+      "Responsive would be allowed to authorize transport, replace Project Gate decisions, or execute the real pilot.",
+      "Repository checks would be promoted to production, release, live-render, export, accessibility, pixel, or responsive-correctness evidence."
     ],
     "completion_record_requirements": [
       "Record selected Work Package ID and PR slice ID in the PR body.",
