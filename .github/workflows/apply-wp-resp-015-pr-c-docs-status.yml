@@ -4,16 +4,23 @@ on:
   push:
     branches:
       - automation/wp-resp-015-pr-c-compatibility-docs-status
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches:
+      - main
 
 permissions:
   contents: write
 
 concurrency:
-  group: apply-wp-resp-015-pr-c-${{ github.ref }}
+  group: apply-wp-resp-015-pr-c-${{ github.event.pull_request.head.ref || github.ref }}
   cancel-in-progress: false
 
 jobs:
   materialize:
+    if: >-
+      (github.event_name == 'push' && github.ref_name == 'automation/wp-resp-015-pr-c-compatibility-docs-status') ||
+      (github.event_name == 'pull_request' && github.event.pull_request.head.ref == 'automation/wp-resp-015-pr-c-compatibility-docs-status')
     runs-on: ubuntu-latest
     steps:
       - name: Checkout branch
