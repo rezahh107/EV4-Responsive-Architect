@@ -1,0 +1,221 @@
+name: PR 179 exact-head evidence recorder
+
+on:
+  push:
+    branches:
+      - automation/wp-resp-005-pr-b-replenish-after-wp015-a
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: write
+  issues: write
+  pull-requests: read
+
+concurrency:
+  group: pr-179-exact-head-evidence-recorder
+  cancel-in-progress: false
+
+jobs:
+  record-exact-head-evidence:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Checkout PR branch
+        uses: actions/checkout@v4
+        with:
+          ref: automation/wp-resp-005-pr-b-replenish-after-wp015-a
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Verify bounded evidence staging
+        shell: bash
+        run: |
+          set -euo pipefail
+          repair_head="efbac93373240a649b3a33aace303360772cebc3"
+          staging_head="$(git rev-parse HEAD)"
+          echo "repair_head_sha=${repair_head}"
+          echo "evidence_staging_head_sha=${staging_head}"
+          git merge-base --is-ancestor "${repair_head}" HEAD
+          mapfile -t changed < <(git diff --name-only "${repair_head}..HEAD" | sort)
+          expected=(".github/workflows/pr179-exact-head-evidence.yml")
+          if [[ "$(printf '%s\n' "${changed[@]}")" != "$(printf '%s\n' "${expected[@]}")" ]]; then
+            printf 'Unexpected evidence-staging diff:\n%s\n' "$(printf '%s\n' "${changed[@]}")"
+            exit 1
+          fi
+          python validation/e2e/run_status_merged_foundation_guard_check.py
+
+      - name: Create evidence-only final head
+        id: final_head
+        shell: bash
+        run: |
+          set -euo pipefail
+          git rm .github/workflows/pr179-exact-head-evidence.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "chore(PRF-002): establish exact-head evidence target"
+          final_sha="$(git rev-parse HEAD)"
+          echo "final_sha=${final_sha}" >> "${GITHUB_OUTPUT}"
+          echo "new_final_head_sha=${final_sha}"
+          git push origin HEAD:automation/wp-resp-005-pr-b-replenish-after-wp015-a
+
+      - name: Dispatch Validate and record exact-head evidence
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          FINAL_SHA: ${{ steps.final_head.outputs.final_sha }}
+          TARGET_BRANCH: automation/wp-resp-005-pr-b-replenish-after-wp015-a
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          import os
+          import time
+          import urllib.parse
+          import urllib.request
+
+          repo = os.environ["GITHUB_REPOSITORY"]
+          token = os.environ["GH_TOKEN"]
+          final_sha = os.environ["FINAL_SHA"]
+          branch = os.environ["TARGET_BRANCH"]
+          api = "https://api.github.com"
+          headers = {
+              "Authorization": f"Bearer {token}",
+              "Accept": "application/vnd.github+json",
+              "X-GitHub-Api-Version": "2022-11-28",
+              "User-Agent": "pr179-exact-head-evidence-recorder",
+          }
+
+          def request(method: str, path: str, payload=None):
+              data = None if payload is None else json.dumps(payload).encode("utf-8")
+              req = urllib.request.Request(api + path, data=data, method=method, headers=headers)
+              with urllib.request.urlopen(req, timeout=60) as response:
+                  raw = response.read()
+                  return json.loads(raw.decode("utf-8")) if raw else None
+
+          request(
+              "POST",
+              f"/repos/{repo}/actions/workflows/validate.yml/dispatches",
+              {"ref": branch, "inputs": {"ref": branch, "expected_sha": final_sha}},
+          )
+
+          encoded_branch = urllib.parse.quote(branch, safe="")
+          run = None
+          for _ in range(60):
+              payload = request(
+                  "GET",
+                  f"/repos/{repo}/actions/workflows/validate.yml/runs"
+                  f"?event=workflow_dispatch&branch={encoded_branch}&per_page=20",
+              )
+              candidates = [
+                  item for item in payload.get("workflow_runs", [])
+                  if item.get("event") == "workflow_dispatch" and item.get("head_sha") == final_sha
+              ]
+              if candidates:
+                  run = sorted(candidates, key=lambda item: item["id"], reverse=True)[0]
+                  break
+              time.sleep(5)
+          if run is None:
+              raise SystemExit("exact-head Validate workflow_dispatch run not found")
+
+          run_id = run["id"]
+          for _ in range(120):
+              run = request("GET", f"/repos/{repo}/actions/runs/{run_id}")
+              if run.get("status") == "completed":
+                  break
+              time.sleep(5)
+          if run.get("status") != "completed":
+              raise SystemExit("exact-head Validate workflow did not complete")
+
+          jobs_payload = request("GET", f"/repos/{repo}/actions/runs/{run_id}/jobs?filter=latest&per_page=100")
+          validation_jobs = [
+              job for job in jobs_payload.get("jobs", [])
+              if job.get("name", "").startswith("validate (")
+          ]
+          if len(validation_jobs) != 2:
+              raise SystemExit(f"expected two validation jobs, observed {len(validation_jobs)}")
+
+          job_records = []
+          for job in sorted(validation_jobs, key=lambda item: item["name"]):
+              sha_steps = [
+                  step for step in job.get("steps", [])
+                  if step.get("name") == "Verify workflow-dispatch SHA"
+              ]
+              sha_step_conclusion = sha_steps[0].get("conclusion") if len(sha_steps) == 1 else None
+              req = urllib.request.Request(
+                  f"{api}/repos/{repo}/actions/jobs/{job['id']}/logs",
+                  method="GET",
+                  headers=headers,
+              )
+              with urllib.request.urlopen(req, timeout=60) as response:
+                  log_text = response.read().decode("utf-8", errors="replace")
+              proof = {
+                  "requested_ref": f"requested_ref={branch}" in log_text,
+                  "expected_sha": f"expected_sha={final_sha}" in log_text,
+                  "actual_sha": f"actual_sha={final_sha}" in log_text,
+              }
+              job_records.append({
+                  "job_id": job["id"],
+                  "name": job["name"],
+                  "conclusion": job.get("conclusion"),
+                  "sha_verification_step": sha_step_conclusion,
+                  "log_proof": proof,
+              })
+
+          evidence = {
+              "marker": "PR179_REPAIR_EVIDENCE_V1",
+              "protocol_version": "v1.9.0",
+              "reviewed_head_sha": "ff251c451cffc6e4ba5c65d8c5c03f3c7f8d2a84",
+              "repair_material_head_sha": "efbac93373240a649b3a33aace303360772cebc3",
+              "new_final_head_sha": final_sha,
+              "validate": {
+                  "workflow_run_id": run_id,
+                  "event": run.get("event"),
+                  "tested_ref_type": "branch_workflow_dispatch",
+                  "tested_ref": branch,
+                  "tested_sha": run.get("head_sha"),
+                  "synthetic_merge": False,
+                  "conclusion": run.get("conclusion"),
+                  "jobs": job_records,
+              },
+              "vendored_workflow_observation": {
+                  "workflow_run_id": 29268316426,
+                  "job_id": 86879339455,
+                  "event": "pull_request",
+                  "tested_ref_type": "refs/pull/179/merge",
+                  "tested_sha": "c1dcc42f07ca24f3bf42d6754677a9b13c935feb",
+                  "synthetic_merge": True,
+                  "conclusion": "success",
+                  "exact_head_evidence": False,
+              },
+              "finding_statuses": {
+                  "PRF-001": "implemented_pending_rereview",
+                  "PRF-002": "implemented_pending_rereview",
+              },
+              "merge_performed": False,
+              "approval_performed": False,
+              "deployment_performed": False,
+          }
+
+          if run.get("conclusion") != "success":
+              raise SystemExit(f"exact-head Validate conclusion was {run.get('conclusion')}")
+          for record in job_records:
+              if record["conclusion"] != "success":
+                  raise SystemExit(f"validation job failed: {record['name']}")
+              if record["sha_verification_step"] != "success":
+                  raise SystemExit(f"SHA verification step failed: {record['name']}")
+              if not all(record["log_proof"].values()):
+                  raise SystemExit(f"exact-head log proof incomplete: {record['name']}")
+
+          comment = (
+              "<!-- PR179_REPAIR_EVIDENCE_V1 -->\n"
+              "## PR #179 repair-and-verify evidence\n\n"
+              "```json\n"
+              + json.dumps(evidence, indent=2)
+              + "\n```\n\n"
+              "Fresh PR Inspector re-review is required for `new_final_head_sha`. "
+              "This record is not approval and does not authorize Merge."
+          )
+          request("POST", f"/repos/{repo}/issues/179/comments", {"body": comment})
+          print(json.dumps(evidence, indent=2))
+          PY
