@@ -5,11 +5,11 @@
     "id": "WP-RESP-015",
     "title": "Enforce Runtime-Mismatch Reopen Routing Compatibility",
     "capability_area": "runtime_mismatch_reopen_routing_compatibility",
-    "current_state": "PR #174 added the runtime-mismatch reopen contract and schema, while Prompt 5 routing is locally validation-backed; no deterministic compatibility contract currently proves that reopen requests preserve routing lineage, authority, and fail-closed boundary semantics across both surfaces.",
+    "current_state": "PR #178 merged the pinned reopen-routing compatibility contract and schema; fixtures, deterministic validator diagnostics, CI wiring, documentation, command-index, and STATUS parity remain incomplete.",
     "target_state": "A schema-backed compatibility manifest and deterministic validator bind runtime-mismatch reopen packages to Prompt 5 routing lineage, action, diagnostics, and authority rules without executing transport or replacing Kernel decisions.",
     "measurable_current_state": {
-      "statement": "The runtime-mismatch reopen schema and Prompt 5 routing schema exist independently, but no pinned compatibility manifest, cross-contract fixtures, or validator covers their shared lineage and authority invariants.",
-      "measurement": "Measured by the absence of a canonical compatibility manifest, dependency identity pins, cross-contract fixtures, dedicated diagnostics, CI wiring, and STATUS or command-index parity.",
+      "statement": "PR #178 merged the pinned reopen-routing compatibility contract and schema; fixtures, deterministic validator diagnostics, CI wiring, documentation, command-index, and STATUS parity remain incomplete.",
+      "measurement": "Measured by merged PR #178 plus the absence of completed WP-RESP-015/PR-B and WP-RESP-015/PR-C outcomes.",
       "measurable": true
     },
     "measurable_target_state": {
@@ -24,10 +24,10 @@
     },
     "expected_project_delta": "Runtime mismatch escalation becomes fail-closed across the local routing boundary, preventing lineage or authority drift while all evidence, pilot, readiness, release, export, accessibility, pixel, and responsive-correctness claims remain false.",
     "selectable": true,
-    "ready_state": "ready",
+    "ready_state": "active",
     "priority": 88,
     "reporting": {
-      "estimated_completion_percentage": 0,
+      "estimated_completion_percentage": 35,
       "estimated_percentage_is_reporting_only": true
     },
     "allowed_work": [
