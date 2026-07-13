@@ -1,0 +1,171 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ev4.local/contracts/compatibility/runtime-mismatch-prompt-5-routing-compatibility.v1.schema.json",
+  "title": "EV4 Runtime Mismatch to Prompt 5 Routing Compatibility v1",
+  "x-ev4-contract-id": "runtime-mismatch-prompt-5-routing-compatibility.v1",
+  "x-ev4-contract-version": "1.0.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "compatibility_id",
+    "dependencies",
+    "shared_lineage",
+    "routing_compatibility",
+    "authority_boundary",
+    "boundary_claims"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "runtime-mismatch-prompt-5-routing-compatibility.v1"
+    },
+    "compatibility_id": {
+      "type": "string",
+      "pattern": "^RMR-P5C-[A-Z0-9][A-Z0-9._-]{2,63}$"
+    },
+    "dependencies": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "runtime_mismatch_reopen",
+        "prompt_5_routing"
+      ],
+      "properties": {
+        "runtime_mismatch_reopen": {
+          "$ref": "#/$defs/dependencyPinRuntimeMismatch"
+        },
+        "prompt_5_routing": {
+          "$ref": "#/$defs/dependencyPinPrompt5"
+        }
+      }
+    },
+    "shared_lineage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "decision_id",
+        "decision_schema",
+        "repository",
+        "commit_sha",
+        "artifact_sha256",
+        "producer_export_id",
+        "producer_export_schema",
+        "producer_export_sha256"
+      ],
+      "properties": {
+        "decision_id": {"type": "string", "minLength": 1},
+        "decision_schema": {"type": "string", "minLength": 1},
+        "repository": {"type": "string", "pattern": "^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$"},
+        "commit_sha": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+        "artifact_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "producer_export_id": {"type": "string", "minLength": 1},
+        "producer_export_schema": {"const": "producer-gate-export.v1"},
+        "producer_export_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+      }
+    },
+    "routing_compatibility": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "reopen_requested_action",
+        "prompt_5_target",
+        "prompt_5_decision",
+        "transport_eligible",
+        "diagnostic_codes"
+      ],
+      "properties": {
+        "reopen_requested_action": {
+          "const": "reopen_for_authoritative_review"
+        },
+        "prompt_5_target": {
+          "const": "ev4-project-gate"
+        },
+        "prompt_5_decision": {
+          "const": "route"
+        },
+        "transport_eligible": {
+          "const": true
+        },
+        "diagnostic_codes": {
+          "type": "array",
+          "maxItems": 0
+        }
+      }
+    },
+    "authority_boundary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kernel_decision_owner",
+        "routing_decision_owner",
+        "transport_execution_owner",
+        "responsive_may_observe",
+        "responsive_may_replace_decision",
+        "responsive_executes_transport",
+        "authoritative_redecision_required"
+      ],
+      "properties": {
+        "kernel_decision_owner": {"const": "ev4-decision-kernel"},
+        "routing_decision_owner": {"const": "responsive"},
+        "transport_execution_owner": {"const": "ev4-project-gate"},
+        "responsive_may_observe": {"const": true},
+        "responsive_may_replace_decision": {"const": false},
+        "responsive_executes_transport": {"const": false},
+        "authoritative_redecision_required": {"const": true}
+      }
+    },
+    "boundary_claims": {
+      "$ref": "#/$defs/boundaryClaims"
+    }
+  },
+  "$defs": {
+    "dependencyPinRuntimeMismatch": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["contract_id", "schema_version", "schema_sha256"],
+      "properties": {
+        "contract_id": {"const": "runtime-mismatch-reopen-package.v1"},
+        "schema_version": {"const": "runtime-mismatch-reopen-package.v1"},
+        "schema_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+      }
+    },
+    "dependencyPinPrompt5": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["contract_id", "schema_version", "schema_sha256"],
+      "properties": {
+        "contract_id": {"const": "prompt-5-routing-envelope.v1"},
+        "schema_version": {"const": "prompt-5-routing-envelope.v1"},
+        "schema_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+      }
+    },
+    "boundaryClaims": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "submitted_evidence_created",
+        "issue_8_mutated",
+        "pilot_authorized",
+        "production_ready",
+        "release_ready",
+        "live_render_validated",
+        "export_json_validated",
+        "accessibility_passed",
+        "pixel_perfect",
+        "responsive_correctness_validated"
+      ],
+      "properties": {
+        "submitted_evidence_created": {"const": false},
+        "issue_8_mutated": {"const": false},
+        "pilot_authorized": {"const": false},
+        "production_ready": {"const": false},
+        "release_ready": {"const": false},
+        "live_render_validated": {"const": false},
+        "export_json_validated": {"const": false},
+        "accessibility_passed": {"const": false},
+        "pixel_perfect": {"const": false},
+        "responsive_correctness_validated": {"const": false}
+      }
+    }
+  }
+}
