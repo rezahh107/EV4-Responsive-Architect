@@ -1,0 +1,64 @@
+name: Apply WP-RESP-005 PR-B after WP-RESP-013 PR-A
+
+on:
+  push:
+    branches:
+      - automation/wp-resp-005-pr-b-replenish-after-wp013-a
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: wp-resp-005-pr-b-after-wp013-a
+  cancel-in-progress: false
+
+jobs:
+  apply:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout exact branch head
+        uses: actions/checkout@v4
+        with:
+          ref: automation/wp-resp-005-pr-b-replenish-after-wp013-a
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install validation dependencies
+        run: python -m pip install --disable-pip-version-check jsonschema
+
+      - name: Apply deterministic catalog migration
+        run: python scripts/apply_wp_resp_005_pr_b_replenishment_after_wp013_a.py
+
+      - name: Validate affected automation contracts
+        run: |
+          python validation/e2e/run_automation_work_package_catalog_check.py
+          python validation/e2e/run_automation_work_package_catalog_reassembly_check.py --self-test
+          python validation/e2e/run_automation_replenishment_policy_transition_check.py
+          python validation/e2e/run_automation_control_state_check.py
+          python validation/e2e/run_rolling_queue_check.py
+          python validation/e2e/run_run_ledger_check.py
+          python validation/e2e/run_task_quality_gate_check.py
+
+      - name: Remove one-shot tooling
+        run: |
+          rm scripts/apply_wp_resp_005_pr_b_replenishment_after_wp013_a.py
+          rm .github/workflows/apply-wp-resp-005-pr-b-after-wp013-a.yml
+
+      - name: Commit material result
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add planning/EV4_AUTOMATION_WORK_PACKAGE_CATALOG.json \
+                  planning/EV4_AUTOMATION_WORK_PACKAGE_CATALOG_INDEX.json \
+                  planning/work-packages \
+                  scripts/apply_wp_resp_005_pr_b_replenishment_after_wp013_a.py \
+                  .github/workflows/apply-wp-resp-005-pr-b-after-wp013-a.yml
+          git diff --cached --check
+          git commit -m "planning: mark WP-RESP-013 active and replenish catalog"
+          git push origin HEAD:automation/wp-resp-005-pr-b-replenish-after-wp013-a
