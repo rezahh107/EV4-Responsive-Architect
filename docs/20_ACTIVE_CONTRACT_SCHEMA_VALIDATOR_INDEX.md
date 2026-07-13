@@ -59,6 +59,9 @@ contracts:
   responsive_handoff_export_boundary_manifest:
     path: contracts/RESPONSIVE_HANDOFF_EXPORT_BOUNDARY_MANIFEST.md
     role: repository-level export eligibility, lineage, artifact-class, and boundary-assertion contract
+  project_gate_prompt_5_routing_boundary:
+    path: contracts/project-gate/PROMPT_5_ROUTING_BOUNDARY.md
+    role: non-executing local route/reject and Project Gate authority boundary
 ```
 
 ## Schemas
@@ -77,6 +80,9 @@ schemas:
   automation_work_package_catalog:
     path: schemas/ev4-automation-work-package-catalog.schema.json
     role: catalog-backed Work Package selection schema
+  project_gate_prompt_5_routing_envelope:
+    path: contracts/project-gate/prompt-5-routing-envelope.v1.schema.json
+    role: fail-closed Prompt 5 route/reject envelope and boundary-claim schema
   rolling_queue:
     path: schemas/ev4-responsive-rolling-queue.schema.json
     role: archived RTAQ queue schema
@@ -149,6 +155,9 @@ primary_validate_workflow:
     builder_responsive_input_boundary:
       path: validation/e2e/run_builder_responsive_input_boundary_check.py
       role: Builder -> Responsive input boundary checks
+    project_gate_prompt_5_routing_envelope:
+      path: validation/e2e/run_prompt_5_routing_envelope_check.py
+      role: Prompt 5 schema, semantic coupling, authority, diagnostics, and all-false boundary checks
     responsive_contract_drift_sentinel:
       path: validation/e2e/run_responsive_contract_drift_sentinel_check.py
       role: CI-visible parity guard for owned responsive contract, STATUS, command-index, active-index, and workflow surfaces
@@ -239,4 +248,7 @@ controlled_use_docs:
   responsive_contract_drift_sentinel:
     path: docs/47_RESPONSIVE_CONTRACT_DRIFT_SENTINEL.md
     role: WP-RESP-006 sentinel behavior, fixtures, CI path, and non-domain-evidence boundary
+  prompt_5_project_gate_routing_boundary:
+    path: docs/48_PROMPT_5_PROJECT_GATE_ROUTING_BOUNDARY.md
+    role: WP-RESP-013 local routing capability, external transport limitation, and evidence/readiness boundary
 ```
