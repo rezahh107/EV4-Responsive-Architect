@@ -1,0 +1,88 @@
+name: Apply PR 179 WP-RESP-012 parity repair
+
+on:
+  push:
+    branches:
+      - automation/wp-resp-005-pr-b-replenish-after-wp015-a
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: pr-179-wp-resp-012-parity-repair
+  cancel-in-progress: false
+
+jobs:
+  materialize:
+    if: github.head_ref == 'automation/wp-resp-005-pr-b-replenish-after-wp015-a' || github.ref == 'refs/heads/automation/wp-resp-005-pr-b-replenish-after-wp015-a'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout exact branch head
+        uses: actions/checkout@v4
+        with:
+          ref: automation/wp-resp-005-pr-b-replenish-after-wp015-a
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install validation dependencies
+        run: python -m pip install --disable-pip-version-check -r requirements.txt
+
+      - name: Materialize WP-RESP-012 documentation and STATUS parity
+        run: python scripts/apply_pr179_wp_resp_012_parity_repair.py
+
+      - name: Verify bounded material diff
+        shell: bash
+        run: |
+          set -euo pipefail
+          mapfile -t changed < <(git status --short | sed -E 's/^.. //' | sort)
+          expected=(
+            "STATUS.md"
+            "docs/17_VALIDATION_COMMAND_INDEX.md"
+            "docs/20_ACTIVE_CONTRACT_SCHEMA_VALIDATOR_INDEX.md"
+          )
+          mapfile -t expected_sorted < <(printf '%s\n' "${expected[@]}" | sort)
+          if [[ "$(printf '%s\n' "${changed[@]}")" != "$(printf '%s\n' "${expected_sorted[@]}")" ]]; then
+            printf 'Unexpected material diff.\nObserved:\n%s\nExpected:\n%s\n' \
+              "$(printf '%s\n' "${changed[@]}")" \
+              "$(printf '%s\n' "${expected_sorted[@]}")"
+            exit 1
+          fi
+          git diff --check
+
+      - name: Run targeted parity and governance validators
+        run: |
+          python validation/e2e/run_runtime_mismatch_reopen_package_check.py
+          python validation/e2e/run_responsive_contract_drift_sentinel_check.py
+          python validation/e2e/run_status_merged_foundation_guard_check.py
+          python validation/e2e/run_automation_work_package_catalog_check.py
+          python validation/e2e/run_automation_work_package_catalog_reassembly_check.py --self-test
+          python validation/e2e/run_automation_replenishment_policy_transition_check.py
+          python validation/e2e/run_automation_control_state_check.py
+          python validation/e2e/run_rolling_queue_check.py
+          python validation/e2e/run_run_ledger_check.py
+          python validation/e2e/run_task_quality_gate_check.py
+
+      - name: Replace temporary tooling with material result
+        shell: bash
+        run: |
+          set -euo pipefail
+          git rm scripts/apply_pr179_wp_resp_012_parity_repair.py
+          git rm .github/workflows/apply-pr179-wp-resp-012-parity-repair.yml
+          git add \
+            STATUS.md \
+            docs/17_VALIDATION_COMMAND_INDEX.md \
+            docs/20_ACTIVE_CONTRACT_SCHEMA_VALIDATOR_INDEX.md
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "docs(WP-RESP-012): complete STATUS and validation parity"
+          git push origin HEAD:automation/wp-resp-005-pr-b-replenish-after-wp015-a
