@@ -1,39 +1,39 @@
 {
   "schema": "ev4-automation-work-package-file@1.0.0",
-  "id": "WP-RESP-013",
+  "id": "WP-RESP-014",
   "work_package": {
-    "id": "WP-RESP-013",
-    "title": "Implement Project Gate Prompt 5 Routing Boundary",
-    "capability_area": "project_gate_prompt_5_routing",
-    "current_state": "PR #169 merged the authority-preserving Prompt 5 routing contract and schema; fixture, validator, CI, documentation, and STATUS slices remain incomplete.",
-    "target_state": "A deterministic Prompt 5 routing boundary validates Project Gate transport inputs, routing decisions, lineage, and rejection states without letting Responsive execute Project Gate authority or claim responsive correctness.",
+    "id": "WP-RESP-014",
+    "title": "Enforce Prompt 5 Cross-Contract Compatibility and Drift Detection",
+    "capability_area": "prompt_5_cross_contract_compatibility",
+    "current_state": "The local Prompt 5 routing envelope now has a contract and schema, but no deterministic compatibility guard pins its relationship to producer-gate-export.v1 and the vendored Project Gate common contract surfaces.",
+    "target_state": "A schema-backed compatibility manifest and fail-closed validator detect identifier, version, hash, lineage, and authority drift across the Prompt 5 routing envelope and its Project Gate contract dependencies.",
     "measurable_current_state": {
-      "statement": "PR #169 merged the authority-preserving Prompt 5 routing contract and schema; fixture, validator, CI, documentation, and STATUS slices remain incomplete.",
-      "measurement": "Measured by merged PR #169 plus the absence of completed WP-RESP-013/PR-B and WP-RESP-013/PR-C outcomes.",
+      "statement": "The local Prompt 5 routing envelope now has a contract and schema, but no deterministic compatibility guard pins its relationship to producer-gate-export.v1 and the vendored Project Gate common contract surfaces.",
+      "measurement": "Measured by the absence of a Prompt 5 compatibility manifest, pinned dependency identities, drift fixtures, and a dedicated compatibility validator in the primary validation chain.",
       "measurable": true
     },
     "measurable_target_state": {
-      "statement": "A deterministic Prompt 5 routing boundary validates Project Gate transport inputs, routing decisions, lineage, and rejection states without letting Responsive execute Project Gate authority or claim responsive correctness.",
-      "measurement": "Accepted only when contract/schema, positive and negative fixtures, deterministic diagnostics, docs/STATUS parity, and exact-head CI pass without upgrading evidence or readiness claims.",
+      "statement": "A schema-backed compatibility manifest and fail-closed validator detect identifier, version, hash, lineage, and authority drift across the Prompt 5 routing envelope and its Project Gate contract dependencies.",
+      "measurement": "Accepted only when valid and negative fixtures cover pinned identities, dependency hash drift, schema-version mismatch, lineage incompatibility, authority substitution, and forbidden boundary upgrades under exact-head CI.",
       "measurable": true
     },
     "target_capability": {
-      "statement": "Responsive can validate and package the Prompt 5 Project Gate routing boundary while remaining non-executing and authority-preserving.",
-      "measurement": "Schema-backed route envelopes and fail-closed validators cover accepted transport, missing lineage, unsupported route, authority substitution, and forbidden readiness-upgrade states.",
+      "statement": "Responsive can prove repository-local compatibility between its Prompt 5 route envelope and pinned Project Gate contract dependencies without executing transport or claiming domain correctness.",
+      "measurement": "A canonical compatibility manifest, deterministic diagnostics, negative fixtures, command-index entry, CI wiring, and STATUS parity remain mutually consistent.",
       "measurable": true
     },
-    "expected_project_delta": "The documented Prompt 5 routing gap becomes a bounded contract, fixture, validator, CI, and documentation objective while Project Gate remains the transport authority and all evidence/readiness claims remain false.",
+    "expected_project_delta": "Prompt 5 contract evolution becomes fail-closed against cross-contract drift while external Project Gate transport authority and all evidence/readiness boundaries remain unchanged.",
     "selectable": true,
-    "ready_state": "active",
-    "priority": 100,
+    "ready_state": "ready",
+    "priority": 85,
     "reporting": {
-      "estimated_completion_percentage": 35,
+      "estimated_completion_percentage": 0,
       "estimated_percentage_is_reporting_only": true
     },
     "allowed_work": [
-      "Define the local Prompt 5 routing envelope and Project Gate authority boundary.",
-      "Add positive and negative fixtures for lineage, route selection, transport eligibility, and rejection diagnostics.",
-      "Wire deterministic validators into CI and align directly affected documentation and STATUS records."
+      "Define a canonical Prompt 5 compatibility manifest that pins relevant local and vendored contract identities and hashes.",
+      "Add valid and negative fixtures for schema-version, hash, lineage, route-target, and authority-boundary drift.",
+      "Add a deterministic fail-closed compatibility validator and wire it into CI, command-index, documentation, and STATUS surfaces where directly affected."
     ],
     "forbidden_work": [
       "Do not create submitted evidence unless explicitly authorized by the repository owner and current Issue #8 submitted-mode contracts.",
@@ -43,9 +43,9 @@
       "Do not treat CI success, merged PRs, catalog completion, Work Package completion, or queue completion as domain evidence."
     ],
     "must_deliver": [
-      "Prompt 5 routing boundary contract and schema or schema reference.",
-      "Deterministic validator with valid fixtures and negative coverage for missing lineage, unsupported routes, authority substitution, and boundary upgrades.",
-      "CI, documentation, command-index, and STATUS parity where directly affected."
+      "Prompt 5 cross-contract compatibility manifest or equivalent schema-backed contract.",
+      "Deterministic validator with negative coverage for dependency hash drift, schema/version mismatch, lineage incompatibility, authority substitution, and boundary upgrades.",
+      "Primary validation-chain, command-index, documentation, and STATUS parity for the compatibility guard."
     ],
     "must_preserve": [
       "Rolling queue remains a historical reconciled archive, not the execution driver.",
@@ -110,30 +110,30 @@
     },
     "allowed_pr_slices": [
       {
-        "slice_id": "WP-RESP-013/PR-A",
-        "title": "Prompt 5 routing contract and schema",
+        "slice_id": "WP-RESP-014/PR-A",
+        "title": "compatibility manifest and schema",
         "layer": "contract_schema",
-        "objective": "Define the authority-preserving route envelope, inputs, outputs, and rejection semantics.",
+        "objective": "Define pinned Prompt 5 dependency identities, compatibility semantics, and fail-closed authority boundaries.",
         "review_boundary": "Reviewable PR slice under the same Work Package ID; no unrelated micro-objective may be introduced."
       },
       {
-        "slice_id": "WP-RESP-013/PR-B",
-        "title": "routing fixtures, validator, and CI",
+        "slice_id": "WP-RESP-014/PR-B",
+        "title": "compatibility fixtures, validator, and CI",
         "layer": "fixture_validator_ci",
-        "objective": "Add deterministic accepted/rejected route coverage and primary validation-chain wiring.",
+        "objective": "Add deterministic positive and negative drift coverage plus primary validation-chain wiring.",
         "review_boundary": "Reviewable PR slice under the same Work Package ID; no unrelated micro-objective may be introduced."
       },
       {
-        "slice_id": "WP-RESP-013/PR-C",
-        "title": "routing documentation and STATUS parity",
+        "slice_id": "WP-RESP-014/PR-C",
+        "title": "compatibility documentation and STATUS parity",
         "layer": "docs_status",
-        "objective": "Record the implemented local routing boundary and remaining external transport and evidence limitations.",
+        "objective": "Record compatibility guarantees and remaining external transport and evidence limitations.",
         "review_boundary": "Reviewable PR slice under the same Work Package ID; no unrelated micro-objective may be introduced."
       }
     ],
     "blocked_if": [
-      "The slice would implement or mutate Project Gate runtime behavior in an external repository.",
-      "Responsive would be allowed to authorize transport, replace Project Gate decisions, or execute the real pilot.",
+      "Required dependency identity or canonical vendored contract hash cannot be determined from repository truth.",
+      "The slice would mutate an external Project Gate repository, execute transport, or substitute Responsive for Project Gate authority.",
       "Repository checks would be promoted to production, release, live-render, export, accessibility, pixel, or responsive-correctness evidence."
     ],
     "completion_record_requirements": [
