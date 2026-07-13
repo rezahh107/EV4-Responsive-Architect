@@ -68,6 +68,7 @@ active_contracts:
   - contracts/RESPONSIVE_HANDOFF_EXPORT_BOUNDARY_MANIFEST.md
   - contracts/runtime/RUNTIME_MISMATCH_REOPEN_BOUNDARY.md
   - contracts/project-gate/PROMPT_5_ROUTING_BOUNDARY.md
+  - contracts/compatibility/RUNTIME_MISMATCH_PROMPT_5_ROUTING_COMPATIBILITY.md
 active_schema:
   - schemas/ev4-responsive-output.schema.json
   - schemas/ev4-builder-responsive-input.schema.json
@@ -75,6 +76,7 @@ active_schema:
   - schemas/ev4-automation-work-package-catalog.schema.json
   - contracts/runtime/runtime-mismatch-reopen-package.v1.schema.json
   - contracts/project-gate/prompt-5-routing-envelope.v1.schema.json
+  - contracts/compatibility/runtime-mismatch-prompt-5-routing-compatibility.v1.schema.json
 active_validation:
   - validation/e2e/run_responsive_tree_architecture_refactor_check.py
   - validation/e2e/run_submitted_packet_eligibility_gate_check.py
@@ -90,6 +92,7 @@ active_validation:
   - validation/e2e/run_builder_responsive_input_boundary_check.py
   - validation/e2e/run_prompt_5_routing_envelope_check.py
   - validation/e2e/run_runtime_mismatch_reopen_package_check.py
+  - validation/e2e/run_runtime_mismatch_prompt_5_compatibility_check.py
   - validation/e2e/run_responsive_contract_drift_sentinel_check.py
   - validation/e2e/run_viewport_inheritance_reset_matrix_check.py
   - validation/e2e/run_responsive_handoff_export_boundary_manifest_check.py
@@ -134,6 +137,7 @@ controlled_use_docs:
   - docs/45_SHADOW_MODE_PREPARATION_PATH_RTAQ_0040.md
   - docs/47_RESPONSIVE_CONTRACT_DRIFT_SENTINEL.md
   - docs/48_PROMPT_5_PROJECT_GATE_ROUTING_BOUNDARY.md
+  - docs/49_RUNTIME_MISMATCH_PROMPT_5_ROUTING_COMPATIBILITY.md
   - docs/AUTOMATION_WORK_PACKAGE_CATALOG.md
 ```
 
@@ -253,6 +257,11 @@ prompt_04_responsive_producer_adoption:
   prompt_5_routing_schema: contracts/project-gate/prompt-5-routing-envelope.v1.schema.json
   prompt_5_routing_validator: validation/e2e/run_prompt_5_routing_envelope_check.py
   prompt_5_routing_fixtures: validation/fixtures/prompt05
+  runtime_mismatch_prompt_5_compatibility: implemented_repository_local_fail_closed
+  runtime_mismatch_prompt_5_compatibility_contract: contracts/compatibility/RUNTIME_MISMATCH_PROMPT_5_ROUTING_COMPATIBILITY.md
+  runtime_mismatch_prompt_5_compatibility_schema: contracts/compatibility/runtime-mismatch-prompt-5-routing-compatibility.v1.schema.json
+  runtime_mismatch_prompt_5_compatibility_validator: validation/e2e/run_runtime_mismatch_prompt_5_compatibility_check.py
+  runtime_mismatch_prompt_5_compatibility_ci_path: invoked_by_runtime_mismatch_reopen_package_validator
   project_gate_transport_execution_owner: EV4 Project Gate
   external_project_gate_transport_implemented_here: false
   submitted_evidence_created: false
