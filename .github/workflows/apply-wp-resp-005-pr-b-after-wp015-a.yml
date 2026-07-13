@@ -46,6 +46,7 @@ jobs:
             "planning/EV4_AUTOMATION_WORK_PACKAGE_CATALOG.json"
             "planning/EV4_AUTOMATION_WORK_PACKAGE_CATALOG_INDEX.json"
             "planning/work-packages/WP-RESP-012.json"
+            "planning/work-packages/WP-RESP-013.json"
             "planning/work-packages/WP-RESP-015.json"
             "planning/work-packages/WP-RESP-016.json"
           )
@@ -77,9 +78,10 @@ jobs:
             planning/EV4_AUTOMATION_WORK_PACKAGE_CATALOG.json \
             planning/EV4_AUTOMATION_WORK_PACKAGE_CATALOG_INDEX.json \
             planning/work-packages/WP-RESP-012.json \
+            planning/work-packages/WP-RESP-013.json \
             planning/work-packages/WP-RESP-015.json \
             planning/work-packages/WP-RESP-016.json
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git commit -m "planning(WP-RESP-005): reconcile WP-RESP-015 and replenish ready horizon"
+          git commit -m "planning(WP-RESP-005): reconcile stale packages and replenish ready horizon"
           git push origin HEAD:automation/wp-resp-005-pr-b-replenish-after-wp015-a
