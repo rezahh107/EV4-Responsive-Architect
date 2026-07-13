@@ -4,6 +4,10 @@ on:
   push:
     branches:
       - automation/wp-resp-005-pr-b-replenish-after-wp015-a
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches:
+      - main
   workflow_dispatch:
 
 permissions:
@@ -15,7 +19,7 @@ concurrency:
 
 jobs:
   materialize:
-    if: github.ref == 'refs/heads/automation/wp-resp-005-pr-b-replenish-after-wp015-a'
+    if: github.head_ref == 'automation/wp-resp-005-pr-b-replenish-after-wp015-a' || github.ref == 'refs/heads/automation/wp-resp-005-pr-b-replenish-after-wp015-a'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout exact branch head
