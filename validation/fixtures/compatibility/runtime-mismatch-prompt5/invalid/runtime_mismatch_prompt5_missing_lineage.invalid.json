@@ -1,0 +1,8 @@
+{
+  "schema_version": "runtime-mismatch-prompt-5-routing-compatibility.v1",
+  "compatibility_id": "RMR-P5C-INVALID-001",
+  "dependencies": {},
+  "routing_compatibility": {},
+  "authority_boundary": {},
+  "boundary_claims": {}
+}
