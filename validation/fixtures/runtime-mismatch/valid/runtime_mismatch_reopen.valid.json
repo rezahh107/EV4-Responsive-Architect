@@ -1,0 +1,53 @@
+{
+  "schema": "runtime-mismatch-reopen-package.v1",
+  "package_id": "RMR-RUNTIME-001",
+  "consumer_stage": "responsive",
+  "prior_decision_lineage": {
+    "decision_id": "decision-runtime-001",
+    "decision_schema": "decision-record.v2",
+    "repository": "rezahh107/EV4-Decision-Kernel",
+    "commit_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "artifact_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "decision_family": "responsive-runtime-boundary",
+    "decision_card_ref": "decision-card/runtime-001",
+    "selected_option": "blocked_pending_input",
+    "rejected_options": ["responsive_local_redecision"],
+    "evidence_refs": ["artifact://decision-runtime-001"],
+    "evidence_state": "reopen_required",
+    "consumer_stage": "runtime_evidence_conflict"
+  },
+  "runtime_observation": {
+    "observed_at": "2026-07-13T10:30:00Z",
+    "environment": "fixture-runtime",
+    "mismatch_code": "RMR-STATE_CONFLICT",
+    "expected_state": "blocked pending authoritative input",
+    "observed_state": "consumer attempted unsupported continuation",
+    "diagnostic_detail": "The observed runtime state conflicts with the prior authoritative decision."
+  },
+  "evidence_references": [
+    {
+      "kind": "trace",
+      "uri": "artifact://runtime-trace-001",
+      "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+    }
+  ],
+  "reopen_reason": "runtime_behavior_differs_from_prior_decision",
+  "requested_action": "reopen_for_authoritative_review",
+  "authority_boundary": {
+    "responsive_may_observe": true,
+    "responsive_may_replace_decision": false,
+    "authoritative_redecision_required": true
+  },
+  "boundary_claims": {
+    "submitted_evidence_created": false,
+    "issue_8_mutated": false,
+    "pilot_authorized": false,
+    "production_ready": false,
+    "release_ready": false,
+    "live_render_validated": false,
+    "export_json_validated": false,
+    "accessibility_passed": false,
+    "pixel_perfect": false,
+    "responsive_correctness_validated": false
+  }
+}
