@@ -1,0 +1,226 @@
+name: Apply PR 179 STATUS catalog-horizon repair
+
+on:
+  push:
+    branches:
+      - automation/wp-resp-005-pr-b-replenish-after-wp015-a
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: write
+  pull-requests: read
+
+concurrency:
+  group: pr-179-status-catalog-horizon-repair
+  cancel-in-progress: false
+
+jobs:
+  repair-and-verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout exact PR branch
+        uses: actions/checkout@v4
+        with:
+          ref: automation/wp-resp-005-pr-b-replenish-after-wp015-a
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Verify reviewed head and bounded staging commits
+        shell: bash
+        run: |
+          set -euo pipefail
+          reviewed="ff251c451cffc6e4ba5c65d8c5c03f3c7f8d2a84"
+          actual="$(git rev-parse HEAD)"
+          echo "reviewed_head_sha=${reviewed}"
+          echo "staging_head_sha=${actual}"
+          git merge-base --is-ancestor "${reviewed}" HEAD
+          mapfile -t staged < <(git diff --name-only "${reviewed}..HEAD" | sort)
+          expected=(
+            ".github/workflows/apply-pr179-status-horizon-repair.yml"
+            "scripts/apply_pr179_status_horizon_repair.py"
+          )
+          mapfile -t expected_sorted < <(printf '%s\n' "${expected[@]}" | sort)
+          if [[ "$(printf '%s\n' "${staged[@]}")" != "$(printf '%s\n' "${expected_sorted[@]}")" ]]; then
+            printf 'Unexpected pre-repair staging diff.\nObserved:\n%s\nExpected:\n%s\n' \
+              "$(printf '%s\n' "${staged[@]}")" \
+              "$(printf '%s\n' "${expected_sorted[@]}")"
+            exit 1
+          fi
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install validation dependencies
+        run: python -m pip install --disable-pip-version-check -r requirements.txt
+
+      - name: Materialize bounded STATUS catalog-horizon repair
+        run: python scripts/apply_pr179_status_horizon_repair.py
+
+      - name: Verify exact bounded material diff
+        shell: bash
+        run: |
+          set -euo pipefail
+          mapfile -t changed < <(git status --short | sed -E 's/^.. //' | sort)
+          expected=(
+            "STATUS.md"
+            "validation/e2e/run_status_merged_foundation_guard_check.py"
+          )
+          mapfile -t expected_sorted < <(printf '%s\n' "${expected[@]}" | sort)
+          if [[ "$(printf '%s\n' "${changed[@]}")" != "$(printf '%s\n' "${expected_sorted[@]}")" ]]; then
+            printf 'Unexpected material diff.\nObserved:\n%s\nExpected:\n%s\n' \
+              "$(printf '%s\n' "${changed[@]}")" \
+              "$(printf '%s\n' "${expected_sorted[@]}")"
+            exit 1
+          fi
+          git diff --check
+
+      - name: Run required bounded validation
+        shell: bash
+        run: |
+          set -euo pipefail
+          python validation/e2e/run_runtime_mismatch_reopen_package_check.py
+          python validation/e2e/run_responsive_contract_drift_sentinel_check.py
+          python validation/e2e/run_status_merged_foundation_guard_check.py
+          python validation/e2e/run_automation_work_package_catalog_check.py
+          python validation/e2e/run_automation_work_package_catalog_reassembly_check.py --self-test
+          python validation/e2e/run_automation_replenishment_policy_transition_check.py
+          python validation/e2e/run_automation_control_state_check.py
+          python validation/e2e/run_rolling_queue_check.py
+          python validation/e2e/run_run_ledger_check.py
+          python validation/e2e/run_task_quality_gate_check.py
+
+      - name: Commit final bounded repair
+        id: final_commit
+        shell: bash
+        run: |
+          set -euo pipefail
+          git rm scripts/apply_pr179_status_horizon_repair.py
+          git rm .github/workflows/apply-pr179-status-horizon-repair.yml
+          git add STATUS.md validation/e2e/run_status_merged_foundation_guard_check.py
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "fix(PRF-001): enforce catalog-derived STATUS horizon"
+          new_sha="$(git rev-parse HEAD)"
+          echo "new_final_head_sha=${new_sha}"
+          echo "new_sha=${new_sha}" >> "${GITHUB_OUTPUT}"
+          git push origin HEAD:automation/wp-resp-005-pr-b-replenish-after-wp015-a
+
+      - name: Dispatch and verify exact-head Validate workflow
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NEW_FINAL_HEAD_SHA: ${{ steps.final_commit.outputs.new_sha }}
+          TARGET_BRANCH: automation/wp-resp-005-pr-b-replenish-after-wp015-a
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          import os
+          import time
+          import urllib.parse
+          import urllib.request
+
+          repo = os.environ["GITHUB_REPOSITORY"]
+          token = os.environ["GH_TOKEN"]
+          sha = os.environ["NEW_FINAL_HEAD_SHA"]
+          branch = os.environ["TARGET_BRANCH"]
+          api = "https://api.github.com"
+          headers = {
+              "Authorization": f"Bearer {token}",
+              "Accept": "application/vnd.github+json",
+              "X-GitHub-Api-Version": "2022-11-28",
+              "User-Agent": "pr-179-exact-head-verifier",
+          }
+
+          def request(method: str, path: str, payload=None):
+              data = None if payload is None else json.dumps(payload).encode("utf-8")
+              req = urllib.request.Request(api + path, data=data, method=method, headers=headers)
+              with urllib.request.urlopen(req, timeout=60) as response:
+                  raw = response.read()
+                  return json.loads(raw.decode("utf-8")) if raw else None
+
+          request(
+              "POST",
+              f"/repos/{repo}/actions/workflows/validate.yml/dispatches",
+              {"ref": branch, "inputs": {"ref": branch, "expected_sha": sha}},
+          )
+          print(f"workflow_dispatch_requested_ref={branch}")
+          print(f"workflow_dispatch_expected_sha={sha}")
+
+          run = None
+          encoded_branch = urllib.parse.quote(branch, safe="")
+          for _ in range(60):
+              payload = request(
+                  "GET",
+                  f"/repos/{repo}/actions/workflows/validate.yml/runs"
+                  f"?event=workflow_dispatch&branch={encoded_branch}&per_page=20",
+              )
+              candidates = [
+                  item for item in payload.get("workflow_runs", [])
+                  if item.get("event") == "workflow_dispatch" and item.get("head_sha") == sha
+              ]
+              if candidates:
+                  run = sorted(candidates, key=lambda item: item["id"], reverse=True)[0]
+                  break
+              time.sleep(5)
+          if run is None:
+              raise SystemExit("exact-head Validate workflow_dispatch run not found")
+
+          run_id = run["id"]
+          print(f"exact_head_validate_run_id={run_id}")
+          print(f"exact_head_validate_event={run.get('event')}")
+          print(f"exact_head_validate_head_sha={run.get('head_sha')}")
+          print(f"exact_head_validate_head_branch={run.get('head_branch')}")
+
+          for _ in range(120):
+              run = request("GET", f"/repos/{repo}/actions/runs/{run_id}")
+              if run.get("status") == "completed":
+                  break
+              time.sleep(5)
+          if run.get("status") != "completed":
+              raise SystemExit("exact-head Validate workflow did not complete")
+          print(f"exact_head_validate_conclusion={run.get('conclusion')}")
+          if run.get("conclusion") != "success":
+              raise SystemExit("exact-head Validate workflow failed")
+
+          jobs_payload = request("GET", f"/repos/{repo}/actions/runs/{run_id}/jobs?filter=latest&per_page=100")
+          jobs = jobs_payload.get("jobs", [])
+          validation_jobs = [job for job in jobs if job.get("name", "").startswith("validate (")]
+          if len(validation_jobs) != 2:
+              raise SystemExit(f"expected two Python validation jobs, observed {len(validation_jobs)}")
+
+          for job in sorted(validation_jobs, key=lambda item: item["name"]):
+              print(f"exact_head_validate_job_id={job['id']}")
+              print(f"exact_head_validate_job_name={job['name']}")
+              print(f"exact_head_validate_job_conclusion={job.get('conclusion')}")
+              print(f"exact_head_validate_job_head_sha={job.get('head_sha')}")
+              if job.get("conclusion") != "success":
+                  raise SystemExit(f"validation job failed: {job['name']}")
+              sha_step = [step for step in job.get("steps", []) if step.get("name") == "Verify workflow-dispatch SHA"]
+              if len(sha_step) != 1 or sha_step[0].get("conclusion") != "success":
+                  raise SystemExit(f"SHA verification step did not pass: {job['name']}")
+              print(f"exact_head_sha_step_conclusion={sha_step[0].get('conclusion')}")
+
+              req = urllib.request.Request(
+                  f"{api}/repos/{repo}/actions/jobs/{job['id']}/logs",
+                  method="GET",
+                  headers=headers,
+              )
+              with urllib.request.urlopen(req, timeout=60) as response:
+                  log_text = response.read().decode("utf-8", errors="replace")
+              required_lines = {
+                  f"requested_ref={branch}",
+                  f"expected_sha={sha}",
+                  f"actual_sha={sha}",
+              }
+              missing = [line for line in required_lines if line not in log_text]
+              if missing:
+                  raise SystemExit(f"job log missing exact-head proof for {job['name']}: {missing}")
+              print(f"exact_head_log_proof={job['name']}:requested_ref,expected_sha,actual_sha:PASS")
+
+          print("exact_head_validate_evidence=PASS")
+          PY
