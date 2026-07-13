@@ -1,0 +1,198 @@
+name: Apply PR 179 PRF-005 repair
+
+on:
+  push:
+    branches:
+      - automation/wp-resp-005-pr-b-replenish-after-wp015-a
+
+permissions:
+  actions: write
+  contents: write
+
+jobs:
+  repair-verify:
+    if: ${{ github.actor != 'github-actions[bot]' }}
+    runs-on: ubuntu-latest
+    env:
+      TARGET_BRANCH: automation/wp-resp-005-pr-b-replenish-after-wp015-a
+      REVIEWED_HEAD: 7e9bca1d4903efc3a908fa1fe6798f8987ea812c
+    steps:
+      - name: Checkout exact PR branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.TARGET_BRANCH }}
+          fetch-depth: 0
+
+      - name: Verify temporary tooling scope
+        shell: bash
+        run: |
+          set -euo pipefail
+          mapfile -t changed < <(git diff --name-only "$REVIEWED_HEAD"..HEAD | sort)
+          printf '%s\n' "${changed[@]}"
+          expected=(
+            ".github/workflows/apply-pr179-prf005-repair.yml"
+            "scripts/apply_pr179_prf005_repair.py"
+          )
+          test "${changed[*]}" = "${expected[*]}"
+
+      - name: Materialize PRF-005 repair
+        run: python scripts/apply_pr179_prf005_repair.py
+
+      - name: Verify bounded material diff
+        shell: bash
+        run: |
+          set -euo pipefail
+          mapfile -t changed < <(git diff --name-only | sort)
+          printf '%s\n' "${changed[@]}"
+          expected=(
+            "STATUS.md"
+            "validation/e2e/run_status_merged_foundation_guard_check.py"
+          )
+          test "${changed[*]}" = "${expected[*]}"
+
+      - name: Run required targeted validation
+        shell: bash
+        run: |
+          set -euo pipefail
+          python validation/e2e/run_status_merged_foundation_guard_check.py
+          python validation/e2e/run_responsive_contract_drift_sentinel_check.py
+          python validation/e2e/run_automation_work_package_catalog_check.py
+          python validation/e2e/run_automation_work_package_catalog_reassembly_check.py --self-test
+          python validation/e2e/run_automation_replenishment_policy_transition_check.py
+          python validation/e2e/run_automation_control_state_check.py
+          python validation/e2e/run_rolling_queue_check.py
+          python validation/e2e/run_run_ledger_check.py
+          python validation/e2e/run_task_quality_gate_check.py
+
+      - name: Create clean final repair head
+        id: final
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add STATUS.md validation/e2e/run_status_merged_foundation_guard_check.py
+          git rm .github/workflows/apply-pr179-prf005-repair.yml scripts/apply_pr179_prf005_repair.py
+          git commit -m "fix: reject pre-snapshot catalog state drift"
+          git push origin "HEAD:$TARGET_BRANCH"
+          final_sha="$(git rev-parse HEAD)"
+          echo "sha=$final_sha" >> "$GITHUB_OUTPUT"
+          echo "NEW_FINAL_HEAD_SHA=$final_sha"
+
+      - name: Dispatch exact-head Validate and vendored-contract workflows
+        id: dispatch
+        env:
+          GH_TOKEN: ${{ github.token }}
+          FINAL_SHA: ${{ steps.final.outputs.sha }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          started="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          gh api --method POST \
+            "repos/${GITHUB_REPOSITORY}/actions/workflows/validate.yml/dispatches" \
+            -f ref="$TARGET_BRANCH" \
+            -f "inputs[ref]=$TARGET_BRANCH" \
+            -f "inputs[expected_sha]=$FINAL_SHA"
+          gh api --method POST \
+            "repos/${GITHUB_REPOSITORY}/actions/workflows/verify-vendored-common-contract.yml/dispatches" \
+            -f ref="$TARGET_BRANCH"
+
+          find_run() {
+            local workflow="$1"
+            for _ in $(seq 1 60); do
+              run_id="$(gh api "repos/${GITHUB_REPOSITORY}/actions/workflows/${workflow}/runs?event=workflow_dispatch&branch=${TARGET_BRANCH}&per_page=20" \
+                --jq ".workflow_runs[] | select(.head_sha == \"${FINAL_SHA}\" and .created_at >= \"${started}\") | .id" | head -n1)"
+              if [ -n "$run_id" ]; then
+                echo "$run_id"
+                return 0
+              fi
+              sleep 5
+            done
+            return 1
+          }
+
+          validate_run="$(find_run validate.yml)"
+          vendored_run="$(find_run verify-vendored-common-contract.yml)"
+          echo "validate_run=$validate_run" >> "$GITHUB_OUTPUT"
+          echo "vendored_run=$vendored_run" >> "$GITHUB_OUTPUT"
+          echo "VALIDATE_RUN_ID=$validate_run"
+          echo "VENDORED_RUN_ID=$vendored_run"
+
+      - name: Verify exact-head workflow results
+        env:
+          GH_TOKEN: ${{ github.token }}
+          FINAL_SHA: ${{ steps.final.outputs.sha }}
+          VALIDATE_RUN: ${{ steps.dispatch.outputs.validate_run }}
+          VENDORED_RUN: ${{ steps.dispatch.outputs.vendored_run }}
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          wait_run() {
+            local run_id="$1"
+            for _ in $(seq 1 120); do
+              status="$(gh api "repos/${GITHUB_REPOSITORY}/actions/runs/${run_id}" --jq .status)"
+              if [ "$status" = "completed" ]; then
+                gh api "repos/${GITHUB_REPOSITORY}/actions/runs/${run_id}" > "${run_id}.json"
+                gh api "repos/${GITHUB_REPOSITORY}/actions/runs/${run_id}/jobs?per_page=100" > "${run_id}-jobs.json"
+                return 0
+              fi
+              sleep 5
+            done
+            return 1
+          }
+
+          wait_run "$VALIDATE_RUN"
+          wait_run "$VENDORED_RUN"
+
+          test "$(jq -r .head_sha "${VALIDATE_RUN}.json")" = "$FINAL_SHA"
+          test "$(jq -r .event "${VALIDATE_RUN}.json")" = "workflow_dispatch"
+          test "$(jq -r .conclusion "${VALIDATE_RUN}.json")" = "success"
+
+          mapfile -t validate_jobs < <(jq -r '.jobs[] | select(.name == "validate (3.11)" or .name == "validate (3.13)") | [.id, .name, .conclusion] | @tsv' "${VALIDATE_RUN}-jobs.json")
+          test "${#validate_jobs[@]}" -eq 2
+          printf '%s\n' "${validate_jobs[@]}"
+          for row in "${validate_jobs[@]}"; do
+            job_id="$(cut -f1 <<<"$row")"
+            conclusion="$(cut -f3 <<<"$row")"
+            test "$conclusion" = "success"
+            gh api "repos/${GITHUB_REPOSITORY}/actions/jobs/${job_id}/logs" > "${job_id}.log"
+            grep -F "requested_ref=$TARGET_BRANCH" "${job_id}.log"
+            grep -F "expected_sha=$FINAL_SHA" "${job_id}.log"
+            grep -F "actual_sha=$FINAL_SHA" "${job_id}.log"
+          done
+
+          jq -n \
+            --arg final_sha "$FINAL_SHA" \
+            --arg branch "$TARGET_BRANCH" \
+            --argjson validate_run "$(cat "${VALIDATE_RUN}.json")" \
+            --argjson validate_jobs "$(cat "${VALIDATE_RUN}-jobs.json")" \
+            --argjson vendored_run "$(cat "${VENDORED_RUN}.json")" \
+            --argjson vendored_jobs "$(cat "${VENDORED_RUN}-jobs.json")" \
+            '{
+              final_sha: $final_sha,
+              tested_ref: $branch,
+              ref_type: "branch",
+              synthetic_merge: false,
+              validate: {
+                run_id: $validate_run.id,
+                head_sha: $validate_run.head_sha,
+                event: $validate_run.event,
+                conclusion: $validate_run.conclusion,
+                jobs: [$validate_jobs.jobs[] | {id, name, conclusion}]
+              },
+              vendored_contract: {
+                run_id: $vendored_run.id,
+                head_sha: $vendored_run.head_sha,
+                event: $vendored_run.event,
+                conclusion: $vendored_run.conclusion,
+                jobs: [$vendored_jobs.jobs[] | {id, name, conclusion}]
+              }
+            }' > pr179-prf005-evidence.json
+
+      - name: Upload evidence artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: pr179-prf005-evidence
+          path: pr179-prf005-evidence.json
+          if-no-files-found: error
