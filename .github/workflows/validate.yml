@@ -266,28 +266,26 @@ jobs:
             -f description="${description}" \
             -f target_url="${run_url}"
 
-          body=$(cat <<EOF
-<!-- PR179_REPAIR_EVIDENCE_V3 -->
-## PR #179 exact-head repair evidence
-
-- reviewed head: \`ff251c451cffc6e4ba5c65d8c5c03f3c7f8d2a84\`
-- resulting final head: \`${FINAL_SHA}\`
-- Validate run ID: \`${RUN_ID}\`
-- Validate job IDs: \`${job_ids[0]}\`, \`${job_ids[1]}\`
-- event/ref type: \`workflow_dispatch\` / branch ref
-- tested ref: \`${TARGET_BRANCH}\`
-- tested SHA: \`${FINAL_SHA}\`
-- synthetic merge: \`false\`
-- SHA verification: passed in Python 3.11 and Python 3.13 jobs
-- PRF-001: \`implemented_pending_rereview\`
-- PRF-002: \`implemented_pending_rereview\`
-- merge_performed: \`false\`
-- approval_performed: \`false\`
-- deployment_performed: \`false\`
-
-The directly inspected vendored-contract run \`29268316426\`, job \`86879339455\`, checked out \`refs/pull/179/merge\` at synthetic merge SHA \`c1dcc42f07ca24f3bf42d6754677a9b13c935feb\`. It is not exact-head evidence.
-
-Fresh PR Inspector re-review and independent human technical review remain required. This record does not approve or authorize Merge.
-EOF
-)
+          body="$(printf '%s\n' \
+            '<!-- PR179_REPAIR_EVIDENCE_V3 -->' \
+            '## PR #179 exact-head repair evidence' \
+            '' \
+            "- reviewed head: \`ff251c451cffc6e4ba5c65d8c5c03f3c7f8d2a84\`" \
+            "- resulting final head: \`${FINAL_SHA}\`" \
+            "- Validate run ID: \`${RUN_ID}\`" \
+            "- Validate job IDs: \`${job_ids[0]}\`, \`${job_ids[1]}\`" \
+            '- event/ref type: `workflow_dispatch` / branch ref' \
+            "- tested ref: \`${TARGET_BRANCH}\`" \
+            "- tested SHA: \`${FINAL_SHA}\`" \
+            '- synthetic merge: `false`' \
+            '- SHA verification: passed in Python 3.11 and Python 3.13 jobs' \
+            '- PRF-001: `implemented_pending_rereview`' \
+            '- PRF-002: `implemented_pending_rereview`' \
+            '- merge_performed: `false`' \
+            '- approval_performed: `false`' \
+            '- deployment_performed: `false`' \
+            '' \
+            'The directly inspected vendored-contract run `29268316426`, job `86879339455`, checked out `refs/pull/179/merge` at synthetic merge SHA `c1dcc42f07ca24f3bf42d6754677a9b13c935feb`. It is not exact-head evidence.' \
+            '' \
+            'Fresh PR Inspector re-review and independent human technical review remain required. This record does not approve or authorize Merge.')"
           gh api --method POST "repos/${GITHUB_REPOSITORY}/issues/179/comments" -f body="${body}"
