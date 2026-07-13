@@ -22,7 +22,7 @@ def write_doc() -> None:
     if path.exists():
         raise SystemExit(f"refusing to overwrite existing {path}")
     path.write_text(
-        """# Prompt 5 Project Gate Routing Boundary\n\n"
+        "# Prompt 5 Project Gate Routing Boundary\n\n"
         "Work Package: `WP-RESP-013`  \n"
         "Slice: `WP-RESP-013/PR-C`\n\n"
         "## Implemented local boundary\n\n"
@@ -49,8 +49,7 @@ def write_doc() -> None:
         "```bash\n"
         "python validation/e2e/run_prompt_5_routing_envelope_check.py\n"
         "```\n\n"
-        "The command is also part of the primary `Validate` workflow. Its success must not be interpreted as production readiness, release readiness, transport execution, or domain evidence.\n"
-        """,
+        "The command is also part of the primary `Validate` workflow. Its success must not be interpreted as production readiness, release readiness, transport execution, or domain evidence.\n",
         encoding="utf-8",
     )
 
