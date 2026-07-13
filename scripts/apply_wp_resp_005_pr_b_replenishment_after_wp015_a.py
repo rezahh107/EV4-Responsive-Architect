@@ -211,6 +211,7 @@ def main() -> None:
     packages = catalog["work_packages"]
     assert "WP-RESP-016" not in packages
     assert packages["WP-RESP-012"]["ready_state"] == "active"
+    assert packages["WP-RESP-013"]["ready_state"] == "active"
     assert packages["WP-RESP-015"]["ready_state"] == "ready"
 
     wp12 = packages["WP-RESP-012"]
@@ -219,6 +220,13 @@ def main() -> None:
     wp12["measurable_current_state"]["measurement"] = "Measured by merged PR #174 and PR #177 plus exact-head repository validation outcomes; completion remains repository-check evidence only."
     wp12["ready_state"] = "completed"
     wp12["reporting"]["estimated_completion_percentage"] = 100
+
+    wp13 = packages["WP-RESP-013"]
+    wp13["current_state"] = "PR #169, PR #172, and PR #173 completed the authority-preserving Prompt 5 routing contract, schema, fixtures, deterministic validator, negative coverage, primary CI wiring, documentation, command-index, and STATUS parity."
+    wp13["measurable_current_state"]["statement"] = wp13["current_state"]
+    wp13["measurable_current_state"]["measurement"] = "Measured by merged PR #169, PR #172, and PR #173 plus exact-head repository validation outcomes; completion remains repository-check evidence only."
+    wp13["ready_state"] = "completed"
+    wp13["reporting"]["estimated_completion_percentage"] = 100
 
     wp15 = packages["WP-RESP-015"]
     wp15["current_state"] = "PR #178 merged the pinned reopen-routing compatibility contract and schema; fixtures, deterministic validator diagnostics, CI wiring, documentation, command-index, and STATUS parity remain incomplete."
@@ -230,7 +238,8 @@ def main() -> None:
     packages["WP-RESP-016"] = package_016()
 
     ordered_ids = sorted(packages, key=lambda item: int(item.rsplit("-", 1)[1]))
-    assert ordered_ids == list(packages)
+    catalog["work_packages"] = {package_id: packages[package_id] for package_id in ordered_ids}
+    packages = catalog["work_packages"]
     active = [p["id"] for p in packages.values() if p["ready_state"] == "active"]
     assert active == ["WP-RESP-015"]
     ready = [p["id"] for p in packages.values() if p.get("selectable") and p["ready_state"] == "ready"]
@@ -252,7 +261,7 @@ def main() -> None:
     CATALOG_PATH.write_bytes(canonical_bytes(catalog))
 
     entries_by_id = {entry["id"]: entry for entry in index["package_entries"]}
-    for package_id in ("WP-RESP-012", "WP-RESP-015", "WP-RESP-016"):
+    for package_id in ("WP-RESP-012", "WP-RESP-013", "WP-RESP-015", "WP-RESP-016"):
         wrapper = {
             "schema": "ev4-automation-work-package-file@1.0.0",
             "id": package_id,
