@@ -21,6 +21,8 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+      - name: Install validation dependencies
+        run: python -m pip install -r requirements.txt
       - name: Materialize catalog reconciliation and replenishment
         run: python scripts/apply_wp_resp_005_pr_b_replenishment_after_wp012_a.py
       - name: Validate material result
@@ -38,7 +40,7 @@ jobs:
           set -euo pipefail
           mapfile -t changed < <(git status --short | sed -E 's/^.. //' | sort)
           printf '%s\n' "${changed[@]}"
-          allowed='^(planning/EV4_AUTOMATION_WORK_PACKAGE_CATALOG.json|planning/EV4_AUTOMATION_WORK_PACKAGE_CATALOG_INDEX.json|planning/work-packages/WP-RESP-012.json|planning/work-packages/WP-RESP-015.json|scripts/apply_wp_resp_005_pr_b_replenishment_after_wp012_a.py|.github/workflows/apply-wp-resp-005-pr-b-after-wp012-a.yml)$'
+          allowed='^(planning/EV4_AUTOMATION_WORK_PACKAGE_CATALOG.json|planning/EV4_AUTOMATION_WORK_PACKAGE_CATALOG_INDEX.json|planning/work-packages/WP-RESP-012.json|planning/work-packages/WP-RESP-013.json|planning/work-packages/WP-RESP-015.json|scripts/apply_wp_resp_005_pr_b_replenishment_after_wp012_a.py|.github/workflows/apply-wp-resp-005-pr-b-after-wp012-a.yml)$'
           for path in "${changed[@]}"; do
             [[ "$path" =~ $allowed ]] || { echo "unexpected changed path: $path"; exit 1; }
           done
@@ -52,5 +54,5 @@ jobs:
           git config user.name github-actions[bot]
           git config user.email 41898282+github-actions[bot]@users.noreply.github.com
           git add -A
-          git commit -m "WP-RESP-005/PR-B: reconcile WP-RESP-012 and replenish catalog"
+          git commit -m "WP-RESP-005/PR-B: reconcile active states and replenish catalog"
           git push origin HEAD:automation/wp-resp-005-pr-b-replenish-after-wp012-a
