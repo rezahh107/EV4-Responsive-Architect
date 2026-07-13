@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import copy
 import json
+import runpy
 from pathlib import Path
 
 from jsonschema import Draft202012Validator, FormatChecker
@@ -11,6 +12,7 @@ ROOT = Path(__file__).resolve().parents[2]
 SCHEMA_PATH = ROOT / "contracts/runtime/runtime-mismatch-reopen-package.v1.schema.json"
 VALID_DIR = ROOT / "validation/fixtures/runtime-mismatch/valid"
 INVALID_DIR = ROOT / "validation/fixtures/runtime-mismatch/invalid"
+COMPATIBILITY_VALIDATOR = ROOT / "validation/e2e/run_runtime_mismatch_prompt_5_compatibility_check.py"
 
 EXPECTED_VALID = {"runtime_mismatch_reopen.valid.json"}
 EXPECTED_INVALID = {
@@ -133,6 +135,9 @@ def main() -> None:
         assert_invalid(path.name, validator, load(path))
 
     run_self_test(validator, load(VALID_DIR / "runtime_mismatch_reopen.valid.json"))
+    if not COMPATIBILITY_VALIDATOR.is_file():
+        raise AssertionError("runtime mismatch to Prompt 5 compatibility validator is missing")
+    runpy.run_path(str(COMPATIBILITY_VALIDATOR), run_name="__main__")
     print("Runtime mismatch reopen package validation passed")
 
 
