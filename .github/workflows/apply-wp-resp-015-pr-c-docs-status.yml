@@ -40,7 +40,7 @@ jobs:
         shell: bash
         run: |
           git diff --check
-          actual="$(git diff --name-only | sort)"
+          actual="$(git status --short | cut -c4- | sort)"
           expected="$(printf '%s\n' \
             STATUS.md \
             docs/17_VALIDATION_COMMAND_INDEX.md \
