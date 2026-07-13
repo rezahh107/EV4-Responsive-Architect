@@ -188,12 +188,7 @@ jobs:
           git show "${REVIEWED_HEAD}:.github/workflows/validate.yml" > .github/workflows/validate.yml
           if ! python validation/e2e/run_status_merged_foundation_guard_check.py > /tmp/guard-validation.log 2>&1; then
             cat /tmp/guard-validation.log
-            body="PRF-003/004 materialization diagnostic on ${GITHUB_SHA}:
-
-\`\`\`text
-$(cat /tmp/guard-validation.log)
-\`\`\`"
-            gh api --method POST "repos/${GITHUB_REPOSITORY}/issues/179/comments" -f body="${body}"
+            gh api --method POST "repos/${GITHUB_REPOSITORY}/issues/179/comments" -f body="PRF-003/004 guard validation failed in Actions run ${GITHUB_RUN_ID}; inspect the Materialize step log."
             exit 1
           fi
           cat /tmp/guard-validation.log
