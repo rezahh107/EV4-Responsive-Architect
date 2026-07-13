@@ -19,12 +19,18 @@
   "runtime_observation": {
     "observed_at": "2026-07-13T10:30:00Z",
     "environment": "fixture-runtime",
-    "mismatch_code": "RMR_STATE_CONFLICT",
+    "mismatch_code": "RMR-STATE_CONFLICT",
     "expected_state": "blocked pending authoritative input",
     "observed_state": "consumer attempted unsupported continuation",
     "diagnostic_detail": "The observed runtime state conflicts with the prior authoritative decision."
   },
-  "evidence_references": [{"kind": "trace", "uri": "artifact://runtime-trace-001", "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"}],
+  "evidence_references": [
+    {
+      "kind": "trace",
+      "uri": "artifact://runtime-trace-001",
+      "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+    }
+  ],
   "reopen_reason": "runtime_behavior_differs_from_prior_decision",
   "requested_action": "reopen_for_authoritative_review",
   "authority_boundary": {
