@@ -66,12 +66,14 @@ active_contracts:
   - contracts/EV4_RESPONSIVE_HANDOFF_EXPORT_CONTRACT.md
   - contracts/VIEWPORT_INHERITANCE_RESET_DECISION_MATRIX.md
   - contracts/RESPONSIVE_HANDOFF_EXPORT_BOUNDARY_MANIFEST.md
+  - contracts/runtime/RUNTIME_MISMATCH_REOPEN_BOUNDARY.md
   - contracts/project-gate/PROMPT_5_ROUTING_BOUNDARY.md
 active_schema:
   - schemas/ev4-responsive-output.schema.json
   - schemas/ev4-builder-responsive-input.schema.json
   - schemas/ev4-automation-control-state.schema.json
   - schemas/ev4-automation-work-package-catalog.schema.json
+  - contracts/runtime/runtime-mismatch-reopen-package.v1.schema.json
   - contracts/project-gate/prompt-5-routing-envelope.v1.schema.json
 active_validation:
   - validation/e2e/run_responsive_tree_architecture_refactor_check.py
@@ -87,6 +89,7 @@ active_validation:
   - validation/e2e/run_issue_to_packet_bridge_check.py
   - validation/e2e/run_builder_responsive_input_boundary_check.py
   - validation/e2e/run_prompt_5_routing_envelope_check.py
+  - validation/e2e/run_runtime_mismatch_reopen_package_check.py
   - validation/e2e/run_responsive_contract_drift_sentinel_check.py
   - validation/e2e/run_viewport_inheritance_reset_matrix_check.py
   - validation/e2e/run_responsive_handoff_export_boundary_manifest_check.py
@@ -207,14 +210,20 @@ automatic_check:
   - python validation/e2e/run_issue_8_preflight_boundary_check.py
   - python validation/e2e/run_issue_to_packet_bridge_check.py
   - python validation/e2e/run_builder_responsive_input_boundary_check.py
-  - python validation/e2e/run_prompt_5_routing_envelope_check.py
+  - python validation/e2e/run_responsive_decision_lineage_sequence_check.py
+  - python validation/e2e/run_responsive_kernel_receipt_check.py
   - python validation/e2e/run_responsive_contract_drift_sentinel_check.py
   - python validation/e2e/run_viewport_inheritance_reset_matrix_check.py
   - python validation/e2e/run_responsive_handoff_export_boundary_manifest_check.py
+  - python validation/e2e/run_prompt_5_routing_envelope_check.py
+  - python validation/e2e/run_runtime_mismatch_reopen_package_check.py
+  - python validation/e2e/run_decision_escape_routes_schema_check.py
   - python validation/e2e/run_rtaq_ssot_guard_check.py
   - python validation/e2e/run_status_merged_foundation_guard_check.py
   - python validation/e2e/run_automation_control_state_check.py
+  - python validation/e2e/run_automation_replenishment_policy_transition_check.py
   - python validation/e2e/run_automation_work_package_catalog_check.py
+  - python validation/e2e/run_automation_work_package_catalog_reassembly_check.py --self-test
 delegated_repository_checks: []
 manual_same_head_recovery:
   workflow: .github/workflows/validate.yml
@@ -281,9 +290,42 @@ pr_142_canonical_contract_correction:
 
 ## WP-RESP-005/PR-B — State-driven catalog replenishment
 
-- Preferred catalog policy: `target=4`, `refresh_when_ready_below=4`, `max=5`.
-- `WP-RESP-006`, `WP-RESP-007`, and `WP-RESP-008` are reconciled as completed with merged outcome references.
-- Selectable ready horizon: `WP-RESP-009` through `WP-RESP-012`.
+The snapshot below is derived from the canonical monolithic catalog, is validator-enforced, and supersedes earlier prose horizons.
+
+```json
+{
+  "schema": "ev4-status-work-package-catalog-snapshot@1.0.0",
+  "source": "planning/EV4_AUTOMATION_WORK_PACKAGE_CATALOG.json",
+  "catalog_state_snapshot_is_derived": true,
+  "policy": {
+    "max_ready_work_packages": 5,
+    "ready_work_package_target": 4,
+    "refresh_when_ready_below": 4
+  },
+  "selectable_ready_horizon": [
+    "WP-RESP-010",
+    "WP-RESP-011",
+    "WP-RESP-014",
+    "WP-RESP-016"
+  ],
+  "active_work_packages": [
+    "WP-RESP-015"
+  ],
+  "completed_work_packages": [
+    "WP-RESP-002",
+    "WP-RESP-003",
+    "WP-RESP-004",
+    "WP-RESP-006",
+    "WP-RESP-007",
+    "WP-RESP-008",
+    "WP-RESP-009",
+    "WP-RESP-012",
+    "WP-RESP-013"
+  ]
+}
+```
+
 - No submitted evidence was created; Issue #8 was not mutated; no pilot was run or authorized.
+- Project Gate transport was not executed and human-readable receipts are not Kernel authority.
 - Production, release, live-render, export, accessibility, pixel-perfect, and responsive-correctness claims remain false.
-- CI and catalog completion remain repository-check evidence only.
+- CI, catalog state, and catalog completion remain repository-check evidence only.

@@ -5,11 +5,11 @@
     "id": "WP-RESP-012",
     "title": "Harden Runtime Mismatch Reopen Package",
     "capability_area": "runtime_mismatch_reopen",
-    "current_state": "PR #174 merged the authority-preserving runtime-mismatch reopen contract and schema; fixture, validator, CI, documentation, STATUS, and command-index slices remain incomplete.",
+    "current_state": "PR #174 and PR #177 completed the authority-preserving runtime-mismatch reopen contract, schema, fixtures, deterministic validator, negative coverage, and primary CI wiring.",
     "target_state": "A deterministic runtime-mismatch reopen package preserves prior Kernel lineage, records observations without redesign authority, and rejects incomplete or readiness-upgrading reopen requests.",
     "measurable_current_state": {
-      "statement": "PR #174 merged the authority-preserving runtime-mismatch reopen contract and schema; fixture, validator, CI, documentation, STATUS, and command-index slices remain incomplete.",
-      "measurement": "Measured by merged PR #174 plus the absence of completed WP-RESP-012/PR-B and documentation or STATUS parity outcomes.",
+      "statement": "PR #174 and PR #177 completed the authority-preserving runtime-mismatch reopen contract, schema, fixtures, deterministic validator, negative coverage, and primary CI wiring.",
+      "measurement": "Measured by merged PR #174 and PR #177 plus exact-head repository validation outcomes; completion remains repository-check evidence only.",
       "measurable": true
     },
     "measurable_target_state": {
@@ -24,10 +24,10 @@
     },
     "expected_project_delta": "Runtime mismatch handling becomes a bounded, validator-backed reopen path rather than an informal warning or Responsive-side redesign escape route.",
     "selectable": true,
-    "ready_state": "active",
+    "ready_state": "completed",
     "priority": 90,
     "reporting": {
-      "estimated_completion_percentage": 35,
+      "estimated_completion_percentage": 100,
       "estimated_percentage_is_reporting_only": true
     },
     "allowed_work": [
