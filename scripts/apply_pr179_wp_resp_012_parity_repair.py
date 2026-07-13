@@ -7,11 +7,13 @@ ROOT = Path(__file__).resolve().parents[1]
 STATUS = ROOT / "STATUS.md"
 COMMAND_INDEX = ROOT / "docs/17_VALIDATION_COMMAND_INDEX.md"
 ACTIVE_INDEX = ROOT / "docs/20_ACTIVE_CONTRACT_SCHEMA_VALIDATOR_INDEX.md"
+STATUS_GUARD = ROOT / "validation/e2e/run_status_merged_foundation_guard_check.py"
 
 RUNTIME_CONTRACT = "contracts/runtime/RUNTIME_MISMATCH_REOPEN_BOUNDARY.md"
 RUNTIME_SCHEMA = "contracts/runtime/runtime-mismatch-reopen-package.v1.schema.json"
 RUNTIME_VALIDATOR = "validation/e2e/run_runtime_mismatch_reopen_package_check.py"
 RUNTIME_COMMAND = f"python {RUNTIME_VALIDATOR}"
+RUNTIME_STATUS_GUARD_ENTRY = '    C("run_runtime_mismatch_reopen_package_check.py"),'
 
 
 def replace_once(text: str, old: str, new: str, label: str) -> str:
@@ -193,10 +195,27 @@ def update_active_index() -> None:
     write_text(ACTIVE_INDEX, text)
 
 
+def update_status_guard() -> None:
+    text = STATUS_GUARD.read_text(encoding="utf-8")
+    if RUNTIME_STATUS_GUARD_ENTRY in text:
+        raise AssertionError("STATUS guard already contains runtime-mismatch command")
+    text = replace_once(
+        text,
+        '    C("run_prompt_5_routing_envelope_check.py"),\n'
+        '    C("run_responsive_contract_drift_sentinel_check.py"),',
+        '    C("run_prompt_5_routing_envelope_check.py"),\n'
+        f"{RUNTIME_STATUS_GUARD_ENTRY}\n"
+        '    C("run_responsive_contract_drift_sentinel_check.py"),',
+        "STATUS guard primary-chain parity",
+    )
+    write_text(STATUS_GUARD, text)
+
+
 def verify() -> None:
     status = STATUS.read_text(encoding="utf-8")
     commands = COMMAND_INDEX.read_text(encoding="utf-8")
     active = ACTIVE_INDEX.read_text(encoding="utf-8")
+    guard = STATUS_GUARD.read_text(encoding="utf-8")
 
     for reference in (RUNTIME_CONTRACT, RUNTIME_SCHEMA, RUNTIME_VALIDATOR, RUNTIME_COMMAND):
         if reference not in status:
@@ -206,7 +225,9 @@ def verify() -> None:
     for reference in (RUNTIME_CONTRACT, RUNTIME_SCHEMA, RUNTIME_VALIDATOR):
         if reference not in active:
             raise AssertionError(f"active index missing required parity reference: {reference}")
-    for text in (status, commands, active):
+    if RUNTIME_STATUS_GUARD_ENTRY not in guard:
+        raise AssertionError("STATUS guard missing runtime-mismatch command")
+    for text in (status, commands, active, guard):
         if "production_ready: true" in text or "responsive_correctness_validated: true" in text:
             raise AssertionError("forbidden stronger claim introduced")
 
@@ -215,8 +236,9 @@ def main() -> int:
     update_status()
     update_command_index()
     update_active_index()
+    update_status_guard()
     verify()
-    print("PR #179 WP-RESP-012 documentation and STATUS parity repair: PASS")
+    print("PR #179 WP-RESP-012 documentation, STATUS, and guard parity repair: PASS")
     return 0
 
 
