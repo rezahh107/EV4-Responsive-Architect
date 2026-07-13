@@ -41,13 +41,14 @@ jobs:
       # commit after the materialized exact head is available for review.
       - name: Verify material diff scope
         run: |
-          git diff --exit-code --check
+          git diff --check
           changed="$(git status --short | awk '{print $2}' | sort)"
           expected="$(printf '%s\n' \
             'STATUS.md' \
             'docs/17_VALIDATION_COMMAND_INDEX.md' \
             'docs/20_ACTIVE_CONTRACT_SCHEMA_VALIDATOR_INDEX.md' \
             'docs/48_PROMPT_5_PROJECT_GATE_ROUTING_BOUNDARY.md' | sort)"
+          printf 'Changed paths:\n%s\nExpected paths:\n%s\n' "$changed" "$expected"
           test "$changed" = "$expected"
 
       - name: Commit material result
