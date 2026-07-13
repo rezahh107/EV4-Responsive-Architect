@@ -145,3 +145,75 @@ jobs:
         run: python validation/e2e/run_automation_work_package_catalog_check.py
       - name: Automation work package catalog reassembly
         run: python validation/e2e/run_automation_work_package_catalog_reassembly_check.py --self-test
+
+  pr179-evidence-record:
+    name: PR 179 evidence record
+    if: github.event_name == 'pull_request' && github.head_ref == 'automation/wp-resp-005-pr-b-replenish-after-wp015-a'
+    needs: validation
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    permissions:
+      contents: write
+      actions: write
+      issues: write
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      TARGET_BRANCH: automation/wp-resp-005-pr-b-replenish-after-wp015-a
+      CLEAN_PARENT: 9416377b912403299ba2e591e2f8e0ccd4dcb682
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v4
+        with:
+          ref: automation/wp-resp-005-pr-b-replenish-after-wp015-a
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Verify temporary scope
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor "${CLEAN_PARENT}" HEAD
+          test "$(git diff --name-only "${CLEAN_PARENT}..HEAD")" = ".github/workflows/validate.yml"
+          python validation/e2e/run_status_merged_foundation_guard_check.py
+      - name: Create final clean head
+        id: target
+        run: |
+          set -euo pipefail
+          git show "${CLEAN_PARENT}:.github/workflows/validate.yml" > .github/workflows/validate.yml
+          git add .github/workflows/validate.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "chore(PRF-003/004): finalize exact-head evidence target"
+          final_sha="$(git rev-parse HEAD)"
+          echo "sha=${final_sha}" >> "${GITHUB_OUTPUT}"
+          git push origin HEAD:"${TARGET_BRANCH}"
+      - name: Dispatch and verify exact-head Validate
+        env:
+          FINAL_SHA: ${{ steps.target.outputs.sha }}
+        run: |
+          set -euo pipefail
+          gh workflow run validate.yml --repo "${GITHUB_REPOSITORY}" --ref "${TARGET_BRANCH}" -f ref="${TARGET_BRANCH}" -f expected_sha="${FINAL_SHA}"
+          run_id=""
+          for attempt in $(seq 1 90); do
+            run_id="$(gh run list --repo "${GITHUB_REPOSITORY}" --workflow validate.yml --event workflow_dispatch --branch "${TARGET_BRANCH}" --limit 40 --json databaseId,headSha --jq ".[] | select(.headSha == \"${FINAL_SHA}\") | .databaseId" | head -n1)"
+            if test -n "${run_id}"; then break; fi
+            sleep 4
+          done
+          test -n "${run_id}"
+          gh run watch "${run_id}" --repo "${GITHUB_REPOSITORY}" --exit-status
+          gh api "repos/${GITHUB_REPOSITORY}/actions/runs/${run_id}" > /tmp/run.json
+          test "$(jq -r '.event' /tmp/run.json)" = "workflow_dispatch"
+          test "$(jq -r '.head_sha' /tmp/run.json)" = "${FINAL_SHA}"
+          test "$(jq -r '.conclusion' /tmp/run.json)" = "success"
+          gh api "repos/${GITHUB_REPOSITORY}/actions/runs/${run_id}/jobs?filter=latest&per_page=100" > /tmp/jobs.json
+          job_311="$(jq -r '.jobs[] | select(.name == "validate (3.11)") | .id' /tmp/jobs.json)"
+          job_313="$(jq -r '.jobs[] | select(.name == "validate (3.13)") | .id' /tmp/jobs.json)"
+          for spec in "${job_311}:validate (3.11)" "${job_313}:validate (3.13)"; do
+            job_id="${spec%%:*}"
+            job_name="${spec#*:}"
+            test "$(jq -r --arg name "${job_name}" '.jobs[] | select(.name == $name) | .conclusion' /tmp/jobs.json)" = "success"
+            test "$(jq -r --arg name "${job_name}" '.jobs[] | select(.name == $name) | .steps[] | select(.name == "Verify workflow-dispatch SHA") | .conclusion' /tmp/jobs.json)" = "success"
+            gh run view "${run_id}" --repo "${GITHUB_REPOSITORY}" --job "${job_id}" --log > "/tmp/job-${job_id}.log"
+            grep -F "expected_sha=${FINAL_SHA}" "/tmp/job-${job_id}.log"
+            grep -F "actual_sha=${FINAL_SHA}" "/tmp/job-${job_id}.log"
+          done
+          body="PRF-003/004 exact-head evidence | final_sha=${FINAL_SHA} | run_id=${run_id} | python_3_11_job=${job_311} | python_3_13_job=${job_313} | tested_ref=${TARGET_BRANCH} | ref_type=branch | synthetic_merge=false | sha_verification=success | PRF-003=implemented_pending_rereview | PRF-004=implemented_pending_rereview"
+          gh api --method POST "repos/${GITHUB_REPOSITORY}/issues/179/comments" -f body="${body}"
