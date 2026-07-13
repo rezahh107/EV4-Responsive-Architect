@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
-import hashlib
 import subprocess
+import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -235,7 +235,7 @@ write(DOC, doc)
 
 # Parse all touched JSON-adjacent sources indirectly through their validators and
 # run the targeted parity boundary before committing.
-subprocess.run(["python", "validation/e2e/run_runtime_mismatch_prompt_5_compatibility_check.py"], cwd=ROOT, check=True)
-subprocess.run(["python", "validation/e2e/run_runtime_mismatch_reopen_package_check.py"], cwd=ROOT, check=True)
-subprocess.run(["python", "validation/e2e/run_responsive_contract_drift_sentinel_check.py"], cwd=ROOT, check=True)
-subprocess.run(["python", "validation/e2e/run_status_merged_foundation_guard_check.py"], cwd=ROOT, check=True)
+subprocess.run([sys.executable, "validation/e2e/run_runtime_mismatch_prompt_5_compatibility_check.py"], cwd=ROOT, check=True)
+subprocess.run([sys.executable, "validation/e2e/run_runtime_mismatch_reopen_package_check.py"], cwd=ROOT, check=True)
+subprocess.run([sys.executable, "validation/e2e/run_responsive_contract_drift_sentinel_check.py"], cwd=ROOT, check=True)
+subprocess.run([sys.executable, "validation/e2e/run_status_merged_foundation_guard_check.py"], cwd=ROOT, check=True)
