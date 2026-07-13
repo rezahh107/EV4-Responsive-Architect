@@ -282,16 +282,18 @@ def extract_status_catalog_snapshot(text: str) -> dict[str, Any]:
     if not isinstance(payload, dict):
         raise AssertionError("STATUS.md catalog status snapshot must be a JSON object")
 
-    trailing = section[match.end():]
-    for fenced in ANY_FENCE_RE.finditer(trailing):
+    outside_snapshot = section[: match.start()] + section[match.end() :]
+    for fenced in ANY_FENCE_RE.finditer(outside_snapshot):
         if CATALOG_BLOCK_MARKERS.search(fenced.group("body")):
             raise AssertionError(
                 "STATUS.md catalog status section contains another machine-readable catalog-state block"
             )
 
-    prose_only = ANY_FENCE_RE.sub("", trailing)
+    prose_only = ANY_FENCE_RE.sub("", outside_snapshot)
     if CONTRADICTORY_CATALOG_PROSE.search(prose_only):
-        raise AssertionError("STATUS.md catalog status section contains contradictory catalog-state prose after snapshot")
+        raise AssertionError(
+            "STATUS.md catalog status section contains contradictory catalog-state prose outside canonical snapshot"
+        )
     return payload
 
 
@@ -470,12 +472,16 @@ def assert_invalid(
     raise AssertionError(f"expected invalid STATUS text for {expected_message!r}")
 
 
-def json_section(*payloads: dict[str, Any], trailing: str = "") -> str:
+def json_section(
+    *payloads: dict[str, Any],
+    leading: str = "",
+    trailing: str = "",
+) -> str:
     fences = "\n\n".join(
         "```json\n" + json.dumps(payload, indent=2, ensure_ascii=False) + "\n```"
         for payload in payloads
     )
-    return f"{STATUS_CATALOG_HEADING}\n\n{fences}\n{trailing}"
+    return f"{STATUS_CATALOG_HEADING}\n\n{leading}{fences}\n{trailing}"
 
 
 def run_self_tests(workflow_text: str) -> None:
@@ -534,6 +540,68 @@ def run_self_tests(workflow_text: str) -> None:
     )
 
     snapshot = expected_catalog_status_snapshot(catalog)
+
+    assert_invalid(
+        status_fixture(
+            catalog,
+            expected_checks,
+            catalog_section=json_section(
+                snapshot,
+                leading="Selectable ready horizon: `WP-RESP-009` through `WP-RESP-012`.\n\n",
+            ),
+        ),
+        catalog,
+        workflow_text,
+        "contradictory catalog-state prose outside canonical snapshot",
+    )
+    assert_invalid(
+        status_fixture(
+            catalog,
+            expected_checks,
+            catalog_section=json_section(
+                snapshot,
+                leading=(
+                    "```yaml\n"
+                    "selectable_ready_horizon:\n"
+                    "  - WP-RESP-009\n"
+                    "  - WP-RESP-010\n"
+                    "  - WP-RESP-011\n"
+                    "  - WP-RESP-012\n"
+                    "```\n\n"
+                ),
+            ),
+        ),
+        catalog,
+        workflow_text,
+        "another machine-readable catalog-state block",
+    )
+    assert_invalid(
+        status_fixture(
+            catalog,
+            expected_checks,
+            catalog_section=json_section(
+                snapshot,
+                leading="Active work packages: `WP-RESP-013`.\n\n",
+            ),
+        ),
+        catalog,
+        workflow_text,
+        "contradictory catalog-state prose outside canonical snapshot",
+    )
+    assert_invalid(
+        status_fixture(
+            catalog,
+            expected_checks,
+            catalog_section=json_section(
+                snapshot,
+                leading="Completed work packages exclude `WP-RESP-012`.\n\n",
+            ),
+        ),
+        catalog,
+        workflow_text,
+        "contradictory catalog-state prose outside canonical snapshot",
+    )
+
     assert_invalid(
         status_fixture(catalog, expected_checks, catalog_section=f"{STATUS_CATALOG_HEADING}\n\nNo snapshot.\n"),
         catalog,

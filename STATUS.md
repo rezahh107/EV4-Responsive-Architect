@@ -290,7 +290,7 @@ pr_142_canonical_contract_correction:
 
 ## WP-RESP-005/PR-B — State-driven catalog replenishment
 
-The snapshot below is derived from the canonical monolithic catalog and is validator-enforced. It explicitly supersedes the former `WP-RESP-009` through `WP-RESP-012` ready-horizon statement.
+The snapshot below is derived from the canonical monolithic catalog, is validator-enforced, and supersedes earlier prose horizons.
 
 ```json
 {
