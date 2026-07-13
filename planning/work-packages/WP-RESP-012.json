@@ -5,11 +5,11 @@
     "id": "WP-RESP-012",
     "title": "Harden Runtime Mismatch Reopen Package",
     "capability_area": "runtime_mismatch_reopen",
-    "current_state": "Runtime mismatch warnings require lineage, but there is no standalone schema-backed reopen package covering observed mismatch, prior decision lineage, evidence references, and fail-closed routing.",
+    "current_state": "PR #174 merged the authority-preserving runtime-mismatch reopen contract and schema; fixture, validator, CI, documentation, STATUS, and command-index slices remain incomplete.",
     "target_state": "A deterministic runtime-mismatch reopen package preserves prior Kernel lineage, records observations without redesign authority, and rejects incomplete or readiness-upgrading reopen requests.",
     "measurable_current_state": {
-      "statement": "Runtime mismatch warnings require lineage, but there is no standalone schema-backed reopen package covering observed mismatch, prior decision lineage, evidence references, and fail-closed routing.",
-      "measurement": "Measured by repository contracts, schemas, fixtures, validators, CI, documentation, and STATUS signals for WP-RESP-012.",
+      "statement": "PR #174 merged the authority-preserving runtime-mismatch reopen contract and schema; fixture, validator, CI, documentation, STATUS, and command-index slices remain incomplete.",
+      "measurement": "Measured by merged PR #174 plus the absence of completed WP-RESP-012/PR-B and documentation or STATUS parity outcomes.",
       "measurable": true
     },
     "measurable_target_state": {
@@ -24,10 +24,10 @@
     },
     "expected_project_delta": "Runtime mismatch handling becomes a bounded, validator-backed reopen path rather than an informal warning or Responsive-side redesign escape route.",
     "selectable": true,
-    "ready_state": "ready",
+    "ready_state": "active",
     "priority": 90,
     "reporting": {
-      "estimated_completion_percentage": 0,
+      "estimated_completion_percentage": 35,
       "estimated_percentage_is_reporting_only": true
     },
     "allowed_work": [
