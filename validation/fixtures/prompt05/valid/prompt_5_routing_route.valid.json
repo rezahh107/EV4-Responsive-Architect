@@ -1,0 +1,43 @@
+{
+  "schema_version": "prompt-5-routing-envelope.v1",
+  "routing_id": "route-001",
+  "source": {
+    "producer_stage": "responsive",
+    "repository": "rezahh107/EV4-Responsive-Architect",
+    "ref": "refs/heads/main",
+    "commit_sha": "1111111111111111111111111111111111111111",
+    "artifact_id": "responsive-export-001",
+    "artifact_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "lineage": {
+    "pipeline_id": "ev4-responsive-pipeline",
+    "run_id": "run-001",
+    "producer_export_id": "producer-export-001",
+    "producer_export_schema": "producer-gate-export.v1",
+    "producer_export_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+  },
+  "route": {
+    "target": "ev4-project-gate",
+    "decision": "route",
+    "transport_eligible": true,
+    "diagnostic_codes": []
+  },
+  "authority": {
+    "routing_decision_owner": "responsive",
+    "transport_execution_owner": "ev4-project-gate",
+    "responsive_executes_transport": false,
+    "responsive_substitutes_project_gate_decision": false
+  },
+  "boundary_claims": {
+    "submitted_evidence_created": false,
+    "issue_8_mutated": false,
+    "pilot_authorized": false,
+    "production_ready": false,
+    "release_ready": false,
+    "live_render_validated": false,
+    "export_json_validated": false,
+    "accessibility_passed": false,
+    "pixel_perfect": false,
+    "responsive_correctness_validated": false
+  }
+}
