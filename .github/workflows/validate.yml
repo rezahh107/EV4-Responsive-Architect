@@ -126,6 +126,7 @@ jobs:
     permissions:
       contents: write
       actions: write
+      issues: write
     env:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       TARGET_BRANCH: automation/wp-resp-005-pr-b-replenish-after-wp015-a
@@ -153,13 +154,49 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          gh api "repos/${GITHUB_REPOSITORY}/git/blobs/${GUARD_BLOB_SHA}" --jq .content \
-            | tr -d '\n' \
-            | base64 --decode \
-            > validation/e2e/run_status_merged_foundation_guard_check.py
+          python - <<'PYFETCH'
+          import base64
+          import hashlib
+          import json
+          import os
+          import urllib.request
+          from pathlib import Path
+
+          repo = os.environ["GITHUB_REPOSITORY"]
+          sha = os.environ["GUARD_BLOB_SHA"]
+          token = os.environ["GH_TOKEN"]
+          request = urllib.request.Request(
+              f"https://api.github.com/repos/{repo}/git/blobs/{sha}",
+              headers={
+                  "Accept": "application/vnd.github+json",
+                  "Authorization": f"Bearer {token}",
+                  "X-GitHub-Api-Version": "2022-11-28",
+              },
+          )
+          with urllib.request.urlopen(request) as response:
+              payload = json.load(response)
+          data = base64.b64decode(payload["content"])
+          observed = hashlib.sha256(data).hexdigest()
+          expected = "ad1cfa87344d5555328bc63366e4a347d80f818c37a07781a5499dba7ca7125f"
+          if observed != expected:
+              raise SystemExit(f"guard payload hash mismatch: {observed}")
+          path = Path("validation/e2e/run_status_merged_foundation_guard_check.py")
+          path.write_bytes(data)
+          print(f"materialized guard bytes={len(data)} sha256={observed}")
+          PYFETCH
           chmod +x validation/e2e/run_status_merged_foundation_guard_check.py
           git show "${REVIEWED_HEAD}:.github/workflows/validate.yml" > .github/workflows/validate.yml
-          python validation/e2e/run_status_merged_foundation_guard_check.py
+          if ! python validation/e2e/run_status_merged_foundation_guard_check.py > /tmp/guard-validation.log 2>&1; then
+            cat /tmp/guard-validation.log
+            body="PRF-003/004 materialization diagnostic on ${GITHUB_SHA}:
+
+\`\`\`text
+$(cat /tmp/guard-validation.log)
+\`\`\`"
+            gh api --method POST "repos/${GITHUB_REPOSITORY}/issues/179/comments" -f body="${body}"
+            exit 1
+          fi
+          cat /tmp/guard-validation.log
 
       - name: Create clean final repair head
         id: target
