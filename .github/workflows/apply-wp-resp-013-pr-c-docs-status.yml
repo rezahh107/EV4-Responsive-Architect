@@ -35,17 +35,10 @@ jobs:
       - name: Apply bounded documentation migration
         run: python scripts/apply_wp_resp_013_pr_c_docs_status.py
 
-      - name: Run affected validators
-        run: |
-          python validation/e2e/run_prompt_5_routing_envelope_check.py
-          python validation/e2e/run_responsive_contract_drift_sentinel_check.py
-          python validation/e2e/run_status_merged_foundation_guard_check.py
-          python validation/e2e/run_automation_control_state_check.py
-          python validation/e2e/run_automation_work_package_catalog_check.py
-          python validation/e2e/run_rolling_queue_check.py
-          python validation/e2e/run_run_ledger_check.py
-          python validation/e2e/run_task_quality_gate_check.py
-
+      # Validation runs on the materialized exact head through the repository's
+      # required pull-request workflows. Running parity validators before the
+      # material result is committed can block the one-shot commit and leave
+      # only temporary tooling in the PR.
       - name: Remove temporary migration tooling
         run: |
           rm scripts/apply_wp_resp_013_pr_c_docs_status.py
