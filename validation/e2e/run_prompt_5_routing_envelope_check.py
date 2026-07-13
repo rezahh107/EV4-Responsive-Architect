@@ -41,7 +41,10 @@ def load(path: Path) -> dict:
 
 
 def schema_errors(validator: Draft202012Validator, payload: dict) -> list:
-    return sorted(validator.iter_errors(payload), key=lambda error: list(error.absolute_path))
+    return sorted(
+        validator.iter_errors(payload),
+        key=lambda error: tuple(str(part) for part in error.absolute_path),
+    )
 
 
 def validate_envelope(validator: Draft202012Validator, payload: dict) -> None:
