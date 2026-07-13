@@ -17,7 +17,10 @@ on:
         type: string
 
 permissions:
-  contents: read
+  contents: write
+  actions: write
+  issues: write
+  statuses: write
 
 concurrency:
   group: validate-${{ github.event_name }}-${{ github.event_name == 'workflow_dispatch' && inputs.expected_sha || github.sha }}
@@ -145,3 +148,146 @@ jobs:
         run: python validation/e2e/run_automation_work_package_catalog_check.py
       - name: Automation work package catalog reassembly
         run: python validation/e2e/run_automation_work_package_catalog_reassembly_check.py --self-test
+
+  pr179-exact-head-evidence:
+    name: PR 179 exact-head evidence
+    if: github.event_name == 'pull_request' && github.head_ref == 'automation/wp-resp-005-pr-b-replenish-after-wp015-a'
+    needs: validation
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      TARGET_BRANCH: automation/wp-resp-005-pr-b-replenish-after-wp015-a
+      MATERIAL_HEAD: 24d3af8ac960cd06fa84116785ff43baac85d000
+    steps:
+      - name: Checkout exact PR branch
+        uses: actions/checkout@v4
+        with:
+          ref: automation/wp-resp-005-pr-b-replenish-after-wp015-a
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Verify temporary evidence scope
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor "${MATERIAL_HEAD}" HEAD
+          mapfile -t changed < <(git diff --name-only "${MATERIAL_HEAD}..HEAD" | sort)
+          expected=(
+            ".github/workflows/pr179-exact-head-evidence-v2.yml"
+            ".github/workflows/validate.yml"
+          )
+          mapfile -t expected_sorted < <(printf '%s\n' "${expected[@]}" | sort)
+          test "$(printf '%s\n' "${changed[@]}")" = "$(printf '%s\n' "${expected_sorted[@]}")"
+          python validation/e2e/run_status_merged_foundation_guard_check.py
+
+      - name: Restore clean final tree and push
+        id: target
+        shell: bash
+        run: |
+          set -euo pipefail
+          git show "${MATERIAL_HEAD}:.github/workflows/validate.yml" > .github/workflows/validate.yml
+          git rm .github/workflows/pr179-exact-head-evidence-v2.yml
+          git add .github/workflows/validate.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "chore(PRF-002): create clean exact-head validation target"
+          final_sha="$(git rev-parse HEAD)"
+          echo "sha=${final_sha}" >> "${GITHUB_OUTPUT}"
+          echo "NEW_FINAL_HEAD_SHA=${final_sha}"
+          git push origin HEAD:"${TARGET_BRANCH}"
+
+      - name: Dispatch exact-head Validate
+        id: dispatch
+        env:
+          FINAL_SHA: ${{ steps.target.outputs.sha }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          gh workflow run validate.yml \
+            --repo "${GITHUB_REPOSITORY}" \
+            --ref "${TARGET_BRANCH}" \
+            -f ref="${TARGET_BRANCH}" \
+            -f expected_sha="${FINAL_SHA}"
+
+          run_id=""
+          for attempt in $(seq 1 60); do
+            gh run list \
+              --repo "${GITHUB_REPOSITORY}" \
+              --workflow validate.yml \
+              --event workflow_dispatch \
+              --branch "${TARGET_BRANCH}" \
+              --limit 30 \
+              --json databaseId,headSha > /tmp/runs.json
+            run_id="$(jq -r --arg sha "${FINAL_SHA}" '.[] | select(.headSha == $sha) | .databaseId' /tmp/runs.json | head -n1)"
+            if [[ -n "${run_id}" ]]; then break; fi
+            sleep 5
+          done
+          test -n "${run_id}"
+          echo "run_id=${run_id}" >> "${GITHUB_OUTPUT}"
+          echo "EXACT_HEAD_VALIDATE_RUN_ID=${run_id}"
+          gh run watch "${run_id}" --repo "${GITHUB_REPOSITORY}" --exit-status
+
+      - name: Verify exact-head jobs and publish evidence
+        env:
+          FINAL_SHA: ${{ steps.target.outputs.sha }}
+          RUN_ID: ${{ steps.dispatch.outputs.run_id }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          gh run view "${RUN_ID}" --repo "${GITHUB_REPOSITORY}" --json event,headSha,headBranch,status,conclusion,jobs,url > /tmp/run.json
+          test "$(jq -r '.event' /tmp/run.json)" = "workflow_dispatch"
+          test "$(jq -r '.headSha' /tmp/run.json)" = "${FINAL_SHA}"
+          test "$(jq -r '.headBranch' /tmp/run.json)" = "${TARGET_BRANCH}"
+          test "$(jq -r '.conclusion' /tmp/run.json)" = "success"
+
+          mapfile -t jobs < <(jq -r '.jobs[] | select(.name == "validate (3.11)" or .name == "validate (3.13)") | [.databaseId, .name, .conclusion] | @tsv' /tmp/run.json | sort -k2)
+          test "${#jobs[@]}" -eq 2
+          job_ids=()
+          for record in "${jobs[@]}"; do
+            IFS=$'\t' read -r job_id job_name job_conclusion <<< "${record}"
+            test "${job_conclusion}" = "success"
+            sha_step="$(jq -r --arg name "${job_name}" '.jobs[] | select(.name == $name) | .steps[] | select(.name == "Verify workflow-dispatch SHA") | .conclusion' /tmp/run.json)"
+            test "${sha_step}" = "success"
+            gh run view "${RUN_ID}" --repo "${GITHUB_REPOSITORY}" --job "${job_id}" --log > "/tmp/job-${job_id}.log"
+            grep -F "requested_ref=${TARGET_BRANCH}" "/tmp/job-${job_id}.log"
+            grep -F "expected_sha=${FINAL_SHA}" "/tmp/job-${job_id}.log"
+            grep -F "actual_sha=${FINAL_SHA}" "/tmp/job-${job_id}.log"
+            job_ids+=("${job_id}")
+          done
+
+          run_url="$(jq -r '.url' /tmp/run.json)"
+          description="run=${RUN_ID}; jobs=${job_ids[0]},${job_ids[1]}; py3.11/3.13 exact SHA"
+          gh api --method POST \
+            -H "Accept: application/vnd.github+json" \
+            "repos/${GITHUB_REPOSITORY}/statuses/${FINAL_SHA}" \
+            -f state=success \
+            -f context='pr179/exact-head-validate' \
+            -f description="${description}" \
+            -f target_url="${run_url}"
+
+          body=$(cat <<EOF
+<!-- PR179_REPAIR_EVIDENCE_V3 -->
+## PR #179 exact-head repair evidence
+
+- reviewed head: \`ff251c451cffc6e4ba5c65d8c5c03f3c7f8d2a84\`
+- resulting final head: \`${FINAL_SHA}\`
+- Validate run ID: \`${RUN_ID}\`
+- Validate job IDs: \`${job_ids[0]}\`, \`${job_ids[1]}\`
+- event/ref type: \`workflow_dispatch\` / branch ref
+- tested ref: \`${TARGET_BRANCH}\`
+- tested SHA: \`${FINAL_SHA}\`
+- synthetic merge: \`false\`
+- SHA verification: passed in Python 3.11 and Python 3.13 jobs
+- PRF-001: \`implemented_pending_rereview\`
+- PRF-002: \`implemented_pending_rereview\`
+- merge_performed: \`false\`
+- approval_performed: \`false\`
+- deployment_performed: \`false\`
+
+The directly inspected vendored-contract run \`29268316426\`, job \`86879339455\`, checked out \`refs/pull/179/merge\` at synthetic merge SHA \`c1dcc42f07ca24f3bf42d6754677a9b13c935feb\`. It is not exact-head evidence.
+
+Fresh PR Inspector re-review and independent human technical review remain required. This record does not approve or authorize Merge.
+EOF
+)
+          gh api --method POST "repos/${GITHUB_REPOSITORY}/issues/179/comments" -f body="${body}"
