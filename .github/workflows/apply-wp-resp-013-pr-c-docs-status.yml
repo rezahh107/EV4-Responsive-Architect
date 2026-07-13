@@ -1,6 +1,6 @@
 name: Apply WP-RESP-013 PR-C docs and STATUS parity
 
-# Re-trigger bounded materialization after review reconciliation.
+# Re-trigger bounded materialization after exact-head reconciliation.
 on:
   push:
     branches:
