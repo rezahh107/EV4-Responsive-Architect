@@ -27,7 +27,11 @@ Builder output and evidence → EV4 Project Gate → Responsive input
 Responsive output and viewport evidence → final EV4 Project Gate check
 ```
 
-Project Gate provides a verifier, guarded Builder → Responsive and Final Gate CLI paths, and an initial local operator UI at its documented pinned scopes. Responsive also has repository-local intake/output schemas, validators, and a controlled manual-review path. These capabilities do not establish compatibility with the current live heads, a real Submitted Packet, a real responsive pilot, responsive correctness, release readiness, or production readiness. Project Gate must not replace Responsive contracts or invent evidence.
+Project Gate provides a verifier, guarded Builder → Responsive and Final Gate CLI paths, and an initial local operator UI at its documented pinned scopes.
+
+Responsive also has repository-local intake/output schemas, validators, and a controlled manual-review path.
+
+These capabilities do not establish compatibility with the current live heads, a real Submitted Packet, a real responsive pilot, responsive correctness, release readiness, or production readiness. Project Gate must not replace Responsive contracts or invent evidence.
 
 ## Hard Boundaries
 
