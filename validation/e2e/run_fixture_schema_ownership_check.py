@@ -11,6 +11,7 @@ import json
 import sys
 from dataclasses import dataclass
 from pathlib import Path
+from tempfile import TemporaryDirectory
 from typing import Any
 
 from jsonschema import Draft202012Validator
@@ -140,18 +141,34 @@ def resolve_entry(
 
 
 def fixture_paths(directory: Path) -> list[Path]:
+    """Return only direct broad fixtures; nested focused subtrees are out of scope."""
     if not directory.exists():
         return []
-    direct = sorted(directory.glob("*.json"))
-    recursive = sorted(directory.rglob("*.json"))
-    nested = [path for path in recursive if path.parent != directory]
-    if nested:
-        rendered = ",".join(path.relative_to(ROOT).as_posix() for path in nested)
-        raise OwnershipError(f"focused_fixture_incorrectly_routed_to_broad_root:{rendered}")
-    return direct
+    return sorted(path for path in directory.glob("*.json") if path.is_file())
+
+
+def run_boundary_self_tests() -> None:
+    """Prove focused nested fixtures are ignored while direct broad fixtures remain guarded."""
+    with TemporaryDirectory() as temporary_directory:
+        root = Path(temporary_directory)
+        direct = root / "misplaced-broad.json"
+        nested = root / "focused" / "focused.json"
+        nested.parent.mkdir(parents=True)
+        direct.write_text("{}", encoding="utf-8")
+        nested.write_text("{}", encoding="utf-8")
+
+        selected = fixture_paths(root)
+        if selected != [direct]:
+            rendered = ",".join(path.relative_to(root).as_posix() for path in selected)
+            raise OwnershipError(f"fixture_scope_self_test_failed:{rendered}")
+        if nested in selected:
+            raise OwnershipError("focused_fixture_subtree_not_excluded")
+        if direct not in selected:
+            raise OwnershipError("direct_broad_fixture_not_guarded")
 
 
 def build_inventory() -> list[InventoryEntry]:
+    run_boundary_self_tests()
     schemas = load_schemas()
     registry = build_registry(schemas)
     inventory: list[InventoryEntry] = []
