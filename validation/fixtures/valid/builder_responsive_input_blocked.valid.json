@@ -1,4 +1,5 @@
 {
+  "$schema_file": "ev4-builder-responsive-input.schema.json",
   "schema": "ev4-builder-responsive-input@0.1.0",
   "source_packet_ref": "packet:submitted-example:blocked:sha256:111",
   "project_gate_ref": {
