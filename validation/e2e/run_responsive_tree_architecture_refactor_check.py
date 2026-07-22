@@ -9,6 +9,7 @@ ROOT = Path(__file__).resolve().parents[2]
 SCHEMA = ROOT / 'schemas/ev4-responsive-output.schema.json'
 VALID_DIR = ROOT / 'validation/fixtures/valid'
 INVALID_DIR = ROOT / 'validation/fixtures/invalid'
+OWNERSHIP_INVENTORY = ROOT / 'validation/fixtures/fixture_schema_ownership.json'
 
 VALID_FIXTURES = [
     VALID_DIR / 'responsive_output_same_tree.valid.json',
@@ -56,6 +57,7 @@ REQUIRED_FILES = [
     ROOT / 'stages/11_RESPONSIVE_FINAL_REVIEW.md',
     ROOT / 'stages/12_RESPONSIVE_OUTPUT_PACKAGE.md',
     SCHEMA,
+    OWNERSHIP_INVENTORY,
     ROOT / 'manifests/ev4-responsive-pipeline-manifest.v1.json',
     ROOT / 'schemas/ev4-responsive-stage-payload.v1.schema.json',
     ROOT / 'schemas/ev4-responsive-viewport-source-ledger.v1.schema.json',
@@ -106,17 +108,43 @@ def load_json(path):
     return json.loads(path.read_text(encoding='utf-8'))
 
 
-def load_fixture_payload(path):
+def load_ownership_inventory():
+    inventory = load_json(OWNERSHIP_INVENTORY)
+    if not isinstance(inventory, dict):
+        raise ValueError('Fixture ownership inventory must be a JSON object')
+    for fixture_path, schema_file in inventory.items():
+        if not isinstance(fixture_path, str) or not fixture_path:
+            raise ValueError('Fixture ownership inventory has an invalid fixture path')
+        if not isinstance(schema_file, str) or not schema_file or '/' in schema_file or '\\' in schema_file:
+            raise ValueError(f'Fixture ownership inventory has an invalid schema reference: {fixture_path}')
+    return inventory
+
+
+def load_fixture_payload(path, ownership_inventory):
     raw = load_json(path)
     if not isinstance(raw, dict):
         raise ValueError(f'Fixture must be a JSON object: {relative_path(path)}')
 
     payload = dict(raw)
-    schema_file = payload.pop('$schema_file', None)
-    if not isinstance(schema_file, str) or not schema_file:
-        raise ValueError(f'Missing or malformed $schema_file metadata: {relative_path(path)}')
     if '$schema_files' in payload:
         raise ValueError(f'Forbidden duplicate-owner $schema_files metadata: {relative_path(path)}')
+
+    metadata_schema = payload.pop('$schema_file', None)
+    rel = relative_path(path).as_posix()
+    sidecar_schema = ownership_inventory.get(rel)
+    if metadata_schema is not None and sidecar_schema is not None:
+        raise ValueError(f'Duplicate fixture ownership metadata: {relative_path(path)}')
+
+    schema_file = metadata_schema if metadata_schema is not None else sidecar_schema
+    if not isinstance(schema_file, str) or not schema_file:
+        raise ValueError(f'Missing or malformed fixture ownership metadata: {relative_path(path)}')
+    if '/' in schema_file or '\\' in schema_file:
+        raise ValueError(f'Noncanonical fixture ownership schema reference: {relative_path(path)}')
+    if schema_file != SCHEMA.name:
+        raise ValueError(
+            f'Wrong fixture ownership schema for {relative_path(path)}: '
+            f'expected={SCHEMA.name}, actual={schema_file}'
+        )
     return payload
 
 
@@ -291,10 +319,11 @@ def main():
     schema = load_json(SCHEMA)
     Draft202012Validator.check_schema(schema)
     validator = Draft202012Validator(schema)
+    ownership_inventory = load_ownership_inventory()
 
     seen_routes = set()
     for path in VALID_FIXTURES:
-        payload = load_fixture_payload(path)
+        payload = load_fixture_payload(path, ownership_inventory)
         validate_payload(payload, relative_path(path), validator)
         seen_routes.add(payload['selected_route'])
 
@@ -311,7 +340,7 @@ def main():
     for path in discovered_invalid_paths:
         expected = expected_invalid_reason(path)
         try:
-            validate_payload(load_fixture_payload(path), relative_path(path), validator)
+            validate_payload(load_fixture_payload(path, ownership_inventory), relative_path(path), validator)
         except ValueError as error:
             if expected not in str(error):
                 raise ValueError(
