@@ -68,6 +68,7 @@ A human-readable receipt is presentation-layer text only. It must not replace th
 ## Pull Requests
 
 State the behavior or contract changed, affected viewports and ownership boundaries, validation executed, regression coverage, and remaining unknowns.
+
 ## Decision Escape Route Review
 
 Before opening or completing any PR that changes schemas, validators, prompts, fixtures, pipeline docs, handoff artifacts, fallback behavior, responsive validation outputs, runtime evidence outputs, or decision-bearing outputs, review `planning/DECISION_ESCAPE_ROUTES.yml`.
@@ -75,3 +76,26 @@ Before opening or completing any PR that changes schemas, validators, prompts, f
 Do not mark an escape route as resolved unless its `enforcement_status` meets the required threshold for its risk and `session_scope`; a Critical cross-turn rule is not resolved by single-artifact `ci_enforced` evidence. Do not add authored `resolved` or `production_ready` fields; those are derived audit conclusions.
 
 Responsive validates runtime/responsive behavior; it must not redesign architecture or claim runtime enforcement unless inspected evidence proves the required carriers exist.
+
+## Temporary Shared UX/UI Policy
+
+For responsive and runtime validation involving UX/UI obligations, read and silently apply:
+
+```text
+policies/EV4_TEMP_CROSS_REPO_UX_UI_STANDARDS_POLICY_r001.md
+```
+
+Pinned identity:
+
+```yaml
+policy_id: EV4-TEMP-CROSS-REPO-UX-UI-STANDARDS-POLICY-r001
+revision: r001
+sha256: fd023d9b815b6d525539d595700a1768245ae83cca401c71fb61ba22d4f76483
+git_blob_sha: b52182c54577189d1b7832199fb699ee67f7d7fb
+```
+
+Apply only materially applicable Rule IDs. Validate actual rendered behavior across the required viewport, content, direction, input, and state conditions, including source and focus order, reflow, obstruction, target usability, motion alternatives, visibility, and state transitions.
+
+Preserve observed, inferred, and insufficient-evidence states separately. Do not turn a runtime mismatch into a new design choice, treat one viewport as proof for another, or infer full WCAG, ISO, usability, or production conformance from selected checks. `HEURISTIC` and `PREFERRED_DEFAULT` rules are not automatic runtime failure gates.
+
+Do not add unsupported fields, wrapper Artifacts, or decision outputs solely to carry this policy. This temporary policy is supplemental and becomes historical only after an explicitly adopted, pinned Kernel replacement exists.
