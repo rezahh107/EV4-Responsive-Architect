@@ -85,6 +85,24 @@ def accepted_discriminators(schema: dict[str, Any]) -> set[str] | None:
     return None
 
 
+def resolve_schema_file(
+    raw: dict[str, Any],
+    rel: str,
+    schemas: dict[str, dict[str, Any]],
+) -> str:
+    if "$schema_files" in raw:
+        raise OwnershipError(f"duplicate_primary_ownership:{rel}:$schema_files_forbidden")
+
+    schema_file = raw.get("$schema_file")
+    if not isinstance(schema_file, str) or not schema_file:
+        raise OwnershipError(f"missing_ownership_metadata:{rel}")
+    if "/" in schema_file or "\\" in schema_file:
+        raise OwnershipError(f"noncanonical_schema_reference:{rel}:{schema_file}")
+    if schema_file not in schemas:
+        raise OwnershipError(f"referenced_schema_absent:{rel}:{schema_file}")
+    return schema_file
+
+
 def resolve_entry(
     path: Path,
     expected_result: str,
@@ -96,22 +114,13 @@ def resolve_entry(
     if not isinstance(raw, dict):
         raise OwnershipError(f"fixture_not_object:{rel}")
 
-    if "$schema_files" in raw:
-        raise OwnershipError(f"duplicate_primary_ownership:{rel}:$schema_files_forbidden")
-
-    schema_file = raw.get("$schema_file")
-    if not isinstance(schema_file, str) or not schema_file:
-        raise OwnershipError(f"missing_ownership_metadata:{rel}")
-    if "/" in schema_file or "\\" in schema_file:
-        raise OwnershipError(f"noncanonical_schema_reference:{rel}:{schema_file}")
-    if schema_file not in schemas:
-        raise OwnershipError(f"referenced_schema_absent:{rel}:{schema_file}")
+    schema_file = resolve_schema_file(raw, rel, schemas)
 
     payload = dict(raw)
     payload.pop("$schema_file")
     discriminator = payload.get("schema")
     accepted = accepted_discriminators(schemas[schema_file])
-    if accepted is not None and discriminator not in accepted:
+    if accepted is not None and discriminator not in accepted and expected_result == "valid":
         raise OwnershipError(
             f"wrong_owning_schema:{rel}:{schema_file}:payload_schema={discriminator!r}"
         )
@@ -165,6 +174,14 @@ def run_boundary_self_tests() -> None:
             raise OwnershipError("focused_fixture_subtree_not_excluded")
         if direct not in selected:
             raise OwnershipError("direct_broad_fixture_not_guarded")
+
+        try:
+            resolve_schema_file({}, "misplaced-broad.json", {"owner.schema.json": {}})
+        except OwnershipError as exc:
+            if str(exc) != "missing_ownership_metadata:misplaced-broad.json":
+                raise OwnershipError(f"direct_broad_fixture_wrong_diagnostic:{exc}") from exc
+        else:
+            raise OwnershipError("direct_broad_fixture_without_owner_not_rejected")
 
 
 def build_inventory() -> list[InventoryEntry]:
