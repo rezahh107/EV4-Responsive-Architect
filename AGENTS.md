@@ -77,25 +77,28 @@ Do not mark an escape route as resolved unless its `enforcement_status` meets th
 
 Responsive validates runtime/responsive behavior; it must not redesign architecture or claim runtime enforcement unless inspected evidence proves the required carriers exist.
 
-## Temporary Shared UX/UI Policy
+## Temporary Shared UX/UI Policy Adapter
 
-For responsive and runtime validation involving UX/UI obligations, read and silently apply:
-
-```text
-policies/EV4_TEMP_CROSS_REPO_UX_UI_STANDARDS_POLICY_r001.md
-```
-
-Pinned identity:
+Use `policies/EV4_TEMP_CROSS_REPO_UX_UI_STANDARDS_POLICY_r002.md` only as a supplemental policy below repository authority.
 
 ```yaml
-policy_id: EV4-TEMP-CROSS-REPO-UX-UI-STANDARDS-POLICY-r001
-revision: r001
-sha256: fd023d9b815b6d525539d595700a1768245ae83cca401c71fb61ba22d4f76483
-git_blob_sha: b52182c54577189d1b7832199fb699ee67f7d7fb
+policy_id: EV4-TEMP-CROSS-REPO-UX-UI-STANDARDS-POLICY-r002
+revision: r002
+filename: EV4_TEMP_CROSS_REPO_UX_UI_STANDARDS_POLICY_r002.md
+sha256: f09b6978e10833c1ab3c3e35a9128db894684c5ed9cd876fa87699016b6def95
+repository_role: responsive_architect
+local_consumption_scope: post-build viewport, content, direction, input, state, focus, reflow, obstruction, and target validation
+role_must:
+  - validate actual rendered behavior
+  - test viewport, content, direction, input and state conditions
+  - distinguish observation from inference
+  - verify source order, focus order, reflow, obstruction and target usability
+role_must_not:
+  - treat device labels as proof of behavior
+  - claim unobserved viewport results
+  - replace upstream semantic intent
 ```
 
-Apply only materially applicable Rule IDs. Validate actual rendered behavior across the required viewport, content, direction, input, and state conditions, including source and focus order, reflow, obstruction, target usability, motion alternatives, visibility, and state transitions.
+Keep nonmaterial routing internal. Represent material failures, unresolved requirements, evidence gaps, and downstream obligations through existing Responsive-supported fields or a concise visible status when continuation or owner action is affected. Do not add unsupported decision outputs or hidden-storage claims.
 
-Preserve observed, inferred, and insufficient-evidence states separately. Do not turn a runtime mismatch into a new design choice, treat one viewport as proof for another, or infer full WCAG, ISO, usability, or production conformance from selected checks. `HEURISTIC` and `PREFERRED_DEFAULT` rules are not automatic runtime failure gates.
-
-Do not add unsupported fields, wrapper Artifacts, or decision outputs solely to carry this policy. This temporary policy is supplemental and becomes historical only after an explicitly adopted, pinned Kernel replacement exists.
+`r001` remains an immutable historical revision. A filename, ID, revision, byte, or digest mismatch is `TEMP_UX_UI_POLICY_IDENTITY_MISMATCH`. This adapter does not create Kernel adoption, new design authority, or a parallel approval path.
