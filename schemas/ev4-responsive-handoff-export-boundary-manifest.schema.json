@@ -5,7 +5,6 @@
   "type": "object",
   "additionalProperties": false,
   "required": [
-    "$schema_file",
     "schema",
     "status",
     "source_handoff_ref",
@@ -20,9 +19,6 @@
     "boundary_assertions"
   ],
   "properties": {
-    "$schema_file": {
-      "const": "ev4-responsive-handoff-export-boundary-manifest.schema.json"
-    },
     "schema": {
       "const": "ev4-responsive-handoff-export-boundary-manifest@0.1.0"
     },
