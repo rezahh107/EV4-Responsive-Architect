@@ -106,6 +106,20 @@ def load_json(path):
     return json.loads(path.read_text(encoding='utf-8'))
 
 
+def load_fixture_payload(path):
+    raw = load_json(path)
+    if not isinstance(raw, dict):
+        raise ValueError(f'Fixture must be a JSON object: {relative_path(path)}')
+
+    payload = dict(raw)
+    schema_file = payload.pop('$schema_file', None)
+    if not isinstance(schema_file, str) or not schema_file:
+        raise ValueError(f'Missing or malformed $schema_file metadata: {relative_path(path)}')
+    if '$schema_files' in payload:
+        raise ValueError(f'Forbidden duplicate-owner $schema_files metadata: {relative_path(path)}')
+    return payload
+
+
 def relative_path(path):
     return path.relative_to(ROOT)
 
@@ -280,7 +294,7 @@ def main():
 
     seen_routes = set()
     for path in VALID_FIXTURES:
-        payload = load_json(path)
+        payload = load_fixture_payload(path)
         validate_payload(payload, relative_path(path), validator)
         seen_routes.add(payload['selected_route'])
 
@@ -297,7 +311,7 @@ def main():
     for path in discovered_invalid_paths:
         expected = expected_invalid_reason(path)
         try:
-            validate_payload(load_json(path), relative_path(path), validator)
+            validate_payload(load_fixture_payload(path), relative_path(path), validator)
         except ValueError as error:
             if expected not in str(error):
                 raise ValueError(
