@@ -1,0 +1,62 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ev4-responsive-architect.local/schemas/ev4-responsive-contract-drift-sentinel-fixture.schema.json",
+  "title": "EV4 Responsive Contract Drift Sentinel Negative Fixture",
+  "description": "Repository-only fixture contract for the two deterministic mutations consumed by run_responsive_contract_drift_sentinel_check.py. This schema formalizes the existing focused-validator input shape and does not establish domain evidence or readiness.",
+  "oneOf": [
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "fixture",
+        "mutation",
+        "surface",
+        "expected_diagnostic"
+      ],
+      "properties": {
+        "fixture": {
+          "type": "string",
+          "minLength": 1
+        },
+        "mutation": {
+          "const": "remove_owner_check"
+        },
+        "surface": {
+          "type": "string",
+          "minLength": 1
+        },
+        "expected_diagnostic": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "fixture",
+        "mutation",
+        "command",
+        "expected_diagnostic"
+      ],
+      "properties": {
+        "fixture": {
+          "type": "string",
+          "minLength": 1
+        },
+        "mutation": {
+          "const": "comment_required_command"
+        },
+        "command": {
+          "type": "string",
+          "minLength": 1
+        },
+        "expected_diagnostic": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    }
+  ]
+}
