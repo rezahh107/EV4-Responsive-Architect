@@ -22,6 +22,7 @@ SCHEMAS_DIR = ROOT / "schemas"
 FIXTURES_DIR = ROOT / "validation" / "fixtures"
 VALID_DIR = FIXTURES_DIR / "valid"
 INVALID_DIR = FIXTURES_DIR / "invalid"
+OWNERSHIP_INVENTORY = FIXTURES_DIR / "fixture_schema_ownership.json"
 
 
 class OwnershipError(AssertionError):
@@ -43,6 +44,24 @@ class InventoryEntry:
 def load_json(path: Path) -> Any:
     with path.open("r", encoding="utf-8") as handle:
         return json.load(handle)
+
+
+def load_ownership_inventory() -> dict[str, str]:
+    if not OWNERSHIP_INVENTORY.is_file():
+        return {}
+    payload = load_json(OWNERSHIP_INVENTORY)
+    if not isinstance(payload, dict):
+        raise OwnershipError("ownership_inventory_not_object")
+    inventory: dict[str, str] = {}
+    for fixture_path, schema_file in payload.items():
+        if not isinstance(fixture_path, str) or not fixture_path:
+            raise OwnershipError("ownership_inventory_invalid_fixture_path")
+        if not isinstance(schema_file, str) or not schema_file:
+            raise OwnershipError(f"ownership_inventory_invalid_schema:{fixture_path}")
+        if "/" in schema_file or "\\" in schema_file:
+            raise OwnershipError(f"ownership_inventory_noncanonical_schema:{fixture_path}:{schema_file}")
+        inventory[fixture_path] = schema_file
+    return inventory
 
 
 def load_schemas() -> dict[str, dict[str, Any]]:
@@ -89,18 +108,32 @@ def resolve_schema_file(
     raw: dict[str, Any],
     rel: str,
     schemas: dict[str, dict[str, Any]],
-) -> str:
+    ownership_inventory: dict[str, str],
+) -> tuple[str, str]:
     if "$schema_files" in raw:
         raise OwnershipError(f"duplicate_primary_ownership:{rel}:$schema_files_forbidden")
 
-    schema_file = raw.get("$schema_file")
-    if not isinstance(schema_file, str) or not schema_file:
+    metadata_schema = raw.get("$schema_file")
+    sidecar_schema = ownership_inventory.get(rel)
+    if metadata_schema is not None and sidecar_schema is not None:
+        raise OwnershipError(f"duplicate_primary_ownership:{rel}:metadata_and_inventory")
+
+    if metadata_schema is not None:
+        if not isinstance(metadata_schema, str) or not metadata_schema:
+            raise OwnershipError(f"missing_ownership_metadata:{rel}")
+        schema_file = metadata_schema
+        ownership_source = "$schema_file"
+    elif sidecar_schema is not None:
+        schema_file = sidecar_schema
+        ownership_source = "fixture_schema_ownership.json"
+    else:
         raise OwnershipError(f"missing_ownership_metadata:{rel}")
+
     if "/" in schema_file or "\\" in schema_file:
         raise OwnershipError(f"noncanonical_schema_reference:{rel}:{schema_file}")
     if schema_file not in schemas:
         raise OwnershipError(f"referenced_schema_absent:{rel}:{schema_file}")
-    return schema_file
+    return schema_file, ownership_source
 
 
 def resolve_entry(
@@ -108,16 +141,17 @@ def resolve_entry(
     expected_result: str,
     schemas: dict[str, dict[str, Any]],
     registry: Registry,
+    ownership_inventory: dict[str, str],
 ) -> InventoryEntry:
     raw = load_json(path)
     rel = path.relative_to(ROOT).as_posix()
     if not isinstance(raw, dict):
         raise OwnershipError(f"fixture_not_object:{rel}")
 
-    schema_file = resolve_schema_file(raw, rel, schemas)
+    schema_file, ownership_source = resolve_schema_file(raw, rel, schemas, ownership_inventory)
 
     payload = dict(raw)
-    payload.pop("$schema_file")
+    payload.pop("$schema_file", None)
     discriminator = payload.get("schema")
     accepted = accepted_discriminators(schemas[schema_file])
     if accepted is not None and discriminator not in accepted and expected_result == "valid":
@@ -144,7 +178,7 @@ def resolve_entry(
         owning_schema_path=f"schemas/{schema_file}",
         primary_validator_path="validation/schema_validator/validate_schemas.py",
         secondary_validator_paths=("validation/e2e/run_fixture_schema_ownership_check.py",),
-        ownership_source="$schema_file",
+        ownership_source=ownership_source,
         migration_state=migration_state,
     )
 
@@ -176,28 +210,54 @@ def run_boundary_self_tests() -> None:
             raise OwnershipError("direct_broad_fixture_not_guarded")
 
         try:
-            resolve_schema_file({}, "misplaced-broad.json", {"owner.schema.json": {}})
+            resolve_schema_file({}, "misplaced-broad.json", {"owner.schema.json": {}}, {})
         except OwnershipError as exc:
             if str(exc) != "missing_ownership_metadata:misplaced-broad.json":
                 raise OwnershipError(f"direct_broad_fixture_wrong_diagnostic:{exc}") from exc
         else:
             raise OwnershipError("direct_broad_fixture_without_owner_not_rejected")
 
+        schema_file, ownership_source = resolve_schema_file(
+            {},
+            "misplaced-broad.json",
+            {"owner.schema.json": {}},
+            {"misplaced-broad.json": "owner.schema.json"},
+        )
+        if schema_file != "owner.schema.json" or ownership_source != "fixture_schema_ownership.json":
+            raise OwnershipError("sidecar_ownership_resolution_self_test_failed")
+
+        try:
+            resolve_schema_file(
+                {"$schema_file": "owner.schema.json"},
+                "misplaced-broad.json",
+                {"owner.schema.json": {}},
+                {"misplaced-broad.json": "owner.schema.json"},
+            )
+        except OwnershipError as exc:
+            if str(exc) != "duplicate_primary_ownership:misplaced-broad.json:metadata_and_inventory":
+                raise OwnershipError(f"duplicate_ownership_wrong_diagnostic:{exc}") from exc
+        else:
+            raise OwnershipError("duplicate_metadata_and_inventory_owner_not_rejected")
+
 
 def build_inventory() -> list[InventoryEntry]:
     run_boundary_self_tests()
     schemas = load_schemas()
     registry = build_registry(schemas)
+    ownership_inventory = load_ownership_inventory()
     inventory: list[InventoryEntry] = []
     for path in fixture_paths(VALID_DIR):
-        inventory.append(resolve_entry(path, "valid", schemas, registry))
+        inventory.append(resolve_entry(path, "valid", schemas, registry, ownership_inventory))
     for path in fixture_paths(INVALID_DIR):
-        inventory.append(resolve_entry(path, "invalid", schemas, registry))
+        inventory.append(resolve_entry(path, "invalid", schemas, registry, ownership_inventory))
     if not inventory:
         raise OwnershipError("no_broad_schema_fixtures")
     fixture_names = [entry.fixture_path for entry in inventory]
     if len(fixture_names) != len(set(fixture_names)):
         raise OwnershipError("duplicate_inventory_fixture_path")
+    stale_sidecar_entries = sorted(set(ownership_inventory) - set(fixture_names))
+    if stale_sidecar_entries:
+        raise OwnershipError(f"ownership_inventory_orphaned:{','.join(stale_sidecar_entries)}")
     return inventory
 
 
