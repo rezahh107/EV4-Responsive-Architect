@@ -1,6 +1,7 @@
 {
   "validation/fixtures/invalid/builder_responsive_input_forbidden_claim_subset.invalid.json": "ev4-builder-responsive-input.schema.json",
   "validation/fixtures/invalid/builder_responsive_input_missing_mobile_evidence.invalid.json": "ev4-builder-responsive-input.schema.json",
+  "validation/fixtures/invalid/kernel_receipt_claims_runtime_monitor_enforcement.invalid.json": "ev4-responsive-kernel-decision-receipt.schema.json",
   "validation/fixtures/invalid/responsive_output_builder_mode_mismatch.invalid.json": "ev4-responsive-output.schema.json",
   "validation/fixtures/invalid/responsive_output_dropped_decision_lineage.invalid.json": "ev4-responsive-output.schema.json",
   "validation/fixtures/invalid/responsive_output_duplicate_step_id.invalid.json": "ev4-responsive-output.schema.json",
