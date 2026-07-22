@@ -1,3 +1,18 @@
 {
-  "validation/fixtures/valid/responsive_output_blocked.valid.json": "ev4-responsive-output.schema.json"
+  "validation/fixtures/invalid/responsive_output_builder_mode_mismatch.invalid.json": "ev4-responsive-output.schema.json",
+  "validation/fixtures/invalid/responsive_output_dropped_decision_lineage.invalid.json": "ev4-responsive-output.schema.json",
+  "validation/fixtures/invalid/responsive_output_duplicate_step_id.invalid.json": "ev4-responsive-output.schema.json",
+  "validation/fixtures/invalid/responsive_output_empty_steps.invalid.json": "ev4-responsive-output.schema.json",
+  "validation/fixtures/invalid/responsive_output_evidence_state_insufficient.invalid.json": "ev4-responsive-output.schema.json",
+  "validation/fixtures/invalid/responsive_output_evidence_state_provided.invalid.json": "ev4-responsive-output.schema.json",
+  "validation/fixtures/invalid/responsive_output_missing_evidence_state.invalid.json": "ev4-responsive-output.schema.json",
+  "validation/fixtures/invalid/responsive_output_missing_forbidden_claims.invalid.json": "ev4-responsive-output.schema.json",
+  "validation/fixtures/invalid/responsive_output_noncanonical_breakpoint_scope.invalid.json": "ev4-responsive-output.schema.json",
+  "validation/fixtures/invalid/responsive_output_replaced_decision_lineage.invalid.json": "ev4-responsive-output.schema.json",
+  "validation/fixtures/invalid/responsive_output_route_mode_mismatch.invalid.json": "ev4-responsive-output.schema.json",
+  "validation/fixtures/invalid/responsive_output_runtime_conflict_redesign.invalid.json": "ev4-responsive-output.schema.json",
+  "validation/fixtures/invalid/responsive_output_unresolved_ready_mismatch.invalid.json": "ev4-responsive-output.schema.json",
+  "validation/fixtures/valid/responsive_output_blocked.valid.json": "ev4-responsive-output.schema.json",
+  "validation/fixtures/valid/responsive_output_same_tree.valid.json": "ev4-responsive-output.schema.json",
+  "validation/fixtures/valid/responsive_output_viewport_tree.valid.json": "ev4-responsive-output.schema.json"
 }
