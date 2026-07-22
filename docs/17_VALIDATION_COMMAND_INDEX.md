@@ -1,7 +1,7 @@
 # Validation Command Index
 
-Task: `WP-RESP-012/PR-B parity reconciliation`
-Updated by: `automation/wp-resp-005-pr-b-replenish-after-wp015-a`
+Task: `WP-RESP-015/PR-C compatibility documentation and STATUS parity`
+Updated by: `automation/wp-resp-015-pr-c-compatibility-docs-status`
 
 This index lists repository validation commands for controlled manual use. Command success is repository-check evidence only; it is not responsive correctness evidence and does not authorize production, release, real pilot, export, live-render, accessibility, or pixel-validation claims.
 
@@ -169,6 +169,17 @@ python validation/e2e/run_prompt_5_routing_envelope_check.py
 ```
 
 Validates the repository-local Prompt 5 route/reject envelope, lineage, transport eligibility, diagnostics, authority ownership, and all-false evidence/readiness boundary registry. Responsive remains non-executing; EV4 Project Gate retains transport and downstream gate authority. Success is repository-check evidence only and does not prove external transport, pilot readiness, production/release readiness, export, accessibility, pixel-perfect output, or responsive correctness.
+
+
+## Runtime-mismatch reopen to Prompt 5 routing compatibility
+
+```bash
+python validation/e2e/run_runtime_mismatch_prompt_5_compatibility_check.py
+```
+
+Validates the repository-local compatibility contract between `runtime-mismatch-reopen-package.v1` and `prompt-5-routing-envelope.v1`. It checks pinned dependency identities, shared Kernel and producer-export lineage, the exact `reopen_for_authoritative_review` action, eligible routing to `ev4-project-gate`, empty rejection diagnostics for a compatible route, authority ownership, negative drift cases, and the complete all-false evidence/readiness boundary registry.
+
+The primary `Validate` workflow reaches this check transitively through `run_runtime_mismatch_reopen_package_check.py`; the direct command above is supported for focused manual diagnosis. Success is repository-check evidence only. It does not execute Project Gate transport, replace or reinterpret a Kernel decision, create submitted evidence, authorize a pilot, or prove production, release, live-render, export, accessibility, pixel-perfect, or responsive-correctness outcomes.
 
 ## Project Gate Prompt 04 Responsive Producer Adoption
 

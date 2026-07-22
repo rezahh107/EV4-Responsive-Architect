@@ -1,7 +1,7 @@
 # Active Contract / Schema / Validator Index
 
-Task: `WP-RESP-012/PR-B parity reconciliation`
-Updated by: `automation/wp-resp-005-pr-b-replenish-after-wp015-a`
+Task: `WP-RESP-015/PR-C compatibility documentation and STATUS parity`
+Updated by: `automation/wp-resp-015-pr-c-compatibility-docs-status`
 
 This index records the active repository surfaces needed for controlled manual use and catalog-backed handoff. It is an index only; it does not validate a real submitted packet, mutate Issue #8, authorize pilot execution, or upgrade readiness.
 
@@ -65,6 +65,9 @@ contracts:
   project_gate_prompt_5_routing_boundary:
     path: contracts/project-gate/PROMPT_5_ROUTING_BOUNDARY.md
     role: non-executing local route/reject and Project Gate authority boundary
+  runtime_mismatch_prompt_5_routing_compatibility:
+    path: contracts/compatibility/RUNTIME_MISMATCH_PROMPT_5_ROUTING_COMPATIBILITY.md
+    role: repository-local compatibility boundary for authoritative reopen routing without transport execution or Kernel authority substitution
 ```
 
 ## Schemas
@@ -89,6 +92,9 @@ schemas:
   project_gate_prompt_5_routing_envelope:
     path: contracts/project-gate/prompt-5-routing-envelope.v1.schema.json
     role: fail-closed Prompt 5 route/reject envelope and boundary-claim schema
+  runtime_mismatch_prompt_5_routing_compatibility:
+    path: contracts/compatibility/runtime-mismatch-prompt-5-routing-compatibility.v1.schema.json
+    role: pinned dependency, lineage, action, diagnostic, authority, and all-false boundary compatibility schema
   rolling_queue:
     path: schemas/ev4-responsive-rolling-queue.schema.json
     role: archived RTAQ queue schema
@@ -166,7 +172,11 @@ primary_validate_workflow:
       role: Prompt 5 schema, semantic coupling, authority, diagnostics, and all-false boundary checks
     runtime_mismatch_reopen_package:
       path: validation/e2e/run_runtime_mismatch_reopen_package_check.py
-      role: runtime-mismatch schema, lineage, authoritative-review action, authority, negative-fixture, and all-false boundary checks
+      role: runtime-mismatch schema, lineage, authoritative-review action, authority, negative-fixture, and all-false boundary checks; invokes the Prompt 5 compatibility validator
+    runtime_mismatch_prompt_5_routing_compatibility:
+      path: validation/e2e/run_runtime_mismatch_prompt_5_compatibility_check.py
+      role: focused dependency-pin, shared-lineage, action, route, diagnostic, authority, drift, and boundary compatibility checks
+      ci_path: transitively invoked by runtime_mismatch_reopen_package in the primary Validate chain
     responsive_contract_drift_sentinel:
       path: validation/e2e/run_responsive_contract_drift_sentinel_check.py
       role: CI-visible parity guard for owned responsive contract, STATUS, command-index, active-index, and workflow surfaces
@@ -260,4 +270,7 @@ controlled_use_docs:
   prompt_5_project_gate_routing_boundary:
     path: docs/48_PROMPT_5_PROJECT_GATE_ROUTING_BOUNDARY.md
     role: WP-RESP-013 local routing capability, external transport limitation, and evidence/readiness boundary
+  runtime_mismatch_prompt_5_routing_compatibility:
+    path: docs/49_RUNTIME_MISMATCH_PROMPT_5_ROUTING_COMPATIBILITY.md
+    role: WP-RESP-015 compatibility guarantees, validator path, authority ownership, and preserved evidence/readiness limitations
 ```
