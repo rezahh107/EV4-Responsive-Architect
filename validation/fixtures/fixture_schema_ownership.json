@@ -12,7 +12,12 @@
   "validation/fixtures/invalid/responsive_output_route_mode_mismatch.invalid.json": "ev4-responsive-output.schema.json",
   "validation/fixtures/invalid/responsive_output_runtime_conflict_redesign.invalid.json": "ev4-responsive-output.schema.json",
   "validation/fixtures/invalid/responsive_output_unresolved_ready_mismatch.invalid.json": "ev4-responsive-output.schema.json",
+  "validation/fixtures/invalid/viewport_inheritance_reset_boundary_upgrade.invalid.json": "ev4-viewport-inheritance-reset-matrix.schema.json",
+  "validation/fixtures/invalid/viewport_inheritance_reset_missing_source.invalid.json": "ev4-viewport-inheritance-reset-matrix.schema.json",
+  "validation/fixtures/invalid/viewport_inheritance_reset_narrower_source.invalid.json": "ev4-viewport-inheritance-reset-matrix.schema.json",
+  "validation/fixtures/invalid/viewport_inheritance_reset_unknown_source.invalid.json": "ev4-viewport-inheritance-reset-matrix.schema.json",
   "validation/fixtures/valid/responsive_output_blocked.valid.json": "ev4-responsive-output.schema.json",
   "validation/fixtures/valid/responsive_output_same_tree.valid.json": "ev4-responsive-output.schema.json",
-  "validation/fixtures/valid/responsive_output_viewport_tree.valid.json": "ev4-responsive-output.schema.json"
+  "validation/fixtures/valid/responsive_output_viewport_tree.valid.json": "ev4-responsive-output.schema.json",
+  "validation/fixtures/valid/viewport_inheritance_reset_matrix.valid.json": "ev4-viewport-inheritance-reset-matrix.schema.json"
 }
