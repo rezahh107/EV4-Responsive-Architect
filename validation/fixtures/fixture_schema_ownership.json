@@ -7,6 +7,7 @@
   "validation/fixtures/invalid/responsive_contract_drift_commented_command.invalid.json": "ev4-responsive-contract-drift-sentinel-fixture.schema.json",
   "validation/fixtures/invalid/responsive_contract_drift_missing_owner_check.invalid.json": "ev4-responsive-contract-drift-sentinel-fixture.schema.json",
   "validation/fixtures/invalid/responsive_handoff_export_boundary_manifest_boundary_upgrade.invalid.json": "ev4-responsive-handoff-export-boundary-manifest.schema.json",
+  "validation/fixtures/invalid/responsive_handoff_export_boundary_manifest_missing_source.invalid.json": "ev4-responsive-handoff-export-boundary-manifest.schema.json",
   "validation/fixtures/invalid/responsive_output_builder_mode_mismatch.invalid.json": "ev4-responsive-output.schema.json",
   "validation/fixtures/invalid/responsive_output_dropped_decision_lineage.invalid.json": "ev4-responsive-output.schema.json",
   "validation/fixtures/invalid/responsive_output_duplicate_step_id.invalid.json": "ev4-responsive-output.schema.json",
