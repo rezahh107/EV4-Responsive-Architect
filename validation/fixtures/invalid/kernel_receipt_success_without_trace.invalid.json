@@ -1,4 +1,5 @@
 {
+  "$schema_file": "ev4-responsive-kernel-decision-receipt.schema.json",
   "fixture": "Responsive_cannot_emit_success_receipt_for_untraced_validation",
   "kernel_decision_receipt": {
     "receipt_state": "success",

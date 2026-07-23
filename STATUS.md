@@ -97,6 +97,7 @@ active_validation:
   - validation/e2e/run_viewport_inheritance_reset_matrix_check.py
   - validation/e2e/run_responsive_handoff_export_boundary_manifest_check.py
   - validation/e2e/run_task_quality_gate_check.py
+  - validation/e2e/run_fixture_schema_ownership_check.py
   - validation/e2e/run_rtaq_ssot_guard_check.py
   - validation/e2e/run_status_merged_foundation_guard_check.py
   - validation/e2e/run_automation_control_state_check.py
@@ -222,6 +223,7 @@ automatic_check:
   - python validation/e2e/run_prompt_5_routing_envelope_check.py
   - python validation/e2e/run_runtime_mismatch_reopen_package_check.py
   - python validation/e2e/run_decision_escape_routes_schema_check.py
+  - python validation/e2e/run_fixture_schema_ownership_check.py
   - python validation/e2e/run_rtaq_ssot_guard_check.py
   - python validation/e2e/run_status_merged_foundation_guard_check.py
   - python validation/e2e/run_automation_control_state_check.py

@@ -1,0 +1,108 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ev4-responsive-architect.local/schemas/ev4-post-merge-quality-debt-register.schema.json",
+  "title": "EV4 Post-Merge Quality Debt Register",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "status",
+    "scope",
+    "created_by",
+    "quality_debts",
+    "boundary_assertions"
+  ],
+  "properties": {
+    "schema": {
+      "const": "ev4-post-merge-quality-debt-register@1.0.0"
+    },
+    "status": {
+      "const": "active"
+    },
+    "scope": {
+      "type": "string",
+      "minLength": 1
+    },
+    "created_by": {
+      "type": "string",
+      "minLength": 1
+    },
+    "quality_debts": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "severity",
+          "status",
+          "summary",
+          "source_prs",
+          "resolution",
+          "resolution_paths"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^QD-[0-9]{3}$"
+          },
+          "severity": {
+            "enum": ["P0", "P1", "P2", "P3"]
+          },
+          "status": {
+            "const": "resolved"
+          },
+          "summary": {
+            "type": "string",
+            "minLength": 1
+          },
+          "source_prs": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {
+              "type": "integer",
+              "minimum": 1
+            }
+          },
+          "resolution": {
+            "type": "string",
+            "minLength": 1
+          },
+          "resolution_paths": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        }
+      }
+    },
+    "boundary_assertions": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "submitted_evidence_created",
+        "issue_8_mutated",
+        "pilot_executed_or_authorized",
+        "readiness_claim_upgraded",
+        "production_or_release_claim_upgraded",
+        "live_render_export_accessibility_pixel_or_responsive_correctness_claim_upgraded",
+        "ci_success_treated_as_responsive_correctness_evidence"
+      ],
+      "properties": {
+        "submitted_evidence_created": {"const": false},
+        "issue_8_mutated": {"const": false},
+        "pilot_executed_or_authorized": {"const": false},
+        "readiness_claim_upgraded": {"const": false},
+        "production_or_release_claim_upgraded": {"const": false},
+        "live_render_export_accessibility_pixel_or_responsive_correctness_claim_upgraded": {"const": false},
+        "ci_success_treated_as_responsive_correctness_evidence": {"const": false}
+      }
+    }
+  }
+}
