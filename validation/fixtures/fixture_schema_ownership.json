@@ -22,6 +22,7 @@
   "validation/fixtures/invalid/responsive_output_runtime_conflict_redesign.invalid.json": "ev4-responsive-output.schema.json",
   "validation/fixtures/invalid/responsive_output_unresolved_ready_mismatch.invalid.json": "ev4-responsive-output.schema.json",
   "validation/fixtures/invalid/submitted_packet_eligibility_placeholder_hash.invalid.json": "ev4-responsive-evidence-intake-packet.schema.json",
+  "validation/fixtures/invalid/submitted_packet_eligibility_stale_state.invalid.json": "ev4-responsive-evidence-intake-packet.schema.json",
   "validation/fixtures/invalid/viewport_inheritance_reset_boundary_upgrade.invalid.json": "ev4-viewport-inheritance-reset-matrix.schema.json",
   "validation/fixtures/invalid/viewport_inheritance_reset_missing_source.invalid.json": "ev4-viewport-inheritance-reset-matrix.schema.json",
   "validation/fixtures/invalid/viewport_inheritance_reset_narrower_source.invalid.json": "ev4-viewport-inheritance-reset-matrix.schema.json",
