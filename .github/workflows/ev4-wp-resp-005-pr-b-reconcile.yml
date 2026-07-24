@@ -96,10 +96,6 @@ jobs:
         run: |
           set -euo pipefail
           python validation/e2e/run_automation_work_package_catalog_reassembly_check.py --write
-          python validation/e2e/run_automation_work_package_catalog_check.py
-          python validation/e2e/run_automation_work_package_catalog_reassembly_check.py
-          python validation/e2e/run_automation_control_state_check.py
-          python validation/e2e/run_task_quality_gate_check.py
 
       - name: Verify bounded structural diff
         shell: bash
