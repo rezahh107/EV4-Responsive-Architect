@@ -78,7 +78,7 @@ jobs:
           assert boundaries['responsive_correctness_validated'] is False
           ready = [wp_id for wp_id, wp in catalog['work_packages'].items() if wp.get('selectable') is True and wp.get('ready_state') == 'ready']
           assert ready == ['WP-RESP-011', 'WP-RESP-014', 'WP-RESP-016', 'WP-RESP-017'], ready
-          assert any(entry['id'] == 'WP-RESP-017' for entry in index['packages'])
+          assert any(entry['id'] == 'WP-RESP-017' for entry in index['package_entries'])
           PY
 
           git show origin/main:.github/workflows/validate.yml > .github/workflows/validate.yml
