@@ -39,7 +39,8 @@
       "Do not make temporary UX/UI guidance a replacement for repository contracts, Stage Anchors, validators, Kernel decisions, Project Gate authority, or project-specific evidence.",
       "Do not create submitted evidence, mutate Issue #8, or run or authorize real pilot execution.",
       "Do not claim production_ready, release_ready, live_render_validated, export_json_validated, accessibility_passed, pixel_perfect, or responsive_correctness_validated.",
-      "Do not treat standards conformance, CI success, merged PRs, catalog completion, or Work Package completion as domain evidence."
+      "Do not treat standards conformance, CI success, merged PRs, catalog completion, or Work Package completion as domain evidence.",
+      "Do not introduce an approved standards inventory, external source list, or universal design rule unless its provenance, applicability, exceptions, and conflict handling are explicitly bounded by the Work Package contract."
     ],
     "must_deliver": [
       "Non-authoritative UX/UI standards guidance contract and schema.",
