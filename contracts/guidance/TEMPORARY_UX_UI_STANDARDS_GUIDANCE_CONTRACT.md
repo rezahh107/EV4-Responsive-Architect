@@ -16,7 +16,7 @@ A standards guidance artifact is eligible for repository-local use only when all
 4. Known exceptions and non-applicable conditions.
 5. Conflict handling that identifies every higher-authority source, records whether each conflict is resolved or unresolved, and defers to repository contracts, validators, Stage Anchors, Kernel decisions, Project Gate authority, and project-specific evidence.
 6. A lifecycle state and review date that prevent stale guidance from silently remaining active.
-7. Explicit false evidence, pilot, readiness, production, release, export, accessibility, pixel, and responsive-correctness claims.
+7. Explicit false evidence, pilot, release, export, accessibility, pixel, and responsive-correctness claims. Production readiness remains a derived audit conclusion and must not be authored in a guidance artifact.
 
 Missing provenance, unsupported universal wording, stale lifecycle state, unresolved conflict, authority substitution, or any forbidden claim upgrade must fail closed in the validator slice.
 
@@ -56,7 +56,7 @@ The schema requires:
 - applicability and exception rules;
 - machine-readable conflict identity, authority reference, disposition, and resolution evidence;
 - non-authoritative usage semantics; and
-- false boundary claims.
+- false boundary claims that do not author derived audit conclusions.
 
 ## Required negative coverage for WP-RESP-017/PR-B
 
@@ -70,8 +70,9 @@ The validator slice must reject at least:
 - a resolved conflict without a non-empty resolution reference;
 - an unresolved conflict represented as selectable;
 - guidance replacing a contract, validator, Stage Anchor, Kernel decision, or Project Gate authority;
+- an authored `production_ready` field or any attempt to convert guidance into a production-readiness conclusion;
 - standards conformance represented as responsive-correctness evidence; and
-- any submitted-evidence, pilot, readiness, production, release, export, accessibility, pixel, or responsive-correctness upgrade.
+- any submitted-evidence, pilot, readiness, release, export, accessibility, pixel, or responsive-correctness upgrade.
 
 ## Preserved boundaries
 
@@ -86,4 +87,4 @@ This contract does not prove or create:
 - pixel-perfect output; or
 - responsive correctness.
 
-Schema validity and CI success remain repository-check evidence only.
+Production readiness is derived outside the authored guidance payload. The absence of a `production_ready` field does not establish readiness. Schema validity and CI success remain repository-check evidence only.
