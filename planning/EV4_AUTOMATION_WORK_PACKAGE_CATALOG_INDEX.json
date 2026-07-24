@@ -112,7 +112,7 @@
       "id": "WP-RESP-017",
       "path": "planning/work-packages/WP-RESP-017.json",
       "schema": "ev4-automation-work-package-file@1.0.0",
-      "content_sha256": "b658f59da36535ffb731ad97ee117c7650faf3db04232402b11e65da99459a44"
+      "content_sha256": "6ffba324a0f847a2817ed4d610feed06631653460b881dbee0f4398443345c44"
     }
   ],
   "global_boundaries": {
