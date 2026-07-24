@@ -1,9 +1,10 @@
 name: Reconcile WP-RESP-005 PR-B catalog projection
 
 on:
-  push:
+  pull_request:
+    types: [opened, synchronize, reopened]
     branches:
-      - automation/wp-resp-005-pr-b-replenish-after-wp010
+      - main
 
 permissions:
   contents: write
@@ -14,7 +15,7 @@ concurrency:
 
 jobs:
   reconcile:
-    if: github.actor != 'github-actions[bot]'
+    if: github.actor != 'github-actions[bot]' && github.head_ref == 'automation/wp-resp-005-pr-b-replenish-after-wp010'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout exact branch head
