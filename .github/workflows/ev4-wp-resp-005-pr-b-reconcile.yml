@@ -1,0 +1,146 @@
+name: Reconcile WP-RESP-005 PR-B catalog projection
+
+on:
+  push:
+    branches:
+      - automation/wp-resp-005-pr-b-replenish-after-wp010
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ev4-wp-resp-005-pr-b-reconcile
+  cancel-in-progress: false
+
+jobs:
+  reconcile:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout exact branch head
+        uses: actions/checkout@v4
+        with:
+          ref: automation/wp-resp-005-pr-b-replenish-after-wp010
+          fetch-depth: 0
+
+      - name: Apply bounded structural catalog reconciliation
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import copy
+          import json
+          from pathlib import Path
+
+          catalog_path = Path('planning/EV4_AUTOMATION_WORK_PACKAGE_CATALOG.json')
+          wp10_path = Path('planning/work-packages/WP-RESP-010.json')
+          wp17_path = Path('planning/work-packages/WP-RESP-017.json')
+
+          catalog = json.loads(catalog_path.read_text(encoding='utf-8'))
+          wp10 = json.loads(wp10_path.read_text(encoding='utf-8'))['work_package']
+          wp17 = json.loads(wp17_path.read_text(encoding='utf-8'))['work_package']
+
+          before = copy.deepcopy(catalog)
+          packages = catalog['work_packages']
+
+          assert catalog['catalog_replenishment_policy']['ready_work_package_target'] == 4
+          assert catalog['catalog_replenishment_policy']['refresh_when_ready_below'] == 4
+          assert catalog['catalog_replenishment_policy']['max_ready_work_packages'] == 5
+          assert all(value is False for value in catalog['global_boundaries'].values())
+          assert packages['WP-RESP-010']['ready_state'] == 'ready'
+          assert packages['WP-RESP-010']['reporting']['estimated_completion_percentage'] == 0
+          assert 'WP-RESP-017' not in packages
+          assert wp10['id'] == 'WP-RESP-010'
+          assert wp10['ready_state'] == 'completed'
+          assert wp10['reporting']['estimated_completion_percentage'] == 100
+          assert wp17['id'] == 'WP-RESP-017'
+          assert wp17['ready_state'] == 'ready'
+          assert wp17['reporting']['estimated_completion_percentage'] == 0
+
+          rebuilt = {}
+          inserted = False
+          for package_id, package in packages.items():
+              if package_id == 'WP-RESP-010':
+                  rebuilt[package_id] = wp10
+              else:
+                  rebuilt[package_id] = package
+              if package_id == 'WP-RESP-016':
+                  rebuilt['WP-RESP-017'] = wp17
+                  inserted = True
+
+          assert inserted
+          catalog['work_packages'] = rebuilt
+
+          assert list(catalog.keys()) == list(before.keys())
+          assert catalog['selection_policy'] == before['selection_policy']
+          assert catalog['execution_policy'] == before['execution_policy']
+          assert catalog['catalog_replenishment_policy'] == before['catalog_replenishment_policy']
+          assert catalog['work_package_requirements'] == before['work_package_requirements']
+          assert catalog['global_boundaries'] == before['global_boundaries']
+          assert set(catalog['work_packages']) == set(before['work_packages']) | {'WP-RESP-017'}
+          for package_id in before['work_packages']:
+              if package_id != 'WP-RESP-010':
+                  assert catalog['work_packages'][package_id] == before['work_packages'][package_id]
+          assert list(catalog['work_packages'])[-2:] == ['WP-RESP-016', 'WP-RESP-017']
+
+          catalog_path.write_text(
+              json.dumps(catalog, ensure_ascii=False, indent=2) + '\n',
+              encoding='utf-8',
+          )
+          json.loads(catalog_path.read_text(encoding='utf-8'))
+          PY
+
+      - name: Regenerate deterministic modular projection
+        shell: bash
+        run: |
+          set -euo pipefail
+          python validation/e2e/run_automation_work_package_catalog_reassembly_check.py --write
+          python validation/e2e/run_automation_work_package_catalog_check.py
+          python validation/e2e/run_automation_work_package_catalog_reassembly_check.py
+          python validation/e2e/run_automation_control_state_check.py
+          python validation/e2e/run_task_quality_gate_check.py
+
+      - name: Verify bounded structural diff
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          catalog = json.loads(Path('planning/EV4_AUTOMATION_WORK_PACKAGE_CATALOG.json').read_text(encoding='utf-8'))
+          index = json.loads(Path('planning/EV4_AUTOMATION_WORK_PACKAGE_CATALOG_INDEX.json').read_text(encoding='utf-8'))
+          wp10 = json.loads(Path('planning/work-packages/WP-RESP-010.json').read_text(encoding='utf-8'))
+          wp17 = json.loads(Path('planning/work-packages/WP-RESP-017.json').read_text(encoding='utf-8'))
+
+          assert catalog['work_packages']['WP-RESP-010'] == wp10['work_package']
+          assert catalog['work_packages']['WP-RESP-017'] == wp17['work_package']
+          assert catalog['work_packages']['WP-RESP-010']['ready_state'] == 'completed'
+          assert catalog['work_packages']['WP-RESP-017']['ready_state'] == 'ready'
+          assert all(value is False for value in catalog['global_boundaries'].values())
+          assert all(value is False for value in index['global_boundaries'].values())
+          ids = list(catalog['work_packages'])
+          assert len(ids) == len(set(ids))
+          assert ids[-2:] == ['WP-RESP-016', 'WP-RESP-017']
+          ready = [
+              package_id for package_id, package in catalog['work_packages'].items()
+              if package.get('selectable') is True and package.get('ready_state') == 'ready'
+          ]
+          assert ready == ['WP-RESP-011', 'WP-RESP-014', 'WP-RESP-016', 'WP-RESP-017']
+          PY
+
+      - name: Remove temporary workflow and commit final bounded repair
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm .github/workflows/ev4-wp-resp-005-pr-b-reconcile.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add planning/EV4_AUTOMATION_WORK_PACKAGE_CATALOG.json \
+                  planning/EV4_AUTOMATION_WORK_PACKAGE_CATALOG_INDEX.json \
+                  planning/work-packages/WP-RESP-010.json \
+                  planning/work-packages/WP-RESP-017.json \
+                  .github/workflows/ev4-wp-resp-005-pr-b-reconcile.yml
+          git diff --cached --check
+          git commit -m "fix(WP-RESP-005): reconcile canonical catalog projection"
+          git push origin HEAD:automation/wp-resp-005-pr-b-replenish-after-wp010
