@@ -5,11 +5,11 @@
     "id": "WP-RESP-010",
     "title": "Close Repository-Wide Schema Fixture Metadata Parity",
     "capability_area": "schema_fixture_parity",
-    "current_state": "Repository-specific validators pass, but the repository-wide schema validator has a known fixture metadata mismatch around required schema ownership markers.",
+    "current_state": "Repository-wide fixture schema ownership parity was completed by merged PR #183 and PR #184 with an ownership contract, deterministic inventory, metadata migration, focused-validator compatibility, negative coverage, and exact-head CI.",
     "target_state": "Every active valid and invalid fixture has deterministic owning-schema metadata and the repository-wide schema validator passes without weakening focused validators.",
     "measurable_current_state": {
-      "statement": "Repository-specific validators pass, but the repository-wide schema validator has a known fixture metadata mismatch around required schema ownership markers.",
-      "measurement": "Measured by repository contracts, schemas, fixtures, validators, CI, documentation, and STATUS signals for WP-RESP-010.",
+      "statement": "Repository-wide fixture schema ownership parity was completed by merged PR #183 and PR #184 with an ownership contract, deterministic inventory, metadata migration, focused-validator compatibility, negative coverage, and exact-head CI.",
+      "measurement": "Measured by the merged ownership contract, fixture inventory, owning-schema metadata, focused and broad validators, negative coverage, and successful exact-head Validate checks on PR #184.",
       "measurable": true
     },
     "measurable_target_state": {
@@ -22,18 +22,18 @@
       "measurement": "Measured by explicit contract, schema, fixture, validator, CI, docs, and STATUS parity for WP-RESP-010.",
       "measurable": true
     },
-    "expected_project_delta": "Schema ownership becomes uniform across fixtures and the broad validation path stops failing on metadata drift.",
+    "expected_project_delta": "Schema ownership is uniform across direct broad fixtures and the broad validation path passes without weakening focused semantic validators.",
     "selectable": true,
-    "ready_state": "ready",
+    "ready_state": "completed",
     "priority": 70,
     "reporting": {
-      "estimated_completion_percentage": 0,
+      "estimated_completion_percentage": 100,
       "estimated_percentage_is_reporting_only": true
     },
     "allowed_work": [
-      "Inventory active fixtures and their owning schemas.",
-      "Add or normalize schema ownership metadata and deterministic negative coverage.",
-      "Align the repository-wide schema validator, focused validators, command index, and CI when required."
+      "Preserve the completed fixture-to-schema ownership contract and deterministic inventory.",
+      "Patch only regressions demonstrated by repository validators, exact-head CI, or review evidence.",
+      "Maintain focused-validator compatibility and negative coverage without broadening authority."
     ],
     "forbidden_work": [
       "Do not create submitted evidence unless explicitly authorized by the repository owner and current Issue #8 submitted-mode contracts.",
