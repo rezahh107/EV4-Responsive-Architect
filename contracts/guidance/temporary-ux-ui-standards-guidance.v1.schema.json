@@ -262,29 +262,102 @@
           }
         },
         "conflicts": {
-          "type": "object",
-          "additionalProperties": false,
-          "required": [
-            "known_conflicts",
-            "resolution"
-          ],
-          "properties": {
-            "known_conflicts": {
-              "type": "array",
-              "items": {
-                "type": "string",
-                "minLength": 1
-              }
-            },
-            "resolution": {
-              "const": "defer_to_higher_authority_or_fail_closed"
-            }
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/conflictDisposition"
           }
         },
         "universal_rule_claimed": {
           "const": false
         }
       }
+    },
+    "conflictDisposition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "conflict_id",
+        "higher_authority_class",
+        "higher_authority_reference",
+        "status",
+        "resolution_reference",
+        "bounded_rationale"
+      ],
+      "properties": {
+        "conflict_id": {
+          "type": "string",
+          "pattern": "^UXUI-CONFLICT-[A-Z0-9][A-Z0-9._-]{2,63}$"
+        },
+        "higher_authority_class": {
+          "enum": [
+            "repository_contract_schema_validator_stage_anchor",
+            "kernel_decision",
+            "project_gate_boundary",
+            "gated_project_specific_evidence"
+          ]
+        },
+        "higher_authority_reference": {
+          "type": "string",
+          "minLength": 1
+        },
+        "status": {
+          "enum": [
+            "resolved",
+            "unresolved"
+          ]
+        },
+        "resolution_reference": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "bounded_rationale": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "resolved"
+              }
+            },
+            "required": [
+              "status"
+            ]
+          },
+          "then": {
+            "properties": {
+              "resolution_reference": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "unresolved"
+              }
+            },
+            "required": [
+              "status"
+            ]
+          },
+          "then": {
+            "properties": {
+              "resolution_reference": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      ]
     },
     "boundaryClaims": {
       "type": "object",
