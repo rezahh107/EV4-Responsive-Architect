@@ -1,0 +1,227 @@
+name: Temporary WP-RESP-005 replenishment materialization
+
+on:
+  push:
+    branches:
+      - automation/wp-resp-005-pr-b-replenish-after-wp017-pr-a
+    paths:
+      - .github/workflows/temp-replenish-wp018.yml
+
+permissions:
+  contents: write
+
+jobs:
+  materialize:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: automation/wp-resp-005-pr-b-replenish-after-wp017-pr-a
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Reconcile catalog and add WP-RESP-018
+        shell: bash
+        run: |
+          python - <<'PY'
+          from __future__ import annotations
+          import copy
+          import json
+          import re
+          from pathlib import Path
+
+          root = Path('.')
+          catalog_path = root / 'planning/EV4_AUTOMATION_WORK_PACKAGE_CATALOG.json'
+          status_path = root / 'STATUS.md'
+
+          def dump(path: Path, value: object) -> None:
+              path.write_text(json.dumps(value, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+
+          catalog = json.loads(catalog_path.read_text(encoding='utf-8'))
+          packages = catalog['work_packages']
+          original_ids = list(packages)
+          assert 'WP-RESP-015' in packages and 'WP-RESP-017' in packages
+          assert 'WP-RESP-018' not in packages
+          assert catalog['catalog_replenishment_policy']['ready_work_package_target'] == 4
+          assert catalog['catalog_replenishment_policy']['refresh_when_ready_below'] == 4
+          assert catalog['catalog_replenishment_policy']['max_ready_work_packages'] == 5
+          assert all(value is False for value in catalog['global_boundaries'].values())
+
+          wp15 = packages['WP-RESP-015']
+          wp15['current_state'] = 'PR #178, PR #180, and PR #181 completed the compatibility contract/schema, fixtures, deterministic validator diagnostics, primary CI wiring, documentation, command-index, and STATUS parity.'
+          wp15['measurable_current_state']['statement'] = wp15['current_state']
+          wp15['measurable_current_state']['measurement'] = 'Measured by merged WP-RESP-015/PR-A, PR-B, and PR-C outcomes plus exact-head validation and repository documentation parity.'
+          wp15['ready_state'] = 'completed'
+          wp15['reporting']['estimated_completion_percentage'] = 100
+
+          wp17 = packages['WP-RESP-017']
+          wp17['current_state'] = 'PR #187 merged the non-authoritative UX/UI standards guidance contract and schema with fail-closed conflict disposition and derived production-readiness boundaries; fixtures, deterministic validator diagnostics, CI wiring, documentation, command-index, and STATUS parity remain incomplete.'
+          wp17['measurable_current_state']['statement'] = wp17['current_state']
+          wp17['measurable_current_state']['measurement'] = 'Measured by merged WP-RESP-017/PR-A and the absence of completed WP-RESP-017/PR-B and WP-RESP-017/PR-C outcomes.'
+          wp17['ready_state'] = 'active'
+          wp17['reporting']['estimated_completion_percentage'] = 35
+
+          wp18 = copy.deepcopy(wp17)
+          def replace_ids(value):
+              if isinstance(value, str):
+                  return value.replace('WP-RESP-017', 'WP-RESP-018')
+              if isinstance(value, list):
+                  return [replace_ids(item) for item in value]
+              if isinstance(value, dict):
+                  return {key: replace_ids(item) for key, item in value.items()}
+              return value
+          wp18 = replace_ids(wp18)
+          wp18.update({
+              'id': 'WP-RESP-018',
+              'title': 'Bind Standards Guidance Use to Responsive Decision Traceability',
+              'capability_area': 'guidance_decision_traceability',
+              'current_state': 'PR #187 established a bounded non-authoritative guidance contract and schema, but repository truth has no canonical trace connecting an applied guidance item to a Responsive decision surface, evidence references, exceptions, conflict disposition, and the resulting non-authority decision rationale.',
+              'target_state': 'A schema-backed trace envelope and deterministic validator bind each applied or rejected guidance item to its Responsive decision context, evidence references, exceptions, conflict disposition, and bounded outcome without turning guidance into authority or correctness evidence.',
+              'expected_project_delta': 'Use of temporary UX/UI guidance becomes explicitly traceable and auditable at the Responsive decision boundary, preventing invisible rule application, authority substitution, or unsupported correctness conclusions.',
+              'selectable': True,
+              'ready_state': 'ready',
+              'priority': 85,
+          })
+          wp18['reporting'] = {'estimated_completion_percentage': 0, 'estimated_percentage_is_reporting_only': True}
+          wp18['measurable_current_state'] = {
+              'statement': wp18['current_state'],
+              'measurement': 'Measured by the absence of a guidance-to-decision trace schema, canonical decision-surface linkage, positive and negative fixtures, deterministic diagnostics, CI wiring, and documentation or STATUS parity.',
+              'measurable': True,
+          }
+          wp18['measurable_target_state'] = {
+              'statement': 'Every applied, rejected, excepted, or conflict-blocked guidance item is linked to a bounded Responsive decision context and fails closed on missing provenance, decision identity, evidence, exception, conflict, authority, or boundary semantics.',
+              'measurement': 'Accepted only when valid and negative fixtures cover missing or divergent guidance identity, decision-surface mismatch, absent evidence references, unrecorded exceptions, unresolved conflicts, authority substitution, lifecycle drift, and forbidden readiness or correctness upgrades under exact-head CI.',
+              'measurable': True,
+          }
+          wp18['target_capability'] = {
+              'statement': 'Responsive can validate repository-local traceability from non-authoritative guidance use to a bounded decision outcome without treating guidance, trace prose, CI, or merge state as decision authority or responsive-correctness evidence.',
+              'measurement': 'A canonical trace contract, deterministic diagnostics, positive and negative fixtures, primary CI wiring, documentation, command-index, and STATUS parity remain mutually consistent.',
+              'measurable': True,
+          }
+          wp18['allowed_work'] = [
+              'Define a canonical guidance-use trace envelope that pins guidance item identity, Responsive decision surface, evidence references, applicability, exceptions, conflict disposition, and bounded outcome.',
+              'Add valid and negative fixtures for missing or divergent identity, decision-surface mismatch, absent evidence, unrecorded exceptions, unresolved conflicts, authority substitution, lifecycle drift, and boundary upgrades.',
+              'Add a deterministic fail-closed validator and align primary CI, command-index, documentation, and STATUS where directly affected.',
+          ]
+          wp18['forbidden_work'] = [
+              'Do not make a guidance-use trace a replacement for repository contracts, Stage Anchors, validators, Kernel decisions, Project Gate authority, project-specific evidence, or Responsive decision ownership.',
+              'Do not create submitted evidence, mutate Issue #8, or run or authorize real pilot execution.',
+              'Do not infer that a recorded trace proves the guidance was correct, universally applicable, or observed in live rendering.',
+              'Do not author or accept production_ready as a payload claim; production readiness remains a derived audit conclusion.',
+              'Do not claim release_ready, live_render_validated, export_json_validated, accessibility_passed, pixel_perfect, or responsive_correctness_validated.',
+              'Do not treat trace completeness, guidance conformance, CI success, merged PRs, catalog completion, or Work Package completion as domain evidence.',
+          ]
+          wp18['must_deliver'] = [
+              'Guidance-use to Responsive-decision trace contract and schema.',
+              'Deterministic validator with positive and negative coverage for identity, decision surface, evidence, applicability, exceptions, conflicts, authority, lifecycle, and boundary upgrades.',
+              'Primary validation-chain, command-index, documentation, and STATUS parity where directly affected.',
+          ]
+          wp18['definition_of_done'] = [
+              'The measurable target state is met by schema-backed or validator-backed repository evidence.',
+              'The selected PR slice remains reviewable and stays under this Work Package ID.',
+              'No repository authority, submitted evidence, pilot authorization, authored production-readiness claim, or forbidden readiness/correctness claim is produced by the Work Package.',
+          ]
+          wp18['allowed_pr_slices'] = [
+              {
+                  'slice_id': 'WP-RESP-018/PR-A',
+                  'title': 'guidance-decision trace contract and schema',
+                  'layer': 'contract_schema',
+                  'objective': 'Define guidance identity, Responsive decision-surface linkage, evidence, exception, conflict, lifecycle, and non-authority trace semantics.',
+                  'review_boundary': 'Reviewable PR slice under the same Work Package ID; no unrelated micro-objective may be introduced.',
+              },
+              {
+                  'slice_id': 'WP-RESP-018/PR-B',
+                  'title': 'trace fixtures, validator, and CI',
+                  'layer': 'fixture_validator_ci',
+                  'objective': 'Add deterministic positive and negative trace coverage plus primary validation-chain wiring.',
+                  'review_boundary': 'Reviewable PR slice under the same Work Package ID; no unrelated micro-objective may be introduced.',
+              },
+              {
+                  'slice_id': 'WP-RESP-018/PR-C',
+                  'title': 'trace documentation and STATUS parity',
+                  'layer': 'docs_status',
+                  'objective': 'Record trace guarantees and remaining authority, evidence, observation, readiness, and correctness limitations.',
+                  'review_boundary': 'Reviewable PR slice under the same Work Package ID; no unrelated micro-objective may be introduced.',
+              },
+          ]
+          wp18['blocked_if'] = [
+              'Required guidance identity, Responsive decision surface, evidence reference, applicability, exception, conflict, or lifecycle semantics cannot be determined from repository truth.',
+              'The trace would replace or reinterpret repository contracts, validators, Stage Anchors, Kernel decisions, Project Gate authority, project-specific evidence, or Responsive decision ownership.',
+              'Trace completeness or guidance conformance would be promoted to submitted evidence, pilot authorization, production, release, live-render, export, accessibility, pixel, or responsive-correctness evidence.',
+          ]
+          wp18['completion_record_requirements'] = copy.deepcopy(wp17['completion_record_requirements'])
+          wp18['unblocks_work_package_ids'] = []
+
+          packages['WP-RESP-018'] = wp18
+          assert list(packages) == original_ids + ['WP-RESP-018']
+          assert packages['WP-RESP-015']['ready_state'] == 'completed'
+          assert packages['WP-RESP-017']['ready_state'] == 'active'
+          assert packages['WP-RESP-018']['ready_state'] == 'ready'
+          assert all(value is False for value in packages['WP-RESP-018']['readiness_boundary'].values())
+          assert packages['WP-RESP-018']['evidence_boundary']['submitted_evidence_created_by_package'] is False
+          dump(catalog_path, catalog)
+
+          # Rebuild modular shadows and index from the canonical monolith.
+          import subprocess
+          subprocess.run(['python', 'validation/e2e/run_automation_work_package_catalog_reassembly_check.py', '--write'], check=True)
+
+          # Reconcile the single derived catalog snapshot in STATUS.md.
+          catalog = json.loads(catalog_path.read_text(encoding='utf-8'))
+          ready = []
+          active = []
+          completed = []
+          for wp_id, package in catalog['work_packages'].items():
+              state = package['ready_state']
+              if state == 'ready' and package['selectable']:
+                  ready.append(wp_id)
+              elif state == 'active':
+                  active.append(wp_id)
+              elif state == 'completed':
+                  completed.append(wp_id)
+          key = lambda item: int(item.rsplit('-', 1)[1])
+          ready.sort(key=key); active.sort(key=key); completed.sort(key=key)
+          assert ready == ['WP-RESP-011', 'WP-RESP-014', 'WP-RESP-016', 'WP-RESP-018']
+          assert active == ['WP-RESP-017']
+          snapshot = {
+              'schema': 'ev4-status-work-package-catalog-snapshot@1.0.0',
+              'source': 'planning/EV4_AUTOMATION_WORK_PACKAGE_CATALOG.json',
+              'catalog_state_snapshot_is_derived': True,
+              'policy': {
+                  'ready_work_package_target': 4,
+                  'refresh_when_ready_below': 4,
+                  'max_ready_work_packages': 5,
+              },
+              'selectable_ready_horizon': ready,
+              'active_work_packages': active,
+              'completed_work_packages': completed,
+          }
+          status = status_path.read_text(encoding='utf-8')
+          heading = '## WP-RESP-005/PR-B — State-driven catalog replenishment'
+          assert heading in status
+          start = status.index(heading)
+          fence = re.search(r'```json[^\n]*\n.*?\n```', status[start:], flags=re.DOTALL | re.IGNORECASE)
+          assert fence
+          replacement = '```json\n' + json.dumps(snapshot, ensure_ascii=False, indent=2) + '\n```'
+          absolute_start = start + fence.start()
+          absolute_end = start + fence.end()
+          status = status[:absolute_start] + replacement + status[absolute_end:]
+          status_path.write_text(status, encoding='utf-8')
+          PY
+      - name: Validate reconciliation
+        run: |
+          python validation/e2e/run_automation_work_package_catalog_check.py
+          python validation/e2e/run_automation_work_package_catalog_reassembly_check.py
+          python validation/e2e/run_automation_replenishment_policy_transition_check.py
+          python validation/e2e/run_status_merged_foundation_guard_check.py
+          python validation/e2e/run_automation_control_state_check.py
+          python validation/e2e/run_task_quality_gate_check.py
+      - name: Commit final reviewable state and remove temporary workflow
+        shell: bash
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git rm .github/workflows/temp-replenish-wp018.yml
+          git add STATUS.md planning/EV4_AUTOMATION_WORK_PACKAGE_CATALOG.json planning/EV4_AUTOMATION_WORK_PACKAGE_CATALOG_INDEX.json planning/work-packages
+          git commit -m 'planning: replenish catalog after WP-RESP-017 PR-A'
+          git push origin HEAD:automation/wp-resp-005-pr-b-replenish-after-wp017-pr-a
