@@ -1,0 +1,99 @@
+name: Temporary WP-RESP-017 forbidden-work repair
+
+on:
+  push:
+    branches:
+      - automation/wp-resp-005-pr-b-replenish-after-wp010
+
+permissions:
+  contents: write
+
+concurrency:
+  group: temporary-wp-resp-017-forbidden-work-repair
+  cancel-in-progress: false
+
+jobs:
+  repair:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v4
+        with:
+          ref: automation/wp-resp-005-pr-b-replenish-after-wp010
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Apply bounded catalog repair
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          catalog_path = Path('planning/EV4_AUTOMATION_WORK_PACKAGE_CATALOG.json')
+          package_path = Path('planning/work-packages/WP-RESP-017.json')
+          workflow_path = Path('.github/workflows/temporary-wp-resp-017-forbidden-work-repair.yml')
+
+          catalog = json.loads(catalog_path.read_text(encoding='utf-8'))
+          package_file = json.loads(package_path.read_text(encoding='utf-8'))
+          package = package_file['work_package']
+
+          expected = 'Do not introduce an approved standards inventory, external source list, or universal design rule unless its provenance, applicability, exceptions, and conflict handling are explicitly bounded by the Work Package contract.'
+          forbidden = package['forbidden_work']
+          if expected not in forbidden:
+              forbidden.append(expected)
+
+          if len(forbidden) < 5:
+              raise SystemExit('WP-RESP-017 forbidden_work still has fewer than five entries')
+
+          # Preserve every unrelated subtree and make the canonical object exactly
+          # equal to the modular shadow before deterministic reassembly.
+          catalog['work_packages']['WP-RESP-017'] = package
+          catalog_path.write_text(json.dumps(catalog, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+
+          # The official writer regenerates all modular projections and hashes.
+          PY
+
+          python validation/e2e/run_automation_work_package_catalog_reassembly_check.py --write
+
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          catalog = json.loads(Path('planning/EV4_AUTOMATION_WORK_PACKAGE_CATALOG.json').read_text(encoding='utf-8'))
+          package_file = json.loads(Path('planning/work-packages/WP-RESP-017.json').read_text(encoding='utf-8'))
+          index = json.loads(Path('planning/EV4_AUTOMATION_WORK_PACKAGE_CATALOG_INDEX.json').read_text(encoding='utf-8'))
+
+          package = package_file['work_package']
+          assert catalog['work_packages']['WP-RESP-017'] == package
+          assert len(package['forbidden_work']) >= 5
+          assert catalog['catalog_replenishment_policy']['ready_work_package_target'] == 4
+          assert catalog['catalog_replenishment_policy']['refresh_when_ready_below'] == 4
+          assert catalog['catalog_replenishment_policy']['max_ready_work_packages'] == 5
+          assert all(value is False for key, value in catalog['global_boundaries'].items() if key != 'claims_require_real_evidence_gates')
+          ready = [wp_id for wp_id, wp in catalog['work_packages'].items() if wp.get('selectable') is True and wp.get('ready_state') == 'ready']
+          assert ready == ['WP-RESP-011', 'WP-RESP-014', 'WP-RESP-016', 'WP-RESP-017'], ready
+          assert any(entry['id'] == 'WP-RESP-017' for entry in index['packages'])
+          PY
+
+          rm .github/workflows/temporary-wp-resp-017-forbidden-work-repair.yml
+
+      - name: Commit bounded repair
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add planning/EV4_AUTOMATION_WORK_PACKAGE_CATALOG.json \
+                  planning/EV4_AUTOMATION_WORK_PACKAGE_CATALOG_INDEX.json \
+                  planning/work-packages/WP-RESP-017.json \
+                  .github/workflows/temporary-wp-resp-017-forbidden-work-repair.yml
+          git diff --cached --check
+          git commit -m 'fix(catalog): complete WP-RESP-017 forbidden-work boundary'
+          git push origin HEAD:automation/wp-resp-005-pr-b-replenish-after-wp010
