@@ -1,0 +1,149 @@
+{
+  "schema": "ev4-automation-work-package-file@1.0.0",
+  "id": "WP-RESP-017",
+  "work_package": {
+    "id": "WP-RESP-017",
+    "title": "Operationalize Temporary UX/UI Standards as Non-Authoritative Responsive Guidance",
+    "capability_area": "ux_ui_standards_guidance",
+    "current_state": "A temporary UX/UI standards policy was explored in closed unmerged PR #185, but repository truth has no approved catalog-backed contract defining how such standards may inform Responsive decisions without becoming authority or correctness evidence.",
+    "target_state": "A bounded, schema-backed guidance contract classifies approved UX/UI standards, applicability, exceptions, and evidence limits while preserving repository authority, responsive decision ownership, and all readiness boundaries.",
+    "measurable_current_state": {
+      "statement": "No approved catalog-backed contract currently governs temporary UX/UI standards guidance; PR #185 is closed and unmerged.",
+      "measurement": "Measured by absence of an authoritative local guidance contract, schema, fixtures, validator, and STATUS/CI parity on main.",
+      "measurable": true
+    },
+    "measurable_target_state": {
+      "statement": "Temporary UX/UI standards are represented as non-authoritative guidance with explicit applicability, exception, provenance, and false-claim boundaries.",
+      "measurement": "Accepted only when contract/schema, positive and negative fixtures, deterministic diagnostics, docs/STATUS parity, and exact-head CI pass without changing Responsive, Kernel, Project Gate, evidence, or readiness authority.",
+      "measurable": true
+    },
+    "target_capability": {
+      "statement": "Responsive can consume a bounded standards guidance artifact as decision support while rejecting authority substitution, unsupported universality, stale provenance, and correctness upgrades.",
+      "measurement": "A schema-backed contract, deterministic validator, negative coverage, CI wiring, command-index, and STATUS parity remain mutually consistent.",
+      "measurable": true
+    },
+    "expected_project_delta": "Common UX/UI standards become reusable, reviewable decision-support inputs rather than implicit prompt prose, while repository contracts and real responsive validation remain authoritative.",
+    "selectable": true,
+    "ready_state": "ready",
+    "priority": 87,
+    "reporting": {
+      "estimated_completion_percentage": 0,
+      "estimated_percentage_is_reporting_only": true
+    },
+    "allowed_work": [
+      "Define a non-authoritative UX/UI standards guidance contract with provenance, applicability, exceptions, and scope.",
+      "Add valid and negative fixtures for authority substitution, unsupported universal rules, stale provenance, conflicting standards, and forbidden correctness upgrades.",
+      "Add deterministic validation and align CI, command-index, documentation, and STATUS where directly affected."
+    ],
+    "forbidden_work": [
+      "Do not make temporary UX/UI guidance a replacement for repository contracts, Stage Anchors, validators, Kernel decisions, Project Gate authority, or project-specific evidence.",
+      "Do not create submitted evidence, mutate Issue #8, or run or authorize real pilot execution.",
+      "Do not claim production_ready, release_ready, live_render_validated, export_json_validated, accessibility_passed, pixel_perfect, or responsive_correctness_validated.",
+      "Do not treat standards conformance, CI success, merged PRs, catalog completion, or Work Package completion as domain evidence.",
+      "Do not introduce an approved standards inventory, external source list, or universal design rule unless its provenance, applicability, exceptions, and conflict handling are explicitly bounded by the Work Package contract."
+    ],
+    "must_deliver": [
+      "Non-authoritative UX/UI standards guidance contract and schema.",
+      "Deterministic validator with positive and negative coverage for provenance, applicability, conflicts, authority substitution, and boundary upgrades.",
+      "Primary validation-chain, command-index, documentation, and STATUS parity where directly affected."
+    ],
+    "must_preserve": [
+      "Rolling queue remains a historical reconciled archive, not the execution driver.",
+      "Controller selection must come only from planning/EV4_AUTOMATION_WORK_PACKAGE_CATALOG.json.",
+      "Quality gates, CI, review, and evidence boundaries remain mandatory.",
+      "Technical evidence claims remain false unless real evidence gates pass.",
+      "Catalog replenishment is state-driven and must not block active Work Package execution.",
+      "Catalog replenishment must respect the single-active-mutation-PR policy."
+    ],
+    "evidence_boundary": {
+      "submitted_evidence_created_by_package": false,
+      "issue_8_mutation_allowed": false,
+      "real_pilot_execution_allowed": false,
+      "ci_success_is_domain_evidence": false,
+      "merged_pr_is_domain_evidence": false,
+      "catalog_completion_is_evidence_validation": false,
+      "claims_require_real_evidence_gates": true,
+      "forbidden_claims_without_real_evidence": [
+        "production_ready",
+        "release_ready",
+        "live_render_validated",
+        "export_json_validated",
+        "accessibility_passed",
+        "pixel_perfect",
+        "responsive_correctness_validated"
+      ]
+    },
+    "readiness_boundary": {
+      "pilot_allowed_to_start": false,
+      "production_ready": false,
+      "release_ready": false,
+      "live_render_validated": false,
+      "export_json_validated": false,
+      "accessibility_passed": false,
+      "pixel_perfect": false,
+      "responsive_correctness_validated": false
+    },
+    "definition_of_done": [
+      "The measurable target state is met by schema-backed or validator-backed repository evidence.",
+      "The selected PR slice remains reviewable and stays under this Work Package ID.",
+      "No repository authority, submitted evidence, pilot authorization, or forbidden readiness/correctness claim is produced by the Work Package."
+    ],
+    "quality_gates": [
+      "python validation/e2e/run_automation_work_package_catalog_check.py",
+      "python validation/e2e/run_automation_control_state_check.py",
+      "python validation/e2e/run_rolling_queue_check.py",
+      "python validation/e2e/run_run_ledger_check.py",
+      "python validation/e2e/run_task_quality_gate_check.py"
+    ],
+    "split_rule": {
+      "principle": "A Work Package may be large in objective, but each PR must remain reviewable.",
+      "split_by": "implementation_layer_under_same_work_package_id",
+      "requires_slice_id_prefix": "<WORK_PACKAGE_ID>/PR-",
+      "forbidden_splits": [
+        "invent_unrelated_rtaq_tasks",
+        "guard_only_task_without_named_work_package_unblock",
+        "checkpoint_only_pr_after_every_merge",
+        "artificial_reserve_task_to_keep_task_count_high",
+        "queue_refresh_loop_as_execution_driver",
+        "fixed_ordinal_refresh"
+      ]
+    },
+    "allowed_pr_slices": [
+      {
+        "slice_id": "WP-RESP-017/PR-A",
+        "title": "standards guidance contract and schema",
+        "layer": "contract_schema",
+        "objective": "Define provenance, applicability, exception, conflict, and non-authority semantics.",
+        "review_boundary": "Reviewable PR slice under the same Work Package ID; no unrelated micro-objective may be introduced."
+      },
+      {
+        "slice_id": "WP-RESP-017/PR-B",
+        "title": "guidance fixtures, validator, and CI",
+        "layer": "fixture_validator_ci",
+        "objective": "Add deterministic positive and negative coverage plus primary validation-chain wiring.",
+        "review_boundary": "Reviewable PR slice under the same Work Package ID; no unrelated micro-objective may be introduced."
+      },
+      {
+        "slice_id": "WP-RESP-017/PR-C",
+        "title": "guidance documentation and STATUS parity",
+        "layer": "docs_status",
+        "objective": "Record allowed use, exceptions, provenance requirements, and remaining evidence/readiness limitations.",
+        "review_boundary": "Reviewable PR slice under the same Work Package ID; no unrelated micro-objective may be introduced."
+      }
+    ],
+    "blocked_if": [
+      "The guidance would replace or bypass repository contracts, validators, Stage Anchors, Kernel or Project Gate authority.",
+      "Source provenance, applicability scope, or conflict resolution cannot be represented without asserting unsupported universal rules.",
+      "Repository checks or standards conformance would be promoted to responsive-correctness or readiness evidence."
+    ],
+    "completion_record_requirements": [
+      "Record selected Work Package ID and PR slice ID in the PR body.",
+      "List files changed, validators changed, and CI commands run.",
+      "State commands not run and why.",
+      "Restate evidence/pilot/readiness/production/release/responsive-correctness boundaries.",
+      "Record whether catalog replenishment was checked and whether it was non-mutating, same-PR in-scope, or blocked by single-active-PR policy.",
+      "Record remaining risks and the next safe human action."
+    ],
+    "unblocks_work_package_ids": []
+  }
+}

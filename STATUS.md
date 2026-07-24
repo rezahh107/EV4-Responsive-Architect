@@ -314,10 +314,10 @@ The snapshot below is derived from the canonical monolithic catalog, is validato
     "refresh_when_ready_below": 4
   },
   "selectable_ready_horizon": [
-    "WP-RESP-010",
     "WP-RESP-011",
     "WP-RESP-014",
-    "WP-RESP-016"
+    "WP-RESP-016",
+    "WP-RESP-017"
   ],
   "active_work_packages": [
     "WP-RESP-015"
@@ -330,6 +330,7 @@ The snapshot below is derived from the canonical monolithic catalog, is validato
     "WP-RESP-007",
     "WP-RESP-008",
     "WP-RESP-009",
+    "WP-RESP-010",
     "WP-RESP-012",
     "WP-RESP-013"
   ]
