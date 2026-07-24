@@ -366,7 +366,6 @@
         "submitted_evidence_created",
         "issue_8_mutated",
         "pilot_authorized",
-        "production_ready",
         "release_ready",
         "live_render_validated",
         "export_json_validated",
@@ -382,9 +381,6 @@
           "const": false
         },
         "pilot_authorized": {
-          "const": false
-        },
-        "production_ready": {
           "const": false
         },
         "release_ready": {
