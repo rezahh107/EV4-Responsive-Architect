@@ -1,0 +1,31 @@
+name: Validate PCVP tolerant consumer
+
+on:
+  pull_request:
+    paths:
+      - "contracts/pcvp/**"
+      - "schemas/ev4-builder-responsive-input.schema.json"
+      - "validation/e2e/responsive_pcvp.py"
+      - "validation/e2e/run_builder_responsive_input_boundary_check.py"
+      - "validation/e2e/run_pcvp_tolerant_consumer_check.py"
+      - "validation/fixtures/pcvp/**"
+      - ".github/workflows/validate-pcvp-tolerant-consumer.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: python -m pip install -r requirements.txt
+      - name: Validate tolerant PCVP intake
+        run: python validation/e2e/run_pcvp_tolerant_consumer_check.py
+      - name: Recheck Builder to Responsive boundary
+        run: python validation/e2e/run_builder_responsive_input_boundary_check.py

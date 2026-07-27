@@ -9,6 +9,8 @@ from pathlib import Path
 
 import jsonschema
 
+from responsive_pcvp import inspect_optional_pcvp_carrier
+
 ROOT = Path(__file__).resolve().parents[2]
 SCHEMA_PATH = ROOT / "schemas" / "ev4-builder-responsive-input.schema.json"
 QUALITY_DEBT_REGISTER = ROOT / "planning" / "EV4_POST_MERGE_QUALITY_DEBT_REGISTER.json"
@@ -312,6 +314,12 @@ def _assert_quality_debt_negative_fixtures() -> None:
 
 
 def _assert_valid_fixture(data: dict[str, object], path: Path) -> None:
+    pcvp = inspect_optional_pcvp_carrier(data, ROOT)
+    if pcvp["status"] == "invalid":
+        codes = ", ".join(item["code"] for item in pcvp["diagnostics"])
+        raise AssertionError(
+            f"{path.relative_to(ROOT)} has invalid optional PCVP carrier: {codes}"
+        )
     decision = _decision(data, path)
     is_allowed_intake = decision.get("intake_allowed") is True
     if path.name == "builder_responsive_input.valid.json" and not is_allowed_intake:
