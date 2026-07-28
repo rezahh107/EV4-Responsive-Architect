@@ -41,6 +41,7 @@ python validation/e2e/run_responsive_contract_drift_sentinel_check.py
 python validation/e2e/run_viewport_inheritance_reset_matrix_check.py
 python validation/e2e/run_responsive_handoff_export_boundary_manifest_check.py
 python validation/e2e/run_decision_escape_routes_schema_check.py
+python validation/e2e/run_temporary_ux_ui_standards_guidance_check.py
 python validation/e2e/run_rtaq_ssot_guard_check.py
 python validation/e2e/run_status_merged_foundation_guard_check.py
 python validation/e2e/run_automation_control_state_check.py
@@ -48,6 +49,14 @@ python validation/e2e/run_automation_work_package_catalog_check.py
 ```
 
 The live workflow also runs the fixture-schema-ownership, automation replenishment transition, and catalog-reassembly guards where configured. `STATUS.md` is the machine-enforced command projection for all inline primary Validate commands.
+
+## Temporary UX/UI standards guidance command
+
+```bash
+python validation/e2e/run_temporary_ux_ui_standards_guidance_check.py
+```
+
+Validates bounded non-authoritative guidance fixtures, deterministic diagnostic-specific negative coverage, lifecycle review fail-closed behavior, locally verifiable provenance, conflict disposition/resolution requirements, and all-false evidence/readiness boundaries. Success is repository-check evidence only; it does not establish production, release, live-render, export, accessibility, pixel-perfect, or responsive correctness.
 
 ## EV4-PCVP tolerant consumer commands
 
@@ -152,6 +161,7 @@ The commands can be used to inspect deterministic repository behavior:
 - responsive handoff export-boundary manifest lineage, required artifact-class coverage, and forbidden boundary-upgrade rejection
 - task quality-gate policy shape and required boundary assertions
 - queue, ledger, control-state, Work Package Catalog, STATUS checkpoint, and drift-sentinel parity discipline
+- temporary UX/UI guidance provenance, lifecycle, conflict-disposition, and all-false boundary validation
 - boundary text preservation
 
 They must not be used to bypass the real submitted-packet gate or pilot-readiness gate.
