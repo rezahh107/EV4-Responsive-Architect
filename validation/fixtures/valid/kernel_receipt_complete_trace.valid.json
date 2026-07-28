@@ -1,4 +1,5 @@
 {
+  "$schema_file": "ev4-responsive-kernel-decision-receipt.schema.json",
   "fixture": "complete_machine_trace_allows_success_receipt",
   "decision_lineage": {
     "decision_family": "responsive_tree_architecture_route",

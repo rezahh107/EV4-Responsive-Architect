@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import copy
+import hashlib
 import json
 from pathlib import Path
 
@@ -12,6 +13,22 @@ SCHEMA_PATH = ROOT / "contracts/compatibility/runtime-mismatch-prompt-5-routing-
 VALID_PATH = ROOT / "validation/fixtures/compatibility/runtime-mismatch-prompt5/valid/runtime_mismatch_prompt5_compatibility.valid.json"
 INVALID_DIR = ROOT / "validation/fixtures/compatibility/runtime-mismatch-prompt5/invalid"
 EXPECTED_INVALID = {"runtime_mismatch_prompt5_missing_lineage.invalid.json"}
+EXPECTED_DEPENDENCIES = {
+    "runtime_mismatch_reopen": {
+        "contract_id": "runtime-mismatch-reopen-package.v1",
+        "schema_version": "runtime-mismatch-reopen-package.v1",
+        "source_repository": "rezahh107/EV4-Responsive-Architect",
+        "source_commit_sha": "993e770229e0b88b7bd3c5068f6f5d59e1392743",
+        "schema_path": "contracts/runtime/runtime-mismatch-reopen-package.v1.schema.json",
+    },
+    "prompt_5_routing": {
+        "contract_id": "prompt-5-routing-envelope.v1",
+        "schema_version": "prompt-5-routing-envelope.v1",
+        "source_repository": "rezahh107/EV4-Responsive-Architect",
+        "source_commit_sha": "993e770229e0b88b7bd3c5068f6f5d59e1392743",
+        "schema_path": "contracts/project-gate/prompt-5-routing-envelope.v1.schema.json",
+    },
+}
 EXPECTED_BOUNDARY_CLAIMS = {
     "submitted_evidence_created", "issue_8_mutated", "pilot_authorized",
     "production_ready", "release_ready", "live_render_validated",
@@ -24,10 +41,39 @@ def load(path: Path) -> dict:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
+def git_blob_sha(data: bytes) -> str:
+    header = f"blob {len(data)}\0".encode("ascii")
+    return hashlib.sha1(header + data).hexdigest()
+
+
+def validate_dependency_pins(payload: dict) -> None:
+    dependencies = payload["dependencies"]
+    if set(dependencies) != set(EXPECTED_DEPENDENCIES):
+        raise ValueError("dependency registry mismatch")
+
+    for dependency_name, expected in EXPECTED_DEPENDENCIES.items():
+        dependency = dependencies[dependency_name]
+        for field, expected_value in expected.items():
+            if dependency[field] != expected_value:
+                raise ValueError(f"{dependency_name}.{field} pin mismatch")
+
+        schema_path = ROOT / expected["schema_path"]
+        if not schema_path.is_file():
+            raise ValueError(f"{dependency_name}.schema_path does not exist")
+        schema_bytes = schema_path.read_bytes()
+        actual_sha256 = hashlib.sha256(schema_bytes).hexdigest()
+        if dependency["schema_sha256"] != actual_sha256:
+            raise ValueError(f"{dependency_name}.schema_sha256 does not match repository bytes")
+        actual_blob_sha = git_blob_sha(schema_bytes)
+        if dependency["schema_git_blob_sha"] != actual_blob_sha:
+            raise ValueError(f"{dependency_name}.schema_git_blob_sha does not match repository bytes")
+
+
 def validate_payload(validator: Draft202012Validator, payload: dict) -> None:
     errors = sorted(validator.iter_errors(payload), key=lambda e: tuple(map(str, e.absolute_path)))
     if errors:
         raise ValueError(errors[0].message)
+    validate_dependency_pins(payload)
     lineage = payload["shared_lineage"]
     if lineage["rejected_options"] != ["continue_without_review"]:
         raise ValueError("rejected_options must contain exactly ['continue_without_review']")
@@ -95,6 +141,18 @@ def run_self_tests(validator: Draft202012Validator, valid: dict) -> None:
     version = copy.deepcopy(valid)
     version["dependencies"]["prompt_5_routing"]["schema_version"] = "prompt-5-routing-envelope.v2"
     cases.append(("schema version drift", version))
+
+    schema_path = copy.deepcopy(valid)
+    schema_path["dependencies"]["prompt_5_routing"]["schema_path"] = "contracts/project-gate/missing.schema.json"
+    cases.append(("schema path drift", schema_path))
+
+    schema_hash = copy.deepcopy(valid)
+    schema_hash["dependencies"]["prompt_5_routing"]["schema_sha256"] = "0" * 64
+    cases.append(("schema content hash drift", schema_hash))
+
+    blob_hash = copy.deepcopy(valid)
+    blob_hash["dependencies"]["prompt_5_routing"]["schema_git_blob_sha"] = "0" * 40
+    cases.append(("schema blob hash drift", blob_hash))
 
     boundary = copy.deepcopy(valid)
     boundary["boundary_claims"]["responsive_correctness_validated"] = True

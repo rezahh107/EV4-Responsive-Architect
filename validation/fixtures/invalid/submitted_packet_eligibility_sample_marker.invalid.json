@@ -1,4 +1,5 @@
 {
+  "$schema_file": "ev4-responsive-evidence-intake-packet.schema.json",
   "packet_id": "SAMPLE-ISSUE8-REAL-001",
   "packet_status": "submitted",
   "packet_origin": "real_issue_submission",

@@ -1,4 +1,5 @@
 {
+  "$schema_file": "ev4-responsive-handoff-export-boundary-manifest.schema.json",
   "schema": "ev4-responsive-handoff-export-boundary-manifest@0.1.0",
   "status": "eligible_for_repository_validation",
   "source_handoff_ref": "fixtures/handoff/example-responsive-handoff.json",

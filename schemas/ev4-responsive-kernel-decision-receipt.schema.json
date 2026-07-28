@@ -2,60 +2,93 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://ev4-responsive-architect.local/schemas/ev4-responsive-kernel-decision-receipt.schema.json",
   "title": "EV4 Responsive Kernel Decision Receipt",
-  "description": "Wave 5 presentation-layer receipt rendered from an existing Responsive decision_lineage. This schema does not replace or weaken the machine-readable trace.",
-  "type": "object",
-  "additionalProperties": false,
-  "required": [
-    "receipt_state",
-    "message",
-    "trace_ref",
-    "surface"
-  ],
-  "properties": {
-    "receipt_state": {
-      "enum": [
-        "success",
-        "insufficient_evidence",
-        "runtime_mismatch_warning"
-      ]
-    },
-    "message": {
-      "type": "string",
-      "minLength": 1
-    },
-    "trace_ref": {
-      "type": [
-        "string",
-        "null"
+  "description": "Wave 5 presentation-layer receipt, either as the direct rendered receipt or as the trace-backed fixture envelope consumed by the focused Responsive Kernel receipt validator. This schema does not replace or weaken the machine-readable trace.",
+  "$defs": {
+    "receipt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "receipt_state",
+        "message",
+        "trace_ref",
+        "surface"
       ],
-      "enum": [
-        "decision_lineage",
-        null
-      ]
-    },
-    "surface": {
-      "enum": [
-        "responsive_intake",
-        "responsive_validation_report",
-        "runtime_evidence_reference",
-        "mismatch_report",
-        "repair_request",
-        "handoff_output"
-      ]
-    }
-  },
-  "not": {
-    "anyOf": [
-      {
-        "required": [
-          "resolved"
-        ]
+      "properties": {
+        "receipt_state": {
+          "enum": [
+            "success",
+            "insufficient_evidence",
+            "runtime_mismatch_warning"
+          ]
+        },
+        "message": {
+          "type": "string",
+          "minLength": 1
+        },
+        "trace_ref": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "enum": [
+            "decision_lineage",
+            null
+          ]
+        },
+        "surface": {
+          "enum": [
+            "responsive_intake",
+            "responsive_validation_report",
+            "runtime_evidence_reference",
+            "mismatch_report",
+            "repair_request",
+            "handoff_output"
+          ]
+        }
       },
-      {
-        "required": [
-          "production_ready"
+      "not": {
+        "anyOf": [
+          {
+            "required": [
+              "resolved"
+            ]
+          },
+          {
+            "required": [
+              "production_ready"
+            ]
+          }
         ]
       }
-    ]
-  }
+    },
+    "trace_backed_envelope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "fixture",
+        "decision_lineage",
+        "kernel_decision_receipt"
+      ],
+      "properties": {
+        "fixture": {
+          "type": "string",
+          "minLength": 1
+        },
+        "decision_lineage": {
+          "type": "object"
+        },
+        "kernel_decision_receipt": {
+          "$ref": "#/$defs/receipt"
+        }
+      }
+    }
+  },
+  "oneOf": [
+    {
+      "$ref": "#/$defs/receipt"
+    },
+    {
+      "$ref": "#/$defs/trace_backed_envelope"
+    }
+  ]
 }

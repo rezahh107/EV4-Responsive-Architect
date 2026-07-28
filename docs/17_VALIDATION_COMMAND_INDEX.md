@@ -1,7 +1,7 @@
 # Validation Command Index
 
-Task: `WP-RESP-012/PR-B parity reconciliation`
-Updated by: `automation/wp-resp-005-pr-b-replenish-after-wp015-a`
+Task: `WP-RESP-002 contract-drift repair — tolerant EV4-PCVP consumer`  
+Updated by: `agent/pcvp-responsive-tolerant-consumer`
 
 This index lists repository validation commands for controlled manual use. Command success is repository-check evidence only; it is not responsive correctness evidence and does not authorize production, release, real pilot, export, live-render, accessibility, or pixel-validation claims.
 
@@ -16,6 +16,7 @@ python -m pip install -r requirements.txt
 The current primary repository validation chain is the `Validate` GitHub Actions workflow in `.github/workflows/validate.yml`. For pull requests, pushes to `main`, and exact-SHA manual recovery dispatches, it runs the repository-supported Python matrix and executes:
 
 ```bash
+python validation/e2e/run_pcvp_canonical_parity_check.py --decision-kernel-root .pcvp-deps/decision-kernel
 python validation/e2e/run_rolling_queue_check.py
 python validation/e2e/run_run_ledger_check.py
 python validation/e2e/run_task_quality_gate_check.py
@@ -31,6 +32,7 @@ python validation/e2e/run_pilot_readiness_boundary_check.py
 python validation/e2e/run_issue_8_preflight_boundary_check.py
 python validation/e2e/run_issue_to_packet_bridge_check.py
 python validation/e2e/run_builder_responsive_input_boundary_check.py
+python validation/e2e/run_pcvp_tolerant_consumer_check.py
 python validation/e2e/run_prompt_5_routing_envelope_check.py
 python validation/e2e/run_runtime_mismatch_reopen_package_check.py
 python validation/e2e/run_responsive_decision_lineage_sequence_check.py
@@ -44,6 +46,20 @@ python validation/e2e/run_status_merged_foundation_guard_check.py
 python validation/e2e/run_automation_control_state_check.py
 python validation/e2e/run_automation_work_package_catalog_check.py
 ```
+
+The live workflow also runs the fixture-schema-ownership, automation replenishment transition, and catalog-reassembly guards where configured. `STATUS.md` is the machine-enforced command projection for all inline primary Validate commands.
+
+## EV4-PCVP tolerant consumer commands
+
+The PCVP consumer remains dormant and additive. The first command requires a Decision Kernel checkout at exactly `069a50fa243b01fa578a7c1bcb8864d9e796d34b`; the GitHub Actions workflow creates that checkout automatically with persisted credentials disabled.
+
+```bash
+python validation/e2e/run_pcvp_canonical_parity_check.py --decision-kernel-root .pcvp-deps/decision-kernel
+python validation/e2e/run_pcvp_tolerant_consumer_check.py
+python validation/e2e/run_builder_responsive_input_boundary_check.py
+```
+
+The parity check proves byte equality for the non-authoritative Responsive profile and the four canonical carrier schemas. The consumer matrix proves legacy absence, valid lossless intake, fail-closed canonical layers, and no producer/output authority. Success does not activate PCVP, change adoption state, prove Responsive correctness, or create Project Gate PASS/readiness evidence.
 
 ## Manual evidence-intake commands
 
@@ -71,6 +87,7 @@ python validation/e2e/run_pilot_readiness_boundary_check.py
 python validation/e2e/run_issue_8_preflight_boundary_check.py
 python validation/e2e/run_issue_to_packet_bridge_check.py
 python validation/e2e/run_builder_responsive_input_boundary_check.py
+python validation/e2e/run_pcvp_tolerant_consumer_check.py
 python validation/e2e/run_viewport_inheritance_reset_matrix_check.py
 python validation/e2e/run_responsive_handoff_export_boundary_manifest_check.py
 ```
@@ -117,7 +134,7 @@ Manual guard command success still means only that the bounded repository guard 
 
 ## Automatic workflow boundary
 
-The GitHub Actions workflow runs the primary Validate chain on pull requests and pushes to `main`, with a same-head `workflow_dispatch` recovery path that verifies the requested ref resolves to the supplied exact SHA. Its success means the configured repository checks passed. It does not prove that a real submitted packet exists, that Issue #8 has real evidence, or that the responsive output is production/release ready.
+The GitHub Actions workflow runs the primary Validate chain on pull requests and pushes to `main`, with a same-head `workflow_dispatch` recovery path that verifies the requested ref resolves to the supplied exact SHA. It also checks out the immutable Decision Kernel PCVP pin only for canonical parity. Its success means the configured repository checks passed. It does not prove that a real submitted packet exists, that Issue #8 has real evidence, or that the responsive output is production/release ready.
 
 ## Manual-only interpretation
 
@@ -125,6 +142,7 @@ The commands can be used to inspect deterministic repository behavior:
 
 - responsive-tree architecture contracts, schema, and route fixtures
 - invalid fixture rejection
+- Builder→Responsive optional PCVP carrier tolerance, exact canonical identity, cross-record/semantic rejection, and lossless intake
 - submitted-packet eligibility failure modes
 - submitted evidence source-kind, completeness, readiness-status, artifact-path, submitted-mode, payload-hash, Issue #8 identity, issue-to-packet bridge, and privacy guard behavior
 - pilot readiness report generation boundaries
@@ -152,7 +170,7 @@ Stop and do not upgrade claims if:
 
 ## Boundary
 
-This command index is documentation only. It does not create evidence, mutate Issue #8, run the pilot, or change readiness state.
+This command index is documentation only. It does not create evidence, mutate Issue #8, run the pilot, activate PCVP, emit a Responsive carrier, or change readiness state.
 
 ## Runtime mismatch reopen package
 
@@ -169,6 +187,16 @@ python validation/e2e/run_prompt_5_routing_envelope_check.py
 ```
 
 Validates the repository-local Prompt 5 route/reject envelope, lineage, transport eligibility, diagnostics, authority ownership, and all-false evidence/readiness boundary registry. Responsive remains non-executing; EV4 Project Gate retains transport and downstream gate authority. Success is repository-check evidence only and does not prove external transport, pilot readiness, production/release readiness, export, accessibility, pixel-perfect output, or responsive correctness.
+
+## Runtime-mismatch reopen to Prompt 5 routing compatibility
+
+```bash
+python validation/e2e/run_runtime_mismatch_prompt_5_compatibility_check.py
+```
+
+Validates the repository-local compatibility contract between `runtime-mismatch-reopen-package.v1` and `prompt-5-routing-envelope.v1`. It checks pinned dependency identities, shared Kernel and producer-export lineage, the exact `reopen_for_authoritative_review` action, eligible routing to `ev4-project-gate`, empty rejection diagnostics for a compatible route, authority ownership, negative drift cases, and the complete all-false evidence/readiness boundary registry.
+
+The primary `Validate` workflow reaches this check transitively through `run_runtime_mismatch_reopen_package_check.py`; the direct command above is supported for focused manual diagnosis. Success is repository-check evidence only. It does not execute Project Gate transport, replace or reinterpret a Kernel decision, create submitted evidence, authorize a pilot, or prove production, release, live-render, export, accessibility, pixel-perfect, or responsive-correctness outcomes.
 
 ## Project Gate Prompt 04 Responsive Producer Adoption
 

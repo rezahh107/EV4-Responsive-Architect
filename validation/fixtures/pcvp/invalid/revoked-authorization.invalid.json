@@ -1,0 +1,57 @@
+{
+  "continuation_assurance": {
+    "policy_id": "EV4-PCVP",
+    "policy_version": "1.0.0",
+    "source_stage": "BUILDER_ASSISTANT",
+    "claims": [
+      {
+        "claim_id": "CLM-BUILDER-001",
+        "statement": "The bounded Builder handoff has source evidence.",
+        "criticality": "CRITICAL",
+        "applicability_state": "APPLICABLE",
+        "verification_state": "VERIFIED",
+        "lifecycle_state": "ACTIVE",
+        "evidence_refs": ["EVD-BUILDER-001"],
+        "dependency_refs": [],
+        "assumption_refs": []
+      }
+    ],
+    "effects": [
+      {
+        "effect_id": "EFF-BUILDER-001",
+        "effect_class": "DRAFT_ONLY",
+        "depends_on_claim_ids": ["CLM-BUILDER-001"],
+        "continuation_state": "CONTINUE",
+        "authorization_ref": "AUTH-BUILDER-001",
+        "blocker_reason": null,
+        "permitted_scope": "provisional Responsive intake only"
+      }
+    ],
+    "authorizations": [
+      {
+        "authorization_id": "AUTH-BUILDER-001",
+        "basis": "PROFILE_PREAUTHORIZED",
+        "status": "REVOKED",
+        "allowed_effect_ids": ["EFF-BUILDER-001"],
+        "allowed_effect_classes": ["DRAFT_ONLY"],
+        "bound_unknown_ids": [],
+        "bound_assumption_ids": [],
+        "stage_scope": {
+          "from": "BUILDER_ASSISTANT",
+          "through": "RESPONSIVE_ARCHITECT"
+        },
+        "permitted_scope": "provisional Responsive intake only",
+        "valid_until_events": ["NEW_MATERIAL_BLOCKER", "OWNER_REVOCATION", "SCOPE_EXPANSION"]
+      }
+    ],
+    "unresolved_items": [],
+    "stage_summary": {
+      "owner_projection": "GREEN",
+      "yellow_substate": null,
+      "derived_from_claim_ids": ["CLM-BUILDER-001"],
+      "current_effect_id": "EFF-BUILDER-001",
+      "lifecycle_state": "ACTIVE",
+      "derivation_reason": "critical dependent claim is verified"
+    }
+  }
+}

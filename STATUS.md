@@ -68,6 +68,8 @@ active_contracts:
   - contracts/RESPONSIVE_HANDOFF_EXPORT_BOUNDARY_MANIFEST.md
   - contracts/runtime/RUNTIME_MISMATCH_REOPEN_BOUNDARY.md
   - contracts/project-gate/PROMPT_5_ROUTING_BOUNDARY.md
+  - contracts/compatibility/RUNTIME_MISMATCH_PROMPT_5_ROUTING_COMPATIBILITY.md
+  - contracts/pcvp/RESPONSIVE_TOLERANT_CONSUMER_V1.md
 active_schema:
   - schemas/ev4-responsive-output.schema.json
   - schemas/ev4-builder-responsive-input.schema.json
@@ -75,6 +77,7 @@ active_schema:
   - schemas/ev4-automation-work-package-catalog.schema.json
   - contracts/runtime/runtime-mismatch-reopen-package.v1.schema.json
   - contracts/project-gate/prompt-5-routing-envelope.v1.schema.json
+  - contracts/compatibility/runtime-mismatch-prompt-5-routing-compatibility.v1.schema.json
 active_validation:
   - validation/e2e/run_responsive_tree_architecture_refactor_check.py
   - validation/e2e/run_submitted_packet_eligibility_gate_check.py
@@ -88,12 +91,16 @@ active_validation:
   - validation/e2e/run_issue_8_preflight_boundary_check.py
   - validation/e2e/run_issue_to_packet_bridge_check.py
   - validation/e2e/run_builder_responsive_input_boundary_check.py
+  - validation/e2e/run_pcvp_canonical_parity_check.py
+  - validation/e2e/run_pcvp_tolerant_consumer_check.py
   - validation/e2e/run_prompt_5_routing_envelope_check.py
   - validation/e2e/run_runtime_mismatch_reopen_package_check.py
+  - validation/e2e/run_runtime_mismatch_prompt_5_compatibility_check.py
   - validation/e2e/run_responsive_contract_drift_sentinel_check.py
   - validation/e2e/run_viewport_inheritance_reset_matrix_check.py
   - validation/e2e/run_responsive_handoff_export_boundary_manifest_check.py
   - validation/e2e/run_task_quality_gate_check.py
+  - validation/e2e/run_fixture_schema_ownership_check.py
   - validation/e2e/run_rtaq_ssot_guard_check.py
   - validation/e2e/run_status_merged_foundation_guard_check.py
   - validation/e2e/run_automation_control_state_check.py
@@ -134,6 +141,7 @@ controlled_use_docs:
   - docs/45_SHADOW_MODE_PREPARATION_PATH_RTAQ_0040.md
   - docs/47_RESPONSIVE_CONTRACT_DRIFT_SENTINEL.md
   - docs/48_PROMPT_5_PROJECT_GATE_ROUTING_BOUNDARY.md
+  - docs/49_RUNTIME_MISMATCH_PROMPT_5_ROUTING_COMPATIBILITY.md
   - docs/AUTOMATION_WORK_PACKAGE_CATALOG.md
 ```
 
@@ -170,6 +178,13 @@ project_gate_builder_to_responsive_transition: future_verified_transport_require
 project_gate_builder_to_responsive_transition_owner: Project Gate verifies and transports Builder-owned artifacts when that future route exists
 responsive_transition_role: validate local intake eligibility only; non-executing until verified Project Gate transport exists
 builder_responsive_work_package_trace: WP-RESP-002
+responsive_pcvp_tolerant_consumer: implemented_pending_merge
+responsive_pcvp_compatibility_mode: DUAL_READ
+responsive_pcvp_adoption_status: not_yet_adopted
+responsive_pcvp_activation_effect: NONE
+responsive_pcvp_producer_emission_enabled: false
+responsive_pcvp_canonical_pin: 069a50fa243b01fa578a7c1bcb8864d9e796d34b
+responsive_pcvp_cross_repo_trial_complete: false
 ```
 
 ## Evidence and Pilot Boundary
@@ -195,6 +210,7 @@ responsive_correctness_validated: false
 ```yaml
 automatic_workflow: .github/workflows/validate.yml
 automatic_check:
+  - python validation/e2e/run_pcvp_canonical_parity_check.py --decision-kernel-root .pcvp-deps/decision-kernel
   - python validation/e2e/run_rolling_queue_check.py
   - python validation/e2e/run_run_ledger_check.py
   - python validation/e2e/run_task_quality_gate_check.py
@@ -210,6 +226,7 @@ automatic_check:
   - python validation/e2e/run_issue_8_preflight_boundary_check.py
   - python validation/e2e/run_issue_to_packet_bridge_check.py
   - python validation/e2e/run_builder_responsive_input_boundary_check.py
+  - python validation/e2e/run_pcvp_tolerant_consumer_check.py
   - python validation/e2e/run_responsive_decision_lineage_sequence_check.py
   - python validation/e2e/run_responsive_kernel_receipt_check.py
   - python validation/e2e/run_responsive_contract_drift_sentinel_check.py
@@ -218,6 +235,7 @@ automatic_check:
   - python validation/e2e/run_prompt_5_routing_envelope_check.py
   - python validation/e2e/run_runtime_mismatch_reopen_package_check.py
   - python validation/e2e/run_decision_escape_routes_schema_check.py
+  - python validation/e2e/run_fixture_schema_ownership_check.py
   - python validation/e2e/run_rtaq_ssot_guard_check.py
   - python validation/e2e/run_status_merged_foundation_guard_check.py
   - python validation/e2e/run_automation_control_state_check.py
@@ -253,6 +271,11 @@ prompt_04_responsive_producer_adoption:
   prompt_5_routing_schema: contracts/project-gate/prompt-5-routing-envelope.v1.schema.json
   prompt_5_routing_validator: validation/e2e/run_prompt_5_routing_envelope_check.py
   prompt_5_routing_fixtures: validation/fixtures/prompt05
+  runtime_mismatch_prompt_5_compatibility: implemented_repository_local_fail_closed
+  runtime_mismatch_prompt_5_compatibility_contract: contracts/compatibility/RUNTIME_MISMATCH_PROMPT_5_ROUTING_COMPATIBILITY.md
+  runtime_mismatch_prompt_5_compatibility_schema: contracts/compatibility/runtime-mismatch-prompt-5-routing-compatibility.v1.schema.json
+  runtime_mismatch_prompt_5_compatibility_validator: validation/e2e/run_runtime_mismatch_prompt_5_compatibility_check.py
+  runtime_mismatch_prompt_5_compatibility_ci_path: invoked_by_runtime_mismatch_reopen_package_validator
   project_gate_transport_execution_owner: EV4 Project Gate
   external_project_gate_transport_implemented_here: false
   submitted_evidence_created: false
@@ -298,18 +321,18 @@ The snapshot below is derived from the canonical monolithic catalog, is validato
   "source": "planning/EV4_AUTOMATION_WORK_PACKAGE_CATALOG.json",
   "catalog_state_snapshot_is_derived": true,
   "policy": {
-    "max_ready_work_packages": 5,
     "ready_work_package_target": 4,
-    "refresh_when_ready_below": 4
+    "refresh_when_ready_below": 4,
+    "max_ready_work_packages": 5
   },
   "selectable_ready_horizon": [
-    "WP-RESP-010",
     "WP-RESP-011",
     "WP-RESP-014",
-    "WP-RESP-016"
+    "WP-RESP-016",
+    "WP-RESP-018"
   ],
   "active_work_packages": [
-    "WP-RESP-015"
+    "WP-RESP-017"
   ],
   "completed_work_packages": [
     "WP-RESP-002",
@@ -319,8 +342,10 @@ The snapshot below is derived from the canonical monolithic catalog, is validato
     "WP-RESP-007",
     "WP-RESP-008",
     "WP-RESP-009",
+    "WP-RESP-010",
     "WP-RESP-012",
-    "WP-RESP-013"
+    "WP-RESP-013",
+    "WP-RESP-015"
   ]
 }
 ```

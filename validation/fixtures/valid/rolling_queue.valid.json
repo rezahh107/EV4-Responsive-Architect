@@ -5,12 +5,17 @@
   "project": "EV4 Responsive Architect",
   "queue_status": "active",
   "controller_policy": {
-    "one_task_per_run": true,
-    "critique_same_task": true,
+    "run_granularity": "primary_objective",
+    "same_scope_completion_allowed": true,
+    "critique_same_objective": true,
     "small_in_scope_fixes_allowed": true,
     "ci_required_for_repo_changes": true,
-    "minimum_pending_tasks": 4,
-    "refresh_every_nth_task": 5,
+    "minimum_actionable_tasks": 4,
+    "refresh_when_actionable_below": 4,
+    "fixed_ordinal_refresh_forbidden": true,
+    "artificial_reserve_tasks_forbidden": true,
+    "status_only_prs_forbidden": true,
+    "same_head_ci_recovery_required": true,
     "real_pilot_requires_submitted_packet_and_readiness_pass": true
   },
   "active_cycle": {
