@@ -69,6 +69,7 @@ active_contracts:
   - contracts/runtime/RUNTIME_MISMATCH_REOPEN_BOUNDARY.md
   - contracts/project-gate/PROMPT_5_ROUTING_BOUNDARY.md
   - contracts/compatibility/RUNTIME_MISMATCH_PROMPT_5_ROUTING_COMPATIBILITY.md
+  - contracts/pcvp/RESPONSIVE_TOLERANT_CONSUMER_V1.md
 active_schema:
   - schemas/ev4-responsive-output.schema.json
   - schemas/ev4-builder-responsive-input.schema.json
@@ -90,6 +91,8 @@ active_validation:
   - validation/e2e/run_issue_8_preflight_boundary_check.py
   - validation/e2e/run_issue_to_packet_bridge_check.py
   - validation/e2e/run_builder_responsive_input_boundary_check.py
+  - validation/e2e/run_pcvp_canonical_parity_check.py
+  - validation/e2e/run_pcvp_tolerant_consumer_check.py
   - validation/e2e/run_prompt_5_routing_envelope_check.py
   - validation/e2e/run_runtime_mismatch_reopen_package_check.py
   - validation/e2e/run_runtime_mismatch_prompt_5_compatibility_check.py
@@ -175,6 +178,13 @@ project_gate_builder_to_responsive_transition: future_verified_transport_require
 project_gate_builder_to_responsive_transition_owner: Project Gate verifies and transports Builder-owned artifacts when that future route exists
 responsive_transition_role: validate local intake eligibility only; non-executing until verified Project Gate transport exists
 builder_responsive_work_package_trace: WP-RESP-002
+responsive_pcvp_tolerant_consumer: implemented_pending_merge
+responsive_pcvp_compatibility_mode: DUAL_READ
+responsive_pcvp_adoption_status: not_yet_adopted
+responsive_pcvp_activation_effect: NONE
+responsive_pcvp_producer_emission_enabled: false
+responsive_pcvp_canonical_pin: 069a50fa243b01fa578a7c1bcb8864d9e796d34b
+responsive_pcvp_cross_repo_trial_complete: false
 ```
 
 ## Evidence and Pilot Boundary
@@ -200,6 +210,7 @@ responsive_correctness_validated: false
 ```yaml
 automatic_workflow: .github/workflows/validate.yml
 automatic_check:
+  - python validation/e2e/run_pcvp_canonical_parity_check.py --decision-kernel-root .pcvp-deps/decision-kernel
   - python validation/e2e/run_rolling_queue_check.py
   - python validation/e2e/run_run_ledger_check.py
   - python validation/e2e/run_task_quality_gate_check.py
@@ -215,6 +226,7 @@ automatic_check:
   - python validation/e2e/run_issue_8_preflight_boundary_check.py
   - python validation/e2e/run_issue_to_packet_bridge_check.py
   - python validation/e2e/run_builder_responsive_input_boundary_check.py
+  - python validation/e2e/run_pcvp_tolerant_consumer_check.py
   - python validation/e2e/run_responsive_decision_lineage_sequence_check.py
   - python validation/e2e/run_responsive_kernel_receipt_check.py
   - python validation/e2e/run_responsive_contract_drift_sentinel_check.py
