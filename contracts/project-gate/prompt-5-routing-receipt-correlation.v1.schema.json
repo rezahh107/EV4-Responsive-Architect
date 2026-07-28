@@ -66,6 +66,8 @@
       "additionalProperties": false,
       "required": [
         "receipt_id",
+        "receipt_identity_scheme",
+        "receipt_sha256",
         "receipt_schema",
         "surface",
         "trace_ref"
@@ -73,7 +75,14 @@
       "properties": {
         "receipt_id": {
           "type": "string",
-          "minLength": 1
+          "pattern": "^sha256:[a-f0-9]{64}$"
+        },
+        "receipt_identity_scheme": {
+          "const": "rfc8785-sha256-receipt-object-v1"
+        },
+        "receipt_sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
         },
         "receipt_schema": {
           "const": "ev4-responsive-kernel-decision-receipt.schema.json"
