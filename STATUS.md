@@ -309,18 +309,18 @@ The snapshot below is derived from the canonical monolithic catalog, is validato
   "source": "planning/EV4_AUTOMATION_WORK_PACKAGE_CATALOG.json",
   "catalog_state_snapshot_is_derived": true,
   "policy": {
-    "max_ready_work_packages": 5,
     "ready_work_package_target": 4,
-    "refresh_when_ready_below": 4
+    "refresh_when_ready_below": 4,
+    "max_ready_work_packages": 5
   },
   "selectable_ready_horizon": [
     "WP-RESP-011",
     "WP-RESP-014",
     "WP-RESP-016",
-    "WP-RESP-017"
+    "WP-RESP-018"
   ],
   "active_work_packages": [
-    "WP-RESP-015"
+    "WP-RESP-017"
   ],
   "completed_work_packages": [
     "WP-RESP-002",
@@ -332,7 +332,8 @@ The snapshot below is derived from the canonical monolithic catalog, is validato
     "WP-RESP-009",
     "WP-RESP-010",
     "WP-RESP-012",
-    "WP-RESP-013"
+    "WP-RESP-013",
+    "WP-RESP-015"
   ]
 }
 ```
