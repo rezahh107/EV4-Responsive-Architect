@@ -38,11 +38,24 @@ EXPECTED_INVALID_DIAGNOSTICS = {
     "repository_tree_provenance.invalid.json": {"PROVENANCE_UNVERIFIABLE"},
     "resolved_conflict_unverifiable_authority_reference.invalid.json": {"HIGHER_AUTHORITY_REFERENCE_UNVERIFIABLE"},
     "resolved_conflict_unverifiable_resolution_reference.invalid.json": {"CONFLICT_RESOLUTION_REFERENCE_UNVERIFIABLE"},
+    "resolved_gated_evidence_unverifiable_references.invalid.json": {
+        "HIGHER_AUTHORITY_REFERENCE_UNVERIFIABLE",
+        "CONFLICT_RESOLUTION_REFERENCE_UNVERIFIABLE",
+    },
+    "resolved_kernel_unverifiable_references.invalid.json": {
+        "HIGHER_AUTHORITY_REFERENCE_UNVERIFIABLE",
+        "CONFLICT_RESOLUTION_REFERENCE_UNVERIFIABLE",
+    },
+    "resolved_project_gate_unverifiable_references.invalid.json": {
+        "HIGHER_AUTHORITY_REFERENCE_UNVERIFIABLE",
+        "CONFLICT_RESOLUTION_REFERENCE_UNVERIFIABLE",
+    },
     "resolved_conflict_without_reference.invalid.json": {"CONFLICT_RESOLUTION_REFERENCE_REQUIRED"},
     "responsive_correctness_upgrade.invalid.json": {"CORRECTNESS_UPGRADE_FORBIDDEN"},
     "stale_active_review.invalid.json": {"LIFECYCLE_REVIEW_OVERDUE"},
     "submitted_evidence_upgrade.invalid.json": {"SUBMITTED_EVIDENCE_UPGRADE_FORBIDDEN"},
     "universal_rule.invalid.json": {"UNIVERSAL_RULE_FORBIDDEN"},
+    "universal_rule_false_declaration.invalid.json": {"UNIVERSAL_RULE_FORBIDDEN"},
     "unresolved_conflict.invalid.json": {"UNRESOLVED_HIGHER_AUTHORITY_CONFLICT"},
     "unverifiable_provenance.invalid.json": {"PROVENANCE_UNVERIFIABLE"},
 }
@@ -151,6 +164,41 @@ def provenance_is_locally_verifiable(provenance: object) -> bool:
     return repository_blob_exists(normalized)
 
 
+def normalized_strings(value: object) -> list[str]:
+    if not isinstance(value, list):
+        return []
+    return [entry.strip().lower() for entry in value if isinstance(entry, str) and entry.strip()]
+
+
+def item_has_unsupported_universal_applicability(item: dict[str, object]) -> bool:
+    statement = item.get("statement")
+    statement_text = statement.strip().lower() if isinstance(statement, str) else ""
+    statement_markers = (
+        "applies universally",
+        "applies in all cases",
+        "applies under all conditions",
+        "always applies",
+        "must always",
+    )
+    if any(marker in statement_text for marker in statement_markers):
+        return True
+
+    applicability = item.get("applicability")
+    if not isinstance(applicability, dict):
+        return False
+    applies_when = set(normalized_strings(applicability.get("applies_when")))
+    does_not_apply_when = set(normalized_strings(applicability.get("does_not_apply_when")))
+    surfaces = set(normalized_strings(applicability.get("surfaces")))
+    universal_apply_markers = {"all", "all conditions", "all cases", "all contexts", "always"}
+    universal_surface_markers = {"all", "all surfaces", "all design surfaces", "every surface"}
+    no_exception_markers = {"none", "no exceptions", "never"}
+    return bool(
+        (applies_when & universal_apply_markers)
+        and (does_not_apply_when & no_exception_markers)
+        and (surfaces & universal_surface_markers)
+    )
+
+
 def semantic_error_codes(payload: object) -> list[str]:
     errors: list[str] = []
     if not isinstance(payload, dict):
@@ -176,6 +224,8 @@ def semantic_error_codes(payload: object) -> list[str]:
     for item in guidance_items:
         if not isinstance(item, dict):
             continue
+        if item_has_unsupported_universal_applicability(item):
+            errors.append("UNIVERSAL_RULE_FORBIDDEN")
         if "provenance" in item and not provenance_is_locally_verifiable(item.get("provenance")):
             errors.append("PROVENANCE_UNVERIFIABLE")
         conflicts = item.get("conflicts", [])
@@ -187,7 +237,7 @@ def semantic_error_codes(payload: object) -> list[str]:
             status = conflict.get("status")
             if status == "unresolved":
                 errors.append("UNRESOLVED_HIGHER_AUTHORITY_CONFLICT")
-            if status == "resolved" and conflict.get("higher_authority_class") == "repository_contract_schema_validator_stage_anchor":
+            if status == "resolved":
                 authority_reference = conflict.get("higher_authority_reference")
                 resolution_reference = conflict.get("resolution_reference")
                 if isinstance(authority_reference, str) and authority_reference.strip() and not repository_reference_is_blob(authority_reference):
