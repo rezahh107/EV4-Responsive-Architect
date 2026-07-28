@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import json
+import subprocess
 import sys
 from datetime import date
 from pathlib import Path
@@ -25,9 +26,11 @@ EXPECTED_INVALID_DIAGNOSTICS = {
     "export_upgrade.invalid.json": {"EXPORT_UPGRADE_FORBIDDEN"},
     "live_render_upgrade.invalid.json": {"LIVE_RENDER_UPGRADE_FORBIDDEN"},
     "malformed_lifecycle.invalid.json": {"SCHEMA:type:lifecycle"},
+    "malformed_root.invalid.json": {"SCHEMA:type:<root>"},
     "missing_conflict_disposition.invalid.json": {"CONFLICT_DISPOSITION_REQUIRED"},
     "missing_exceptions.invalid.json": {"EXCEPTIONS_REQUIRED"},
     "missing_provenance.invalid.json": {"PROVENANCE_REQUIRED"},
+    "nonexistent_repository_blob.invalid.json": {"PROVENANCE_UNVERIFIABLE"},
     "pilot_upgrade.invalid.json": {"PILOT_UPGRADE_FORBIDDEN"},
     "pixel_upgrade.invalid.json": {"PIXEL_UPGRADE_FORBIDDEN"},
     "production_ready_authored.invalid.json": {"PRODUCTION_READINESS_AUTHORED"},
@@ -42,7 +45,7 @@ EXPECTED_INVALID_DIAGNOSTICS = {
 }
 
 
-def load_json(path: Path) -> dict:
+def load_json(path: Path) -> object:
     with path.open("r", encoding="utf-8") as handle:
         return json.load(handle)
 
@@ -89,6 +92,30 @@ def schema_error_code(error: ValidationError) -> str:
     return f"SCHEMA:{error.validator}:{'/'.join(path) or '<root>'}"
 
 
+def repository_blob_exists(source_url: str) -> bool:
+    blob_prefix = f"{APPROVED_REPOSITORY_URL}/blob/"
+    if not source_url.startswith(blob_prefix):
+        return False
+    blob_target = source_url[len(blob_prefix):].strip("/")
+    parts = blob_target.split("/")
+    if len(parts) < 2:
+        return False
+    for split_at in range(1, len(parts)):
+        ref = "/".join(parts[:split_at])
+        repo_path = "/".join(parts[split_at:])
+        if not ref or not repo_path:
+            continue
+        result = subprocess.run(
+            ["git", "-C", str(ROOT), "cat-file", "-e", f"{ref}:{repo_path}"],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            check=False,
+        )
+        if result.returncode == 0:
+            return True
+    return False
+
+
 def provenance_is_locally_verifiable(provenance: object) -> bool:
     if not isinstance(provenance, dict):
         return False
@@ -99,11 +126,16 @@ def provenance_is_locally_verifiable(provenance: object) -> bool:
     if parsed.scheme != "https" or parsed.netloc != "github.com":
         return False
     normalized = source_url.rstrip("/")
-    return normalized == APPROVED_REPOSITORY_URL or normalized.startswith(f"{APPROVED_REPOSITORY_URL}/blob/")
+    if normalized == APPROVED_REPOSITORY_URL:
+        return True
+    return repository_blob_exists(normalized)
 
 
-def semantic_error_codes(payload: dict) -> list[str]:
+def semantic_error_codes(payload: object) -> list[str]:
     errors: list[str] = []
+    if not isinstance(payload, dict):
+        return errors
+
     lifecycle = payload.get("lifecycle", {})
     if isinstance(lifecycle, dict):
         status = lifecycle.get("status")
@@ -137,7 +169,7 @@ def semantic_error_codes(payload: dict) -> list[str]:
     return errors
 
 
-def validate_payload(validator: Draft202012Validator, payload: dict) -> list[str]:
+def validate_payload(validator: Draft202012Validator, payload: object) -> list[str]:
     schema_codes = [schema_error_code(error) for error in validator.iter_errors(payload)]
     return schema_codes + semantic_error_codes(payload)
 
