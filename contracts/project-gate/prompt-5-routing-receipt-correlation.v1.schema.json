@@ -1,0 +1,295 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ev4.local/contracts/project-gate/prompt-5-routing-receipt-correlation.v1.schema.json",
+  "title": "EV4 Prompt 5 Routing to Decision Receipt Correlation v1",
+  "x-ev4-contract-id": "prompt-5-routing-receipt-correlation.v1",
+  "x-ev4-contract-version": "1.0.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "correlation_id",
+    "routing",
+    "receipt",
+    "lineage",
+    "outcome",
+    "authority",
+    "boundary_claims"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "prompt-5-routing-receipt-correlation.v1"
+    },
+    "correlation_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "routing": {
+      "$ref": "#/$defs/routing"
+    },
+    "receipt": {
+      "$ref": "#/$defs/receipt"
+    },
+    "lineage": {
+      "$ref": "#/$defs/lineage"
+    },
+    "outcome": {
+      "$ref": "#/$defs/outcome"
+    },
+    "authority": {
+      "$ref": "#/$defs/authority"
+    },
+    "boundary_claims": {
+      "$ref": "#/$defs/boundaryClaims"
+    }
+  },
+  "$defs": {
+    "routing": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "routing_id",
+        "routing_schema"
+      ],
+      "properties": {
+        "routing_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "routing_schema": {
+          "const": "prompt-5-routing-envelope.v1"
+        }
+      }
+    },
+    "receipt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "receipt_id",
+        "receipt_schema",
+        "surface",
+        "trace_ref"
+      ],
+      "properties": {
+        "receipt_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "receipt_schema": {
+          "const": "ev4-responsive-kernel-decision-receipt.schema.json"
+        },
+        "surface": {
+          "enum": [
+            "responsive_intake",
+            "responsive_validation_report",
+            "runtime_evidence_reference",
+            "mismatch_report",
+            "repair_request",
+            "handoff_output"
+          ]
+        },
+        "trace_ref": {
+          "const": "decision_lineage"
+        }
+      }
+    },
+    "lineage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "pipeline_id",
+        "run_id",
+        "producer_export_id",
+        "producer_export_schema",
+        "producer_export_sha256",
+        "decision_family",
+        "decision_card_ref"
+      ],
+      "properties": {
+        "pipeline_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "run_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "producer_export_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "producer_export_schema": {
+          "const": "producer-gate-export.v1"
+        },
+        "producer_export_sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "decision_family": {
+          "type": "string",
+          "minLength": 1
+        },
+        "decision_card_ref": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "outcome": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "route_decision",
+        "receipt_state",
+        "routing_diagnostic_codes"
+      ],
+      "properties": {
+        "route_decision": {
+          "enum": [
+            "route",
+            "reject"
+          ]
+        },
+        "receipt_state": {
+          "enum": [
+            "success",
+            "insufficient_evidence",
+            "runtime_mismatch_warning"
+          ]
+        },
+        "routing_diagnostic_codes": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^P5R-[A-Z0-9_]+$"
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "route_decision": {
+                "const": "reject"
+              }
+            },
+            "required": [
+              "route_decision"
+            ]
+          },
+          "then": {
+            "properties": {
+              "receipt_state": {
+                "enum": [
+                  "insufficient_evidence",
+                  "runtime_mismatch_warning"
+                ]
+              },
+              "routing_diagnostic_codes": {
+                "minItems": 1
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "route_decision": {
+                "const": "route"
+              }
+            },
+            "required": [
+              "route_decision"
+            ]
+          },
+          "then": {
+            "properties": {
+              "receipt_state": {
+                "enum": [
+                  "success",
+                  "insufficient_evidence"
+                ]
+              },
+              "routing_diagnostic_codes": {
+                "maxItems": 0
+              }
+            }
+          }
+        }
+      ]
+    },
+    "authority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "responsive_executes_project_gate_transport",
+        "receipt_text_is_kernel_authority",
+        "correlation_replaces_kernel_decision",
+        "correlation_replaces_project_gate_decision"
+      ],
+      "properties": {
+        "responsive_executes_project_gate_transport": {
+          "const": false
+        },
+        "receipt_text_is_kernel_authority": {
+          "const": false
+        },
+        "correlation_replaces_kernel_decision": {
+          "const": false
+        },
+        "correlation_replaces_project_gate_decision": {
+          "const": false
+        }
+      }
+    },
+    "boundaryClaims": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "submitted_evidence_created",
+        "issue_8_mutated",
+        "pilot_authorized",
+        "production_ready",
+        "release_ready",
+        "live_render_validated",
+        "export_json_validated",
+        "accessibility_passed",
+        "pixel_perfect",
+        "responsive_correctness_validated"
+      ],
+      "properties": {
+        "submitted_evidence_created": {
+          "const": false
+        },
+        "issue_8_mutated": {
+          "const": false
+        },
+        "pilot_authorized": {
+          "const": false
+        },
+        "production_ready": {
+          "const": false
+        },
+        "release_ready": {
+          "const": false
+        },
+        "live_render_validated": {
+          "const": false
+        },
+        "export_json_validated": {
+          "const": false
+        },
+        "accessibility_passed": {
+          "const": false
+        },
+        "pixel_perfect": {
+          "const": false
+        },
+        "responsive_correctness_validated": {
+          "const": false
+        }
+      }
+    }
+  }
+}
