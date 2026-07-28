@@ -23,11 +23,19 @@
         "version_scope": "r001"
       },
       "applicability": {
-        "applies_when": ["Temporary guidance is still marked active."],
-        "does_not_apply_when": ["The guidance has been reviewed and its review date renewed."],
-        "surfaces": ["responsive layout guidance selection"]
+        "applies_when": [
+          "Temporary guidance is still marked active."
+        ],
+        "does_not_apply_when": [
+          "The guidance has been reviewed and its review date renewed."
+        ],
+        "surfaces": [
+          "responsive layout guidance selection"
+        ]
       },
-      "exceptions": ["Higher-authority repository and project evidence remains controlling."],
+      "exceptions": [
+        "Higher-authority repository and project evidence remains controlling."
+      ],
       "conflicts": [],
       "universal_rule_claimed": false
     }
