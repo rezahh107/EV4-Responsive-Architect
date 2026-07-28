@@ -40,11 +40,19 @@ jobs:
 
           status_path = root / 'STATUS.md'
           text = status_path.read_text(encoding='utf-8')
-          pattern = re.compile(r'```json\n(\{\n  "source": "planning/EV4_AUTOMATION_WORK_PACKAGE_CATALOG\.json".*?\n\})\n```', re.S)
-          match = pattern.search(text)
-          if not match:
+          match = None
+          snapshot = None
+          for candidate in re.finditer(r'```json\n(\{.*?\})\n```', text, re.S):
+              try:
+                  parsed = json.loads(candidate.group(1))
+              except json.JSONDecodeError:
+                  continue
+              if parsed.get('source') == 'planning/EV4_AUTOMATION_WORK_PACKAGE_CATALOG.json':
+                  match = candidate
+                  snapshot = parsed
+                  break
+          if match is None or snapshot is None:
               raise SystemExit('STATUS catalog snapshot block not found')
-          snapshot = json.loads(match.group(1))
           snapshot['policy'] = {
               'ready_work_package_target': 4,
               'refresh_when_ready_below': 4,
