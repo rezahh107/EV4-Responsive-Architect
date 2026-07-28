@@ -19,7 +19,9 @@ The route envelope remains the authority for the repository-local routing decisi
 Each correlation record MUST have a unique non-empty `correlation_id` and MUST pin:
 
 - `routing_id` from the Prompt 5 routing envelope;
-- `receipt_id`, a repository-local identity for the receipt instance being correlated;
+- `receipt_id`, a deterministic repository-local identity for the concrete receipt object being correlated;
+- `receipt_identity_scheme` = `rfc8785-sha256-receipt-object-v1`;
+- `receipt_sha256`, the lowercase SHA-256 digest of the canonical receipt object defined below;
 - `routing_schema` = `prompt-5-routing-envelope.v1`;
 - `receipt_schema` = `ev4-responsive-kernel-decision-receipt.schema.json`;
 - `pipeline_id` and `run_id` from Prompt 5 lineage;
@@ -28,6 +30,18 @@ Each correlation record MUST have a unique non-empty `correlation_id` and MUST p
 - routing `decision` and receipt `receipt_state`.
 
 A correlation is invalid when any pinned identity or lineage value cannot be resolved from the referenced source objects or diverges from them.
+
+## Deterministic receipt identity
+
+Receipt identity MUST be derived from the concrete receipt object rather than authored independently.
+
+- When the canonical receipt input is a direct receipt object, the identity source is that receipt object.
+- When the canonical receipt input is the trace-backed envelope form, the identity source is the nested `kernel_decision_receipt` object only. The fixture wrapper and `decision_lineage` are not part of the receipt digest because lineage is pinned separately by this correlation contract.
+- Serialize the identity-source receipt object with RFC 8785 JSON Canonicalization Scheme (JCS), UTF-8 encode the canonical JSON bytes, and compute SHA-256 over those bytes.
+- `receipt_sha256` MUST equal the resulting lowercase 64-hex digest.
+- `receipt_id` MUST equal `sha256:<receipt_sha256>` exactly.
+
+The next-slice validator MUST recompute this digest from the referenced canonical receipt input and fail closed when the digest, identity scheme, or derived `receipt_id` differs. An arbitrary non-empty `receipt_id` is not valid identity evidence.
 
 ## Outcome compatibility
 
@@ -42,7 +56,7 @@ The validator for the next slice MUST fail closed on route/receipt outcome misma
 
 ## Receipt identity and duplicate handling
 
-`receipt_id` identifies one concrete downstream receipt instance within the correlation artifact. Duplicate `receipt_id` values for distinct correlation records in the same validation set are invalid unless the records are byte-identical representations of the same correlation identity. The validator MUST reject ambiguous duplicate identities.
+`receipt_id` identifies one concrete downstream receipt object by its deterministic canonical-content digest. Duplicate `receipt_id` values are valid only when recomputation from each referenced receipt produces the same `receipt_sha256`; otherwise the validator MUST reject the correlation as identity divergence or ambiguity. Distinct receipt content cannot share an authored alias to bypass duplicate detection.
 
 ## Authority boundary
 
@@ -79,6 +93,9 @@ A validator MUST fail closed when:
 - an unsupported correlation schema version is supplied;
 - the Prompt 5 routing schema is not the pinned v1 identity;
 - the receipt schema identity differs from the pinned Responsive Kernel receipt schema;
+- the receipt identity scheme is unsupported;
+- `receipt_sha256` cannot be recomputed from the canonical receipt object or diverges;
+- `receipt_id` is not exactly derived as `sha256:<receipt_sha256>`;
 - producer export schema or hash differs from the routing envelope;
 - pipeline/run identity diverges;
 - decision lineage fields are absent or divergent;
