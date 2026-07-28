@@ -33,6 +33,7 @@ EXPECTED_INVALID_DIAGNOSTICS = {
     "production_ready_authored.invalid.json": {"PRODUCTION_READINESS_AUTHORED"},
     "release_upgrade.invalid.json": {"RELEASE_UPGRADE_FORBIDDEN"},
     "resolved_conflict_without_reference.invalid.json": {"CONFLICT_RESOLUTION_REFERENCE_REQUIRED"},
+    "responsive_correctness_upgrade.invalid.json": {"CORRECTNESS_UPGRADE_FORBIDDEN"},
     "stale_active_review.invalid.json": {"LIFECYCLE_REVIEW_OVERDUE"},
     "submitted_evidence_upgrade.invalid.json": {"SUBMITTED_EVIDENCE_UPGRADE_FORBIDDEN"},
     "universal_rule.invalid.json": {"UNIVERSAL_RULE_FORBIDDEN"},
