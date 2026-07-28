@@ -35,6 +35,7 @@ EXPECTED_INVALID_DIAGNOSTICS = {
     "pixel_upgrade.invalid.json": {"PIXEL_UPGRADE_FORBIDDEN"},
     "production_ready_authored.invalid.json": {"PRODUCTION_READINESS_AUTHORED"},
     "release_upgrade.invalid.json": {"RELEASE_UPGRADE_FORBIDDEN"},
+    "repository_tree_provenance.invalid.json": {"PROVENANCE_UNVERIFIABLE"},
     "resolved_conflict_without_reference.invalid.json": {"CONFLICT_RESOLUTION_REFERENCE_REQUIRED"},
     "responsive_correctness_upgrade.invalid.json": {"CORRECTNESS_UPGRADE_FORBIDDEN"},
     "stale_active_review.invalid.json": {"LIFECYCLE_REVIEW_OVERDUE"},
@@ -106,12 +107,13 @@ def repository_blob_exists(source_url: str) -> bool:
         if not ref or not repo_path:
             continue
         result = subprocess.run(
-            ["git", "-C", str(ROOT), "cat-file", "-e", f"{ref}:{repo_path}"],
-            stdout=subprocess.DEVNULL,
+            ["git", "-C", str(ROOT), "cat-file", "-t", f"{ref}:{repo_path}"],
+            stdout=subprocess.PIPE,
             stderr=subprocess.DEVNULL,
+            text=True,
             check=False,
         )
-        if result.returncode == 0:
+        if result.returncode == 0 and result.stdout.strip() == "blob":
             return True
     return False
 
