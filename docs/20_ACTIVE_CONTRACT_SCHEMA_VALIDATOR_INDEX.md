@@ -45,6 +45,9 @@ contracts:
   pcvp_tolerant_consumer:
     path: contracts/pcvp/RESPONSIVE_TOLERANT_CONSUMER_V1.md
     role: optional dormant Builder -> Responsive PCVP consumer; no producer/emission or authority expansion
+  temporary_ux_ui_standards_guidance:
+    path: contracts/guidance/TEMPORARY_UX_UI_STANDARDS_GUIDANCE_CONTRACT.md
+    role: non-authoritative temporary guidance eligibility, provenance, conflict, lifecycle, and all-false evidence/readiness boundary
   responsive_tree_architecture:
     path: contracts/EV4_RESPONSIVE_TREE_ARCHITECTURE_CONTRACT.md
     role: output shape and primary route boundary
@@ -96,6 +99,9 @@ schemas:
   pcvp_vendor_schemas:
     root: contracts/pcvp/vendor/decision-kernel/v1.0.0
     role: non-authoritative byte-equal Claim/Effect/Authorization/Handoff schemas pinned to Decision Kernel
+  temporary_ux_ui_standards_guidance:
+    path: contracts/guidance/temporary-ux-ui-standards-guidance.v1.schema.json
+    role: fail-closed temporary guidance artifact schema with non-authority and all-false boundary claims
   automation_control_state:
     path: schemas/ev4-automation-control-state.schema.json
     role: post-queue automation control-state schema
@@ -208,6 +214,9 @@ primary_validate_workflow:
     responsive_handoff_export_boundary_manifest:
       path: validation/e2e/run_responsive_handoff_export_boundary_manifest_check.py
       role: fixture-backed export-boundary lineage, artifact-class, and forbidden-claim guard; repository-check evidence only
+    temporary_ux_ui_standards_guidance:
+      path: validation/e2e/run_temporary_ux_ui_standards_guidance_check.py
+      role: fixture-backed provenance, lifecycle, conflict-disposition, authority, diagnostic-specific negative coverage, and all-false evidence/readiness boundary guard
     rtaq_ssot_guard:
       path: validation/e2e/run_rtaq_ssot_guard_check.py
       role: queue, ledger, status, and SSOT policy preservation guard
