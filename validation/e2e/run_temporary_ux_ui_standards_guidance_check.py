@@ -36,6 +36,8 @@ EXPECTED_INVALID_DIAGNOSTICS = {
     "production_ready_authored.invalid.json": {"PRODUCTION_READINESS_AUTHORED"},
     "release_upgrade.invalid.json": {"RELEASE_UPGRADE_FORBIDDEN"},
     "repository_tree_provenance.invalid.json": {"PROVENANCE_UNVERIFIABLE"},
+    "resolved_conflict_unverifiable_authority_reference.invalid.json": {"HIGHER_AUTHORITY_REFERENCE_UNVERIFIABLE"},
+    "resolved_conflict_unverifiable_resolution_reference.invalid.json": {"CONFLICT_RESOLUTION_REFERENCE_UNVERIFIABLE"},
     "resolved_conflict_without_reference.invalid.json": {"CONFLICT_RESOLUTION_REFERENCE_REQUIRED"},
     "responsive_correctness_upgrade.invalid.json": {"CORRECTNESS_UPGRADE_FORBIDDEN"},
     "stale_active_review.invalid.json": {"LIFECYCLE_REVIEW_OVERDUE"},
@@ -118,6 +120,22 @@ def repository_blob_exists(source_url: str) -> bool:
     return False
 
 
+def repository_reference_is_blob(reference: object) -> bool:
+    if not isinstance(reference, str) or not reference.strip():
+        return False
+    repo_path = reference.split("#", 1)[0].strip().strip("/")
+    if not repo_path:
+        return False
+    result = subprocess.run(
+        ["git", "-C", str(ROOT), "cat-file", "-t", f"HEAD:{repo_path}"],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.DEVNULL,
+        text=True,
+        check=False,
+    )
+    return result.returncode == 0 and result.stdout.strip() == "blob"
+
+
 def provenance_is_locally_verifiable(provenance: object) -> bool:
     if not isinstance(provenance, dict):
         return False
@@ -166,8 +184,16 @@ def semantic_error_codes(payload: object) -> list[str]:
         for conflict in conflicts:
             if not isinstance(conflict, dict):
                 continue
-            if conflict.get("status") == "unresolved":
+            status = conflict.get("status")
+            if status == "unresolved":
                 errors.append("UNRESOLVED_HIGHER_AUTHORITY_CONFLICT")
+            if status == "resolved" and conflict.get("higher_authority_class") == "repository_contract_schema_validator_stage_anchor":
+                authority_reference = conflict.get("higher_authority_reference")
+                resolution_reference = conflict.get("resolution_reference")
+                if isinstance(authority_reference, str) and authority_reference.strip() and not repository_reference_is_blob(authority_reference):
+                    errors.append("HIGHER_AUTHORITY_REFERENCE_UNVERIFIABLE")
+                if isinstance(resolution_reference, str) and resolution_reference.strip() and not repository_reference_is_blob(resolution_reference):
+                    errors.append("CONFLICT_RESOLUTION_REFERENCE_UNVERIFIABLE")
     return errors
 
 
