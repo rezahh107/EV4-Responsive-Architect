@@ -263,7 +263,7 @@ prompt_04_responsive_producer_adoption:
   branch: project-gate-prompt-04-responsive-producer-adoption
   pipeline_manifest: manifests/ev4-responsive-pipeline-manifest.v1.json
   responsive_stage_payload_schema: schemas/ev4-responsive-stage-payload.v1.schema.json
-  viewport_source_ledger_schema: schemas/ev4-responsive-viewport-source-ledger.v1.schema.json
+  viewport_source_ledger_schema: schemas/ev4-responsive-viewport-source-ledger.v1.json
   breakpoint_registry: registries/breakpoint-profiles.v1.json
   producer_gate_export_schema: contracts/project-gate/producer-gate-export.v1.schema.json
   vendored_contract_lock: contracts/project-gate/producer-gate-export.v1.lock.json
@@ -358,3 +358,4 @@ The snapshot below is derived from the canonical monolithic catalog, is validato
 - No submitted evidence was created; Issue #8 was not mutated; no pilot was run or authorized.
 - Project Gate transport was not executed and human-readable receipts are not Kernel authority.
 - Production, release, live-render, export, accessibility, pixel-perfect, and responsive-correctness claims remain false.
+- CI, catalog state, and catalog completion remain repository-check evidence only.
