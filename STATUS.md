@@ -263,7 +263,7 @@ prompt_04_responsive_producer_adoption:
   branch: project-gate-prompt-04-responsive-producer-adoption
   pipeline_manifest: manifests/ev4-responsive-pipeline-manifest.v1.json
   responsive_stage_payload_schema: schemas/ev4-responsive-stage-payload.v1.schema.json
-  viewport_source_ledger_schema: schemas/ev4-responsive-viewport-source-ledger.v1.json
+  viewport_source_ledger_schema: schemas/ev4-responsive-viewport-source-ledger.v1.schema.json
   breakpoint_registry: registries/breakpoint-profiles.v1.json
   producer_gate_export_schema: contracts/project-gate/producer-gate-export.v1.schema.json
   vendored_contract_lock: contracts/project-gate/producer-gate-export.v1.lock.json
