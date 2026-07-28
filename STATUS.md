@@ -103,6 +103,7 @@ active_validation:
   - validation/e2e/run_responsive_handoff_export_boundary_manifest_check.py
   - validation/e2e/run_task_quality_gate_check.py
   - validation/e2e/run_fixture_schema_ownership_check.py
+  - validation/e2e/run_temporary_ux_ui_standards_guidance_check.py
   - validation/e2e/run_rtaq_ssot_guard_check.py
   - validation/e2e/run_status_merged_foundation_guard_check.py
   - validation/e2e/run_automation_control_state_check.py
@@ -357,4 +358,3 @@ The snapshot below is derived from the canonical monolithic catalog, is validato
 - No submitted evidence was created; Issue #8 was not mutated; no pilot was run or authorized.
 - Project Gate transport was not executed and human-readable receipts are not Kernel authority.
 - Production, release, live-render, export, accessibility, pixel-perfect, and responsive-correctness claims remain false.
-- CI, catalog state, and catalog completion remain repository-check evidence only.
