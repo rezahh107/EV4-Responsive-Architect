@@ -70,6 +70,7 @@ active_contracts:
   - contracts/project-gate/PROMPT_5_ROUTING_BOUNDARY.md
   - contracts/compatibility/RUNTIME_MISMATCH_PROMPT_5_ROUTING_COMPATIBILITY.md
   - contracts/pcvp/RESPONSIVE_TOLERANT_CONSUMER_V1.md
+  - contracts/guidance/TEMPORARY_UX_UI_STANDARDS_GUIDANCE_CONTRACT.md
 active_schema:
   - schemas/ev4-responsive-output.schema.json
   - schemas/ev4-builder-responsive-input.schema.json
@@ -78,6 +79,7 @@ active_schema:
   - contracts/runtime/runtime-mismatch-reopen-package.v1.schema.json
   - contracts/project-gate/prompt-5-routing-envelope.v1.schema.json
   - contracts/compatibility/runtime-mismatch-prompt-5-routing-compatibility.v1.schema.json
+  - contracts/guidance/temporary-ux-ui-standards-guidance.v1.schema.json
 active_validation:
   - validation/e2e/run_responsive_tree_architecture_refactor_check.py
   - validation/e2e/run_submitted_packet_eligibility_gate_check.py
@@ -142,6 +144,7 @@ controlled_use_docs:
   - docs/47_RESPONSIVE_CONTRACT_DRIFT_SENTINEL.md
   - docs/48_PROMPT_5_PROJECT_GATE_ROUTING_BOUNDARY.md
   - docs/49_RUNTIME_MISMATCH_PROMPT_5_ROUTING_COMPATIBILITY.md
+  - docs/50_TEMPORARY_UX_UI_STANDARDS_GUIDANCE.md
   - docs/AUTOMATION_WORK_PACKAGE_CATALOG.md
 ```
 
