@@ -1,0 +1,17 @@
+{
+  "schema_version": "temporary-ux-ui-standards-guidance.v1",
+  "guidance_id": "UXUI-GUIDANCE-UNRESOLVED-CONFLICT",
+  "revision": "r001",
+  "lifecycle": {"status":"active","issued_at":"2026-07-24","review_by":"2026-10-24","supersedes":null,"superseded_by":null},
+  "guidance_items": [{
+    "item_id":"UXUI-CONFLICT-ITEM-001","statement":"Apply a temporary rule despite unresolved authority conflict.","strength":"conditional",
+    "provenance":{"source_title":"Temporary policy","source_owner":"EV4","source_url":"https://github.com/rezahh107/EV4-Responsive-Architect","source_class":"approved_internal_policy","retrieved_at":"2026-07-24","version_scope":"r001"},
+    "applicability":{"applies_when":["A decision is being considered."],"does_not_apply_when":["A higher authority rejects it."],"surfaces":["responsive layout"]},
+    "exceptions":["Higher authority governs."],
+    "conflicts":[{"conflict_id":"UXUI-CONFLICT-UNRESOLVED-001","higher_authority_class":"repository_contract_schema_validator_stage_anchor","higher_authority_reference":"contracts/example.md","status":"unresolved","resolution_reference":null,"bounded_rationale":"No resolution has been recorded."}],
+    "universal_rule_claimed":false
+  }],
+  "conflict_handling":{"precedence":["repository_contracts_schemas_validators_stage_anchors","kernel_decisions_and_project_gate_boundaries","gated_project_specific_evidence","temporary_ux_ui_guidance"],"unresolved_conflict_effect":"fail_closed_non_selectable","guidance_may_override_higher_authority":false},
+  "authority_boundary":{"usage_class":"non_authoritative_decision_support","repository_authority_created":false,"replaces_contracts_or_validators":false,"replaces_stage_anchors":false,"replaces_kernel_decisions":false,"replaces_project_gate_authority":false,"creates_project_specific_evidence":false,"may_establish_correctness":false},
+  "boundary_claims":{"submitted_evidence_created":false,"issue_8_mutated":false,"pilot_authorized":false,"release_ready":false,"live_render_validated":false,"export_json_validated":false,"accessibility_passed":false,"pixel_perfect":false,"responsive_correctness_validated":false}
+}
