@@ -221,6 +221,10 @@
         }
       }
     },
+    "continuation_assurance": {
+      "description": "Optional EV4-PCVP@1.0.0 carrier. The Responsive semantic validator resolves immutable canonical schemas and cross-record rules. Presence grants no repair, runtime, or readiness authority.",
+      "type": "object"
+    },
     "forbidden_claims": {
       "type": "array",
       "$comment": "Completeness is intentionally coupled to minItems/maxItems and the enum below. When adding or removing a forbidden claim, update both size constraints and REQUIRED_FORBIDDEN_CLAIMS in validation/e2e/run_builder_responsive_input_boundary_check.py.",

@@ -1,9 +1,9 @@
 # Active Contract / Schema / Validator Index
 
-Task: `WP-RESP-015/PR-C compatibility documentation and STATUS parity`
-Updated by: `automation/wp-resp-015-pr-c-compatibility-docs-status`
+Task: `WP-RESP-002 contract-drift repair — tolerant EV4-PCVP consumer`
+Updated by: `agent/pcvp-responsive-tolerant-consumer`
 
-This index records the active repository surfaces needed for controlled manual use and catalog-backed handoff. It is an index only; it does not validate a real submitted packet, mutate Issue #8, authorize pilot execution, or upgrade readiness.
+This index records the active repository surfaces needed for controlled manual use and catalog-backed handoff. It is an index only; it does not validate a real submitted packet, mutate Issue #8, authorize pilot execution, activate PCVP, or upgrade readiness.
 
 ## Source-of-truth hierarchy
 
@@ -26,6 +26,10 @@ control_plane:
   - planning/EV4_QUEUE_CONTROL_PLANE.json
 quality_gate:
   - planning/EV4_AUTOMATION_QUALITY_GATE.json
+pcvp_canonical_owner:
+  repository: rezahh107/EV4-Decision-Kernel
+  immutable_commit: 069a50fa243b01fa578a7c1bcb8864d9e796d34b
+  local_copies_authoritative: false
 ```
 
 ## Responsive-tree contracts
@@ -38,6 +42,9 @@ contracts:
   builder_to_responsive_input_boundary:
     path: contracts/BUILDER_TO_RESPONSIVE_INPUT_BOUNDARY.md
     role: Builder -> Responsive intake decision boundary
+  pcvp_tolerant_consumer:
+    path: contracts/pcvp/RESPONSIVE_TOLERANT_CONSUMER_V1.md
+    role: optional dormant Builder -> Responsive PCVP consumer; no producer/emission or authority expansion
   responsive_tree_architecture:
     path: contracts/EV4_RESPONSIVE_TREE_ARCHITECTURE_CONTRACT.md
     role: output shape and primary route boundary
@@ -76,10 +83,19 @@ contracts:
 schemas:
   responsive_output:
     path: schemas/ev4-responsive-output.schema.json
-    role: responsive output package schema
+    role: responsive output package schema; does not emit continuation_assurance
   builder_responsive_input:
     path: schemas/ev4-builder-responsive-input.schema.json
-    role: builder-to-responsive input schema
+    role: builder-to-responsive input schema with optional continuation_assurance location
+  pcvp_contract_lock:
+    path: contracts/pcvp/pcvp-v1.lock.json
+    role: immutable Decision Kernel commit/profile/schema identity and dormant-state lock
+  pcvp_responsive_profile:
+    path: contracts/pcvp/responsive.profile.yaml
+    role: non-authoritative byte-equal Responsive profile copy pinned to Decision Kernel
+  pcvp_vendor_schemas:
+    root: contracts/pcvp/vendor/decision-kernel/v1.0.0
+    role: non-authoritative byte-equal Claim/Effect/Authorization/Handoff schemas pinned to Decision Kernel
   automation_control_state:
     path: schemas/ev4-automation-control-state.schema.json
     role: post-queue automation control-state schema
@@ -122,6 +138,9 @@ primary_validate_workflow:
     - "3.11"
     - "3.13"
   validators:
+    pcvp_canonical_parity:
+      path: validation/e2e/run_pcvp_canonical_parity_check.py
+      role: exact immutable Decision Kernel checkout and byte-parity guard for local profile/schema copies
     rolling_queue:
       path: validation/e2e/run_rolling_queue_check.py
       role: archived queue shape and throughput policy checks
@@ -167,6 +186,9 @@ primary_validate_workflow:
     builder_responsive_input_boundary:
       path: validation/e2e/run_builder_responsive_input_boundary_check.py
       role: Builder -> Responsive input boundary checks
+    pcvp_tolerant_consumer:
+      path: validation/e2e/run_pcvp_tolerant_consumer_check.py
+      role: legacy-absence, lossless valid-carrier, fail-closed canonical layer, authority-boundary, and no-emission checks
     project_gate_prompt_5_routing_envelope:
       path: validation/e2e/run_prompt_5_routing_envelope_check.py
       role: Prompt 5 schema, semantic coupling, authority, diagnostics, and all-false boundary checks
@@ -273,4 +295,7 @@ controlled_use_docs:
   runtime_mismatch_prompt_5_routing_compatibility:
     path: docs/49_RUNTIME_MISMATCH_PROMPT_5_ROUTING_COMPATIBILITY.md
     role: WP-RESP-015 compatibility guarantees, validator path, authority ownership, and preserved evidence/readiness limitations
+  pcvp_tolerant_consumer:
+    path: contracts/pcvp/RESPONSIVE_TOLERANT_CONSUMER_V1.md
+    role: dormant DUAL_READ PCVP intake contract and non-authority boundary
 ```
