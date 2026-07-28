@@ -35,6 +35,7 @@ EXPECTED_INVALID_DIAGNOSTICS = {
     "pixel_upgrade.invalid.json": {"PIXEL_UPGRADE_FORBIDDEN"},
     "production_ready_authored.invalid.json": {"PRODUCTION_READINESS_AUTHORED"},
     "release_upgrade.invalid.json": {"RELEASE_UPGRADE_FORBIDDEN"},
+    "repository_root_provenance.invalid.json": {"PROVENANCE_UNVERIFIABLE"},
     "repository_tree_provenance.invalid.json": {"PROVENANCE_UNVERIFIABLE"},
     "resolved_conflict_unverifiable_authority_reference.invalid.json": {"HIGHER_AUTHORITY_REFERENCE_UNVERIFIABLE"},
     "resolved_conflict_unverifiable_resolution_reference.invalid.json": {"CONFLICT_RESOLUTION_REFERENCE_UNVERIFIABLE"},
@@ -46,6 +47,10 @@ EXPECTED_INVALID_DIAGNOSTICS = {
         "HIGHER_AUTHORITY_REFERENCE_UNVERIFIABLE",
         "CONFLICT_RESOLUTION_REFERENCE_UNVERIFIABLE",
     },
+    "resolved_kernel_wrong_carrier.invalid.json": {
+        "HIGHER_AUTHORITY_REFERENCE_CLASS_MISMATCH",
+        "CONFLICT_RESOLUTION_REFERENCE_CLASS_MISMATCH",
+    },
     "resolved_project_gate_unverifiable_references.invalid.json": {
         "HIGHER_AUTHORITY_REFERENCE_UNVERIFIABLE",
         "CONFLICT_RESOLUTION_REFERENCE_UNVERIFIABLE",
@@ -54,6 +59,7 @@ EXPECTED_INVALID_DIAGNOSTICS = {
     "responsive_correctness_upgrade.invalid.json": {"CORRECTNESS_UPGRADE_FORBIDDEN"},
     "stale_active_review.invalid.json": {"LIFECYCLE_REVIEW_OVERDUE"},
     "submitted_evidence_upgrade.invalid.json": {"SUBMITTED_EVIDENCE_UPGRADE_FORBIDDEN"},
+    "undeclared_authority_conflict.invalid.json": {"UNDECLARED_HIGHER_AUTHORITY_CONFLICT"},
     "universal_rule.invalid.json": {"UNIVERSAL_RULE_FORBIDDEN"},
     "universal_rule_false_declaration.invalid.json": {"UNIVERSAL_RULE_FORBIDDEN"},
     "unresolved_conflict.invalid.json": {"UNRESOLVED_HIGHER_AUTHORITY_CONFLICT"},
@@ -133,11 +139,16 @@ def repository_blob_exists(source_url: str) -> bool:
     return False
 
 
-def repository_reference_is_blob(reference: object) -> bool:
+def normalized_repository_reference(reference: object) -> str | None:
     if not isinstance(reference, str) or not reference.strip():
-        return False
+        return None
     repo_path = reference.split("#", 1)[0].strip().strip("/")
-    if not repo_path:
+    return repo_path or None
+
+
+def repository_reference_is_blob(reference: object) -> bool:
+    repo_path = normalized_repository_reference(reference)
+    if repo_path is None:
         return False
     result = subprocess.run(
         ["git", "-C", str(ROOT), "cat-file", "-t", f"HEAD:{repo_path}"],
@@ -147,6 +158,22 @@ def repository_reference_is_blob(reference: object) -> bool:
         check=False,
     )
     return result.returncode == 0 and result.stdout.strip() == "blob"
+
+
+def reference_matches_authority_class(reference: object, authority_class: object) -> bool:
+    repo_path = normalized_repository_reference(reference)
+    if repo_path is None or not isinstance(authority_class, str) or not repository_reference_is_blob(reference):
+        return False
+    lowered = repo_path.lower()
+    if authority_class == "repository_contract_schema_validator_stage_anchor":
+        return lowered.startswith(("contracts/", "schemas/", "validation/", ".github/workflows/", "planning/")) or "stage_anchor" in lowered
+    if authority_class == "kernel_decision":
+        return "kernel" in lowered and lowered.startswith(("docs/", "schemas/", "validation/", "planning/"))
+    if authority_class == "project_gate_boundary":
+        return "project_gate" in lowered or "project-gate" in lowered or ("project" in lowered and "gate" in lowered)
+    if authority_class == "gated_project_specific_evidence":
+        return lowered.startswith("evidence/") or ("evidence" in lowered and ("project" in lowered or "gated" in lowered))
+    return False
 
 
 def provenance_is_locally_verifiable(provenance: object) -> bool:
@@ -159,8 +186,6 @@ def provenance_is_locally_verifiable(provenance: object) -> bool:
     if parsed.scheme != "https" or parsed.netloc != "github.com":
         return False
     normalized = source_url.rstrip("/")
-    if normalized == APPROVED_REPOSITORY_URL:
-        return True
     return repository_blob_exists(normalized)
 
 
@@ -182,7 +207,6 @@ def item_has_unsupported_universal_applicability(item: dict[str, object]) -> boo
     )
     if any(marker in statement_text for marker in statement_markers):
         return True
-
     applicability = item.get("applicability")
     if not isinstance(applicability, dict):
         return False
@@ -199,11 +223,37 @@ def item_has_unsupported_universal_applicability(item: dict[str, object]) -> boo
     )
 
 
+def item_implies_undeclared_authority_conflict(item: dict[str, object]) -> bool:
+    conflicts = item.get("conflicts")
+    if conflicts not in ([], None):
+        return False
+    text_parts: list[str] = []
+    statement = item.get("statement")
+    if isinstance(statement, str):
+        text_parts.append(statement.lower())
+    applicability = item.get("applicability")
+    if isinstance(applicability, dict):
+        for key in ("applies_when", "does_not_apply_when", "surfaces"):
+            text_parts.extend(normalized_strings(applicability.get(key)))
+    text_parts.extend(normalized_strings(item.get("exceptions")))
+    text = " ".join(text_parts)
+    override_markers = ("ignore ", "override ", "bypass ", "replace ", "supersede ", "disregard ")
+    authority_markers = (
+        "repository validator",
+        "repository contract",
+        "stage anchor",
+        "kernel decision",
+        "project gate",
+        "higher-authority",
+        "higher authority",
+    )
+    return any(marker in text for marker in override_markers) and any(marker in text for marker in authority_markers)
+
+
 def semantic_error_codes(payload: object) -> list[str]:
     errors: list[str] = []
     if not isinstance(payload, dict):
         return errors
-
     lifecycle = payload.get("lifecycle", {})
     if isinstance(lifecycle, dict):
         status = lifecycle.get("status")
@@ -217,7 +267,6 @@ def semantic_error_codes(payload: object) -> list[str]:
                 review_date = None
             if review_date is not None and review_date < date.today():
                 errors.append("LIFECYCLE_REVIEW_OVERDUE")
-
     guidance_items = payload.get("guidance_items", [])
     if not isinstance(guidance_items, list):
         return errors
@@ -226,6 +275,8 @@ def semantic_error_codes(payload: object) -> list[str]:
             continue
         if item_has_unsupported_universal_applicability(item):
             errors.append("UNIVERSAL_RULE_FORBIDDEN")
+        if item_implies_undeclared_authority_conflict(item):
+            errors.append("UNDECLARED_HIGHER_AUTHORITY_CONFLICT")
         if "provenance" in item and not provenance_is_locally_verifiable(item.get("provenance")):
             errors.append("PROVENANCE_UNVERIFIABLE")
         conflicts = item.get("conflicts", [])
@@ -238,12 +289,19 @@ def semantic_error_codes(payload: object) -> list[str]:
             if status == "unresolved":
                 errors.append("UNRESOLVED_HIGHER_AUTHORITY_CONFLICT")
             if status == "resolved":
+                authority_class = conflict.get("higher_authority_class")
                 authority_reference = conflict.get("higher_authority_reference")
                 resolution_reference = conflict.get("resolution_reference")
-                if isinstance(authority_reference, str) and authority_reference.strip() and not repository_reference_is_blob(authority_reference):
-                    errors.append("HIGHER_AUTHORITY_REFERENCE_UNVERIFIABLE")
-                if isinstance(resolution_reference, str) and resolution_reference.strip() and not repository_reference_is_blob(resolution_reference):
-                    errors.append("CONFLICT_RESOLUTION_REFERENCE_UNVERIFIABLE")
+                if isinstance(authority_reference, str) and authority_reference.strip():
+                    if not repository_reference_is_blob(authority_reference):
+                        errors.append("HIGHER_AUTHORITY_REFERENCE_UNVERIFIABLE")
+                    elif not reference_matches_authority_class(authority_reference, authority_class):
+                        errors.append("HIGHER_AUTHORITY_REFERENCE_CLASS_MISMATCH")
+                if isinstance(resolution_reference, str) and resolution_reference.strip():
+                    if not repository_reference_is_blob(resolution_reference):
+                        errors.append("CONFLICT_RESOLUTION_REFERENCE_UNVERIFIABLE")
+                    elif not reference_matches_authority_class(resolution_reference, authority_class):
+                        errors.append("CONFLICT_RESOLUTION_REFERENCE_CLASS_MISMATCH")
     return errors
 
 
@@ -256,13 +314,11 @@ def main() -> int:
     schema = load_json(SCHEMA_PATH)
     Draft202012Validator.check_schema(schema)
     validator = Draft202012Validator(schema, format_checker=FormatChecker())
-
     valid_paths = sorted((FIXTURE_ROOT / "valid").glob("*.json"))
     invalid_paths = sorted((FIXTURE_ROOT / "invalid").glob("*.json"))
     if not valid_paths or not invalid_paths:
         print("fixture matrix must contain valid and invalid fixtures", file=sys.stderr)
         return 1
-
     invalid_names = {path.name for path in invalid_paths}
     expected_names = set(EXPECTED_INVALID_DIAGNOSTICS)
     if invalid_names != expected_names:
@@ -274,13 +330,11 @@ def main() -> int:
             file=sys.stderr,
         )
         return 1
-
     failures: list[str] = []
     for path in valid_paths:
         errors = validate_payload(validator, load_json(path))
         if errors:
             failures.append(f"valid fixture rejected: {path.relative_to(ROOT)}: {errors}")
-
     for path in invalid_paths:
         errors = validate_payload(validator, load_json(path))
         expected = EXPECTED_INVALID_DIAGNOSTICS[path.name]
@@ -290,13 +344,11 @@ def main() -> int:
                 f"invalid fixture missing expected diagnostic: {path.relative_to(ROOT)}: "
                 f"expected={sorted(expected)}, observed={errors}"
             )
-
     if failures:
         print("temporary UX/UI standards guidance validation failed:", file=sys.stderr)
         for failure in failures:
             print(f"- {failure}", file=sys.stderr)
         return 1
-
     print(
         "temporary UX/UI standards guidance validation passed "
         f"({len(valid_paths)} valid, {len(invalid_paths)} invalid fixtures; "
