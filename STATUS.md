@@ -68,6 +68,7 @@ active_contracts:
   - contracts/RESPONSIVE_HANDOFF_EXPORT_BOUNDARY_MANIFEST.md
   - contracts/runtime/RUNTIME_MISMATCH_REOPEN_BOUNDARY.md
   - contracts/project-gate/PROMPT_5_ROUTING_BOUNDARY.md
+  - contracts/project-gate/PROMPT_5_ROUTING_RECEIPT_CORRELATION.md
   - contracts/compatibility/RUNTIME_MISMATCH_PROMPT_5_ROUTING_COMPATIBILITY.md
   - contracts/pcvp/RESPONSIVE_TOLERANT_CONSUMER_V1.md
   - contracts/guidance/TEMPORARY_UX_UI_STANDARDS_GUIDANCE_CONTRACT.md
@@ -78,6 +79,7 @@ active_schema:
   - schemas/ev4-automation-work-package-catalog.schema.json
   - contracts/runtime/runtime-mismatch-reopen-package.v1.schema.json
   - contracts/project-gate/prompt-5-routing-envelope.v1.schema.json
+  - contracts/project-gate/prompt-5-routing-receipt-correlation.v1.schema.json
   - contracts/compatibility/runtime-mismatch-prompt-5-routing-compatibility.v1.schema.json
   - contracts/guidance/temporary-ux-ui-standards-guidance.v1.schema.json
 active_validation:
@@ -96,6 +98,7 @@ active_validation:
   - validation/e2e/run_pcvp_canonical_parity_check.py
   - validation/e2e/run_pcvp_tolerant_consumer_check.py
   - validation/e2e/run_prompt_5_routing_envelope_check.py
+  - validation/e2e/run_prompt_5_routing_receipt_correlation_check.py
   - validation/e2e/run_runtime_mismatch_reopen_package_check.py
   - validation/e2e/run_runtime_mismatch_prompt_5_compatibility_check.py
   - validation/e2e/run_responsive_contract_drift_sentinel_check.py
@@ -237,6 +240,7 @@ automatic_check:
   - python validation/e2e/run_viewport_inheritance_reset_matrix_check.py
   - python validation/e2e/run_responsive_handoff_export_boundary_manifest_check.py
   - python validation/e2e/run_prompt_5_routing_envelope_check.py
+  - python validation/e2e/run_prompt_5_routing_receipt_correlation_check.py
   - python validation/e2e/run_runtime_mismatch_reopen_package_check.py
   - python validation/e2e/run_decision_escape_routes_schema_check.py
   - python validation/e2e/run_fixture_schema_ownership_check.py
@@ -276,6 +280,11 @@ prompt_04_responsive_producer_adoption:
   prompt_5_routing_schema: contracts/project-gate/prompt-5-routing-envelope.v1.schema.json
   prompt_5_routing_validator: validation/e2e/run_prompt_5_routing_envelope_check.py
   prompt_5_routing_fixtures: validation/fixtures/prompt05
+  prompt_5_routing_receipt_correlation: implemented_local_validation_non_executing
+  prompt_5_routing_receipt_correlation_contract: contracts/project-gate/PROMPT_5_ROUTING_RECEIPT_CORRELATION.md
+  prompt_5_routing_receipt_correlation_schema: contracts/project-gate/prompt-5-routing-receipt-correlation.v1.schema.json
+  prompt_5_routing_receipt_correlation_validator: validation/e2e/run_prompt_5_routing_receipt_correlation_check.py
+  prompt_5_routing_receipt_correlation_fixtures: validation/fixtures/prompt_5_routing_receipt_correlation
   runtime_mismatch_prompt_5_compatibility: implemented_repository_local_fail_closed
   runtime_mismatch_prompt_5_compatibility_contract: contracts/compatibility/RUNTIME_MISMATCH_PROMPT_5_ROUTING_COMPATIBILITY.md
   runtime_mismatch_prompt_5_compatibility_schema: contracts/compatibility/runtime-mismatch-prompt-5-routing-compatibility.v1.schema.json
