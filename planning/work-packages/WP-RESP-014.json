@@ -5,11 +5,11 @@
     "id": "WP-RESP-014",
     "title": "Enforce Prompt 5 Cross-Contract Compatibility and Drift Detection",
     "capability_area": "prompt_5_cross_contract_compatibility",
-    "current_state": "The local Prompt 5 routing envelope now has a contract and schema, but no deterministic compatibility guard pins its relationship to producer-gate-export.v1 and the vendored Project Gate common contract surfaces.",
+    "current_state": "PR #196 merged WP-RESP-014/PR-A, establishing the Prompt 5 cross-contract compatibility contract and schema with canonical dependency-role identities; concrete manifests, fixtures, deterministic hash/drift diagnostics, primary CI wiring, documentation, command-index, and STATUS parity remain incomplete.",
     "target_state": "A schema-backed compatibility manifest and fail-closed validator detect identifier, version, hash, lineage, and authority drift across the Prompt 5 routing envelope and its Project Gate contract dependencies.",
     "measurable_current_state": {
-      "statement": "The local Prompt 5 routing envelope now has a contract and schema, but no deterministic compatibility guard pins its relationship to producer-gate-export.v1 and the vendored Project Gate common contract surfaces.",
-      "measurement": "Measured by the absence of a Prompt 5 compatibility manifest, pinned dependency identities, drift fixtures, and a dedicated compatibility validator in the primary validation chain.",
+      "statement": "PR #196 merged WP-RESP-014/PR-A, establishing the Prompt 5 cross-contract compatibility contract and schema with canonical dependency-role identities; concrete manifests, fixtures, deterministic hash/drift diagnostics, primary CI wiring, documentation, command-index, and STATUS parity remain incomplete.",
+      "measurement": "Measured by merged WP-RESP-014/PR-A and the absence of completed WP-RESP-014/PR-B and WP-RESP-014/PR-C outcomes.",
       "measurable": true
     },
     "measurable_target_state": {
@@ -24,10 +24,10 @@
     },
     "expected_project_delta": "Prompt 5 contract evolution becomes fail-closed against cross-contract drift while external Project Gate transport authority and all evidence/readiness boundaries remain unchanged.",
     "selectable": true,
-    "ready_state": "ready",
+    "ready_state": "active",
     "priority": 85,
     "reporting": {
-      "estimated_completion_percentage": 0,
+      "estimated_completion_percentage": 35,
       "estimated_percentage_is_reporting_only": true
     },
     "allowed_work": [
