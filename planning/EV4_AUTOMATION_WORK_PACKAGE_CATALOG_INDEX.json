@@ -106,19 +106,25 @@
       "id": "WP-RESP-016",
       "path": "planning/work-packages/WP-RESP-016.json",
       "schema": "ev4-automation-work-package-file@1.0.0",
-      "content_sha256": "1b81fa663e3c3d48ef88faf07bfe19ef8155c64adb7c2b6587b1301455644c6d"
+      "content_sha256": "363422a1020f7625896be948f1167a5f7c9a83643f6fd1aed71467ad92bf6d83"
     },
     {
       "id": "WP-RESP-017",
       "path": "planning/work-packages/WP-RESP-017.json",
       "schema": "ev4-automation-work-package-file@1.0.0",
-      "content_sha256": "1e0a08ff100f2155c443d37f24989a94641b65188bd634790f8185c7ff748a71"
+      "content_sha256": "a5f0366eeb3530038acb28238afc362c55e55a188dc0341d7e7ee72c0a83ad39"
     },
     {
       "id": "WP-RESP-018",
       "path": "planning/work-packages/WP-RESP-018.json",
       "schema": "ev4-automation-work-package-file@1.0.0",
       "content_sha256": "73eb90605c10ecf3e3eef77916e8bad4442e9b0f7469467b2c5d86c50e1cf579"
+    },
+    {
+      "id": "WP-RESP-019",
+      "path": "planning/work-packages/WP-RESP-019.json",
+      "schema": "ev4-automation-work-package-file@1.0.0",
+      "content_sha256": "4c809c62b8423aa109f1a525e20f1328ee4855c1861dbccfa55aeaa44d13d5af"
     }
   ],
   "global_boundaries": {
