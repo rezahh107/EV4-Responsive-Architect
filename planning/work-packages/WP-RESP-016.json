@@ -5,11 +5,11 @@
     "id": "WP-RESP-016",
     "title": "Bind Prompt 5 Routing to Downstream Decision Receipt Correlation",
     "capability_area": "routing_receipt_correlation",
-    "current_state": "PR #193 merged WP-RESP-016/PR-A, establishing the canonical routing-to-receipt correlation contract and schema with deterministic content-derived receipt identity; fixtures, deterministic validator diagnostics, primary CI wiring, documentation, command-index, and STATUS parity remain incomplete.",
+    "current_state": "PR #193 and PR #195 merged WP-RESP-016/PR-A and PR-B, establishing the routing-to-receipt correlation contract/schema plus deterministic fixtures, validator diagnostics, primary CI wiring, and STATUS command parity; the approved PR-C documentation/integration slice remains executable.",
     "target_state": "A schema-backed correlation envelope and deterministic validator bind Prompt 5 routing outcomes to downstream decision receipts while preserving Kernel authority and rejecting missing, divergent, misleading, or boundary-upgrading correlations.",
     "measurable_current_state": {
-      "statement": "PR #193 merged WP-RESP-016/PR-A, establishing the canonical routing-to-receipt correlation contract and schema with deterministic content-derived receipt identity; fixtures, deterministic validator diagnostics, primary CI wiring, documentation, command-index, and STATUS parity remain incomplete.",
-      "measurement": "Measured by merged WP-RESP-016/PR-A and the absence of completed WP-RESP-016/PR-B and WP-RESP-016/PR-C outcomes.",
+      "statement": "PR #193 and PR #195 merged WP-RESP-016/PR-A and PR-B; the approved PR-C documentation/integration slice remains executable.",
+      "measurement": "Measured by merged WP-RESP-016/PR-A and PR-B outcomes and the still-uncompleted WP-RESP-016/PR-C slice.",
       "measurable": true
     },
     "measurable_target_state": {
@@ -24,10 +24,10 @@
     },
     "expected_project_delta": "Routing and downstream receipt artifacts gain a deterministic correlation boundary that prevents lineage, outcome, or authority ambiguity while all evidence, pilot, readiness, release, export, accessibility, pixel, and responsive-correctness claims remain false.",
     "selectable": true,
-    "ready_state": "active",
+    "ready_state": "ready",
     "priority": 86,
     "reporting": {
-      "estimated_completion_percentage": 35,
+      "estimated_completion_percentage": 75,
       "estimated_percentage_is_reporting_only": true
     },
     "allowed_work": [
