@@ -23,22 +23,23 @@ EXPECTED_INVALID_DIAGNOSTICS = {
     "receipt_content_digest_mismatch.invalid.json": {"RECEIPT_DIGEST_MISMATCH"},
     "authority_upgrade.invalid.json": {"AUTHORITY_SUBSTITUTION_FORBIDDEN"},
     "boundary_upgrade.invalid.json": {"RESPONSIVE_CORRECTNESS_UPGRADE_FORBIDDEN"},
+    "lineage_divergence.invalid.json": {"LINEAGE_DIVERGENCE"},
+    "outcome_mismatch.invalid.json": {"ROUTE_RECEIPT_OUTCOME_MISMATCH"},
+    "misleading_success_text.invalid.json": {"MISLEADING_SUCCESS_TEXT"},
+    "duplicate_receipt_identity.invalid.json": {"DUPLICATE_RECEIPT_IDENTITY"},
+    "unsupported_version.invalid.json": {"UNSUPPORTED_VERSION"},
 }
 
 JCS_NODE_PROGRAM = r"""
 const fs = require("fs");
 const value = JSON.parse(fs.readFileSync(0, "utf8"));
 function canonicalize(v) {
-  if (v === null || typeof v === "boolean" || typeof v === "string") {
-    return JSON.stringify(v);
-  }
+  if (v === null || typeof v === "boolean" || typeof v === "string") return JSON.stringify(v);
   if (typeof v === "number") {
     if (!Number.isFinite(v)) throw new Error("non-finite number");
     return JSON.stringify(v);
   }
-  if (Array.isArray(v)) {
-    return "[" + v.map(canonicalize).join(",") + "]";
-  }
+  if (Array.isArray(v)) return "[" + v.map(canonicalize).join(",") + "]";
   if (typeof v === "object") {
     const keys = Object.keys(v).sort();
     return "{" + keys.map(k => JSON.stringify(k) + ":" + canonicalize(v[k])).join(",") + "}";
@@ -69,15 +70,11 @@ def jcs_canonicalize(value: Any) -> bytes:
     except (OSError, subprocess.TimeoutExpired) as exc:
         raise RuntimeError(f"RFC 8785 canonicalizer unavailable: {exc}") from exc
     if completed.returncode != 0:
-        raise RuntimeError(
-            "RFC 8785 canonicalization failed: " + completed.stderr.strip()
-        )
+        raise RuntimeError("RFC 8785 canonicalization failed: " + completed.stderr.strip())
     return completed.stdout.encode("utf-8")
 
 
 def verify_jcs_conformance() -> None:
-    # Covers ECMAScript number rendering, negative zero, escaped control text,
-    # and UTF-16 code-unit property ordering including a non-BMP key.
     probe = {"😀": 1e30, "\r": 0.000001, "€": -0.0}
     expected = '{"\\r":0.000001,"€":0,"😀":1e+30}'.encode("utf-8")
     observed = jcs_canonicalize(probe)
@@ -99,8 +96,17 @@ def schema_error_code(error: ValidationError) -> str:
         ("authority", "correlation_replaces_kernel_decision"),
         ("authority", "correlation_replaces_project_gate_decision"),
     }
+    version_paths = {
+        ("schema_version",),
+        ("routing", "routing_schema"),
+        ("receipt", "receipt_identity_scheme"),
+        ("receipt", "receipt_schema"),
+        ("lineage", "producer_export_schema"),
+    }
     if path in authority_paths:
         return "AUTHORITY_SUBSTITUTION_FORBIDDEN"
+    if path in version_paths:
+        return "UNSUPPORTED_VERSION"
     if path == ("boundary_claims", "responsive_correctness_validated"):
         return "RESPONSIVE_CORRECTNESS_UPGRADE_FORBIDDEN"
     return f"SCHEMA:{error.validator}:{'/'.join(path) or '<root>'}"
@@ -115,27 +121,52 @@ def diagnostics(
         return {"FIXTURE_RECORDS_MISSING"}
 
     codes: set[str] = set()
+    seen_receipt_ids: set[str] = set()
     for record in payload["records"]:
         if not isinstance(record, dict):
             codes.add("FIXTURE_RECORD_INVALID")
             continue
         source_receipt = record.get("source_receipt")
+        source_lineage = record.get("source_lineage")
         correlation = record.get("correlation")
         if not isinstance(source_receipt, dict) or not isinstance(correlation, dict):
             codes.add("CORRELATION_SOURCE_MISSING")
             continue
         if list(receipt_validator.iter_errors(source_receipt)):
             codes.add("CANONICAL_RECEIPT_SCHEMA_INVALID")
-        codes.update(
-            schema_error_code(error)
-            for error in correlation_validator.iter_errors(correlation)
-        )
+        codes.update(schema_error_code(error) for error in correlation_validator.iter_errors(correlation))
+
         computed = receipt_digest(source_receipt)
         receipt = correlation.get("receipt", {})
+        receipt_id = receipt.get("receipt_id")
         if receipt.get("receipt_sha256") != computed:
             codes.add("RECEIPT_DIGEST_MISMATCH")
-        if receipt.get("receipt_id") != f"sha256:{computed}":
+        if receipt_id != f"sha256:{computed}":
             codes.add("RECEIPT_IDENTITY_MISMATCH")
+        if isinstance(receipt_id, str):
+            if receipt_id in seen_receipt_ids:
+                codes.add("DUPLICATE_RECEIPT_IDENTITY")
+            seen_receipt_ids.add(receipt_id)
+
+        lineage = correlation.get("lineage", {})
+        if not isinstance(source_lineage, dict) or any(
+            lineage.get(field) != source_lineage.get(field)
+            for field in ("decision_family", "decision_card_ref")
+        ):
+            codes.add("LINEAGE_DIVERGENCE")
+
+        outcome = correlation.get("outcome", {})
+        source_state = source_receipt.get("receipt_state")
+        if outcome.get("receipt_state") != source_state:
+            codes.add("ROUTE_RECEIPT_OUTCOME_MISMATCH")
+        if receipt.get("surface") != source_receipt.get("surface") or receipt.get("trace_ref") != source_receipt.get("trace_ref"):
+            codes.add("ROUTE_RECEIPT_OUTCOME_MISMATCH")
+
+        message = str(source_receipt.get("message", "")).lower()
+        success_markers = ("success", "successful", "موفق", "تأیید شد", "✅")
+        if source_state != "success" and any(marker in message for marker in success_markers):
+            codes.add("MISLEADING_SUCCESS_TEXT")
+
     return codes
 
 
@@ -149,17 +180,13 @@ def main() -> int:
     correlation_validator = Draft202012Validator(load_json(CORRELATION_SCHEMA_PATH))
     receipt_validator = Draft202012Validator(load_json(RECEIPT_SCHEMA_PATH))
 
-    valid_codes = diagnostics(
-        load_json(FIXTURE_ROOT / "valid.json"), correlation_validator, receipt_validator
-    )
+    valid_codes = diagnostics(load_json(FIXTURE_ROOT / "valid.json"), correlation_validator, receipt_validator)
     if valid_codes:
         print(f"valid fixture rejected: {sorted(valid_codes)}", file=sys.stderr)
         return 1
 
     for filename, expected in EXPECTED_INVALID_DIAGNOSTICS.items():
-        observed = diagnostics(
-            load_json(FIXTURE_ROOT / filename), correlation_validator, receipt_validator
-        )
+        observed = diagnostics(load_json(FIXTURE_ROOT / filename), correlation_validator, receipt_validator)
         missing = expected - observed
         if missing:
             print(
