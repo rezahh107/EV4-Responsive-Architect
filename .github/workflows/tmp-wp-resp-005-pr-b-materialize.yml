@@ -1,0 +1,105 @@
+name: Temporary WP-RESP-005 PR-B materialization
+
+on:
+  push:
+    branches:
+      - automation/wp-resp-005-pr-b-reconcile-after-wp014-pr-a
+
+permissions:
+  contents: write
+
+jobs:
+  materialize:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: automation/wp-resp-005-pr-b-reconcile-after-wp014-pr-a
+          fetch-depth: 0
+
+      - name: Reconcile canonical catalog and STATUS snapshot
+        run: |
+          python - <<'PY'
+          import json, re
+          from pathlib import Path
+
+          root = Path('.')
+          catalog_path = root / 'planning/EV4_AUTOMATION_WORK_PACKAGE_CATALOG.json'
+          status_path = root / 'STATUS.md'
+          ids = ['WP-RESP-014', 'WP-RESP-016']
+
+          catalog = json.loads(catalog_path.read_text(encoding='utf-8'))
+          for wp_id in ids:
+              wrapper = json.loads((root / f'planning/work-packages/{wp_id}.json').read_text(encoding='utf-8'))
+              assert wrapper['id'] == wp_id == wrapper['work_package']['id']
+              catalog['work_packages'][wp_id] = wrapper['work_package']
+
+          assert catalog['catalog_replenishment_policy']['ready_work_package_target'] == 4
+          assert catalog['catalog_replenishment_policy']['refresh_when_ready_below'] == 4
+          assert catalog['catalog_replenishment_policy']['max_ready_work_packages'] == 5
+          for key, value in catalog['global_boundaries'].items():
+              assert value is False, f'boundary upgraded: {key}'
+
+          catalog_path.write_text(json.dumps(catalog, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+
+          tracked = {'ready': 'selectable_ready_horizon', 'active': 'active_work_packages', 'completed': 'completed_work_packages'}
+          states = {v: [] for v in tracked.values()}
+          for wp_id, package in catalog['work_packages'].items():
+              if package.get('selectable') is not True:
+                  continue
+              field = tracked.get(package.get('ready_state'))
+              if field:
+                  states[field].append(wp_id)
+          keyfn = lambda x: int(x.rsplit('-', 1)[1])
+          for field in states:
+              states[field].sort(key=keyfn)
+
+          snapshot = {
+              'schema': 'ev4-status-work-package-catalog-snapshot@1.0.0',
+              'source': 'planning/EV4_AUTOMATION_WORK_PACKAGE_CATALOG.json',
+              'catalog_state_snapshot_is_derived': True,
+              'policy': {
+                  'max_ready_work_packages': catalog['catalog_replenishment_policy']['max_ready_work_packages'],
+                  'ready_work_package_target': catalog['catalog_replenishment_policy']['ready_work_package_target'],
+                  'refresh_when_ready_below': catalog['catalog_replenishment_policy']['refresh_when_ready_below'],
+              },
+              **states,
+          }
+          assert snapshot['selectable_ready_horizon'] == ['WP-RESP-011', 'WP-RESP-016', 'WP-RESP-018', 'WP-RESP-019']
+          assert snapshot['active_work_packages'] == ['WP-RESP-014']
+
+          text = status_path.read_text(encoding='utf-8')
+          heading = '## WP-RESP-005/PR-B — State-driven catalog replenishment'
+          before, rest = text.split(heading, 1)
+          next_heading = re.search(r'\n## ', rest)
+          section = rest if next_heading is None else rest[:next_heading.start()]
+          after = '' if next_heading is None else rest[next_heading.start():]
+          section = re.sub(
+              r'```json\n.*?\n```',
+              '```json\n' + json.dumps(snapshot, ensure_ascii=False, indent=2) + '\n```',
+              section,
+              count=1,
+              flags=re.S,
+          )
+          status_path.write_text(before + heading + section + after, encoding='utf-8')
+          PY
+
+      - name: Materialize modular projection and validate
+        run: |
+          python validation/e2e/run_automation_work_package_catalog_reassembly_check.py --write --self-test
+          python validation/e2e/run_automation_work_package_catalog_check.py
+          python validation/e2e/run_automation_replenishment_policy_transition_check.py
+          python validation/e2e/run_status_merged_foundation_guard_check.py
+          python validation/e2e/run_automation_control_state_check.py
+          python validation/e2e/run_task_quality_gate_check.py
+
+      - name: Commit bounded reconciliation and remove temporary workflow
+        run: |
+          rm .github/workflows/tmp-wp-resp-005-pr-b-materialize.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add planning/EV4_AUTOMATION_WORK_PACKAGE_CATALOG.json planning/EV4_AUTOMATION_WORK_PACKAGE_CATALOG_INDEX.json planning/work-packages/WP-RESP-014.json planning/work-packages/WP-RESP-016.json STATUS.md .github/workflows/tmp-wp-resp-005-pr-b-materialize.yml
+          git diff --cached --check
+          git commit -m "chore(automation): materialize WP-RESP-005 PR-B reconciliation"
+          git push origin HEAD:automation/wp-resp-005-pr-b-reconcile-after-wp014-pr-a
