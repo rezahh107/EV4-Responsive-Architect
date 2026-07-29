@@ -1,0 +1,277 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ev4.local/contracts/project-gate/prompt-5-cross-contract-compatibility.v1.schema.json",
+  "title": "EV4 Prompt 5 Cross-Contract Compatibility Manifest v1",
+  "x-ev4-contract-id": "prompt-5-cross-contract-compatibility.v1",
+  "x-ev4-contract-version": "1.0.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "manifest_id",
+    "dependencies",
+    "lineage_compatibility",
+    "authority",
+    "boundary_claims"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "prompt-5-cross-contract-compatibility.v1"
+    },
+    "manifest_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "dependencies": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 3,
+      "items": {
+        "$ref": "#/$defs/dependency"
+      }
+    },
+    "lineage_compatibility": {
+      "$ref": "#/$defs/lineageCompatibility"
+    },
+    "authority": {
+      "$ref": "#/$defs/authority"
+    },
+    "boundary_claims": {
+      "$ref": "#/$defs/boundaryClaims"
+    }
+  },
+  "allOf": [
+    {
+      "properties": {
+        "dependencies": {
+          "contains": {
+            "type": "object",
+            "required": [
+              "role",
+              "path",
+              "contract_id",
+              "contract_version"
+            ],
+            "properties": {
+              "role": {
+                "const": "prompt_5_routing_envelope"
+              },
+              "path": {
+                "const": "contracts/project-gate/prompt-5-routing-envelope.v1.schema.json"
+              },
+              "contract_id": {
+                "const": "prompt-5-routing-envelope.v1"
+              },
+              "contract_version": {
+                "const": "1.0.0"
+              }
+            }
+          },
+          "minContains": 1,
+          "maxContains": 1
+        }
+      }
+    },
+    {
+      "properties": {
+        "dependencies": {
+          "contains": {
+            "type": "object",
+            "required": [
+              "role",
+              "path",
+              "contract_id",
+              "contract_version"
+            ],
+            "properties": {
+              "role": {
+                "const": "producer_gate_export_schema"
+              },
+              "path": {
+                "const": "contracts/project-gate/producer-gate-export.v1.schema.json"
+              },
+              "contract_id": {
+                "const": "producer-gate-export.v1"
+              },
+              "contract_version": {
+                "const": "1.0.0"
+              }
+            }
+          },
+          "minContains": 1,
+          "maxContains": 1
+        }
+      }
+    },
+    {
+      "properties": {
+        "dependencies": {
+          "contains": {
+            "type": "object",
+            "required": [
+              "role",
+              "path",
+              "contract_id",
+              "contract_version"
+            ],
+            "properties": {
+              "role": {
+                "const": "project_gate_common_contract_lock"
+              },
+              "path": {
+                "const": "contracts/project-gate/producer-gate-export.v1.lock.json"
+              },
+              "contract_id": {
+                "const": "producer-gate-export.v1"
+              },
+              "contract_version": {
+                "const": "1.0.0"
+              }
+            }
+          },
+          "minContains": 1,
+          "maxContains": 1
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "dependency": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "role",
+        "path",
+        "contract_id",
+        "contract_version",
+        "git_blob_sha",
+        "file_sha256"
+      ],
+      "properties": {
+        "role": {
+          "enum": [
+            "prompt_5_routing_envelope",
+            "producer_gate_export_schema",
+            "project_gate_common_contract_lock"
+          ]
+        },
+        "path": {
+          "type": "string",
+          "pattern": "^contracts/project-gate/[^/].+$"
+        },
+        "contract_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "contract_version": {
+          "type": "string",
+          "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+        },
+        "git_blob_sha": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{40}$"
+        },
+        "file_sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      }
+    },
+    "lineageCompatibility": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "routing_envelope_schema",
+        "producer_export_schema",
+        "producer_stage",
+        "route_target"
+      ],
+      "properties": {
+        "routing_envelope_schema": {
+          "const": "prompt-5-routing-envelope.v1"
+        },
+        "producer_export_schema": {
+          "const": "producer-gate-export.v1"
+        },
+        "producer_stage": {
+          "const": "responsive"
+        },
+        "route_target": {
+          "const": "ev4-project-gate"
+        }
+      }
+    },
+    "authority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "routing_decision_owner",
+        "transport_execution_owner",
+        "responsive_executes_transport",
+        "responsive_substitutes_project_gate_decision"
+      ],
+      "properties": {
+        "routing_decision_owner": {
+          "const": "responsive"
+        },
+        "transport_execution_owner": {
+          "const": "ev4-project-gate"
+        },
+        "responsive_executes_transport": {
+          "const": false
+        },
+        "responsive_substitutes_project_gate_decision": {
+          "const": false
+        }
+      }
+    },
+    "boundaryClaims": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "submitted_evidence_created",
+        "issue_8_mutated",
+        "pilot_authorized",
+        "production_ready",
+        "release_ready",
+        "live_render_validated",
+        "export_json_validated",
+        "accessibility_passed",
+        "pixel_perfect",
+        "responsive_correctness_validated"
+      ],
+      "properties": {
+        "submitted_evidence_created": {
+          "const": false
+        },
+        "issue_8_mutated": {
+          "const": false
+        },
+        "pilot_authorized": {
+          "const": false
+        },
+        "production_ready": {
+          "const": false
+        },
+        "release_ready": {
+          "const": false
+        },
+        "live_render_validated": {
+          "const": false
+        },
+        "export_json_validated": {
+          "const": false
+        },
+        "accessibility_passed": {
+          "const": false
+        },
+        "pixel_perfect": {
+          "const": false
+        },
+        "responsive_correctness_validated": {
+          "const": false
+        }
+      }
+    }
+  }
+}
