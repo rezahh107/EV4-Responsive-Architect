@@ -40,6 +40,65 @@
       "$ref": "#/$defs/boundaryClaims"
     }
   },
+  "allOf": [
+    {
+      "properties": {
+        "dependencies": {
+          "contains": {
+            "type": "object",
+            "required": [
+              "role"
+            ],
+            "properties": {
+              "role": {
+                "const": "prompt_5_routing_envelope"
+              }
+            }
+          },
+          "minContains": 1,
+          "maxContains": 1
+        }
+      }
+    },
+    {
+      "properties": {
+        "dependencies": {
+          "contains": {
+            "type": "object",
+            "required": [
+              "role"
+            ],
+            "properties": {
+              "role": {
+                "const": "producer_gate_export_schema"
+              }
+            }
+          },
+          "minContains": 1,
+          "maxContains": 1
+        }
+      }
+    },
+    {
+      "properties": {
+        "dependencies": {
+          "contains": {
+            "type": "object",
+            "required": [
+              "role"
+            ],
+            "properties": {
+              "role": {
+                "const": "project_gate_common_contract_lock"
+              }
+            }
+          },
+          "minContains": 1,
+          "maxContains": 1
+        }
+      }
+    }
+  ],
   "$defs": {
     "dependency": {
       "type": "object",
@@ -146,16 +205,36 @@
         "responsive_correctness_validated"
       ],
       "properties": {
-        "submitted_evidence_created": { "const": false },
-        "issue_8_mutated": { "const": false },
-        "pilot_authorized": { "const": false },
-        "production_ready": { "const": false },
-        "release_ready": { "const": false },
-        "live_render_validated": { "const": false },
-        "export_json_validated": { "const": false },
-        "accessibility_passed": { "const": false },
-        "pixel_perfect": { "const": false },
-        "responsive_correctness_validated": { "const": false }
+        "submitted_evidence_created": {
+          "const": false
+        },
+        "issue_8_mutated": {
+          "const": false
+        },
+        "pilot_authorized": {
+          "const": false
+        },
+        "production_ready": {
+          "const": false
+        },
+        "release_ready": {
+          "const": false
+        },
+        "live_render_validated": {
+          "const": false
+        },
+        "export_json_validated": {
+          "const": false
+        },
+        "accessibility_passed": {
+          "const": false
+        },
+        "pixel_perfect": {
+          "const": false
+        },
+        "responsive_correctness_validated": {
+          "const": false
+        }
       }
     }
   }
