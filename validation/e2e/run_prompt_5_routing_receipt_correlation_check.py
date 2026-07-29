@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import subprocess
 import sys
 from pathlib import Path
 from typing import Any
@@ -24,21 +25,70 @@ EXPECTED_INVALID_DIAGNOSTICS = {
     "boundary_upgrade.invalid.json": {"RESPONSIVE_CORRECTNESS_UPGRADE_FORBIDDEN"},
 }
 
+JCS_NODE_PROGRAM = r"""
+const fs = require("fs");
+const value = JSON.parse(fs.readFileSync(0, "utf8"));
+function canonicalize(v) {
+  if (v === null || typeof v === "boolean" || typeof v === "string") {
+    return JSON.stringify(v);
+  }
+  if (typeof v === "number") {
+    if (!Number.isFinite(v)) throw new Error("non-finite number");
+    return JSON.stringify(v);
+  }
+  if (Array.isArray(v)) {
+    return "[" + v.map(canonicalize).join(",") + "]";
+  }
+  if (typeof v === "object") {
+    const keys = Object.keys(v).sort();
+    return "{" + keys.map(k => JSON.stringify(k) + ":" + canonicalize(v[k])).join(",") + "}";
+  }
+  throw new Error("unsupported JSON value");
+}
+process.stdout.write(canonicalize(value));
+"""
+
 
 def load_json(path: Path) -> Any:
     with path.open("r", encoding="utf-8") as handle:
         return json.load(handle)
 
 
+def jcs_canonicalize(value: Any) -> bytes:
+    """Return RFC 8785/JCS bytes using ECMAScript serialization semantics."""
+    source = json.dumps(value, ensure_ascii=False, separators=(",", ":"), allow_nan=False)
+    try:
+        completed = subprocess.run(
+            ["node", "-e", JCS_NODE_PROGRAM],
+            input=source,
+            text=True,
+            capture_output=True,
+            check=False,
+            timeout=10,
+        )
+    except (OSError, subprocess.TimeoutExpired) as exc:
+        raise RuntimeError(f"RFC 8785 canonicalizer unavailable: {exc}") from exc
+    if completed.returncode != 0:
+        raise RuntimeError(
+            "RFC 8785 canonicalization failed: " + completed.stderr.strip()
+        )
+    return completed.stdout.encode("utf-8")
+
+
+def verify_jcs_conformance() -> None:
+    # Covers ECMAScript number rendering, negative zero, escaped control text,
+    # and UTF-16 code-unit property ordering including a non-BMP key.
+    probe = {"😀": 1e30, "\r": 0.000001, "€": -0.0}
+    expected = '{"\\r":0.000001,"€":0,"😀":1e+30}'.encode("utf-8")
+    observed = jcs_canonicalize(probe)
+    if observed != expected:
+        raise RuntimeError(
+            f"RFC 8785 conformance mismatch: expected {expected!r}, observed {observed!r}"
+        )
+
+
 def receipt_digest(receipt: dict[str, Any]) -> str:
-    canonical = json.dumps(
-        receipt,
-        ensure_ascii=False,
-        sort_keys=True,
-        separators=(",", ":"),
-        allow_nan=False,
-    ).encode("utf-8")
-    return hashlib.sha256(canonical).hexdigest()
+    return hashlib.sha256(jcs_canonicalize(receipt)).hexdigest()
 
 
 def schema_error_code(error: ValidationError) -> str:
@@ -90,6 +140,12 @@ def diagnostics(
 
 
 def main() -> int:
+    try:
+        verify_jcs_conformance()
+    except RuntimeError as exc:
+        print(str(exc), file=sys.stderr)
+        return 1
+
     correlation_validator = Draft202012Validator(load_json(CORRELATION_SCHEMA_PATH))
     receipt_validator = Draft202012Validator(load_json(RECEIPT_SCHEMA_PATH))
 
