@@ -47,11 +47,23 @@
           "contains": {
             "type": "object",
             "required": [
-              "role"
+              "role",
+              "path",
+              "contract_id",
+              "contract_version"
             ],
             "properties": {
               "role": {
                 "const": "prompt_5_routing_envelope"
+              },
+              "path": {
+                "const": "contracts/project-gate/prompt-5-routing-envelope.v1.schema.json"
+              },
+              "contract_id": {
+                "const": "prompt-5-routing-envelope.v1"
+              },
+              "contract_version": {
+                "const": "1.0.0"
               }
             }
           },
@@ -66,11 +78,23 @@
           "contains": {
             "type": "object",
             "required": [
-              "role"
+              "role",
+              "path",
+              "contract_id",
+              "contract_version"
             ],
             "properties": {
               "role": {
                 "const": "producer_gate_export_schema"
+              },
+              "path": {
+                "const": "contracts/project-gate/producer-gate-export.v1.schema.json"
+              },
+              "contract_id": {
+                "const": "producer-gate-export.v1"
+              },
+              "contract_version": {
+                "const": "1.0.0"
               }
             }
           },
@@ -85,11 +109,23 @@
           "contains": {
             "type": "object",
             "required": [
-              "role"
+              "role",
+              "path",
+              "contract_id",
+              "contract_version"
             ],
             "properties": {
               "role": {
                 "const": "project_gate_common_contract_lock"
+              },
+              "path": {
+                "const": "contracts/project-gate/producer-gate-export.v1.lock.json"
+              },
+              "contract_id": {
+                "const": "producer-gate-export.v1"
+              },
+              "contract_version": {
+                "const": "1.0.0"
               }
             }
           },
