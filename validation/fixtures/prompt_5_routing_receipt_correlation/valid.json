@@ -1,0 +1,48 @@
+{
+  "schema_version": "prompt-5-routing-receipt-correlation.v1",
+  "correlation_id": "corr-valid-001",
+  "routing": {
+    "routing_id": "route-001",
+    "routing_schema": "prompt-5-routing-envelope.v1"
+  },
+  "receipt": {
+    "receipt_id": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "receipt_identity_scheme": "rfc8785-sha256-receipt-object-v1",
+    "receipt_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "receipt_schema": "ev4-responsive-kernel-decision-receipt.schema.json",
+    "surface": "responsive_intake",
+    "trace_ref": "decision_lineage"
+  },
+  "lineage": {
+    "pipeline_id": "pipeline-001",
+    "run_id": "run-001",
+    "producer_export_id": "producer-export-001",
+    "producer_export_schema": "producer-gate-export.v1",
+    "producer_export_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "decision_family": "responsive_intake",
+    "decision_card_ref": "decision-card-001"
+  },
+  "outcome": {
+    "route_decision": "route",
+    "receipt_state": "success",
+    "routing_diagnostic_codes": []
+  },
+  "authority": {
+    "responsive_executes_project_gate_transport": false,
+    "receipt_text_is_kernel_authority": false,
+    "correlation_replaces_kernel_decision": false,
+    "correlation_replaces_project_gate_decision": false
+  },
+  "boundary_claims": {
+    "submitted_evidence_created": false,
+    "issue_8_mutated": false,
+    "pilot_authorized": false,
+    "production_ready": false,
+    "release_ready": false,
+    "live_render_validated": false,
+    "export_json_validated": false,
+    "accessibility_passed": false,
+    "pixel_perfect": false,
+    "responsive_correctness_validated": false
+  }
+}
